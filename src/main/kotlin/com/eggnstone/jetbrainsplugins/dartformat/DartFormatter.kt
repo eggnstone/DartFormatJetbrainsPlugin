@@ -14,7 +14,7 @@ class DartFormatter
         {
             val output = StringBuilder()
 
-            output.append("// Formatted at ${dateTimeFormatter.withZone(ZoneOffset.UTC).format(Instant.now())}\n")
+            //output.append("// Formatted at ${dateTimeFormatter.withZone(ZoneOffset.UTC).format(Instant.now())}\n")
             output.append(input)
 
             return output.toString()
