@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.*
 
 class DartFormatterTest
 {
-
     @org.junit.jupiter.api.BeforeEach
     fun setUp()
     {
