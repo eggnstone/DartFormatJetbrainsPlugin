@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
-class Part(val text: String, val delimiter: Char?)
+class Part(val text: String, var delimiter: Char?)
 {
     fun recreate(): String
     {

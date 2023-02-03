@@ -9,7 +9,7 @@ class DartFormatter
             val output = StringBuilder()
 
             val parts = Splitter.splitString(input)
-            for (i in parts.indices)
+            for (i in parts.size - 1 downTo 0)
             {
                 val previousPart = if (i > 0) parts[i - 1] else null
                 val currentPart = parts[i]
@@ -19,22 +19,19 @@ class DartFormatter
                 {
                     if (currentPart.delimiter == ',' && nextPart.text.isEmpty() && nextPart.delimiter == ')')
                     {
-                        // Ignore comma
-                        println(currentPart.text)
-                        output.append(currentPart.text)
+                        if (currentPart.text.isEmpty())
+                            parts.removeAt(i)
+                        else
+                        {
+                            TODO("no tests yet!")
+                            currentPart.delimiter = null
+                        }
                     }
-                    else
-                    {
-                        println(currentPart.toString())
-                        output.append(currentPart.recreate())
-                    }
-                }
-                else
-                {
-                    println(currentPart.toString())
-                    output.append(currentPart.recreate())
                 }
             }
+
+            for (part in parts)
+                output.append(part.recreate())
 
             return output.toString()
         }

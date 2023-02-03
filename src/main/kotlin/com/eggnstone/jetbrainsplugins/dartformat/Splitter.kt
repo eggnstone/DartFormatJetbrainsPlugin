@@ -4,9 +4,9 @@ class Splitter
 {
     companion object
     {
-        fun splitString(input: String): Array<Part>
+        fun splitString(input: String): ArrayList<Part>
         {
-            var parts = arrayOf<Part>(Part(input, null))
+            var parts = arrayListOf(Part(input, null))
 
             parts = splitParts(parts, '\n');
             parts = splitParts(parts, '(')
@@ -17,9 +17,9 @@ class Splitter
             return parts
         }
 
-        private fun splitParts(inParts: Array<Part>, delimiter: Char): Array<Part>
+        private fun splitParts(inParts: ArrayList<Part>, delimiter: Char): ArrayList<Part>
         {
-            var outParts = arrayOf<Part>()
+            var outParts = arrayListOf<Part>()
 
             for (inPart in inParts)
             {

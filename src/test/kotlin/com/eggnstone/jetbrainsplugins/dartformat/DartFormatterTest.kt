@@ -18,8 +18,30 @@ class DartFormatterTest
     @Test
     fun testRemoveUnnecessaryCommas()
     {
-        val input = "const X x = X(1, 2,);"
-        val expectedOutput = "const X x = X(1, 2);"
+        val input = ",)"
+        val expectedOutput = ")"
+
+        val actualOutput = DartFormatter.format(input)
+
+        assertEquals(expectedOutput, actualOutput)
+    }
+
+    @Test
+    fun testRemoveUnnecessaryCommas2()
+    {
+        val input = ",,)"
+        val expectedOutput = ")"
+
+        val actualOutput = DartFormatter.format(input)
+
+        assertEquals(expectedOutput, actualOutput)
+    }
+
+    @Test
+    fun testRemoveUnnecessaryCommas3()
+    {
+        val input = ",,,)"
+        val expectedOutput = ")"
 
         val actualOutput = DartFormatter.format(input)
 
