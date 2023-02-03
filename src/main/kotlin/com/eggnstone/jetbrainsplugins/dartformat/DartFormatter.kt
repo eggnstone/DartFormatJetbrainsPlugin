@@ -8,30 +8,26 @@ class DartFormatter
         {
             val output = StringBuilder()
 
-            val parts = Splitter.splitString(input)
-            for (i in parts.size - 1 downTo 0)
+            val tokens = Tokenizer.tokenize(input)
+            for (i in tokens.size - 1 downTo 0)
             {
-                val previousPart = if (i > 0) parts[i - 1] else null
-                val currentPart = parts[i]
-                val nextPart = if (i < parts.size - 1) parts[i + 1] else null
+                val previousToken = if (i > 0) tokens[i - 1] else null
+                val currentToken = tokens[i]
+                val nextToken = if (i < tokens.size - 1) tokens[i + 1] else null
 
-                if (nextPart != null)
+                if (nextToken != null)
                 {
-                    if (currentPart.delimiter == ',' && nextPart.text.isEmpty() && nextPart.delimiter == ')')
-                    {
-                        if (currentPart.text.isEmpty())
-                            parts.removeAt(i)
-                        else
-                        {
-                            TODO("no tests yet!")
-                            currentPart.delimiter = null
-                        }
-                    }
+                    if (currentToken == DelimiterToken.COMMA && nextToken == DelimiterToken.CLOSING_BRACKET)
+                        tokens.removeAt(i)
                 }
             }
 
-            for (part in parts)
-                output.append(part.recreate())
+            println("${tokens.size} tokens:")
+            for (token in tokens)
+            {
+                println(token)
+                output.append(token)
+            }
 
             return output.toString()
         }
