@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
 
 class Formatter
 {

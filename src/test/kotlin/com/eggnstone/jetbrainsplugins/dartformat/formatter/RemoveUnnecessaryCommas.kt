@@ -1,13 +1,12 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
-class FormatterTests
+class RemoveUnnecessaryCommas
 {
     @Test
-    fun testRemoveUnnecessaryCommas()
+    fun removeUnnecessaryCommas()
     {
         val input = ",)"
         val expectedOutput = ")"
@@ -18,7 +17,7 @@ class FormatterTests
     }
 
     @Test
-    fun testRemoveUnnecessaryCommas3()
+    fun removeUnnecessaryCommas3()
     {
         val input = ",,,)"
         val expectedOutput = ")"

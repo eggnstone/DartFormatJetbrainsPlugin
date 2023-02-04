@@ -1,24 +1,24 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-class TextToken(private val text: String) : IToken
+class MultiLineToken(private val text: String) : IToken
 {
     override fun recreate(): String
     {
-        return toString()
-    }
-
-    override fun toString(): String
-    {
-        return text
+        return "/*$text*/"
     }
 
     override fun equals(other: Any?): Boolean
     {
-        return other is TextToken && text == other.text
+        return other is MultiLineToken && text == other.text
     }
 
     override fun hashCode(): Int
     {
         return text.hashCode()
+    }
+
+    override fun toString(): String
+    {
+        return text
     }
 }

@@ -10,14 +10,24 @@ class DelimiterToken(val delimiter: String) : IToken
 
     override fun equals(other: Any?): Boolean
     {
-        if (other !is DelimiterToken)
-            return false
+        return other is DelimiterToken && delimiter == other.delimiter
+    }
 
-        return delimiter == other.delimiter
+    override fun recreate(): String
+    {
+        return delimiter
     }
 
     override fun toString(): String
     {
+        if (delimiter == "\n")
+            return "\\n"
+
         return delimiter
+    }
+
+    override fun hashCode(): Int
+    {
+        return delimiter.hashCode()
     }
 }
