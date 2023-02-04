@@ -3,7 +3,7 @@ package com.eggnstone.jetbrainsplugins.dartformat
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
-class DartFormatterTest
+class DartFormatterTests
 {
     @org.junit.jupiter.api.BeforeEach
     fun setUp()
