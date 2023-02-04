@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.plugin
 
+import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -23,7 +24,7 @@ class PluginFormatCurrentFile : AnAction()
 
         ApplicationManager.getApplication().runWriteAction {
             val editor: Editor = e.getRequiredData(CommonDataKeys.EDITOR)
-            editor.document.setText(DartFormatter.format(editor.document.text))
+            editor.document.setText(Formatter.format(editor.document.text))
         }
     }
 

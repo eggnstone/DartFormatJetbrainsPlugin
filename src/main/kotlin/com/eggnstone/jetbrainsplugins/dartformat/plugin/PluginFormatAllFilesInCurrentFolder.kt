@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.plugin
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent

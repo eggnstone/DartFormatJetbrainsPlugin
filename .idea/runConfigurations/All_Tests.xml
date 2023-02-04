@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;com.eggnstone.jetbrainsplugins.dartformat&quot;" />
+          <option value="&quot;com.eggnstone.jetbrainsplugins.dartformat.*&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

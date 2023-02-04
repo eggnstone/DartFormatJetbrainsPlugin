@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
 class DelimiterToken(val delimiter: String) : IToken
 {

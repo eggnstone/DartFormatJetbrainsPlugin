@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test DartFormatter.format" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Test Formatter.format" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;com.eggnstone.jetbrainsplugins.dartformat.DartFormatterTests&quot;" />
+          <option value="&quot;com.eggnstone.jetbrainsplugins.dartformat.FormatterTests&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

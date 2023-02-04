@@ -1,6 +1,9 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-class DartFormatter
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
+
+class Formatter
 {
     companion object
     {

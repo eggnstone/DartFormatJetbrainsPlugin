@@ -1,7 +1,7 @@
 <idea-plugin>
     <actions>
         <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.PluginFormatCurrentFile"
+                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormatCurrentFile"
                 id="com.eggnstone.jetbrainsplugins.dartformat.FormatCurrentFile">
             <keyboard-shortcut
                     first-keystroke="control alt COMMA"
@@ -9,7 +9,7 @@
             <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
         </action>
         <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.PluginFormatAllFilesInCurrentFolder"
+                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormatAllFilesInCurrentFolder"
                 id="com.eggnstone.jetbrainsplugins.dartformat.FormatAllFilesInCurrentFolder">
             <keyboard-shortcut
                     first-keystroke="control alt shift COMMA"

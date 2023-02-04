@@ -1,4 +1,8 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 
 class Tokenizer
 {
