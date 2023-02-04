@@ -12,7 +12,9 @@ class Tokenizer
             for (c in input)
             {
                 if (c in 'a'..'z' || c in 'a'..'z')
+                {
                     currentText += c
+                }
                 else
                 {
                     if (currentText.isNotEmpty())
