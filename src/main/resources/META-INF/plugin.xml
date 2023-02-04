@@ -1,22 +1,30 @@
 <idea-plugin>
     <actions>
         <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.Plugin"
-                id="com.eggnstone.jetbrainsplugins.dartformat.Plugin">
+                class="com.eggnstone.jetbrainsplugins.dartformat.PluginFormatCurrentFile"
+                id="com.eggnstone.jetbrainsplugins.dartformat.FormatCurrentFile">
             <keyboard-shortcut
                     first-keystroke="control alt COMMA"
+                    keymap="$default"/>
+            <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
+        </action>
+        <action
+                class="com.eggnstone.jetbrainsplugins.dartformat.PluginFormatAllFilesInCurrentFolder"
+                id="com.eggnstone.jetbrainsplugins.dartformat.FormatAllFilesInCurrentFolder">
+            <keyboard-shortcut
+                    first-keystroke="control alt shift COMMA"
                     keymap="$default"/>
             <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
         </action>
     </actions>
     <change-notes>
         <![CDATA[
-        <h2>New Features</h2>
+        <b>New Features:</b>
         <ul>
           <li>Feature 1</li>
           <li>Feature 2</li>
         </ul>
-        <h2>Bug Fixes</h2>
+        <b>Bug Fixes:</b>
         <ul>
           <li>Fixed issue 1</li>
           <li>Fixed issue 2</li>
@@ -30,14 +38,18 @@
         <br/>
         Like dartfmt.<br/>
         But better.<br/>
-        Because it's configurable. :)<br/>
+        Because it's configurable :)<br/>
         <br/>
-        <b>TODOs:</b>
+        Press CTRL+ALT + Comma to format the current file.<br/>
+        Press CTRL+ALT+Shift + Comma to format all files in the currently selected folder.<br/>
+        <br/>
+        <b>Planned features:</b>
         <ul>
-            <li>1</li>
-            <li>2</li>
+            <li>Config dialog</li>
+            <li>Cancelable progress dialog when formatting multiple files</li>
         </ul>
-        Please submit feature requests and improvements on <a href="xyz/issues">GitHub</a>.
+        Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
+        Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
         ]]>
     </description>
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>

@@ -25,7 +25,7 @@ class DartFormatter
             println("${tokens.size} tokens:")
             for (token in tokens)
             {
-                println(token)
+                //println(token)
                 output.append(token)
             }
 

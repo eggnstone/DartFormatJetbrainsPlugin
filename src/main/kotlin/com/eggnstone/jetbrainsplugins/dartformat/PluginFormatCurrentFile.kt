@@ -7,13 +7,13 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 
-class Plugin : AnAction()
+class PluginFormatCurrentFile : AnAction()
 {
     private var enabled: Boolean = false
 
     init
     {
-        println("DartFormat.CTOR")
+        //println("DartFormat.CTOR")
     }
 
     override fun actionPerformed(e: AnActionEvent)
