@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-class TextToken(private val text: String) : IToken
+class TextToken(val text: String) : IToken
 {
     override fun recreate(): String
     {

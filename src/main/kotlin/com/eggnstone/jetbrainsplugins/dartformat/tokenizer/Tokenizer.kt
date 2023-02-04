@@ -87,17 +87,42 @@ class Tokenizer
                 if (c in 'a'..'z' || c in 'a'..'z')
                 {
                     currentText += c
+                    continue
                 }
-                else
+
+                // It's a delimiter
+
+                if (currentText.isNotEmpty())
                 {
-                    if (currentText.isNotEmpty())
+                    tokens += TextToken(currentText)
+                    currentText = ""
+                }
+
+                if (tokens.isEmpty())
+                {
+                    tokens += DelimiterToken(c.toString())
+                    continue
+                }
+
+                val lastToken = tokens.last()
+                if (lastToken is DelimiterToken)
+                {
+                    if (lastToken.delimiter == "\r" && c == '\n')
                     {
-                        tokens += TextToken(currentText)
-                        currentText = ""
+                        tokens.removeLast()
+                        tokens += DelimiterToken("\r\n")
+                        continue
                     }
 
-                    tokens += DelimiterToken(c.toString())
+                    if (lastToken.delimiter == "\n" && c == '\r')
+                    {
+                        tokens.removeLast()
+                        tokens += DelimiterToken("\n\r")
+                        continue
+                    }
                 }
+
+                tokens += DelimiterToken(c.toString())
             }
 
             if (currentText.isNotEmpty())
@@ -105,7 +130,10 @@ class Tokenizer
                 if (isInEolComment)
                     tokens += EndOfLineCommentToken(currentText.substring(1))
                 else if (isInMultiLineComment)
+                {
+                    TODO()
                     throw Exception()
+                }
                 else
                     tokens += TextToken(currentText)
             }

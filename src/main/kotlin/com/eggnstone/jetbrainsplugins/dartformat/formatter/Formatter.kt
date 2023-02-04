@@ -2,6 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 
 class Formatter
 {
@@ -11,16 +12,54 @@ class Formatter
         {
             val output = StringBuilder()
 
-            for (i in tokens.size - 1 downTo 0)
+            for (currentIndex in tokens.size - 1 downTo 0)
             {
-                val previousToken = if (i > 0) tokens[i - 1] else null
-                val currentToken = tokens[i]
-                val nextToken = if (i < tokens.size - 1) tokens[i + 1] else null
+                //val previousToken = if (currentIndex > 0) tokens[currentIndex - 1] else null
+                val currentToken = tokens[currentIndex]
 
-                if (nextToken != null)
+                if (currentToken == DelimiterToken.COMMA)
                 {
-                    if (currentToken == DelimiterToken.COMMA && nextToken == DelimiterToken.CLOSING_BRACKET)
-                        tokens.removeAt(i)
+                    //println("currentToken >$currentToken<")
+                    for (nextIndex in currentIndex + 1 until tokens.size)
+                    {
+                        //println("accessing ${tokens.size}")
+                        // Necessary check because we modify the array.
+                        // But Kotlin says that it's not necessary.
+                        /*if (nextIndex >= tokens.size)
+                            break*/
+
+                        //println(">${tokens[nextIndex]}<")
+                        val nextToken = tokens[nextIndex]
+
+                        if (nextToken is DelimiterToken && nextToken.isNewline)
+                            continue
+
+                        if (nextToken == DelimiterToken.CLOSING_BRACKET)
+                        {
+                            //println("Removing ${tokens.size}")
+                            tokens.removeAt(currentIndex)
+                            //println("         ${tokens.size}")
+                            break
+                        }
+
+                        //println("${nextToken::class}")
+
+                        if (nextToken is TextToken)
+                        {
+                            //println(nextToken.text)
+                            if (nextToken.text.trim().isEmpty())
+                                continue
+                        }
+
+                        if (nextToken is DelimiterToken)
+                        {
+                            //println("Delimiter: \"${nextToken.delimiter}\"")
+                            if (nextToken.delimiter == " ")
+                                continue
+                        }
+
+                        break
+                    }
                 }
             }
 
