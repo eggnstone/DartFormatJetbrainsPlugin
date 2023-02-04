@@ -1,17 +1,16 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 
 class Formatter
 {
     companion object
     {
-        fun format(input: String): String
+        fun format(tokens: ArrayList<IToken>): String
         {
             val output = StringBuilder()
 
-            val tokens = Tokenizer.tokenize(input)
             for (i in tokens.size - 1 downTo 0)
             {
                 val previousToken = if (i > 0) tokens[i - 1] else null

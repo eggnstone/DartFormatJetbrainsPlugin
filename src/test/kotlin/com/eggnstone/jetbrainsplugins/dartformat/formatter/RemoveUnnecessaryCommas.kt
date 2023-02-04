@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -12,7 +13,8 @@ class RemoveUnnecessaryCommas
         val input = ",)"
         val expectedOutput = ")"
 
-        val actualOutput = Formatter.format(input)
+        val tokens = Tokenizer.tokenize(input)
+        val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
     }
@@ -23,7 +25,8 @@ class RemoveUnnecessaryCommas
         val input = ",,,)"
         val expectedOutput = ")"
 
-        val actualOutput = Formatter.format(input)
+        val tokens = Tokenizer.tokenize(input)
+        val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
     }
