@@ -25,12 +25,8 @@ class Formatter
                 }
             }
 
-            println("${tokens.size} tokens:")
             for (token in tokens)
-            {
-                //println(token)
-                output.append(token)
-            }
+                output.append(token.recreate())
 
             return output.toString()
         }
