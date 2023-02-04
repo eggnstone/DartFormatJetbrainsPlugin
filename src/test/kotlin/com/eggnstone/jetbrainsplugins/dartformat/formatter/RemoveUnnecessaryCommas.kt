@@ -1,7 +1,8 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
 
 class RemoveUnnecessaryCommas
 {
@@ -13,7 +14,7 @@ class RemoveUnnecessaryCommas
 
         val actualOutput = Formatter.format(input)
 
-        assertEquals(expectedOutput, actualOutput)
+        assertThat(actualOutput, equalTo(expectedOutput))
     }
 
     @Test
@@ -24,6 +25,6 @@ class RemoveUnnecessaryCommas
 
         val actualOutput = Formatter.format(input)
 
-        assertEquals(expectedOutput, actualOutput)
+        assertThat(actualOutput, equalTo(expectedOutput))
     }
 }

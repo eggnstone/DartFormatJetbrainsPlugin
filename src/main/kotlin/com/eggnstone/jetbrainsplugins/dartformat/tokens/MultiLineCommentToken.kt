@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-class MultiLineToken(private val text: String) : IToken
+class MultiLineCommentToken(private val text: String) : IToken
 {
     override fun recreate(): String
     {
@@ -9,7 +9,7 @@ class MultiLineToken(private val text: String) : IToken
 
     override fun equals(other: Any?): Boolean
     {
-        return other is MultiLineToken && text == other.text
+        return other is MultiLineCommentToken && text == other.text
     }
 
     override fun hashCode(): Int

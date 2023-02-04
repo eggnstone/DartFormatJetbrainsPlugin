@@ -1,9 +1,10 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
 import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Ignore
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
 import java.io.File
 
 class FormatterIntegrationTests
@@ -19,6 +20,6 @@ class FormatterIntegrationTests
 
         val actualOutput = Formatter.format(input)
 
-        assertEquals(expectedOutput, actualOutput)
+        assertThat(actualOutput, equalTo(expectedOutput))
     }
 }

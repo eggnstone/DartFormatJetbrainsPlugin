@@ -1,9 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 
 class Tokenizer
 {
@@ -13,7 +10,7 @@ class Tokenizer
         {
             val tokens = arrayListOf<IToken>()
 
-            var isInMultilineComment = false
+            var isInMultiLineComment = false
             var isInEolComment = false
             var currentText = ""
             for ((index, c) in input.withIndex())
@@ -21,15 +18,33 @@ class Tokenizer
                 val previousC = if (index > 0) input[index - 1] else null
                 val nextC = if (index < input.length - 1) input[index + 1] else null
 
-                if (isInMultilineComment)
+                // end of line comment
+
+                if (isInEolComment)
+                {
+                    if (c == '\n')
+                    {
+                        tokens += EndOfLineCommentToken("hä" + currentText.substring(2))
+                        currentText = ""
+                        isInEolComment = false
+                        continue
+                    }
+
+                    currentText += c
+                    continue
+                }
+
+                // multi line comment
+
+                if (isInMultiLineComment)
                 {
                     if (c == '/')
                     {
                         if (previousC == '*')
                         {
-                            tokens += MultiLineToken(currentText.substring(1, currentText.length - 1))
+                            tokens += MultiLineCommentToken(currentText.substring(1, currentText.length - 1))
                             currentText = ""
-                            isInMultilineComment = false
+                            isInMultiLineComment = false
                             continue
                         }
                     }
@@ -38,8 +53,22 @@ class Tokenizer
                     continue
                 }
 
+                // start of end of line / multi line comment
+
                 if (c == '/')
                 {
+                    if (nextC == '/')
+                    {
+                        if (currentText.isNotEmpty())
+                        {
+                            tokens += TextToken(currentText)
+                            currentText = ""
+                        }
+
+                        isInEolComment = true
+                        continue
+                    }
+
                     if (nextC == '*')
                     {
                         if (currentText.isNotEmpty())
@@ -48,10 +77,12 @@ class Tokenizer
                             currentText = ""
                         }
 
-                        isInMultilineComment = true
+                        isInMultiLineComment = true
                         continue
                     }
                 }
+
+                //
 
                 if (c in 'a'..'z' || c in 'a'..'z')
                 {
@@ -70,7 +101,14 @@ class Tokenizer
             }
 
             if (currentText.isNotEmpty())
-                tokens += TextToken(currentText)
+            {
+                if (isInEolComment)
+                    tokens += EndOfLineCommentToken(currentText.substring(1))
+                else if (isInMultiLineComment)
+                    throw Exception()
+                else
+                    tokens += TextToken(currentText)
+            }
 
             return tokens
         }
