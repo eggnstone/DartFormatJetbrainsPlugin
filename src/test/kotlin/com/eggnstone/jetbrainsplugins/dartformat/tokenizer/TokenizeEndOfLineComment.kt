@@ -9,10 +9,48 @@ import org.junit.Test
 class TokenizeEndOfLineComment
 {
     @Test
-    fun endOfLineComment()
+    fun endOfLineCommentAtTextStart()
     {
-        val input = "abc//this is a comment //xyz"
-        val expectedTokens = arrayListOf(TextToken("abc"), EndOfLineCommentToken("this is a comment //xyz"))
+        val input = "//this is a comment //still the same comment\ndef"
+        val expectedTokens = arrayListOf(
+            EndOfLineCommentToken("this is a comment //still the same comment\n"),
+            TextToken("def")
+        )
+
+        val actualTokens = Tokenizer.tokenize(input)
+        assertThat(actualTokens, equalTo(expectedTokens))
+
+        val actualText = Tokenizer.recreate(actualTokens)
+        assertThat(actualText, equalTo(input))
+    }
+
+    @Test
+    fun endOfLineCommentInTextMiddle()
+    {
+        val input = "abc//this is a comment //still the same comment\ndef"
+        val expectedTokens = arrayListOf(
+            TextToken("abc"),
+            EndOfLineCommentToken("this is a comment //still the same comment\n"),
+            TextToken(
+                "def"
+            )
+        )
+
+        val actualTokens = Tokenizer.tokenize(input)
+        assertThat(actualTokens, equalTo(expectedTokens))
+
+        val actualText = Tokenizer.recreate(actualTokens)
+        assertThat(actualText, equalTo(input))
+    }
+
+    @Test
+    fun endOfLineCommentAtTextEnd()
+    {
+        val input = "abc//this is a comment //still the same comment"
+        val expectedTokens = arrayListOf(
+            TextToken("abc"),
+            EndOfLineCommentToken("this is a comment //still the same comment")
+        )
 
         val actualTokens = Tokenizer.tokenize(input)
         assertThat(actualTokens, equalTo(expectedTokens))

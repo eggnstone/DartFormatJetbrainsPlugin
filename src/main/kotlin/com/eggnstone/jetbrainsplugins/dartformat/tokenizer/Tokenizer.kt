@@ -24,7 +24,7 @@ class Tokenizer
                 {
                     if (c == '\n')
                     {
-                        tokens += EndOfLineCommentToken("hä" + currentText.substring(2))
+                        tokens += EndOfLineCommentToken(currentText.substring(1) + '\n')
                         currentText = ""
                         isInEolComment = false
                         continue

@@ -9,10 +9,10 @@ import org.junit.Test
 class TokenizeMultiLineComment
 {
     @Test
-    fun multiLineComment()
+    fun multiLineCommentAtTextStart()
     {
-        val input = "abc/*this is a comment*/xyz"
-        val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"), TextToken("xyz"))
+        val input = "/*this is a comment*/xyz"
+        val expectedTokens = arrayListOf(MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
         val actualTokens = Tokenizer.tokenize(input)
         assertThat(actualTokens, equalTo(expectedTokens))
@@ -22,10 +22,10 @@ class TokenizeMultiLineComment
     }
 
     @Test
-    fun multiLineCommentAtTextStart()
+    fun multiLineCommentInTextMiddle()
     {
-        val input = "/*this is a comment*/xyz"
-        val expectedTokens = arrayListOf(MultiLineCommentToken("this is a comment"), TextToken("xyz"))
+        val input = "abc/*this is a comment*/xyz"
+        val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
         val actualTokens = Tokenizer.tokenize(input)
         assertThat(actualTokens, equalTo(expectedTokens))

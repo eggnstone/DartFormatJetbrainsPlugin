@@ -3,13 +3,12 @@ package com.eggnstone.jetbrainsplugins.dartformat
 import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
 class FormatterIntegrationTests
 {
-    private val TEST_DATA_PATH = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
+    private val TEST_DATA_PATH = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/formatter/data/"
 
     @Ignore("For the future ...")
     @Test
