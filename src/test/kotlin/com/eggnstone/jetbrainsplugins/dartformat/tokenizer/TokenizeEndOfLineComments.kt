@@ -1,7 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat

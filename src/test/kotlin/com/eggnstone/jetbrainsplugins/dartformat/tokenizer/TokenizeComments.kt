@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -24,12 +24,11 @@ class TokenizeComments(private val newline: String, @Suppress("UNUSED_PARAMETER"
     }
 
     @Test
-    fun multiLineCommentAtTextStart()
+    fun multiLineCommentInEndOfLineComment()
     {
-        val inputText = "/*comment*/def"
+        val inputText = "//comment/*still comment*/"
         val expectedTokens = arrayListOf(
-            MultiLineCommentToken("comment"),
-            TextToken("def")
+            EndOfLineCommentToken("comment/*still comment*/")
         )
 
         val tokenizer = Tokenizer()
@@ -42,31 +41,11 @@ class TokenizeComments(private val newline: String, @Suppress("UNUSED_PARAMETER"
     }
 
     @Test
-    fun multiLineCommentAtTextMiddle()
+    fun endOfLineCommentInMultiLineComment()
     {
-        val inputText = "abc/*comment*/def"
+        val inputText = "/*comment //comment*/"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
-            MultiLineCommentToken("comment"),
-            TextToken("def")
-        )
-
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
-
-        assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
-    }
-
-    @Test
-    fun multiLineCommentAtTextEnd()
-    {
-        val inputText = "abc/*comment*/"
-        val expectedTokens = arrayListOf(
-            TextToken("abc"),
-            MultiLineCommentToken("comment")
+            MultiLineCommentToken("comment //comment")
         )
 
         val tokenizer = Tokenizer()
