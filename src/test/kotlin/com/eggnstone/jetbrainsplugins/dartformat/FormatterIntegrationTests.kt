@@ -19,7 +19,7 @@ class FormatterIntegrationTests
         val input = File(TEST_DATA_PATH + "default_flutter_main.input.dart").readText()
         val expectedOutput = File(TEST_DATA_PATH + "default_flutter_main.expected_output.dart").readText()
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
