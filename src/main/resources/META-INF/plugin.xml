@@ -1,18 +1,10 @@
 <idea-plugin>
     <actions>
         <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormatCurrentFile"
-                id="com.eggnstone.jetbrainsplugins.dartformat.FormatCurrentFile">
+                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormat"
+                id="com.eggnstone.jetbrainsplugins.dartformat.Format">
             <keyboard-shortcut
                     first-keystroke="control alt COMMA"
-                    keymap="$default"/>
-            <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
-        </action>
-        <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormatAllFilesInCurrentFolder"
-                id="com.eggnstone.jetbrainsplugins.dartformat.FormatAllFilesInCurrentFolder">
-            <keyboard-shortcut
-                    first-keystroke="control alt shift COMMA"
                     keymap="$default"/>
             <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
         </action>
@@ -40,7 +32,7 @@
         But better.<br/>
         Because it's configurable :)<br/>
         <br/>
-        Press <b>CTRL+ALT+Comma</b> to format the current file.<br/>
+        Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.<br/>
         <br/>
         <b>Planned features:</b>
         <ul>
@@ -51,7 +43,6 @@
         Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
         ]]>
     </description>
-    <!--Press <b>CTRL+ALT+Shift+Comma</b> to format all files in the currently selected folder.<br/>-->
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable
                 displayName="DartFormat"
