@@ -1,8 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 
 class Formatter
 {
@@ -25,10 +23,15 @@ class Formatter
                         //println(">${tokens[nextIndex]}<")
                         val nextToken = tokens[nextIndex]
 
-                        if (nextToken is WhiteSpaceToken)//  && nextToken.isNewLine)
+                        if (nextToken is EndOfLineCommentToken
+                            || nextToken is MultiLineCommentToken
+                            || nextToken is WhiteSpaceToken
+                        )
+                        {
                             continue
+                        }
 
-                        if (nextToken == SpecialToken.CLOSING_BRACKET)
+                        if (nextToken == SpecialToken.CLOSING_BRACKET || nextToken == SpecialToken.CLOSING_ANGLE_BRACKET || nextToken == SpecialToken.CLOSING_SQUARE_BRACKET)
                         {
                             //println("Removing ${tokens.size}")
                             tokens.removeAt(currentIndex)
@@ -36,12 +39,12 @@ class Formatter
                             break
                         }
 
-                        if (nextToken is SpecialToken)
+                        /*if (nextToken is SpecialToken)
                         {
                             //println("Delimiter: \"${nextToken.delimiter}\"")
                             if (nextToken.text == " ")
                                 continue
-                        }
+                        }*/
 
                         break
                     }
