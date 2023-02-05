@@ -103,8 +103,10 @@ class PluginFormat : AnAction()
             println("  Really formatting: $virtualFile")
             ApplicationManager.getApplication().runWriteAction {
                 val inputBytes = virtualFile.inputStream.readAllBytes()
-                val s: String = "//Test\n" + String(inputBytes)
-                val outputBytes = s.toByteArray()
+                val inputText = String(inputBytes)
+                val tokens = Tokenizer().tokenize(inputText)
+                val outputText = Formatter().format(tokens)
+                val outputBytes = outputText.toByteArray()
                 virtualFile.setBinaryContent(outputBytes)
             }
 
