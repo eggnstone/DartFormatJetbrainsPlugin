@@ -13,11 +13,17 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private var removeUnnecessaryCommasCheckbox: JCheckBox? = JCheckBox("Remove unnecessary commas")
 
-    private val configState get() = DartFormatPersistentStateComponent.instance.state
+    private val configState: DartFormatState? get() = DartFormatPersistentStateComponent.instance?.state
 
     override fun apply()
     {
-        configState.removeUnnecessaryCommas = removeUnnecessaryCommasCheckbox!!.isSelected
+        if (configState == null)
+        {
+            println("Error in apply: configState == null")
+            return
+        }
+
+        configState!!.removeUnnecessaryCommas = removeUnnecessaryCommasCheckbox!!.isSelected
     }
 
     override fun createComponent(): JComponent
@@ -37,11 +43,23 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     override fun isModified(): Boolean
     {
-        return configState.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
+        if (configState == null)
+        {
+            println("Error in isModified: configState == null")
+            return false
+        }
+
+        return configState!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
     }
 
     override fun reset()
     {
-        removeUnnecessaryCommasCheckbox!!.isSelected = configState.removeUnnecessaryCommas
+        if (configState == null)
+        {
+            println("Error in reset: configState == null")
+            return
+        }
+
+        removeUnnecessaryCommasCheckbox!!.isSelected = configState!!.removeUnnecessaryCommas
     }
 }

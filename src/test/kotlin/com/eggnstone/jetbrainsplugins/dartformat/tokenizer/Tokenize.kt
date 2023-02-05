@@ -15,7 +15,7 @@ class Tokenize
             EndOfLineCommentToken("end of line comment\n"),
             MultiLineCommentToken("multi line comment"),
             SpecialToken(")"),
-            TextToken2("a"),
+            TextToken("a"),
             WhiteSpaceToken(" ")
         )
 

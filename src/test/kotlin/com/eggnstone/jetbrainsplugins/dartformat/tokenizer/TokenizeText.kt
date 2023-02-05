@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken2
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -11,7 +11,7 @@ class TokenizeText
     fun text()
     {
         val inputText = "sometextwithoutwhitespace"
-        val expectedTokens = arrayListOf(TextToken2(inputText))
+        val expectedTokens = arrayListOf(TextToken(inputText))
 
         val tokenizer = Tokenizer()
         val textTokenizer = TextTokenizer()

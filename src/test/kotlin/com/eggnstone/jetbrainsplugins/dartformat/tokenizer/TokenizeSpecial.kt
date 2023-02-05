@@ -19,7 +19,7 @@ class TokenizeSpecial
             UnknownToken("c"),
             SpecialToken.SEMICOLON,
             UnknownToken("d"),
-            SpecialToken.OPENING_BRACKET,
+            SpecialToken.OPENING_ROUND_BRACKET,
             UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
             UnknownToken("f"),
@@ -29,7 +29,7 @@ class TokenizeSpecial
             UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
             UnknownToken("i"),
-            SpecialToken.CLOSING_BRACKET,
+            SpecialToken.CLOSING_ROUND_BRACKET,
             UnknownToken("j")
         )
 
@@ -54,7 +54,7 @@ class TokenizeSpecial
             UnknownToken("c"),
             SpecialToken.SEMICOLON,
             UnknownToken("d"),
-            SpecialToken.OPENING_BRACKET,
+            SpecialToken.OPENING_ROUND_BRACKET,
             UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
             UnknownToken("f"),
@@ -64,7 +64,7 @@ class TokenizeSpecial
             UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
             UnknownToken("i"),
-            SpecialToken.CLOSING_BRACKET,
+            SpecialToken.CLOSING_ROUND_BRACKET,
             UnknownToken("j")
         )
 
@@ -89,7 +89,7 @@ class TokenizeSpecial
             UnknownToken("c"),
             SpecialToken.SEMICOLON,
             UnknownToken("d"),
-            SpecialToken.OPENING_BRACKET,
+            SpecialToken.OPENING_ROUND_BRACKET,
             UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
             UnknownToken("f"),
@@ -99,25 +99,7 @@ class TokenizeSpecial
             UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
             UnknownToken("i"),
-            SpecialToken.CLOSING_BRACKET
-        )
-
-        val tokenizer = Tokenizer()
-        val specialTokenizer = SpecialTokenizer()
-        val actualTokens = specialTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
-
-        assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
-    }
-
-    @Test
-    fun specialCharAtTextStart222222222()
-    {
-        val inputText = "(a "
-        val expectedTokens = arrayListOf(
-            SpecialToken.OPENING_BRACKET,
-            UnknownToken("a ")
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
 
         val tokenizer = Tokenizer()

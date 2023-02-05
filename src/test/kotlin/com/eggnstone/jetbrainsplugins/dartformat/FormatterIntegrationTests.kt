@@ -15,12 +15,12 @@ class FormatterIntegrationTests
     @Test
     fun testDefaultFlutterMainDart()
     {
-        val input = File(TEST_DATA_PATH + "default_flutter_main.input.dart").readText()
-        val expectedOutput = File(TEST_DATA_PATH + "default_flutter_main.expected_output.dart").readText()
+        val inputText = File(TEST_DATA_PATH + "default_flutter_main.input.dart").readText()
+        val expectedOutputText = File(TEST_DATA_PATH + "default_flutter_main.expected_output.dart").readText()
 
-        val tokens = Tokenizer().tokenize(input)
-        val actualOutput = Formatter.format(tokens)
+        val inputTokens = Tokenizer().tokenize(inputText)
+        val actualOutputText = Formatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputText, equalTo(expectedOutputText))
     }
 }

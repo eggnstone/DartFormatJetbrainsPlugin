@@ -26,7 +26,7 @@ class PluginFormatCurrentFile : AnAction()
         ApplicationManager.getApplication().runWriteAction {
             val editor: Editor = e.getRequiredData(CommonDataKeys.EDITOR)
             val tokens = Tokenizer().tokenize(editor.document.text)
-            val formattedText = Formatter.format(tokens)
+            val formattedText = Formatter().format(tokens)
             editor.document.setText(formattedText)
         }
     }

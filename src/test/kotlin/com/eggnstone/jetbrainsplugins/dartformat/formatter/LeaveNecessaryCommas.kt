@@ -1,6 +1,8 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -10,48 +12,55 @@ class LeaveNecessaryCommas
     @Test
     fun leaveNecessaryCommaWithText()
     {
-        val input = ",x"
-        val expectedOutput = ",x"
+        val inputTokens = arrayListOf(
+            SpecialToken(","),
+            TextToken("x")
+        )
 
-        val tokens = Tokenizer().tokenize(input)
-        val actualOutput = Formatter.format(tokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(inputTokens))
     }
 
     @Test
     fun leaveNecessaryCommaWithSpaceAndText()
     {
-        val input = ", x"
-        val expectedOutput = ", x"
+        val inputTokens = arrayListOf(
+            SpecialToken(","),
+            WhiteSpaceToken(" "),
+            TextToken("x")
+        )
 
-        val tokens = Tokenizer().tokenize(input)
-        val actualOutput = Formatter.format(tokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(inputTokens))
     }
 
     @Test
     fun leaveNecessaryCommaWithNewLineAndText()
     {
-        val input = ",\nx"
-        val expectedOutput = ",\nx"
+        val inputTokens = arrayListOf(
+            SpecialToken(","),
+            WhiteSpaceToken("\n"),
+            TextToken("x")
+        )
 
-        val tokens = Tokenizer().tokenize(input)
-        val actualOutput = Formatter.format(tokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(inputTokens))
     }
 
     @Test
     fun leaveNecessaryCommaWithTextAndBracket()
     {
-        val input = ",x)"
-        val expectedOutput = ",x)"
+        val inputTokens = arrayListOf(
+            SpecialToken(","),
+            TextToken("x"),
+            SpecialToken(")")
+        )
 
-        val tokens = Tokenizer().tokenize(input)
-        val actualOutput = Formatter.format(tokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(inputTokens))
     }
 }

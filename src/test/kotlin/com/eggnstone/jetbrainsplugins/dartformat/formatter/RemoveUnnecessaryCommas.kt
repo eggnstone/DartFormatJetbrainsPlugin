@@ -16,17 +16,22 @@ class RemoveUnnecessaryCommas
         //val input = ",),},]"
         val inputTokens = arrayListOf<IToken>(
             SpecialToken.COMMA,
-            SpecialToken.CLOSING_BRACKET,
+            SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.COMMA,
             SpecialToken.CLOSING_ANGLE_BRACKET,
             SpecialToken.COMMA,
             SpecialToken.CLOSING_SQUARE_BRACKET
         )
-        val expectedOutput = ")}]"
+        //val expectedOutput = ")}]"
+        val expectedOutputTokens = arrayListOf<IToken>(
+            SpecialToken.CLOSING_ROUND_BRACKET,
+            SpecialToken.CLOSING_ANGLE_BRACKET,
+            SpecialToken.CLOSING_SQUARE_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -36,13 +41,17 @@ class RemoveUnnecessaryCommas
         val inputTokens = arrayListOf(
             SpecialToken.COMMA,
             EndOfLineCommentToken("end of line comment\\n"),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "//end of line comment\\n)"
+        //val expectedOutput = "//end of line comment\\n)"
+        val expectedOutputTokens = arrayListOf(
+            EndOfLineCommentToken("end of line comment\\n"),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -52,13 +61,17 @@ class RemoveUnnecessaryCommas
         val inputTokens = arrayListOf(
             SpecialToken.COMMA,
             MultiLineCommentToken("multi line comment"),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "/*multi line comment*/)"
+        //val expectedOutput = "/*multi line comment*/)"
+        val expectedOutputTokens = arrayListOf(
+            MultiLineCommentToken("multi line comment"),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -69,13 +82,18 @@ class RemoveUnnecessaryCommas
             SpecialToken.COMMA,
             EndOfLineCommentToken("end of line comment\\n"),
             MultiLineCommentToken("multi line comment"),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "//end of line comment\\n/*multi line comment*/)"
+        //val expectedOutput = "//end of line comment\\n/*multi line comment*/)"
+        val expectedOutputTokens = arrayListOf(
+            EndOfLineCommentToken("end of line comment\\n"),
+            MultiLineCommentToken("multi line comment"),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -86,13 +104,18 @@ class RemoveUnnecessaryCommas
             SpecialToken.COMMA,
             MultiLineCommentToken("multi line comment"),
             EndOfLineCommentToken("end of line comment\\n"),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "/*multi line comment*///end of line comment\\n)"
+        //val expectedOutput = "/*multi line comment*///end of line comment\\n)"
+        val expectedOutputTokens = arrayListOf<IToken>(
+            MultiLineCommentToken("multi line comment"),
+            EndOfLineCommentToken("end of line comment\\n"),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -103,13 +126,16 @@ class RemoveUnnecessaryCommas
             SpecialToken.COMMA,
             SpecialToken.COMMA,
             SpecialToken.COMMA,
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = ")"
+        //val expectedOutput = ")"
+        val expectedOutputTokens = arrayListOf<IToken>(
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -118,14 +144,18 @@ class RemoveUnnecessaryCommas
         //val input = ",),)"
         val inputTokens = arrayListOf<IToken>(
             SpecialToken.COMMA,
-            SpecialToken.CLOSING_BRACKET,
+            SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.COMMA,
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "))"
+        //val expectedOutput = "))"
+        val expectedOutputTokens = arrayListOf<IToken>(
+            SpecialToken.CLOSING_ROUND_BRACKET,
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 }

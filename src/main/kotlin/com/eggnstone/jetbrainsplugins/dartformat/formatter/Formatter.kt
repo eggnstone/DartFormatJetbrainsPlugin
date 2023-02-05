@@ -1,60 +1,30 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 
 class Formatter
 {
-    companion object
+    fun format(inputTokens: ArrayList<IToken>): String
     {
-        fun format(tokens: ArrayList<IToken>): String
-        {
-            val output = StringBuilder()
+        val output = StringBuilder()
 
-            for (currentIndex in tokens.size - 1 downTo 0)
-            {
-                //val previousToken = if (currentIndex > 0) tokens[currentIndex - 1] else null
-                val currentToken = tokens[currentIndex]
+        var outputTokens = inputTokens
 
-                if (currentToken == SpecialToken.COMMA)
-                {
-                    //println("currentToken >$currentToken<")
-                    for (nextIndex in currentIndex + 1 until tokens.size)
-                    {
-                        //println(">${tokens[nextIndex]}<")
-                        val nextToken = tokens[nextIndex]
+        if (getRemoveUnnecessaryCommas())
+            outputTokens = RemoveUnnecessaryCommasFormatter().format(outputTokens)
 
-                        if (nextToken is EndOfLineCommentToken
-                            || nextToken is MultiLineCommentToken
-                            || nextToken is WhiteSpaceToken
-                        )
-                        {
-                            continue
-                        }
+        for (outputToken in outputTokens)
+            output.append(outputToken.recreate())
 
-                        if (nextToken == SpecialToken.CLOSING_BRACKET || nextToken == SpecialToken.CLOSING_ANGLE_BRACKET || nextToken == SpecialToken.CLOSING_SQUARE_BRACKET)
-                        {
-                            //println("Removing ${tokens.size}")
-                            tokens.removeAt(currentIndex)
-                            //println("         ${tokens.size}")
-                            break
-                        }
+        return output.toString()
+    }
 
-                        /*if (nextToken is SpecialToken)
-                        {
-                            //println("Delimiter: \"${nextToken.delimiter}\"")
-                            if (nextToken.text == " ")
-                                continue
-                        }*/
+    private fun getRemoveUnnecessaryCommas(): Boolean
+    {
+        if (DartFormatPersistentStateComponent.instance == null)
+            return true
 
-                        break
-                    }
-                }
-            }
-
-            for (token in tokens)
-                output.append(token.recreate())
-
-            return output.toString()
-        }
+        return DartFormatPersistentStateComponent.instance!!.state.removeUnnecessaryCommas
     }
 }

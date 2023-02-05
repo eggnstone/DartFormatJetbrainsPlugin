@@ -30,13 +30,17 @@ class RemoveUnnecessaryCommasParametrized(private val newLine: String, @Suppress
         val inputTokens = arrayListOf(
             SpecialToken.COMMA,
             WhiteSpaceToken(newLine),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "$newLine)"
+        //val expectedOutput = "$newLine)"
+        val expectedOutputTokens = arrayListOf(
+            WhiteSpaceToken(newLine),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
@@ -46,12 +50,16 @@ class RemoveUnnecessaryCommasParametrized(private val newLine: String, @Suppress
         val inputTokens = arrayListOf(
             SpecialToken.COMMA,
             WhiteSpaceToken("$newLine "),
-            SpecialToken.CLOSING_BRACKET
+            SpecialToken.CLOSING_ROUND_BRACKET
         )
-        val expectedOutput = "$newLine )"
+        //val expectedOutput = "$newLine )"
+        val expectedOutputTokens = arrayListOf(
+            WhiteSpaceToken("$newLine "),
+            SpecialToken.CLOSING_ROUND_BRACKET
+        )
 
-        val actualOutput = Formatter.format(inputTokens)
+        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
 
-        assertThat(actualOutput, equalTo(expectedOutput))
+        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 }
