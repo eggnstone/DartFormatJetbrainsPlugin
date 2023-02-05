@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeComments(private val newline: String, @Suppress("UNUSED_PARAMETER") newlineName: String)
+class TokenizeMultiLineComments(private val newline: String, @Suppress("UNUSED_PARAMETER") newlineName: String)
 {
     companion object
     {

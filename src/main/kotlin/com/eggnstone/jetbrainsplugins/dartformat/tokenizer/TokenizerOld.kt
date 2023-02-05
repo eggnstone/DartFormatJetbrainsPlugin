@@ -1,3 +1,4 @@
+/*
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
@@ -184,3 +185,4 @@ class TokenizerOld
 
     private fun isWhiteSpace(currentChar: Char): Boolean = "\n\r\t ".contains(currentChar)
 }
+*/
