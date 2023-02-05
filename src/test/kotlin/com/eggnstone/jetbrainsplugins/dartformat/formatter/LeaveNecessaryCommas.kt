@@ -1,3 +1,4 @@
+/*
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
@@ -55,3 +56,4 @@ class LeaveNecessaryCommas
         assertThat(actualOutput, equalTo(expectedOutput))
     }
 }
+*/

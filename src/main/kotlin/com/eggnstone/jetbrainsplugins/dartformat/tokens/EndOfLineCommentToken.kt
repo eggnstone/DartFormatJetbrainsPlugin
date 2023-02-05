@@ -1,5 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.TokenizerTools
+
 class EndOfLineCommentToken(private val text: String) : IToken
 {
     override fun equals(other: Any?): Boolean = other is EndOfLineCommentToken && text == other.text
@@ -8,5 +10,5 @@ class EndOfLineCommentToken(private val text: String) : IToken
 
     override fun recreate(): String = "//$text"
 
-    override fun toString(): String = text.replace("\n", "\\n").replace("\r", "\\r")
+    override fun toString(): String = "EndOfLineComment(${TokenizerTools.toDisplayString(text)})"
 }

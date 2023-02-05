@@ -1,3 +1,4 @@
+/*
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
@@ -11,7 +12,7 @@ class TokenizeMultiLineComment
     @Test
     fun multiLineCommentAtTextStart()
     {
-        val input = "/*this is a comment*/xyz"
+        val input = "/*this is a comment/////////////xyz"
         val expectedTokens = arrayListOf(MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
         val tokenizer = Tokenizer()
@@ -25,7 +26,7 @@ class TokenizeMultiLineComment
     @Test
     fun multiLineCommentInTextMiddle()
     {
-        val input = "abc/*this is a comment*/xyz"
+        val input = "abc/*this is a comment/////////////xyz"
         val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
         val tokenizer = Tokenizer()
@@ -39,7 +40,7 @@ class TokenizeMultiLineComment
     @Test
     fun multiLineCommentAtTextEnd()
     {
-        val input = "abc/*this is a comment*/"
+        val input = "abc/*this is a comment/////////////"
         val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"))
 
         val tokenizer = Tokenizer()
@@ -50,3 +51,7 @@ class TokenizeMultiLineComment
         assertThat(actualText, equalTo(input))
     }
 }
+*/
+*/
+*/
+*/

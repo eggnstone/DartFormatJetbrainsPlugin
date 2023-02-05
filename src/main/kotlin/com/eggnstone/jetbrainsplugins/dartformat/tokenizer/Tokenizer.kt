@@ -1,172 +1,12 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+
+typealias TokenizeHandler = (String) -> ArrayList<IToken>
 
 class Tokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
-    {
-        val tokens = arrayListOf<IToken>()
-
-        var isInEolComment = false
-        var isInMultiLineComment = false
-        var isInWhiteSpace = false
-        var isInText = true
-        var currentText = ""
-        for ((index, currentChar) in input.withIndex())
-        {
-            val previousChar = if (index > 0) input[index - 1] else null
-            val nextChar = if (index < input.length - 1) input[index + 1] else null
-
-            if (isInEolComment)
-            {
-                currentText += currentChar
-
-                if (currentChar == '\n' && nextChar == '\r')
-                    continue
-
-                if (currentChar == '\r' && nextChar == '\n')
-                    continue
-
-                if (currentChar == '\n' || nextChar == '\r')
-                {
-                    tokens += EndOfLineCommentToken(currentText.substring(1))
-                    currentText = ""
-                    isInEolComment = false
-                }
-
-                continue
-            }
-
-            if (isInMultiLineComment)
-            {
-                currentText += currentChar
-
-                if (previousChar == '*' && currentChar == '/')
-                {
-                    tokens += MultiLineCommentToken(currentText.substring(1, currentText.length - 2))
-                    currentText = ""
-                    isInMultiLineComment = false
-                }
-
-                continue
-            }
-
-            if (isInWhiteSpace)
-            {
-                if (isWhiteSpace(currentChar))
-                {
-                    currentText += currentChar
-                    continue
-                }
-
-                if (currentText.isNotEmpty())
-                {
-                    tokens += WhiteSpaceToken(currentText)
-                    currentText = ""
-                }
-
-                isInWhiteSpace = false
-            }
-
-            // start of end of line / multi line comment
-            if (currentChar == '/')
-            {
-                if (nextChar == '/')
-                {
-                    if (isInText)
-                    {
-                        if (currentText.isNotEmpty())
-                        {
-                            tokens += TextToken(currentText)
-                            currentText = ""
-                        }
-                    }
-                    else
-                        throw Exception("Unhandled type.")
-
-                    isInText = false
-                    isInEolComment = true
-                    continue
-                }
-
-                if (nextChar == '*')
-                {
-                    if (isInText)
-                    {
-                        if (currentText.isNotEmpty())
-                        {
-                            tokens += TextToken(currentText)
-                            currentText = ""
-                        }
-                    }
-                    else
-                        throw Exception("Unhandled type.")
-
-                    isInText = false
-                    isInMultiLineComment = true
-                    continue
-                }
-            }
-
-            if (isText(currentChar))
-            {
-                currentText += currentChar
-                isInText = true
-                continue
-            }
-
-            // Must be a delimiter
-
-            if (currentText.isNotEmpty())
-            {
-                tokens += TextToken(currentText)
-                currentText = ""
-            }
-
-            if (tokens.isEmpty())
-            {
-                tokens += DelimiterToken(currentChar.toString())
-                continue
-            }
-
-            val lastToken = tokens.last()
-            if (lastToken is WhiteSpaceToken)
-            {
-                if (lastToken.delimiter == "\r" && currentChar == '\n')
-                {
-                    tokens.removeLast()
-                    tokens += WhiteSpaceToken("\r\n")
-                    continue
-                }
-
-                if (lastToken.delimiter == "\n" && currentChar == '\r')
-                {
-                    tokens.removeLast()
-                    tokens += WhiteSpaceToken("\n\r")
-                    continue
-                }
-            }
-
-            tokens += WhiteSpaceToken(currentChar.toString())
-        }
-
-        if (currentText.isNotEmpty())
-        {
-            if (isInEolComment)
-                tokens += EndOfLineCommentToken(currentText.substring(1))
-            else if (isInMultiLineComment)
-            {
-                TODO()
-                throw Exception()
-            }
-            else
-                tokens += TextToken(currentText)
-        }
-
-        return tokens
-    }
-
     fun recreate(tokens: ArrayList<IToken>): String
     {
         val sb = StringBuilder()
@@ -177,10 +17,28 @@ class Tokenizer
         return sb.toString()
     }
 
-    private fun isText(currentChar: Char): Boolean = "_".contains(currentChar)
-            || currentChar in 'a'..'z'
-            || currentChar in 'A'..'Z'
-            || currentChar in '0'..'9'
+    fun tokenize(input: String): ArrayList<IToken>
+    {
+        var tokens = arrayListOf<IToken>(UnknownToken(input))
 
-    private fun isWhiteSpace(currentChar: Char): Boolean = "\n\r\t ".contains(currentChar)
+        val commentTokenizer = CommentTokenizer()
+        tokens = execute(commentTokenizer::tokenize, tokens)
+
+        return tokens
+    }
+
+    private fun execute(f: TokenizeHandler, inputTokens: ArrayList<IToken>): ArrayList<IToken>
+    {
+        val outputTokens = arrayListOf<IToken>()
+
+        for (inputToken in inputTokens)
+        {
+            if (inputToken is UnknownToken)
+                outputTokens += f(inputToken.text)
+            else
+                outputTokens += inputToken
+        }
+
+        return outputTokens
+    }
 }

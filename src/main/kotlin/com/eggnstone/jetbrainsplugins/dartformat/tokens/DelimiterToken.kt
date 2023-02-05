@@ -1,6 +1,8 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-class DelimiterToken(val delimiter: String) : IToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.TokenizerTools
+
+class DelimiterToken(val text: String) : IToken
 {
     companion object
     {
@@ -8,11 +10,11 @@ class DelimiterToken(val delimiter: String) : IToken
         val COMMA = DelimiterToken(",")
     }
 
-    override fun equals(other: Any?): Boolean = other is DelimiterToken && delimiter == other.delimiter
+    override fun equals(other: Any?): Boolean = other is DelimiterToken && text == other.text
 
-    override fun hashCode(): Int = delimiter.hashCode()
+    override fun hashCode(): Int = text.hashCode()
 
-    override fun recreate(): String = delimiter
+    override fun recreate(): String = text
 
-    override fun toString(): String = delimiter
+    override fun toString(): String = "Delimiter(${TokenizerTools.toDisplayString(text)})"
 }

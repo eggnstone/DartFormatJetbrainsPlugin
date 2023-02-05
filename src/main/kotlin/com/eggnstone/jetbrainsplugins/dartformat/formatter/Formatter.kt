@@ -55,7 +55,7 @@ class Formatter
                         if (nextToken is DelimiterToken)
                         {
                             //println("Delimiter: \"${nextToken.delimiter}\"")
-                            if (nextToken.delimiter == " ")
+                            if (nextToken.text == " ")
                                 continue
                         }
 
