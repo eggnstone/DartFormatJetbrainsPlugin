@@ -88,7 +88,7 @@ class CommentTokenizer
             if (isInEolComment)
                 outputTokens += EndOfLineCommentToken(currentText.substring(1))
             else if (isInMultiLineComment)
-                throw Exception("Unhandled")
+                outputTokens += MultiLineCommentToken(currentText.substring(1, currentText.length), isClosed = false)
             else
                 outputTokens += TextToken(currentText)
         }

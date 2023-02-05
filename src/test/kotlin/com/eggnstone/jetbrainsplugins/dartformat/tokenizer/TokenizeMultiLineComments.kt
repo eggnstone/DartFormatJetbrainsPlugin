@@ -77,4 +77,40 @@ class TokenizeMultiLineComments(private val newLine: String, @Suppress("UNUSED_P
         assertThat(actualTokens, equalTo(expectedTokens))
         assertThat(actualText, equalTo(inputText))
     }
+
+    @Test
+    fun unclosedMultiLineCommentAtTextEnd1Missing()
+    {
+        val inputText = "abc/*comment*"
+        val expectedTokens = arrayListOf(
+            TextToken("abc"),
+            MultiLineCommentToken("comment*", isClosed = false)
+        )
+
+        val tokenizer = Tokenizer()
+        val commentTokenizer = CommentTokenizer()
+        val actualTokens = commentTokenizer.tokenize(inputText)
+        val actualText = tokenizer.recreate(actualTokens)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+        assertThat(actualText, equalTo(inputText))
+    }
+
+    @Test
+    fun unclosedMultiLineCommentAtTextEnd2Missing()
+    {
+        val inputText = "abc/*comment"
+        val expectedTokens = arrayListOf(
+            TextToken("abc"),
+            MultiLineCommentToken("comment", isClosed = false)
+        )
+
+        val tokenizer = Tokenizer()
+        val commentTokenizer = CommentTokenizer()
+        val actualTokens = commentTokenizer.tokenize(inputText)
+        val actualText = tokenizer.recreate(actualTokens)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+        assertThat(actualText, equalTo(inputText))
+    }
 }
