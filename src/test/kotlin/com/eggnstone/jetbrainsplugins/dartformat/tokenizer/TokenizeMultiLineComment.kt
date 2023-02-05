@@ -14,10 +14,11 @@ class TokenizeMultiLineComment
         val input = "/*this is a comment*/xyz"
         val expectedTokens = arrayListOf(MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
-        val actualTokens = Tokenizer.tokenize(input)
-        assertThat(actualTokens, equalTo(expectedTokens))
+        val tokenizer = Tokenizer()
+        val actualTokens = tokenizer.tokenize(input)
+        val actualText = tokenizer.recreate(actualTokens)
 
-        val actualText = Tokenizer.recreate(actualTokens)
+        assertThat(actualTokens, equalTo(expectedTokens))
         assertThat(actualText, equalTo(input))
     }
 
@@ -27,10 +28,11 @@ class TokenizeMultiLineComment
         val input = "abc/*this is a comment*/xyz"
         val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"), TextToken("xyz"))
 
-        val actualTokens = Tokenizer.tokenize(input)
-        assertThat(actualTokens, equalTo(expectedTokens))
+        val tokenizer = Tokenizer()
+        val actualTokens = tokenizer.tokenize(input)
+        val actualText = tokenizer.recreate(actualTokens)
 
-        val actualText = Tokenizer.recreate(actualTokens)
+        assertThat(actualTokens, equalTo(expectedTokens))
         assertThat(actualText, equalTo(input))
     }
 
@@ -40,10 +42,11 @@ class TokenizeMultiLineComment
         val input = "abc/*this is a comment*/"
         val expectedTokens = arrayListOf(TextToken("abc"), MultiLineCommentToken("this is a comment"))
 
-        val actualTokens = Tokenizer.tokenize(input)
-        assertThat(actualTokens, equalTo(expectedTokens))
+        val tokenizer = Tokenizer()
+        val actualTokens = tokenizer.tokenize(input)
+        val actualText = tokenizer.recreate(actualTokens)
 
-        val actualText = Tokenizer.recreate(actualTokens)
+        assertThat(actualTokens, equalTo(expectedTokens))
         assertThat(actualText, equalTo(input))
     }
 }

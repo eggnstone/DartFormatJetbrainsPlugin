@@ -13,7 +13,7 @@ class LeaveNecessaryCommas
         val input = ",x"
         val expectedOutput = ",x"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -25,7 +25,7 @@ class LeaveNecessaryCommas
         val input = ", x"
         val expectedOutput = ", x"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -37,7 +37,7 @@ class LeaveNecessaryCommas
         val input = ",\nx"
         val expectedOutput = ",\nx"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -49,7 +49,7 @@ class LeaveNecessaryCommas
         val input = ",x)"
         val expectedOutput = ",x)"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))

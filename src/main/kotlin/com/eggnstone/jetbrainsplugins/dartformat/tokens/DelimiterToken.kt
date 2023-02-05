@@ -8,37 +8,11 @@ class DelimiterToken(val delimiter: String) : IToken
         val COMMA = DelimiterToken(",")
     }
 
-    val isNewline: Boolean = delimiter == "\n" || delimiter == "\n\r" || delimiter == "\r" || delimiter == "\r\n"
+    override fun equals(other: Any?): Boolean = other is DelimiterToken && delimiter == other.delimiter
 
-    override fun equals(other: Any?): Boolean
-    {
-        return other is DelimiterToken && delimiter == other.delimiter
-    }
+    override fun hashCode(): Int = delimiter.hashCode()
 
-    override fun recreate(): String
-    {
-        return delimiter
-    }
+    override fun recreate(): String = delimiter
 
-    override fun toString(): String
-    {
-        if (delimiter == "\n")
-            return "\\n"
-
-        if (delimiter == "\n\r")
-            return "\\n\\r"
-
-        if (delimiter == "\r")
-            return "\\r"
-
-        if (delimiter == "\r\n")
-            return "\\r\\n"
-
-        return delimiter
-    }
-
-    override fun hashCode(): Int
-    {
-        return delimiter.hashCode()
-    }
+    override fun toString(): String = delimiter
 }

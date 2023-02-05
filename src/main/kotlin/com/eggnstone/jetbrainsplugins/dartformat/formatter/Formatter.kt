@@ -3,6 +3,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.formatter
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
 class Formatter
 {
@@ -31,7 +32,7 @@ class Formatter
                         //println(">${tokens[nextIndex]}<")
                         val nextToken = tokens[nextIndex]
 
-                        if (nextToken is DelimiterToken && nextToken.isNewline)
+                        if (nextToken is WhiteSpaceToken)//  && nextToken.isNewline)
                             continue
 
                         if (nextToken == DelimiterToken.CLOSING_BRACKET)

@@ -2,23 +2,11 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
 class TextToken(val text: String) : IToken
 {
-    override fun recreate(): String
-    {
-        return toString()
-    }
+    override fun equals(other: Any?): Boolean = other is TextToken && text == other.text
 
-    override fun toString(): String
-    {
-        return text
-    }
+    override fun hashCode(): Int = text.hashCode()
 
-    override fun equals(other: Any?): Boolean
-    {
-        return other is TextToken && text == other.text
-    }
+    override fun recreate(): String = toString()
 
-    override fun hashCode(): Int
-    {
-        return text.hashCode()
-    }
+    override fun toString(): String = text
 }

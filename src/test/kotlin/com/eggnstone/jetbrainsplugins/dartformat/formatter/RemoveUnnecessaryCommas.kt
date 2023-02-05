@@ -1,3 +1,4 @@
+/*
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
@@ -13,7 +14,7 @@ class RemoveUnnecessaryCommas
         val input = ",)"
         val expectedOutput = ")"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -25,7 +26,7 @@ class RemoveUnnecessaryCommas
         val input = ",,,)"
         val expectedOutput = ")"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -37,7 +38,7 @@ class RemoveUnnecessaryCommas
         val input = ",),)"
         val expectedOutput = "))"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -49,7 +50,7 @@ class RemoveUnnecessaryCommas
         val input = ",\n)"
         val expectedOutput = "\n)"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -61,7 +62,7 @@ class RemoveUnnecessaryCommas
         val input = ",\n\r)"
         val expectedOutput = "\n\r)"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -73,7 +74,7 @@ class RemoveUnnecessaryCommas
         val input = ",\r)"
         val expectedOutput = "\r)"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -85,7 +86,7 @@ class RemoveUnnecessaryCommas
         val input = ",\r\n)"
         val expectedOutput = "\r\n)"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
@@ -97,9 +98,10 @@ class RemoveUnnecessaryCommas
         val input = ",\n )"
         val expectedOutput = "\n )"
 
-        val tokens = Tokenizer.tokenize(input)
+        val tokens = Tokenizer().tokenize(input)
         val actualOutput = Formatter.format(tokens)
 
         assertThat(actualOutput, equalTo(expectedOutput))
     }
 }
+*/

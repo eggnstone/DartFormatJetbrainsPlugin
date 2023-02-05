@@ -4,151 +4,183 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 
 class Tokenizer
 {
-    companion object
+    fun tokenize(input: String): ArrayList<IToken>
     {
-        fun tokenize(input: String): ArrayList<IToken>
+        val tokens = arrayListOf<IToken>()
+
+        var isInEolComment = false
+        var isInMultiLineComment = false
+        var isInWhiteSpace = false
+        var isInText = true
+        var currentText = ""
+        for ((index, currentChar) in input.withIndex())
         {
-            val tokens = arrayListOf<IToken>()
+            val previousChar = if (index > 0) input[index - 1] else null
+            val nextChar = if (index < input.length - 1) input[index + 1] else null
 
-            var isInMultiLineComment = false
-            var isInEolComment = false
-            var currentText = ""
-            for ((index, c) in input.withIndex())
+            if (isInEolComment)
             {
-                val previousC = if (index > 0) input[index - 1] else null
-                val nextC = if (index < input.length - 1) input[index + 1] else null
+                currentText += currentChar
 
-                // end of line comment
+                if (currentChar == '\n' && nextChar == '\r')
+                    continue
 
-                if (isInEolComment)
+                if (currentChar == '\r' && nextChar == '\n')
+                    continue
+
+                if (currentChar == '\n' || nextChar == '\r')
                 {
-                    if (c == '\n')
-                    {
-                        tokens += EndOfLineCommentToken(currentText.substring(1) + '\n')
-                        currentText = ""
-                        isInEolComment = false
-                        continue
-                    }
+                    tokens += EndOfLineCommentToken(currentText.substring(1))
+                    currentText = ""
+                    isInEolComment = false
+                }
 
-                    currentText += c
+                continue
+            }
+
+            if (isInMultiLineComment)
+            {
+                currentText += currentChar
+
+                if (previousChar == '*' && currentChar == '/')
+                {
+                    tokens += MultiLineCommentToken(currentText.substring(1, currentText.length - 2))
+                    currentText = ""
+                    isInMultiLineComment = false
+                }
+
+                continue
+            }
+
+            if (isInWhiteSpace)
+            {
+                if (isWhiteSpace(currentChar))
+                {
+                    currentText += currentChar
                     continue
                 }
-
-                // multi line comment
-
-                if (isInMultiLineComment)
-                {
-                    if (c == '/')
-                    {
-                        if (previousC == '*')
-                        {
-                            tokens += MultiLineCommentToken(currentText.substring(1, currentText.length - 1))
-                            currentText = ""
-                            isInMultiLineComment = false
-                            continue
-                        }
-                    }
-
-                    currentText += c
-                    continue
-                }
-
-                // start of end of line / multi line comment
-
-                if (c == '/')
-                {
-                    if (nextC == '/')
-                    {
-                        if (currentText.isNotEmpty())
-                        {
-                            tokens += TextToken(currentText)
-                            currentText = ""
-                        }
-
-                        isInEolComment = true
-                        continue
-                    }
-
-                    if (nextC == '*')
-                    {
-                        if (currentText.isNotEmpty())
-                        {
-                            tokens += TextToken(currentText)
-                            currentText = ""
-                        }
-
-                        isInMultiLineComment = true
-                        continue
-                    }
-                }
-
-                //
-
-                if (c in 'a'..'z' || c in 'a'..'z')
-                {
-                    currentText += c
-                    continue
-                }
-
-                // It's a delimiter
 
                 if (currentText.isNotEmpty())
                 {
-                    tokens += TextToken(currentText)
+                    tokens += WhiteSpaceToken(currentText)
                     currentText = ""
                 }
 
-                if (tokens.isEmpty())
+                isInWhiteSpace = false
+            }
+
+            // start of end of line / multi line comment
+            if (currentChar == '/')
+            {
+                if (nextChar == '/')
                 {
-                    tokens += DelimiterToken(c.toString())
+                    if (isInText)
+                    {
+                        if (currentText.isNotEmpty())
+                        {
+                            tokens += TextToken(currentText)
+                            currentText = ""
+                        }
+                    }
+                    else
+                        throw Exception("Unhandled type.")
+
+                    isInText = false
+                    isInEolComment = true
                     continue
                 }
 
-                val lastToken = tokens.last()
-                if (lastToken is DelimiterToken)
+                if (nextChar == '*')
                 {
-                    if (lastToken.delimiter == "\r" && c == '\n')
+                    if (isInText)
                     {
-                        tokens.removeLast()
-                        tokens += DelimiterToken("\r\n")
-                        continue
+                        if (currentText.isNotEmpty())
+                        {
+                            tokens += TextToken(currentText)
+                            currentText = ""
+                        }
                     }
+                    else
+                        throw Exception("Unhandled type.")
 
-                    if (lastToken.delimiter == "\n" && c == '\r')
-                    {
-                        tokens.removeLast()
-                        tokens += DelimiterToken("\n\r")
-                        continue
-                    }
+                    isInText = false
+                    isInMultiLineComment = true
+                    continue
                 }
-
-                tokens += DelimiterToken(c.toString())
             }
+
+            if (isText(currentChar))
+            {
+                currentText += currentChar
+                isInText = true
+                continue
+            }
+
+            // Must be a delimiter
 
             if (currentText.isNotEmpty())
             {
-                if (isInEolComment)
-                    tokens += EndOfLineCommentToken(currentText.substring(1))
-                else if (isInMultiLineComment)
-                {
-                    TODO()
-                    throw Exception()
-                }
-                else
-                    tokens += TextToken(currentText)
+                tokens += TextToken(currentText)
+                currentText = ""
             }
 
-            return tokens
+            if (tokens.isEmpty())
+            {
+                tokens += DelimiterToken(currentChar.toString())
+                continue
+            }
+
+            val lastToken = tokens.last()
+            if (lastToken is WhiteSpaceToken)
+            {
+                if (lastToken.delimiter == "\r" && currentChar == '\n')
+                {
+                    tokens.removeLast()
+                    tokens += WhiteSpaceToken("\r\n")
+                    continue
+                }
+
+                if (lastToken.delimiter == "\n" && currentChar == '\r')
+                {
+                    tokens.removeLast()
+                    tokens += WhiteSpaceToken("\n\r")
+                    continue
+                }
+            }
+
+            tokens += WhiteSpaceToken(currentChar.toString())
         }
 
-        fun recreate(tokens: ArrayList<IToken>): String
+        if (currentText.isNotEmpty())
         {
-            val sb = StringBuilder()
-
-            for (token in tokens)
-                sb.append(token.recreate())
-
-            return sb.toString()
+            if (isInEolComment)
+                tokens += EndOfLineCommentToken(currentText.substring(1))
+            else if (isInMultiLineComment)
+            {
+                TODO()
+                throw Exception()
+            }
+            else
+                tokens += TextToken(currentText)
         }
+
+        return tokens
     }
+
+    fun recreate(tokens: ArrayList<IToken>): String
+    {
+        val sb = StringBuilder()
+
+        for (token in tokens)
+            sb.append(token.recreate())
+
+        return sb.toString()
+    }
+
+    private fun isText(currentChar: Char): Boolean = "_".contains(currentChar)
+            || currentChar in 'a'..'z'
+            || currentChar in 'A'..'Z'
+            || currentChar in '0'..'9'
+
+    private fun isWhiteSpace(currentChar: Char): Boolean = "\n\r\t ".contains(currentChar)
 }
