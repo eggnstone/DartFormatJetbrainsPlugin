@@ -10,57 +10,46 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ContentIterator
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 
+typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
+
 class PluginFormat : AnAction()
 {
+    private class FormatIterator(private val format: FormatHandler, private val project: Project) : ContentIterator
+    {
+        override fun processFile(virtualFile: VirtualFile): Boolean
+        {
+            println("FormatIterator.processFile: $virtualFile")
+            return format(virtualFile, project)
+        }
+    }
+
     override fun actionPerformed(e: AnActionEvent)
     {
+        println("PluginFormat.actionPerformed: $e")
+
         try
         {
             val project = e.getRequiredData(CommonDataKeys.PROJECT)
+            val formatIterator = FormatIterator(this::formatDartFile, project)
+
             val virtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
             println("${virtualFiles.size} virtual files:")
             for (virtualFile in virtualFiles)
-                formatVirtualFile(virtualFile, project)
+            {
+                // TODO: filter out already visited files!
+                println("\n  $virtualFile")
+                VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
+            }
         }
         catch (err: AssertionError)
         {
             println("While formatting: $e:")
             println("$err")
         }
-    }
-
-    private fun formatVirtualFile(virtualFile: VirtualFile, project: Project)
-    {
-        println("formatVirtualFile: $virtualFile")
-
-        if (virtualFile.isDirectory)
-        {
-            formatDirectory(virtualFile)
-            return
-        }
-
-        if (virtualFile.extension == "dart")
-        {
-            formatDartFile(virtualFile, project)
-            return
-        }
-    }
-
-    private fun formatDirectory(virtualFile: VirtualFile)
-    {
-        println("formatDirectory: $virtualFile")
-
-        VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, this::contentIterator)
-    }
-
-    private fun contentIterator(virtualFile: VirtualFile): Boolean
-    {
-        println("contentIterator: $virtualFile")
-
-        return false
     }
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean
@@ -72,26 +61,34 @@ class PluginFormat : AnAction()
         return virtualFile.isDirectory || virtualFile.extension == "dart"
     }
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project)
+    private fun formatDartFile(virtualFile: VirtualFile, project: Project): Boolean
     {
         println("formatDartFile: $virtualFile")
+
+        if (virtualFile.extension != "dart")
+        {
+            println("  Not a dart file!")
+            return true
+        }
 
         try
         {
             val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
+            @Suppress("FoldInitializerAndIfToElvis")
             if (fileEditor == null)
-                formatDartFileByBinaryContent(virtualFile)
-            else
-                formatDartFileByFileEditor(fileEditor)
+                return formatDartFileByBinaryContent(virtualFile)
+
+            return formatDartFileByFileEditor(fileEditor)
         }
         catch (err: AssertionError)
         {
             println("While formatting: $virtualFile:")
             println("$err")
+            return false
         }
     }
 
-    private fun formatDartFileByBinaryContent(virtualFile: VirtualFile)
+    private fun formatDartFileByBinaryContent(virtualFile: VirtualFile): Boolean
     {
         println("formatDartFileByBinaryContent: $virtualFile")
 
@@ -100,7 +97,7 @@ class PluginFormat : AnAction()
             if (!virtualFile.isWritable)
             {
                 println("  !virtualFile.isWritable")
-                return
+                return false
             }
 
             println("  Really formatting: $virtualFile")
@@ -110,39 +107,45 @@ class PluginFormat : AnAction()
                 val outputBytes = s.toByteArray()
                 virtualFile.setBinaryContent(outputBytes)
             }
+
+            return true
         }
         catch (err: AssertionError)
         {
             println("While formatting: $virtualFile:")
             println("$err")
+            return false
         }
     }
 
-    private fun formatDartFileByFileEditor(fileEditor: FileEditor)
+    private fun formatDartFileByFileEditor(fileEditor: FileEditor): Boolean
     {
         println("formatDartFileByFileEditor: $fileEditor")
 
         if (fileEditor !is TextEditor)
         {
             println("  fileEditor !is TextEditor")
-            return
+            return false
         }
 
         val editor = fileEditor.editor
 
         try
         {
-            println("  Really formatting: $fileEditor")
+            println("  Really formatting: $editor")
             ApplicationManager.getApplication().runWriteAction {
                 val tokens = Tokenizer().tokenize(editor.document.text)
                 val formattedText = Formatter().format(tokens)
                 editor.document.setText(formattedText)
             }
+
+            return true
         }
         catch (err: AssertionError)
         {
             println("While formatting: $fileEditor:")
             println("$err")
+            return false
         }
     }
 }

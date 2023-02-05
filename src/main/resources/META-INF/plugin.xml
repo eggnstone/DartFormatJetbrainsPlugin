@@ -9,20 +9,14 @@
             <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
         </action>
     </actions>
-    <!--<change-notes>
+    <change-notes>
         <![CDATA[
-        <b>New Features:</b>
+        <b>Version 1.1.0</b>
         <ul>
-          <li>Feature 1</li>
-          <li>Feature 2</li>
-        </ul>
-        <b>Bug Fixes:</b>
-        <ul>
-          <li>Fixed issue 1</li>
-          <li>Fixed issue 2</li>
+          <li>Now works on currently selected folders and files, too.</li>
         </ul>
         ]]>
-    </change-notes>-->
+    </change-notes>
     <depends>com.intellij.modules.platform</depends>
     <description>
         <![CDATA[
