@@ -10,5 +10,5 @@ class MultiLineCommentToken(private val text: String, val isClosed: Boolean = tr
 
     override fun recreate(): String = if (isClosed) "/*$text*/" else "/*$text"
 
-    override fun toString(): String = "MultiLineComment(${TokenizerTools.toDisplayString(text)}${if (isClosed) ", isClosed=false" else ""})"
+    override fun toString(): String = "MultiLineComment(${TokenizerTools.toDisplayString(text)}${if (isClosed) "" else ", isClosed=false"})"
 }

@@ -43,6 +43,8 @@ class WhiteSpaceTokenizer
             currentText += currentChar
         }
 
+        println("currentText: $currentText")
+
         if (currentText.isNotEmpty())
         {
             if (isInInWhiteSpace)

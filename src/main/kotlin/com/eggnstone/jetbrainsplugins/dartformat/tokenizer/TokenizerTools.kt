@@ -4,10 +4,10 @@ class TokenizerTools
 {
     companion object
     {
-        fun isText(currentChar: Char): Boolean = "_".contains(currentChar)
+        /*fun isText(currentChar: Char): Boolean = "_".contains(currentChar)
                 || currentChar in 'a'..'z'
                 || currentChar in 'A'..'Z'
-                || currentChar in '0'..'9'
+                || currentChar in '0'..'9'*/
 
         fun isWhiteSpace(currentChar: Char): Boolean = "\n\r\t ".contains(currentChar)
 

@@ -1,20 +1,35 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-class TokenizeComments
+@RunWith(value = Parameterized::class)
+class TokenizeEndOfLineCommentsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
+    companion object
+    {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{1}")
+        fun data() = arrayOf(
+            arrayOf("\n", "\\n"),
+            arrayOf("\n\r", "\\n\\r"),
+            arrayOf("\r", "\\r"),
+            arrayOf("\r\n", "\\r\\n")
+        )
+    }
 
     @Test
-    fun multiLineCommentInEndOfLineComment()
+    fun multiLineCommentAtTextStart()
     {
-        val inputText = "//comment/*still comment*/"
+        val inputText = "//comment${newLine}def"
         val expectedTokens = arrayListOf(
-            EndOfLineCommentToken("comment/*still comment*/")
+            EndOfLineCommentToken("comment$newLine"),
+            TextToken("def")
         )
 
         val tokenizer = Tokenizer()
@@ -27,11 +42,13 @@ class TokenizeComments
     }
 
     @Test
-    fun endOfLineCommentInMultiLineComment()
+    fun multiLineCommentAtTextMiddle()
     {
-        val inputText = "/*comment //comment*/"
+        val inputText = "abc//comment${newLine}def"
         val expectedTokens = arrayListOf(
-            MultiLineCommentToken("comment //comment")
+            TextToken("abc"),
+            EndOfLineCommentToken("comment$newLine"),
+            TextToken("def")
         )
 
         val tokenizer = Tokenizer()
