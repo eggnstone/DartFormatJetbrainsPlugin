@@ -8,7 +8,6 @@ import org.junit.Test
 
 class TokenizeComments
 {
-
     @Test
     fun multiLineCommentInEndOfLineComment()
     {

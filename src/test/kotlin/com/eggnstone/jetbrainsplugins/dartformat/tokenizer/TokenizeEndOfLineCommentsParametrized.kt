@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -29,7 +29,7 @@ class TokenizeEndOfLineCommentsParametrized(private val newLine: String, @Suppre
         val inputText = "//comment${newLine}def"
         val expectedTokens = arrayListOf(
             EndOfLineCommentToken("comment$newLine"),
-            TextToken("def")
+            UnknownToken("def")
         )
 
         val tokenizer = Tokenizer()
@@ -46,9 +46,9 @@ class TokenizeEndOfLineCommentsParametrized(private val newLine: String, @Suppre
     {
         val inputText = "abc//comment${newLine}def"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
+            UnknownToken("abc"),
             EndOfLineCommentToken("comment$newLine"),
-            TextToken("def")
+            UnknownToken("def")
         )
 
         val tokenizer = Tokenizer()

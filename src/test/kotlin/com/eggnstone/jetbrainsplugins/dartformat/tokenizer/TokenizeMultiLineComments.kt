@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -14,7 +14,7 @@ class TokenizeMultiLineComments
         val inputText = "/*comment*/def"
         val expectedTokens = arrayListOf(
             MultiLineCommentToken("comment"),
-            TextToken("def")
+            UnknownToken("def")
         )
 
         val tokenizer = Tokenizer()
@@ -31,9 +31,9 @@ class TokenizeMultiLineComments
     {
         val inputText = "abc/*comment*/def"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
+            UnknownToken("abc"),
             MultiLineCommentToken("comment"),
-            TextToken("def")
+            UnknownToken("def")
         )
 
         val tokenizer = Tokenizer()
@@ -50,7 +50,7 @@ class TokenizeMultiLineComments
     {
         val inputText = "abc/*comment*/"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
+            UnknownToken("abc"),
             MultiLineCommentToken("comment")
         )
 
@@ -68,7 +68,7 @@ class TokenizeMultiLineComments
     {
         val inputText = "abc/*comment*"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
+            UnknownToken("abc"),
             MultiLineCommentToken("comment*", isClosed = false)
         )
 
@@ -86,7 +86,7 @@ class TokenizeMultiLineComments
     {
         val inputText = "abc/*comment"
         val expectedTokens = arrayListOf(
-            TextToken("abc"),
+            UnknownToken("abc"),
             MultiLineCommentToken("comment", isClosed = false)
         )
 

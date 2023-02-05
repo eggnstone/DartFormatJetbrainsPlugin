@@ -1,25 +1,26 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class TokenizeEndOfLineComments
+class Tokenize
 {
     @Test
-    fun multiLineCommentAtTextEnd()
+    fun combination()
     {
-        val inputText = "abc//comment"
+        val inputText = "//end of line comment\n/*multi line comment*/)a "
         val expectedTokens = arrayListOf(
-            UnknownToken("abc"),
-            EndOfLineCommentToken("comment")
+            EndOfLineCommentToken("end of line comment\n"),
+            MultiLineCommentToken("multi line comment"),
+            SpecialToken(")"),
+            TextToken2("a"),
+            WhiteSpaceToken(" ")
         )
 
         val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
+        val actualTokens = tokenizer.tokenize(inputText)
         val actualText = tokenizer.recreate(actualTokens)
 
         assertThat(actualTokens, equalTo(expectedTokens))

@@ -2,7 +2,6 @@ package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
 class Formatter
@@ -23,12 +22,6 @@ class Formatter
                     //println("currentToken >$currentToken<")
                     for (nextIndex in currentIndex + 1 until tokens.size)
                     {
-                        //println("accessing ${tokens.size}")
-                        // Necessary check because we modify the array.
-                        // But Kotlin says that it's not necessary.
-                        /*if (nextIndex >= tokens.size)
-                            break*/
-
                         //println(">${tokens[nextIndex]}<")
                         val nextToken = tokens[nextIndex]
 
@@ -41,15 +34,6 @@ class Formatter
                             tokens.removeAt(currentIndex)
                             //println("         ${tokens.size}")
                             break
-                        }
-
-                        //println("${nextToken::class}")
-
-                        if (nextToken is TextToken)
-                        {
-                            //println(nextToken.text)
-                            if (nextToken.text.trim().isEmpty())
-                                continue
                         }
 
                         if (nextToken is SpecialToken)

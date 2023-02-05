@@ -24,6 +24,7 @@ class Tokenizer
         tokens = execute(CommentTokenizer()::tokenize, tokens)
         tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
         tokens = execute(SpecialTokenizer()::tokenize, tokens)
+        tokens = execute(TextTokenizer()::tokenize, tokens)
 
         return tokens
     }

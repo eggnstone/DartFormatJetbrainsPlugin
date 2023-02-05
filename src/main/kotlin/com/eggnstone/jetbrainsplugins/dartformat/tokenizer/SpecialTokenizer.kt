@@ -2,7 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class SpecialTokenizer
 {
@@ -17,7 +17,7 @@ class SpecialTokenizer
             {
                 if (currentText.isNotEmpty())
                 {
-                    outputTokens += TextToken(currentText)
+                    outputTokens += UnknownToken(currentText)
                     currentText = ""
                 }
 
@@ -29,7 +29,7 @@ class SpecialTokenizer
         }
 
         if (currentText.isNotEmpty())
-            outputTokens += TextToken(currentText)
+            outputTokens += UnknownToken(currentText)
 
         return outputTokens
     }

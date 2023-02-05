@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -28,9 +28,9 @@ class TokenizeWhiteSpaceParametrized(private val newLine: String, @Suppress("UNU
     {
         val inputText = "a${newLine}b"
         val expectedTokens = arrayListOf(
-            TextToken("a"),
+            UnknownToken("a"),
             WhiteSpaceToken(newLine),
-            TextToken("b")
+            UnknownToken("b")
         )
 
         val tokenizer = Tokenizer()

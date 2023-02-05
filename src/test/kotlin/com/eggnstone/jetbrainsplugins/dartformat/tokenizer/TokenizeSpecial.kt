@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -14,23 +14,23 @@ class TokenizeSpecial
         val inputText = ":b,c;d(e{f[g]h}i)j"
         val expectedTokens = arrayListOf(
             SpecialToken.COLON,
-            TextToken("b"),
+            UnknownToken("b"),
             SpecialToken.COMMA,
-            TextToken("c"),
+            UnknownToken("c"),
             SpecialToken.SEMICOLON,
-            TextToken("d"),
+            UnknownToken("d"),
             SpecialToken.OPENING_BRACKET,
-            TextToken("e"),
+            UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
-            TextToken("f"),
+            UnknownToken("f"),
             SpecialToken.OPENING_SQUARE_BRACKET,
-            TextToken("g"),
+            UnknownToken("g"),
             SpecialToken.CLOSING_SQUARE_BRACKET,
-            TextToken("h"),
+            UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
-            TextToken("i"),
+            UnknownToken("i"),
             SpecialToken.CLOSING_BRACKET,
-            TextToken("j")
+            UnknownToken("j")
         )
 
         val tokenizer = Tokenizer()
@@ -47,25 +47,25 @@ class TokenizeSpecial
     {
         val inputText = "a:b,c;d(e{f[g]h}i)j"
         val expectedTokens = arrayListOf(
-            TextToken("a"),
+            UnknownToken("a"),
             SpecialToken.COLON,
-            TextToken("b"),
+            UnknownToken("b"),
             SpecialToken.COMMA,
-            TextToken("c"),
+            UnknownToken("c"),
             SpecialToken.SEMICOLON,
-            TextToken("d"),
+            UnknownToken("d"),
             SpecialToken.OPENING_BRACKET,
-            TextToken("e"),
+            UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
-            TextToken("f"),
+            UnknownToken("f"),
             SpecialToken.OPENING_SQUARE_BRACKET,
-            TextToken("g"),
+            UnknownToken("g"),
             SpecialToken.CLOSING_SQUARE_BRACKET,
-            TextToken("h"),
+            UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
-            TextToken("i"),
+            UnknownToken("i"),
             SpecialToken.CLOSING_BRACKET,
-            TextToken("j")
+            UnknownToken("j")
         )
 
         val tokenizer = Tokenizer()
@@ -82,24 +82,42 @@ class TokenizeSpecial
     {
         val inputText = "a:b,c;d(e{f[g]h}i)"
         val expectedTokens = arrayListOf(
-            TextToken("a"),
+            UnknownToken("a"),
             SpecialToken.COLON,
-            TextToken("b"),
+            UnknownToken("b"),
             SpecialToken.COMMA,
-            TextToken("c"),
+            UnknownToken("c"),
             SpecialToken.SEMICOLON,
-            TextToken("d"),
+            UnknownToken("d"),
             SpecialToken.OPENING_BRACKET,
-            TextToken("e"),
+            UnknownToken("e"),
             SpecialToken.OPENING_ANGLE_BRACKET,
-            TextToken("f"),
+            UnknownToken("f"),
             SpecialToken.OPENING_SQUARE_BRACKET,
-            TextToken("g"),
+            UnknownToken("g"),
             SpecialToken.CLOSING_SQUARE_BRACKET,
-            TextToken("h"),
+            UnknownToken("h"),
             SpecialToken.CLOSING_ANGLE_BRACKET,
-            TextToken("i"),
+            UnknownToken("i"),
             SpecialToken.CLOSING_BRACKET
+        )
+
+        val tokenizer = Tokenizer()
+        val specialTokenizer = SpecialTokenizer()
+        val actualTokens = specialTokenizer.tokenize(inputText)
+        val actualText = tokenizer.recreate(actualTokens)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+        assertThat(actualText, equalTo(inputText))
+    }
+
+    @Test
+    fun specialCharAtTextStart222222222()
+    {
+        val inputText = "(a "
+        val expectedTokens = arrayListOf(
+            SpecialToken.OPENING_BRACKET,
+            UnknownToken("a ")
         )
 
         val tokenizer = Tokenizer()

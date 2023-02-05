@@ -3,7 +3,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class CommentTokenizer
 {
@@ -59,7 +59,7 @@ class CommentTokenizer
                 {
                     if (currentText.isNotEmpty())
                     {
-                        outputTokens += TextToken(currentText)
+                        outputTokens += UnknownToken(currentText)
                         currentText = ""
                     }
 
@@ -71,7 +71,7 @@ class CommentTokenizer
                 {
                     if (currentText.isNotEmpty())
                     {
-                        outputTokens += TextToken(currentText)
+                        outputTokens += UnknownToken(currentText)
                         currentText = ""
                     }
 
@@ -90,7 +90,7 @@ class CommentTokenizer
             else if (isInMultiLineComment)
                 outputTokens += MultiLineCommentToken(currentText.substring(1, currentText.length), isClosed = false)
             else
-                outputTokens += TextToken(currentText)
+                outputTokens += UnknownToken(currentText)
         }
 
         return outputTokens

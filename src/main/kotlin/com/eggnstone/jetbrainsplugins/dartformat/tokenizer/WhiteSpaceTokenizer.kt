@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
 class WhiteSpaceTokenizer
@@ -33,7 +33,7 @@ class WhiteSpaceTokenizer
             if (TokenizerTools.isWhiteSpace(currentChar))
             {
                 if (currentText.isNotEmpty())
-                    outputTokens += TextToken(currentText)
+                    outputTokens += UnknownToken(currentText)
 
                 currentText = currentChar.toString()
                 isInInWhiteSpace = true
@@ -50,7 +50,7 @@ class WhiteSpaceTokenizer
             if (isInInWhiteSpace)
                 outputTokens += WhiteSpaceToken(currentText)
             else
-                outputTokens += TextToken(currentText)
+                outputTokens += UnknownToken(currentText)
         }
 
         return outputTokens
