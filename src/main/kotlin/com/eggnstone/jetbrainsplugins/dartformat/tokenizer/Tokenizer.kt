@@ -21,8 +21,9 @@ class Tokenizer
     {
         var tokens = arrayListOf<IToken>(UnknownToken(input))
 
-        val commentTokenizer = CommentTokenizer()
-        tokens = execute(commentTokenizer::tokenize, tokens)
+        tokens = execute(CommentTokenizer()::tokenize, tokens)
+        tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
+        tokens = execute(SpecialTokenizer()::tokenize, tokens)
 
         return tokens
     }

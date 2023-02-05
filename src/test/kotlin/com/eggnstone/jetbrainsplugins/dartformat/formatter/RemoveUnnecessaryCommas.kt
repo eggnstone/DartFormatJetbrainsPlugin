@@ -45,7 +45,7 @@ class RemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommasWithNewlineN()
+    fun removeUnnecessaryCommasWithNewLineN()
     {
         val input = ",\n)"
         val expectedOutput = "\n)"
@@ -57,7 +57,7 @@ class RemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommasWithNewlineNR()
+    fun removeUnnecessaryCommasWithNewLineNR()
     {
         val input = ",\n\r)"
         val expectedOutput = "\n\r)"
@@ -69,7 +69,7 @@ class RemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommasWithNewlineR()
+    fun removeUnnecessaryCommasWithNewLineR()
     {
         val input = ",\r)"
         val expectedOutput = "\r)"
@@ -81,7 +81,7 @@ class RemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommasWithNewlineRN()
+    fun removeUnnecessaryCommasWithNewLineRN()
     {
         val input = ",\r\n)"
         val expectedOutput = "\r\n)"
@@ -93,7 +93,7 @@ class RemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommasWithNewlineAndSpace()
+    fun removeUnnecessaryCommasWithNewLineAndSpace()
     {
         val input = ",\n )"
         val expectedOutput = "\n )"

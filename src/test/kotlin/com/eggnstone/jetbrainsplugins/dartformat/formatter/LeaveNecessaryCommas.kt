@@ -33,7 +33,7 @@ class LeaveNecessaryCommas
     }
 
     @Test
-    fun leaveNecessaryCommaWithNewlineAndText()
+    fun leaveNecessaryCommaWithNewLineAndText()
     {
         val input = ",\nx"
         val expectedOutput = ",\nx"

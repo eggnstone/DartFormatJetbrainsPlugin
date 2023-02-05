@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeEndOfLineComments(private val newline: String, @Suppress("UNUSED_PARAMETER") newlineName: String)
+class TokenizeEndOfLineComments(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {
@@ -26,9 +26,9 @@ class TokenizeEndOfLineComments(private val newline: String, @Suppress("UNUSED_P
     @Test
     fun multiLineCommentAtTextStart()
     {
-        val inputText = "//comment${newline}def"
+        val inputText = "//comment${newLine}def"
         val expectedTokens = arrayListOf(
-            EndOfLineCommentToken("comment$newline"),
+            EndOfLineCommentToken("comment$newLine"),
             TextToken("def")
         )
 
@@ -44,10 +44,10 @@ class TokenizeEndOfLineComments(private val newline: String, @Suppress("UNUSED_P
     @Test
     fun multiLineCommentAtTextMiddle()
     {
-        val inputText = "abc//comment${newline}def"
+        val inputText = "abc//comment${newLine}def"
         val expectedTokens = arrayListOf(
             TextToken("abc"),
-            EndOfLineCommentToken("comment$newline"),
+            EndOfLineCommentToken("comment$newLine"),
             TextToken("def")
         )
 

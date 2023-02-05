@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.DelimiterToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
@@ -18,7 +18,7 @@ class Formatter
                 //val previousToken = if (currentIndex > 0) tokens[currentIndex - 1] else null
                 val currentToken = tokens[currentIndex]
 
-                if (currentToken == DelimiterToken.COMMA)
+                if (currentToken == SpecialToken.COMMA)
                 {
                     //println("currentToken >$currentToken<")
                     for (nextIndex in currentIndex + 1 until tokens.size)
@@ -32,10 +32,10 @@ class Formatter
                         //println(">${tokens[nextIndex]}<")
                         val nextToken = tokens[nextIndex]
 
-                        if (nextToken is WhiteSpaceToken)//  && nextToken.isNewline)
+                        if (nextToken is WhiteSpaceToken)//  && nextToken.isNewLine)
                             continue
 
-                        if (nextToken == DelimiterToken.CLOSING_BRACKET)
+                        if (nextToken == SpecialToken.CLOSING_BRACKET)
                         {
                             //println("Removing ${tokens.size}")
                             tokens.removeAt(currentIndex)
@@ -52,7 +52,7 @@ class Formatter
                                 continue
                         }
 
-                        if (nextToken is DelimiterToken)
+                        if (nextToken is SpecialToken)
                         {
                             //println("Delimiter: \"${nextToken.delimiter}\"")
                             if (nextToken.text == " ")

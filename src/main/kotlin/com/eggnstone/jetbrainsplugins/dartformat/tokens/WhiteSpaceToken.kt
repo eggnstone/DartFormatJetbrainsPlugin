@@ -4,7 +4,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.TokenizerTools
 
 class WhiteSpaceToken(val text: String) : IToken
 {
-    //val isNewline: Boolean = delimiter == "\n" || delimiter == "\n\r" || delimiter == "\r" || delimiter == "\r\n"
+    //val isNewLine: Boolean = delimiter == "\n" || delimiter == "\n\r" || delimiter == "\r" || delimiter == "\r\n"
 
     override fun equals(other: Any?): Boolean = other is WhiteSpaceToken && text == other.text
 

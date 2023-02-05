@@ -1,4 +1,3 @@
-/*
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
@@ -10,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeWhiteSpace(private val newline: String, @Suppress("UNUSED_PARAMETER") newlineName: String)
+class TokenizeWhiteSpace(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {
@@ -25,17 +24,21 @@ class TokenizeWhiteSpace(private val newline: String, @Suppress("UNUSED_PARAMETE
     }
 
     @Test
-    fun newline()
+    fun newLine()
     {
-        val input = "a${newline}b"
-        val expectedTokens = arrayListOf(TextToken("a"), WhiteSpaceToken(newline), TextToken("b"))
+        val inputText = "a${newLine}b"
+        val expectedTokens = arrayListOf(
+            TextToken("a"),
+            WhiteSpaceToken(newLine),
+            TextToken("b")
+        )
 
         val tokenizer = Tokenizer()
-        val actualTokens = tokenizer.tokenize(input)
+        val whiteSpaceTokenizer = WhiteSpaceTokenizer()
+        val actualTokens = whiteSpaceTokenizer.tokenize(inputText)
         val actualText = tokenizer.recreate(actualTokens)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(input))
+        assertThat(actualText, equalTo(inputText))
     }
 }
-*/
