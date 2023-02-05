@@ -17,7 +17,7 @@
             <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
         </action>
     </actions>
-    <change-notes>
+    <!--<change-notes>
         <![CDATA[
         <b>New Features:</b>
         <ul>
@@ -30,7 +30,7 @@
           <li>Fixed issue 2</li>
         </ul>
         ]]>
-    </change-notes>
+    </change-notes>-->
     <depends>com.intellij.modules.platform</depends>
     <description>
         <![CDATA[
@@ -40,19 +40,32 @@
         But better.<br/>
         Because it's configurable :)<br/>
         <br/>
-        Press CTRL+ALT + Comma to format the current file.<br/>
-        Press CTRL+ALT+Shift + Comma to format all files in the currently selected folder.<br/>
+        Press <b>CTRL+ALT+Comma</b> to format the current file.<br/>
         <br/>
         <b>Planned features:</b>
         <ul>
-            <li>Config dialog</li>
-            <li>Cancelable progress dialog when formatting multiple files</li>
+            <li>Put braces on new line</li>
+            <li>Indentation</li>
         </ul>
         Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
         ]]>
     </description>
+    <!--Press <b>CTRL+ALT+Shift+Comma</b> to format all files in the currently selected folder.<br/>-->
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                displayName="DartFormat"
+                id="com.eggnstone.jetbrainsplugins.dartformat.DartFormatSettings"
+                instance="com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateConfigurable">
+        </applicationConfigurable>
+        <applicationService
+                serviceImplementation="com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent"/>
+    </extensions>
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>
     <name>DartFormat</name>
-    <vendor email="support@eggnstone.com" url="https://www.eggnstone.com">egg 'n stone</vendor>
+    <vendor
+            email="DartFormat@eggnstone.com"
+            url="https://www.eggnstone.com">
+        egg 'n stone
+    </vendor>
 </idea-plugin>
