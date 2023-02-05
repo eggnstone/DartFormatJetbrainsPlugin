@@ -11,6 +11,10 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 1.1.1</b>
+        <ul>
+          <li>Excluding *.freezed.dart and *.g.dart now.</li>
+        </ul>
         <b>Version 1.1.0</b>
         <ul>
           <li>Now works on currently selected folders and files, too.</li>

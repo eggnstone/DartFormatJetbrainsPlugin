@@ -58,14 +58,28 @@ class PluginFormat : AnAction()
         println("filterDartFiles: ${virtualFile.isDirectory}")
         println("filterDartFiles: ${virtualFile.extension}")
 
-        return virtualFile.isDirectory || virtualFile.extension == "dart"
+        return virtualFile.isDirectory || isDartFile(virtualFile)
+    }
+
+    private fun isDartFile(virtualFile: VirtualFile): Boolean
+    {
+        if (virtualFile.extension != "dart")
+            return false
+
+        if (virtualFile.name.endsWith(".freezed.dart"))
+            return false
+
+        if (virtualFile.name.endsWith(".g.dart"))
+            return false
+
+        return true
     }
 
     private fun formatDartFile(virtualFile: VirtualFile, project: Project): Boolean
     {
         println("formatDartFile: $virtualFile")
 
-        if (virtualFile.extension != "dart")
+        if (!isDartFile(virtualFile))
         {
             println("  Not a dart file!")
             return true
