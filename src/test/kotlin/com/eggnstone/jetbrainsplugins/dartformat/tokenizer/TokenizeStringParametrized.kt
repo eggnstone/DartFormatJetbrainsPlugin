@@ -30,13 +30,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken(" and then the text continues.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -49,13 +45,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken(" and then the text continues.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -67,13 +59,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             StringToken("${delim1}a string$delim1")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -85,13 +73,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             StringToken("${delim1}a string", isClosed = false)
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -104,13 +88,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken(" and then the text continues.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -121,13 +101,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken("Some text and then an escaped \\${delim1} delimiter.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -140,13 +116,9 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken(" and then the text continues.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -159,12 +131,8 @@ class TokenizeStringParametrized(private val delim1: String, private val delim2:
             UnknownToken(" and then the text continues.")
         )
 
-        val tokenizer = Tokenizer()
-        val stringTokenizer = StringTokenizer()
-        val actualTokens = stringTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = StringTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

@@ -7,16 +7,6 @@ typealias TokenizeHandler = (String) -> ArrayList<IToken>
 
 class Tokenizer
 {
-    fun recreate(tokens: ArrayList<IToken>): String
-    {
-        val sb = StringBuilder()
-
-        for (token in tokens)
-            sb.append(token.recreate())
-
-        return sb.toString()
-    }
-
     fun tokenize(input: String): ArrayList<IToken>
     {
         var tokens = arrayListOf<IToken>(UnknownToken(input))

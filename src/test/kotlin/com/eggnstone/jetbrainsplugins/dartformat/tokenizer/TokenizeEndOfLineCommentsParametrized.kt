@@ -32,13 +32,9 @@ class TokenizeEndOfLineCommentsParametrized(private val newLine: String, @Suppre
             UnknownToken("def")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -51,12 +47,8 @@ class TokenizeEndOfLineCommentsParametrized(private val newLine: String, @Suppre
             UnknownToken("def")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

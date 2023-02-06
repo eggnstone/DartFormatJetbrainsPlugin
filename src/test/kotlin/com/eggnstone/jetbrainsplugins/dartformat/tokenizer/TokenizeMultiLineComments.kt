@@ -17,13 +17,9 @@ class TokenizeMultiLineComments
             UnknownToken("def")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -36,13 +32,9 @@ class TokenizeMultiLineComments
             UnknownToken("def")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -54,13 +46,9 @@ class TokenizeMultiLineComments
             MultiLineCommentToken("comment")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -72,13 +60,9 @@ class TokenizeMultiLineComments
             MultiLineCommentToken("comment*", isClosed = false)
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -90,12 +74,8 @@ class TokenizeMultiLineComments
             MultiLineCommentToken("comment", isClosed = false)
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

@@ -17,13 +17,9 @@ class TokenizeWhiteSpace
             UnknownToken("b")
         )
 
-        val tokenizer = Tokenizer()
-        val whiteSpaceTokenizer = WhiteSpaceTokenizer()
-        val actualTokens = whiteSpaceTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = WhiteSpaceTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -36,13 +32,9 @@ class TokenizeWhiteSpace
             UnknownToken("b")
         )
 
-        val tokenizer = Tokenizer()
-        val whiteSpaceTokenizer = WhiteSpaceTokenizer()
-        val actualTokens = whiteSpaceTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = WhiteSpaceTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -54,12 +46,8 @@ class TokenizeWhiteSpace
             WhiteSpaceToken(" ")
         )
 
-        val tokenizer = Tokenizer()
-        val whiteSpaceTokenizer = WhiteSpaceTokenizer()
-        val actualTokens = whiteSpaceTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = WhiteSpaceTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

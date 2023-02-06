@@ -33,12 +33,8 @@ class TokenizeWhiteSpaceParametrized(private val newLine: String, @Suppress("UNU
             UnknownToken("b")
         )
 
-        val tokenizer = Tokenizer()
-        val whiteSpaceTokenizer = WhiteSpaceTokenizer()
-        val actualTokens = whiteSpaceTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = WhiteSpaceTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

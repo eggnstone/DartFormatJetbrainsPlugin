@@ -2,12 +2,28 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class TokenizeComments
 {
+    @Test
+    fun combination()
+    {
+        val inputText = "//end of line comment\n/*multi line comment*/)a "
+        val expectedTokens = arrayListOf(
+            EndOfLineCommentToken("end of line comment\n"),
+            MultiLineCommentToken("multi line comment"),
+            UnknownToken(")a ")
+        )
+
+        val actualTokens = CommentTokenizer().tokenize(inputText)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+    }
+
     @Test
     fun multiLineCommentInEndOfLineComment()
     {
@@ -16,13 +32,9 @@ class TokenizeComments
             EndOfLineCommentToken("comment/*still comment*/")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -33,12 +45,8 @@ class TokenizeComments
             MultiLineCommentToken("comment //comment")
         )
 
-        val tokenizer = Tokenizer()
-        val commentTokenizer = CommentTokenizer()
-        val actualTokens = commentTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = CommentTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }

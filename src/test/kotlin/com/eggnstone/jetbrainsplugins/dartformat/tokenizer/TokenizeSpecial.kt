@@ -33,13 +33,9 @@ class TokenizeSpecial
             UnknownToken("j")
         )
 
-        val tokenizer = Tokenizer()
-        val specialTokenizer = SpecialTokenizer()
-        val actualTokens = specialTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = SpecialTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -68,13 +64,9 @@ class TokenizeSpecial
             UnknownToken("j")
         )
 
-        val tokenizer = Tokenizer()
-        val specialTokenizer = SpecialTokenizer()
-        val actualTokens = specialTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = SpecialTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 
     @Test
@@ -102,12 +94,8 @@ class TokenizeSpecial
             SpecialToken.CLOSING_ROUND_BRACKET
         )
 
-        val tokenizer = Tokenizer()
-        val specialTokenizer = SpecialTokenizer()
-        val actualTokens = specialTokenizer.tokenize(inputText)
-        val actualText = tokenizer.recreate(actualTokens)
+        val actualTokens = SpecialTokenizer().tokenize(inputText)
 
         assertThat(actualTokens, equalTo(expectedTokens))
-        assertThat(actualText, equalTo(inputText))
     }
 }
