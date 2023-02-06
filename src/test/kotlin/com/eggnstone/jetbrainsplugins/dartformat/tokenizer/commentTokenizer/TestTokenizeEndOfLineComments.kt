@@ -7,8 +7,21 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class TokenizeEndOfLineComments
+class TestTokenizeEndOfLineComments
 {
+    @Test
+    fun endOfLineCommentAtTextStart()
+    {
+        val inputText = "//comment"
+        val expectedTokens = arrayListOf(
+            EndOfLineCommentToken("comment")
+        )
+
+        val actualTokens = CommentTokenizer().tokenize(inputText)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+    }
+
     @Test
     fun endOfLineCommentAtTextEnd()
     {

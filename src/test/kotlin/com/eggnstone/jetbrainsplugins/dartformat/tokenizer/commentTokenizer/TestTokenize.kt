@@ -8,16 +8,30 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class TokenizeComments
+class TestTokenize
 {
     @Test
-    fun combination()
+    fun endOfLineCommentBeforeMultiLineComment()
     {
-        val inputText = "//end of line comment\n/*multi line comment*/)a "
+        val inputText = "a//end of line comment/*multi line comment*/a"
         val expectedTokens = arrayListOf(
-            EndOfLineCommentToken("end of line comment\n"),
+            UnknownToken("a"),
+            EndOfLineCommentToken("end of line comment/*multi line comment*/a")
+        )
+
+        val actualTokens = CommentTokenizer().tokenize(inputText)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+    }
+
+    @Test
+    fun multiLineCommentBeforeEndOfLineComment()
+    {
+        val inputText = "a/*multi line comment*///end of line comment"
+        val expectedTokens = arrayListOf(
+            UnknownToken("a"),
             MultiLineCommentToken("multi line comment"),
-            UnknownToken(")a ")
+            EndOfLineCommentToken("end of line comment")
         )
 
         val actualTokens = CommentTokenizer().tokenize(inputText)

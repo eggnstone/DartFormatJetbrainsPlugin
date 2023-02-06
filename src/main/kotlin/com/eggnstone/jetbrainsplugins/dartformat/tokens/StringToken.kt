@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerTools
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 
 class StringToken(val text: String, val isClosed: Boolean = true) : IToken
 {
@@ -10,5 +10,5 @@ class StringToken(val text: String, val isClosed: Boolean = true) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "String(${TokenizerTools.toDisplayString(text)}${if (isClosed) "" else ", isClosed=false"})"
+    override fun toString(): String = "String(${Tools.toDisplayString(text)}${if (isClosed) "" else ", isClosed=false"})"
 }

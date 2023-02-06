@@ -1,13 +1,13 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerTools
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import org.junit.Test
 
-class CoverageForTokenizerTools
+class CoverageForTools
 {
     @Test
     fun testConstructor()
     {
-        TokenizerTools()
+        Tools()
     }
 }

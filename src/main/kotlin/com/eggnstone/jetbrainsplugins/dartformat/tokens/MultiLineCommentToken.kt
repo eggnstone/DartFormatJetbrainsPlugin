@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerTools
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 
 class MultiLineCommentToken(private val text: String, val isClosed: Boolean = true) : IToken
 {
@@ -10,5 +10,5 @@ class MultiLineCommentToken(private val text: String, val isClosed: Boolean = tr
 
     override fun recreate(): String = if (isClosed) "/*$text*/" else "/*$text"
 
-    override fun toString(): String = "MultiLineComment(${TokenizerTools.toDisplayString(text)}${if (isClosed) "" else ", isClosed=false"})"
+    override fun toString(): String = "MultiLineComment(${Tools.toDisplayString(text)}${if (isClosed) "" else ", isClosed=false"})"
 }
