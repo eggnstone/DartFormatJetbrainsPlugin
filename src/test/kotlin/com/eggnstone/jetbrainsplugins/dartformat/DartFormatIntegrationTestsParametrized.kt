@@ -42,7 +42,7 @@ class DartFormatIntegrationTestsParametrized(private val newLine: String, @Suppr
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter(DartFormatConfig(true)).format(inputTokens)
-        val actualOutputText = Indenter().recreate(actualOutputTokens)
+        val actualOutputText = Indenter().recreateForIntegrationsTestsOnly(actualOutputTokens)
 
         assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
         assertThat(actualOutputText, equalTo(inputText))

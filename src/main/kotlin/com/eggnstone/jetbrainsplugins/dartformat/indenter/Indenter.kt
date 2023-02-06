@@ -14,26 +14,28 @@ class Indenter
     {
         val sb = StringBuilder()
 
-        var currentLineLevelRelative = 0
-        var currentLineLevelDecreasedBeforeNonWhiteSpace = 0
         var currentLineLevel = 0
+        var currentLineLevelDecreasedBeforeNonWhiteSpace = 0
         var currentText = ""
+        var nextLineLevel = 0
         for (currentToken in tokens)
         {
-            if (currentToken == SpecialToken.OPENING_ANGLE_BRACKET)
+            if (currentToken is SpecialToken && currentToken.isOpeningBracket)
             {
-                currentLineLevelRelative++
                 currentText += currentToken.recreate()
+                nextLineLevel++
                 continue
             }
 
-            if (currentToken == SpecialToken.CLOSING_ANGLE_BRACKET)
+            if (currentToken is SpecialToken && currentToken.isClosingBracket)
             {
-                currentLineLevelRelative--
-                if (currentText.trim().isEmpty())
+                // TODO: test for multiple brackets
+                val reducedText = currentText.trim().replace(Regex("[})\\]]"), "")
+                if (reducedText.isEmpty())
                     currentLineLevelDecreasedBeforeNonWhiteSpace++
 
                 currentText += currentToken.recreate()
+                nextLineLevel--
                 continue
             }
 
@@ -41,10 +43,9 @@ class Indenter
             {
                 sb.append(indent(currentText, currentLineLevel - currentLineLevelDecreasedBeforeNonWhiteSpace) + currentToken.recreate())
 
-                currentText = ""
-                currentLineLevel += currentLineLevelRelative
-                currentLineLevelRelative = 0
+                currentLineLevel = nextLineLevel
                 currentLineLevelDecreasedBeforeNonWhiteSpace = 0
+                currentText = ""
                 continue
             }
 
@@ -53,7 +54,7 @@ class Indenter
         }
 
         if (currentText.isNotEmpty())
-            sb.append(indent(currentText, currentLineLevel-currentLineLevelDecreasedBeforeNonWhiteSpace))
+            sb.append(indent(currentText, currentLineLevel - currentLineLevelDecreasedBeforeNonWhiteSpace))
 
         return sb.toString()
     }
@@ -71,7 +72,7 @@ class Indenter
         return pad + text
     }
 
-    fun recreate(tokens: ArrayList<IToken>): String
+    fun recreateForIntegrationsTestsOnly(tokens: ArrayList<IToken>): String
     {
         val sb = StringBuilder()
 

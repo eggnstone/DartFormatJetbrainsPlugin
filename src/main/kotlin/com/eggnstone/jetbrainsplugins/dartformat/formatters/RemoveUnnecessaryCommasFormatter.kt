@@ -22,6 +22,7 @@ class RemoveUnnecessaryCommasFormatter
                 val nextToken = outputTokens[nextIndex]
 
                 if (nextToken is EndOfLineCommentToken
+                    || nextToken is LineBreakToken
                     || nextToken is MultiLineCommentToken
                     || nextToken is WhiteSpaceToken
                 )

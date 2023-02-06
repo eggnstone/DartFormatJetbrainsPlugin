@@ -19,6 +19,8 @@ class SpecialToken(val text: String) : IToken
 
     val isClosingBracket get() = this == CLOSING_ANGLE_BRACKET || this == CLOSING_ROUND_BRACKET || this == CLOSING_SQUARE_BRACKET
 
+    val isOpeningBracket get() = this == OPENING_ANGLE_BRACKET || this == OPENING_ROUND_BRACKET || this == OPENING_SQUARE_BRACKET
+
     override fun equals(other: Any?): Boolean = other is SpecialToken && text == other.text
 
     override fun hashCode(): Int = text.hashCode()

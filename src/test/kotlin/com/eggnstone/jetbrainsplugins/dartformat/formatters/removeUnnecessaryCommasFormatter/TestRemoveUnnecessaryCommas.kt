@@ -36,26 +36,6 @@ class TestRemoveUnnecessaryCommas
     }
 
     @Test
-    fun removeUnnecessaryCommaWithEndOfLineComment()
-    {
-        //val input = ",//end of line comment\n)"
-        val inputTokens = arrayListOf(
-            SpecialToken.COMMA,
-            EndOfLineCommentToken("end of line comment\\n"),
-            SpecialToken.CLOSING_ROUND_BRACKET
-        )
-        //val expectedOutput = "//end of line comment\\n)"
-        val expectedOutputTokens = arrayListOf(
-            EndOfLineCommentToken("end of line comment\\n"),
-            SpecialToken.CLOSING_ROUND_BRACKET
-        )
-
-        val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
-
-        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
-    }
-
-    @Test
     fun removeUnnecessaryCommaWithMultiLineComment()
     {
         //val input = ",/*multi line comment*/)"

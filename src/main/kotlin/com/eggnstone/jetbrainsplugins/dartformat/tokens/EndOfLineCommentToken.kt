@@ -2,16 +2,12 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 
-class EndOfLineCommentToken : IToken
+class EndOfLineCommentToken(private val text: String) : IToken
 {
-    private val text: String
-
-    constructor(text: String)
+    init
     {
         if (Tools.containsLineBreak(text))
             throw Exception("containsLineBreak: \"${Tools.toDisplayString(text)}\"")
-
-        this.text = text
     }
 
     override fun equals(other: Any?): Boolean = other is EndOfLineCommentToken && text == other.text
