@@ -11,6 +11,10 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 1.1.3</b>
+        <ul>
+          <li>Indenting (to 4 spaces for now)</li>
+        </ul>
         <b>Version 1.1.2</b>
         <ul>
           <li>Handling strings properly now.</li>
@@ -31,8 +35,8 @@
         <b>A formatter for Dart.</b><br/>
         <br/>
         Like dartfmt.<br/>
-        But better.<br/>
-        Because it's configurable :)<br/>
+        But better ;)<br/>
+        Because it's configurable.<br/>
         <br/>
         Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.<br/>
         <br/>

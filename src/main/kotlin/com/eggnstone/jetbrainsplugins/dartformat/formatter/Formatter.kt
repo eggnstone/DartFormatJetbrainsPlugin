@@ -5,18 +5,13 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 
 class Formatter(private val config: DartFormatConfig)
 {
-    fun format(inputTokens: ArrayList<IToken>): String
+    fun format(inputTokens: ArrayList<IToken>): ArrayList<IToken>
     {
-        val output = StringBuilder()
-
         var outputTokens = inputTokens
 
         if (config.removeUnnecessaryCommas)
             outputTokens = RemoveUnnecessaryCommasFormatter().format(outputTokens)
 
-        for (outputToken in outputTokens)
-            output.append(outputToken.recreate())
-
-        return output.toString()
+        return outputTokens
     }
 }

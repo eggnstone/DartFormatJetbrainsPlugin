@@ -3,6 +3,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.plugin
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
 import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
+import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -123,8 +124,7 @@ class PluginFormat : AnAction()
             ApplicationManager.getApplication().runWriteAction {
                 val inputBytes = virtualFile.inputStream.readAllBytes()
                 val inputText = String(inputBytes)
-                val tokens = Tokenizer().tokenize(inputText)
-                val outputText = Formatter(getConfig()).format(tokens)
+                val outputText = format(inputText)
                 val outputBytes = outputText.toByteArray()
                 virtualFile.setBinaryContent(outputBytes)
             }
@@ -155,9 +155,9 @@ class PluginFormat : AnAction()
         {
             println("  Really formatting: $editor")
             ApplicationManager.getApplication().runWriteAction {
-                val tokens = Tokenizer().tokenize(editor.document.text)
-                val formattedText = Formatter(getConfig()).format(tokens)
-                editor.document.setText(formattedText)
+                val inputText = editor.document.text
+                val outputText = format(inputText)
+                editor.document.setText(outputText)
             }
 
             return true
@@ -168,6 +168,18 @@ class PluginFormat : AnAction()
             println("$err")
             return false
         }
+    }
+
+    private fun format(inputText: String): String
+    {
+        val inputTokens = Tokenizer().tokenize(inputText)
+
+        val outputTokens = Formatter(getConfig()).format(inputTokens)
+
+        @Suppress("UnnecessaryVariable")
+        val outputText = Indenter().indent(outputTokens)
+
+        return outputText
     }
 
     private fun getConfig(): DartFormatConfig
