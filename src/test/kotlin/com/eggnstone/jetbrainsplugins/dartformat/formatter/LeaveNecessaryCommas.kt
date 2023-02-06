@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.TextToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,7 +14,7 @@ class LeaveNecessaryCommas
     {
         val inputTokens = arrayListOf(
             SpecialToken(","),
-            TextToken("x")
+            UnknownToken("x")
         )
 
         val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
@@ -28,7 +28,7 @@ class LeaveNecessaryCommas
         val inputTokens = arrayListOf(
             SpecialToken(","),
             WhiteSpaceToken(" "),
-            TextToken("x")
+            UnknownToken("x")
         )
 
         val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
@@ -42,7 +42,7 @@ class LeaveNecessaryCommas
         val inputTokens = arrayListOf(
             SpecialToken(","),
             WhiteSpaceToken("\n"),
-            TextToken("x")
+            UnknownToken("x")
         )
 
         val actualOutputTokens = RemoveUnnecessaryCommasFormatter().format(inputTokens)
@@ -55,7 +55,7 @@ class LeaveNecessaryCommas
     {
         val inputTokens = arrayListOf(
             SpecialToken(","),
-            TextToken("x"),
+            UnknownToken("x"),
             SpecialToken(")")
         )
 

@@ -11,9 +11,13 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 1.1.2</b>
+        <ul>
+          <li>Handling strings properly now.</li>
+        </ul>
         <b>Version 1.1.1</b>
         <ul>
-          <li>Excluding *.freezed.dart and *.g.dart now.</li>
+          <li>Excluding *.freezed.dart and *.g.dart and *.gr.dart now.</li>
         </ul>
         <b>Version 1.1.0</b>
         <ul>
@@ -53,8 +57,8 @@
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>
     <name>DartFormat</name>
     <vendor
-            email="DartFormat@eggnstone.com"
-            url="https://www.eggnstone.com">
+            email="DartFormat@eggnstone.dev"
+            url="https://blog.eggnstone.dev/">
         egg 'n stone
     </vendor>
 </idea-plugin>

@@ -1,9 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatter
 
-import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
+import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 
-class Formatter
+class Formatter(private val config: DartFormatConfig)
 {
     fun format(inputTokens: ArrayList<IToken>): String
     {
@@ -11,20 +11,12 @@ class Formatter
 
         var outputTokens = inputTokens
 
-        if (getRemoveUnnecessaryCommas())
+        if (config.removeUnnecessaryCommas)
             outputTokens = RemoveUnnecessaryCommasFormatter().format(outputTokens)
 
         for (outputToken in outputTokens)
             output.append(outputToken.recreate())
 
         return output.toString()
-    }
-
-    private fun getRemoveUnnecessaryCommas(): Boolean
-    {
-        if (DartFormatPersistentStateComponent.instance == null)
-            return true
-
-        return DartFormatPersistentStateComponent.instance!!.state.removeUnnecessaryCommas
     }
 }

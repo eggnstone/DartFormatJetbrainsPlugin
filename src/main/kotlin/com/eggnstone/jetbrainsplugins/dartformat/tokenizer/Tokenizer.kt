@@ -22,9 +22,9 @@ class Tokenizer
         var tokens = arrayListOf<IToken>(UnknownToken(input))
 
         tokens = execute(CommentTokenizer()::tokenize, tokens)
+        tokens = execute(StringTokenizer()::tokenize, tokens)
         tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
         tokens = execute(SpecialTokenizer()::tokenize, tokens)
-        tokens = execute(TextTokenizer()::tokenize, tokens)
 
         return tokens
     }

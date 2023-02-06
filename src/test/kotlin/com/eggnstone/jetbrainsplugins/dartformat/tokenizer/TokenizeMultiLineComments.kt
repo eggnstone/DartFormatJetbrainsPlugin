@@ -64,7 +64,7 @@ class TokenizeMultiLineComments
     }
 
     @Test
-    fun unclosedMultiLineCommentAtTextEnd1Missing()
+    fun unclosedMultiLineCommentAtTextEndNotClosedMissing1()
     {
         val inputText = "abc/*comment*"
         val expectedTokens = arrayListOf(
@@ -82,7 +82,7 @@ class TokenizeMultiLineComments
     }
 
     @Test
-    fun unclosedMultiLineCommentAtTextEnd2Missing()
+    fun unclosedMultiLineCommentAtTextEndNotClosedMissing2()
     {
         val inputText = "abc/*comment"
         val expectedTokens = arrayListOf(

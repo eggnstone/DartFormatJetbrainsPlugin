@@ -13,7 +13,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private var removeUnnecessaryCommasCheckbox: JCheckBox? = JCheckBox("Remove unnecessary commas")
 
-    private val configState: DartFormatState? get() = DartFormatPersistentStateComponent.instance?.state
+    private val configState: DartFormatConfig? get() = DartFormatPersistentStateComponent.instance?.state
 
     override fun apply()
     {
