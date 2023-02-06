@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat.formatter
+package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeUnnecessaryCommasFormatter
 
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveUnnecessaryCommasFormatter
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken

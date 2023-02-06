@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.formatter
+package com.eggnstone.jetbrainsplugins.dartformat.formatters
 
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken

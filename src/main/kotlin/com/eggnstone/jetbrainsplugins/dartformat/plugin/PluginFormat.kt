@@ -2,9 +2,9 @@ package com.eggnstone.jetbrainsplugins.dartformat.plugin
 
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
-import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys

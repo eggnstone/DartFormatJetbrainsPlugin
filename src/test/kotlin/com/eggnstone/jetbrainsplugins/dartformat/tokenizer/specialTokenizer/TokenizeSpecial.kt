@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.specialTokenizer
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.SpecialTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo

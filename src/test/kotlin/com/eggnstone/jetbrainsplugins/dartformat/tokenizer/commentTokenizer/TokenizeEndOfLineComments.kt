@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.commentTokenizer
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.CommentTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
@@ -9,7 +10,7 @@ import org.junit.Test
 class TokenizeEndOfLineComments
 {
     @Test
-    fun multiLineCommentAtTextEnd()
+    fun endOfLineCommentAtTextEnd()
     {
         val inputText = "abc//comment"
         val expectedTokens = arrayListOf(

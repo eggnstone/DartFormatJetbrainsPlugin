@@ -1,6 +1,5 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test

@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.TokenizerTools
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerTools
 
 class EndOfLineCommentToken(private val text: String) : IToken
 {

@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.commentTokenizer
 
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.CommentTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken

@@ -1,9 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
-import com.eggnstone.jetbrainsplugins.dartformat.formatter.Formatter
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.Tokenizer
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -11,7 +11,7 @@ import java.io.File
 
 class FormatterIntegrationTests
 {
-    private val TEST_DATA_PATH = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/formatter/data/"
+    private val TEST_DATA_PATH = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
 
     //@Ignore("For the future ...")
     @Test

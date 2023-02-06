@@ -1,5 +1,6 @@
-package com.eggnstone.jetbrainsplugins.dartformat.formatter
+package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeUnnecessaryCommasFormatter
 
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveUnnecessaryCommasFormatter
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo

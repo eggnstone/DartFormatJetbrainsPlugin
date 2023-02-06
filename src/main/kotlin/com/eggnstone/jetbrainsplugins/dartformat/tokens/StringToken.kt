@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizer.TokenizerTools
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerTools
 
 class StringToken(val text: String, val isClosed: Boolean = true) : IToken
 {
