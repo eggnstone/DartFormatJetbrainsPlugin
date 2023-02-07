@@ -11,9 +11,14 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 1.1.4</b>
+        <ul>
+          <li>TODO</li>
+        </ul>
         <b>Version 1.1.3</b>
         <ul>
-          <li>Indenting (to 4 spaces for now)</li>
+          <li>Added indentation (to 4 spaces for now)</li>
+          <li>Added removal of unnecessary line breaks after arrows</li>
         </ul>
         <b>Version 1.1.2</b>
         <ul>
@@ -43,7 +48,7 @@
         <b>Planned features:</b>
         <ul>
             <li>Put braces on new line</li>
-            <li>Indentation</li>
+            <li>Better indentation</li>
         </ul>
         Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
