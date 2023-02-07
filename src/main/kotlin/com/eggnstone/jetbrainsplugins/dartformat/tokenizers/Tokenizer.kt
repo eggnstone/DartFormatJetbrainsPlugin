@@ -20,6 +20,8 @@ class Tokenizer
         // 3. string, because they overrule the rest
         tokens = execute(StringTokenizer()::tokenize, tokens)
 
+        // TODO: fix strings in comment or vice versa?
+
         // order not important
         tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
         tokens = execute(SpecialTokenizer()::tokenize, tokens)
