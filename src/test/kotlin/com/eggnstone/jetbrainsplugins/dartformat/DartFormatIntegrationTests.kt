@@ -1,6 +1,5 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
-import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter

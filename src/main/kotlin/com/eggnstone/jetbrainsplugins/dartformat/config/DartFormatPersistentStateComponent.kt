@@ -27,15 +27,15 @@ class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatCo
             }
     }
 
-    private var dartFormatState = DartFormatConfig()
+    private var dartFormatConfig = DartFormatConfig()
 
     override fun getState(): DartFormatConfig
     {
-        return dartFormatState
+        return dartFormatConfig
     }
 
     override fun loadState(state: DartFormatConfig)
     {
-        dartFormatState = state
+        dartFormatConfig = state
     }
 }

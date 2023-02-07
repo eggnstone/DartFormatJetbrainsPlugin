@@ -26,6 +26,19 @@ class SpecialTokenizer
                 continue
             }
 
+            if (currentText.isNotEmpty())
+            {
+                val previousChar = currentText.last()
+                if (Tools.isSpecial(currentChar, previousChar))
+                {
+                    outputTokens += UnknownToken(currentText.substring(0, currentText.length - 1))
+                    currentText = ""
+
+                    outputTokens += SpecialToken.ARROW
+                    continue
+                }
+            }
+
             currentText += currentChar
         }
 

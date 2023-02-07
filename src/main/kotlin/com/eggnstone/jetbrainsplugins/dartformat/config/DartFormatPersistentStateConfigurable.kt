@@ -12,24 +12,27 @@ import javax.swing.JPanel
 class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private var removeUnnecessaryCommasCheckbox: JCheckBox? = JCheckBox("Remove unnecessary commas")
+    private var removeUnnecessaryLineBreaksAfterArrowsCheckbox: JCheckBox? = JCheckBox("Remove unnecessary line breaks after arrows")
 
-    private val configState: DartFormatConfig? get() = DartFormatPersistentStateComponent.instance?.state
+    private val config: DartFormatConfig? get() = DartFormatPersistentStateComponent.instance?.state
 
     override fun apply()
     {
-        if (configState == null)
+        if (config == null)
         {
             println("Error in apply: configState == null")
             return
         }
 
-        configState!!.removeUnnecessaryCommas = removeUnnecessaryCommasCheckbox!!.isSelected
+        config!!.removeUnnecessaryCommas = removeUnnecessaryCommasCheckbox!!.isSelected
+        config!!.removeUnnecessaryLineBreaksAfterArrows = removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected
     }
 
     override fun createComponent(): JComponent
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
             .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeUnnecessaryCommasCheckbox) })
+            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeUnnecessaryLineBreaksAfterArrowsCheckbox) })
 
         return JPanel(BorderLayout()).also { it.add(formBuilder.panel, BorderLayout.NORTH) }
     }
@@ -37,29 +40,32 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun dispose()
     {
         removeUnnecessaryCommasCheckbox = null
+        removeUnnecessaryLineBreaksAfterArrowsCheckbox = null
     }
 
     override fun getDisplayName(): String = "DartFormat"
 
     override fun isModified(): Boolean
     {
-        if (configState == null)
+        if (config == null)
         {
             println("Error in isModified: configState == null")
             return false
         }
 
-        return configState!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
+        return config!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
+                || config!!.removeUnnecessaryLineBreaksAfterArrows != removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected
     }
 
     override fun reset()
     {
-        if (configState == null)
+        if (config == null)
         {
             println("Error in reset: configState == null")
             return
         }
 
-        removeUnnecessaryCommasCheckbox!!.isSelected = configState!!.removeUnnecessaryCommas
+        removeUnnecessaryCommasCheckbox!!.isSelected = config!!.removeUnnecessaryCommas
+        removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected = config!!.removeUnnecessaryLineBreaksAfterArrows
     }
 }

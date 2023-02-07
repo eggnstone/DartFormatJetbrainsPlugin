@@ -12,6 +12,9 @@ class Formatter(private val config: DartFormatConfig)
         if (config.removeUnnecessaryCommas)
             outputTokens = RemoveUnnecessaryCommasFormatter().format(outputTokens)
 
+        if (config.removeUnnecessaryLineBreaksAfterArrows)
+            outputTokens = RemoveUnnecessaryLineBreaksAfterArrows().format(outputTokens)
+
         return outputTokens
     }
 }

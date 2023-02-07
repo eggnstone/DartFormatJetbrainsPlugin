@@ -6,7 +6,9 @@ class Tools
     {
         fun containsLineBreak(text: String): Boolean = text.contains("\n") || text.contains("\r")
 
-        fun isSpecial(c: Char): Boolean = ":;,(){}[]".contains(c)
+        fun isSpecial(c: Char): Boolean = ".:;,(){}[]".contains(c)
+
+        fun isSpecial(c: Char, previousChar: Char): Boolean = previousChar == '=' && c == '>'
 
         fun isWhiteSpace(currentChar: Char): Boolean = "\t ".contains(currentChar)
 

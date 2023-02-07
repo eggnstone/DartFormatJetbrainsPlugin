@@ -12,7 +12,7 @@ class TestTokenize
     @Test
     fun specialCharAtTextStart()
     {
-        val inputText = ":b,c;d(e{f[g]h}i)j"
+        val inputText = ":b,c;d(e{f[g]h}i)j=>k.l"
         val expectedTokens = arrayListOf(
             SpecialToken.COLON,
             UnknownToken("b"),
@@ -31,7 +31,11 @@ class TestTokenize
             SpecialToken.CLOSING_ANGLE_BRACKET,
             UnknownToken("i"),
             SpecialToken.CLOSING_ROUND_BRACKET,
-            UnknownToken("j")
+            UnknownToken("j"),
+            SpecialToken.ARROW,
+            UnknownToken("k"),
+            SpecialToken.PERIOD,
+            UnknownToken("l")
         )
 
         val actualTokens = SpecialTokenizer().tokenize(inputText)
