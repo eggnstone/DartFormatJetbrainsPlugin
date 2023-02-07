@@ -1,7 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
@@ -37,8 +36,8 @@ class DartFormatIntegrationTestsParametrized(private val newLine: String, @Suppr
         )
 
         val inputTokens = Tokenizer().tokenize(inputText)
-        val actualOutputTokens = Formatter(DartFormatConfig(true)).format(inputTokens)
-        val actualOutputText = Indenter().recreateForIntegrationsTestsOnly(actualOutputTokens)
+        val actualOutputTokens = Formatter().format(inputTokens)
+        val actualOutputText = Indenter().recreate(actualOutputTokens)
 
         assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
         assertThat(actualOutputText, equalTo(inputText))

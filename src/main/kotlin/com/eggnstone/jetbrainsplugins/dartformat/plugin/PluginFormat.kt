@@ -2,8 +2,8 @@ package com.eggnstone.jetbrainsplugins.dartformat.plugin
 
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
-import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
-import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.FormatterWithConfig
+import com.eggnstone.jetbrainsplugins.dartformat.indenter.IndenterWithConfig
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -172,12 +172,14 @@ class PluginFormat : AnAction()
 
     private fun format(inputText: String): String
     {
+        val config = getConfig()
+
         val inputTokens = Tokenizer().tokenize(inputText)
 
-        val outputTokens = Formatter(getConfig()).format(inputTokens)
+        val outputTokens = FormatterWithConfig(config).format(inputTokens)
 
         @Suppress("UnnecessaryVariable")
-        val outputText = Indenter().indent(outputTokens)
+        val outputText = IndenterWithConfig(config).indent(outputTokens)
 
         return outputText
     }

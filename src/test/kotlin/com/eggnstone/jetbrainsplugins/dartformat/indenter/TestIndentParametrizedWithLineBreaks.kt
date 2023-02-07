@@ -100,7 +100,8 @@ class TestIndentParametrizedWithLineBreaks(private val newLine: String, @Suppres
                 newLine +
                 "    Text$newLine"
 
-        val actualOutputText = Indenter().indent(inputTokens)
+        val indenter = Indenter()
+        val actualOutputText = indenter.indent(inputTokens)
 
         assertThat(actualOutputText, equalTo(expectedOutputText))
     }

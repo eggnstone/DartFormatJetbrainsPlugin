@@ -1,0 +1,16 @@
+TODOs
+
+- Do not indent double
+    - setState(() {
+
+- Indent:
+    - start-of-line-period (.) until semicolon (;)
+    - start-of-line-colon (:) until semicolon (;)
+    - start-of-line-case until break
+    - start-of-line-with
+    - start-of-line-implements
+    - start-of-line-for
+    - start-of-line-if
+
+- Strings in comments
+- Comments in strings

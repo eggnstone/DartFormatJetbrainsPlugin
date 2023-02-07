@@ -4,4 +4,7 @@ class DartFormatConfig(isTest: Boolean = false)
 {
     var removeUnnecessaryCommas = isTest
     var removeUnnecessaryLineBreaksAfterArrows = isTest
+
+    var indentationIsEnabled = isTest
+    var indentationSpacesPerLevel = 4
 }

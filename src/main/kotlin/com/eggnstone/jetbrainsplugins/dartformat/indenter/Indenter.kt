@@ -6,10 +6,8 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
-class Indenter
+class Indenter(private val spacesPerLevel: Int = 4)
 {
-    private val indentation = 4
-
     fun indent(tokens: ArrayList<IToken>): String
     {
         val sb = StringBuilder()
@@ -57,6 +55,16 @@ class Indenter
         return sb.toString()
     }
 
+    fun recreate(tokens: ArrayList<IToken>): String
+    {
+        val sb = StringBuilder()
+
+        for (token in tokens)
+            sb.append(token.recreate())
+
+        return sb.toString()
+    }
+
     private fun indent(text: String, level: Int): String
     {
         if (Tools.containsLineBreak(text))
@@ -65,18 +73,8 @@ class Indenter
         if (text.isBlank())
             return ""
 
-        val pad = " ".repeat(level * indentation)
+        val pad = " ".repeat(level * spacesPerLevel)
 
         return pad + text
-    }
-
-    fun recreateForIntegrationsTestsOnly(tokens: ArrayList<IToken>): String
-    {
-        val sb = StringBuilder()
-
-        for (token in tokens)
-            sb.append(token.recreate())
-
-        return sb.toString()
     }
 }
