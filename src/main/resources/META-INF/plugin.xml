@@ -11,23 +11,27 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 1.1.4</b>
+        <b>Version 1.3.0</b>
         <ul>
           <li>TODO</li>
         </ul>
-        <b>Version 1.1.3</b>
+        <br/>
+        <b>Version 1.2.0</b>
         <ul>
           <li>Added indentation (to 4 spaces for now)</li>
           <li>Added removal of unnecessary line breaks after arrows</li>
         </ul>
+        <br/>
         <b>Version 1.1.2</b>
         <ul>
           <li>Handling strings properly now.</li>
         </ul>
+        <br/>
         <b>Version 1.1.1</b>
         <ul>
           <li>Excluding *.freezed.dart and *.g.dart and *.gr.dart now.</li>
         </ul>
+        <br/>
         <b>Version 1.1.0</b>
         <ul>
           <li>Now works on currently selected folders and files, too.</li>
@@ -50,6 +54,7 @@
             <li>Put braces on new line</li>
             <li>Better indentation</li>
         </ul>
+        <br/>
         Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
         ]]>
