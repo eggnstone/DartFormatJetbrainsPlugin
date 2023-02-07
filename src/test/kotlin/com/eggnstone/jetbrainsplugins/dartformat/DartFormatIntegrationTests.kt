@@ -5,7 +5,6 @@ import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import java.io.File
 
@@ -25,7 +24,6 @@ class DartFormatIntegrationTests
 
         // TODO: setState(() {
         // TODO: dots
-        //TestTools.assertThat(actualOutputText, equalTo(expectedOutputText))
+        //TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 }
-

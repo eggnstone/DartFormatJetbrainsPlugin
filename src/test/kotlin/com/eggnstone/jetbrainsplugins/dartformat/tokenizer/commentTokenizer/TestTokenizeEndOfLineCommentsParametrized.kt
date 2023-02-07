@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.commentTokenizer
 
+import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.CommentTokenizer
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
