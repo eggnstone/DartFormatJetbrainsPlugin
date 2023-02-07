@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
+import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
@@ -21,12 +22,7 @@ class DartFormatIntegrationTestsParametrized(private val newLine: String, @Suppr
     {
         @JvmStatic
         @Parameterized.Parameters(name = "{1}")
-        fun data() = arrayOf(
-            arrayOf("\n", "\\n"),
-            arrayOf("\n\r", "\\n\\r"),
-            arrayOf("\r", "\\r"),
-            arrayOf("\r\n", "\\r\\n")
-        )
+        fun data() = TestParams.lineBreaks
     }
 
     @Test

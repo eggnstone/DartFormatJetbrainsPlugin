@@ -13,12 +13,7 @@ class TestTokenizeEndOfLineCommentsParametrized(private val newLine: String, @Su
     {
         @JvmStatic
         @Parameterized.Parameters(name = "{1}")
-        fun data() = arrayOf(
-            arrayOf("\n", "\\n"),
-            arrayOf("\n\r", "\\n\\r"),
-            arrayOf("\r", "\\r"),
-            arrayOf("\r\n", "\\r\\n")
-        )
+        fun data() = TestParams.lineBreaks
     }
 
     @Test

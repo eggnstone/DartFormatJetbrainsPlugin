@@ -15,7 +15,6 @@ class Indenter
         val sb = StringBuilder()
 
         var currentLineLevel = 0
-        var currentLineLevelDecreasedBeforeNonWhiteSpace = 0
         var currentText = ""
         var nextLineLevel = 0
         for (currentToken in tokens)
@@ -32,7 +31,7 @@ class Indenter
                 // TODO: test for multiple brackets
                 val reducedText = currentText.trim().replace(Regex("[})\\]]"), "")
                 if (reducedText.isEmpty())
-                    currentLineLevelDecreasedBeforeNonWhiteSpace++
+                    currentLineLevel--
 
                 currentText += currentToken.recreate()
                 nextLineLevel--
@@ -41,10 +40,9 @@ class Indenter
 
             if (currentToken is LineBreakToken)
             {
-                sb.append(indent(currentText, currentLineLevel - currentLineLevelDecreasedBeforeNonWhiteSpace) + currentToken.recreate())
+                sb.append(indent(currentText, currentLineLevel) + currentToken.recreate())
 
                 currentLineLevel = nextLineLevel
-                currentLineLevelDecreasedBeforeNonWhiteSpace = 0
                 currentText = ""
                 continue
             }
@@ -54,7 +52,7 @@ class Indenter
         }
 
         if (currentText.isNotEmpty())
-            sb.append(indent(currentText, currentLineLevel - currentLineLevelDecreasedBeforeNonWhiteSpace))
+            sb.append(indent(currentText, currentLineLevel))
 
         return sb.toString()
     }

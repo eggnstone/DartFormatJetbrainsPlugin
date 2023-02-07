@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
+import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
@@ -11,18 +12,13 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestIndentParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class TestIndentParametrizedWithLineBreaks(private val newLine: String, @Suppress("UNUSED_PARAMETER") paramName: String)
 {
     companion object
     {
         @JvmStatic
         @Parameterized.Parameters(name = "{1}")
-        fun data() = arrayOf(
-            arrayOf("\n", "\\n"),
-            arrayOf("\n\r", "\\n\\r"),
-            arrayOf("\r", "\\r"),
-            arrayOf("\r\n", "\\r\\n")
-        )
+        fun data() = TestParams.lineBreaks
     }
 
     @Test
@@ -105,75 +101,6 @@ class TestIndentParametrized(private val newLine: String, @Suppress("UNUSED_PARA
                 "    Text$newLine"
 
         val actualOutputText = Indenter().indent(inputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
-    }
-
-    @Test
-    fun indentAngleBrackets()
-    {
-        val inputTokens = arrayListOf(
-            SpecialToken("{"),
-            LineBreakToken(newLine),
-            UnknownToken("Text"),
-            LineBreakToken(newLine),
-            SpecialToken("}"),
-            LineBreakToken(newLine),
-            UnknownToken("END")
-        )
-        val expectedOutputText = "{$newLine" +
-                "    Text$newLine" +
-                "}$newLine" +
-                "END"
-
-        val indenter = Indenter()
-        val actualOutputText = indenter.indent(inputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
-    }
-
-    @Test
-    fun indentRoundBrackets()
-    {
-        val inputTokens = arrayListOf(
-            SpecialToken("("),
-            LineBreakToken(newLine),
-            UnknownToken("Text"),
-            LineBreakToken(newLine),
-            SpecialToken(")"),
-            LineBreakToken(newLine),
-            UnknownToken("END")
-        )
-        val expectedOutputText = "($newLine" +
-                "    Text$newLine" +
-                ")$newLine" +
-                "END"
-
-        val indenter = Indenter()
-        val actualOutputText = indenter.indent(inputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
-    }
-
-    @Test
-    fun indentSquareBrackets()
-    {
-        val inputTokens = arrayListOf(
-            SpecialToken("["),
-            LineBreakToken(newLine),
-            UnknownToken("Text"),
-            LineBreakToken(newLine),
-            SpecialToken("]"),
-            LineBreakToken(newLine),
-            UnknownToken("END")
-        )
-        val expectedOutputText = "[$newLine" +
-                "    Text$newLine" +
-                "]$newLine" +
-                "END"
-
-        val indenter = Indenter()
-        val actualOutputText = indenter.indent(inputTokens)
 
         assertThat(actualOutputText, equalTo(expectedOutputText))
     }

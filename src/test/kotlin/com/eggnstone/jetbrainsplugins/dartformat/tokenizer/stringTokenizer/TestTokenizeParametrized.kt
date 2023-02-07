@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.stringTokenizer
 
+import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.StringTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.StringToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
@@ -16,10 +17,7 @@ class TestTokenizeParametrized(private val delim1: String, private val delim2: S
     {
         @JvmStatic
         @Parameterized.Parameters(name = "{2}")
-        fun data() = arrayOf(
-            arrayOf("\"", "'", "Normal quotes"),
-            arrayOf("'", "\"", "Apostrophe")
-        )
+        fun data() = TestParams.quotes
     }
 
     @Test
