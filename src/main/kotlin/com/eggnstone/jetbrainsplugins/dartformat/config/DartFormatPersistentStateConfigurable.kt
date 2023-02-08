@@ -58,10 +58,10 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             // line breaks
             .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeLineBreaksAfterArrowsCheckbox) })
             // indentation
-            /*.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(indentationIsEnabledCheckbox) })
+            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(indentationIsEnabledCheckbox) })
             .addLabeledComponent("        Spaces:", JPanel(FlowLayout(FlowLayout.LEFT)).also {
                 it.add(indentationSpacesPerLevelField)
-            })*/
+            })
 
         return JPanel(BorderLayout()).also { it.add(formBuilder.panel, BorderLayout.NORTH) }
     }

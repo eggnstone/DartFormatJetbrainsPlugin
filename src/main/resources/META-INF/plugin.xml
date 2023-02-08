@@ -11,13 +11,11 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <!--
         <b>Version 1.3.0</b>
         <ul>
-          <li>Indentation can now be turned on/off</li>
+          <li>Added indentation</li>
         </ul>
         <br/>
-        -->
         <b>Version 1.2.1</b>
         <ul>
           <li>Formatting of selected files can now be undone</li>
@@ -25,8 +23,7 @@
         <br/>
         <b>Version 1.2.0</b>
         <ul>
-          <li>Added indentation (to 4 spaces for now)</li>
-          <li>Added removal of unnecessary line breaks after arrows</li>
+          <li>Added removal of line breaks after arrows</li>
         </ul>
         <br/>
         <b>Version 1.1.2</b>
