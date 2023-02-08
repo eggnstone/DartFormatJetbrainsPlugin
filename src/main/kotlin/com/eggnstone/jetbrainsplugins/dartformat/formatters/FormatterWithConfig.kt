@@ -9,7 +9,7 @@ class FormatterWithConfig(private val config: DartFormatConfig)
     {
         val formatter = Formatter(
             removeUnnecessaryCommas = config.removeUnnecessaryCommas,
-            removeUnnecessaryLineBreaksAfterArrows = config.removeUnnecessaryLineBreaksAfterArrows
+            removeLineBreaksAfterArrows = config.removeLineBreaksAfterArrows
         )
 
         return formatter.format(tokens)

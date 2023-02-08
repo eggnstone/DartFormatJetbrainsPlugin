@@ -1,7 +1,7 @@
-package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeUnnecessaryLineBreaksAfterArrows
+package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeLineBreaksAfterArrows
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveUnnecessaryLineBreaksAfterArrows
+import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveLineBreaksAfterArrows
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestRemoveUnnecessaryLineBreaksAfterArrowsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class TestRemoveLineBreaksAfterArrowsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {
@@ -20,7 +20,7 @@ class TestRemoveUnnecessaryLineBreaksAfterArrowsParametrized(private val newLine
     }
 
     @Test
-    fun removeUnnecessaryLineBreakWithoutWhiteSpaceBeforeLineBreak()
+    fun removeLineBreakWithoutWhiteSpaceBeforeLineBreak()
     {
         val inputTokens = arrayListOf(
             UnknownToken("a"),
@@ -38,13 +38,13 @@ class TestRemoveUnnecessaryLineBreaksAfterArrowsParametrized(private val newLine
             UnknownToken("a")
         )
 
-        val actualOutputTokens = RemoveUnnecessaryLineBreaksAfterArrows().format(inputTokens)
+        val actualOutputTokens = RemoveLineBreaksAfterArrows().format(inputTokens)
 
         assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }
 
     @Test
-    fun removeUnnecessaryLineBreakWithWhiteSpaceBeforeLineBreak()
+    fun removeLineBreakWithWhiteSpaceBeforeLineBreak()
     {
         val inputTokens = arrayListOf(
             UnknownToken("a"),
@@ -63,7 +63,7 @@ class TestRemoveUnnecessaryLineBreaksAfterArrowsParametrized(private val newLine
             UnknownToken("a")
         )
 
-        val actualOutputTokens = RemoveUnnecessaryLineBreaksAfterArrows().format(inputTokens)
+        val actualOutputTokens = RemoveLineBreaksAfterArrows().format(inputTokens)
 
         assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
     }

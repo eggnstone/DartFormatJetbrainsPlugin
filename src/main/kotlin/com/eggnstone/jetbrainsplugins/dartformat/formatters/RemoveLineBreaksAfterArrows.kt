@@ -6,7 +6,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import com.jetbrains.rd.framework.base.deepClonePolymorphic
 
-class RemoveUnnecessaryLineBreaksAfterArrows
+class RemoveLineBreaksAfterArrows
 {
     fun format(inputTokens: ArrayList<IToken>): ArrayList<IToken>
     {

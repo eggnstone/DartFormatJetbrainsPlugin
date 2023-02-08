@@ -11,9 +11,16 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <!--
         <b>Version 1.3.0</b>
         <ul>
-          <li>TODO</li>
+          <li>Indentation can now be turned on/off</li>
+        </ul>
+        <br/>
+        -->
+        <b>Version 1.2.1</b>
+        <ul>
+          <li>Formatting of selected files can now be undone</li>
         </ul>
         <br/>
         <b>Version 1.2.0</b>
@@ -51,8 +58,8 @@
         <br/>
         <b>Planned features:</b>
         <ul>
+            <li>Indentation</li>
             <li>Put braces on new line</li>
-            <li>Better indentation</li>
         </ul>
         <br/>
         Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>

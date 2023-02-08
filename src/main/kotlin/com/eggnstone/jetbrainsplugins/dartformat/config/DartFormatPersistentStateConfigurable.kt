@@ -5,18 +5,30 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
 import java.awt.FlowLayout
+import java.text.NumberFormat
 import javax.swing.JCheckBox
 import javax.swing.JComponent
+import javax.swing.JFormattedTextField
 import javax.swing.JPanel
+import javax.swing.text.NumberFormatter
 
 class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
-    private var removeUnnecessaryCommasCheckbox: JCheckBox? = JCheckBox("Remove unnecessary commas")
-    private var removeUnnecessaryLineBreaksAfterArrowsCheckbox: JCheckBox? = JCheckBox("Remove unnecessary line breaks after arrows")
-
-    private var indentationIsEnabledCheckbox: JCheckBox? = JCheckBox("Indent (currently fixed to 4 spaces)")
-
     private val config: DartFormatConfig? get() = DartFormatPersistentStateComponent.instance?.state
+
+    private var removeUnnecessaryCommasCheckbox: JCheckBox? = JCheckBox("Remove unnecessary commas")
+
+    private var removeLineBreaksAfterArrowsCheckbox: JCheckBox? = JCheckBox("Remove line breaks after arrows")
+
+    private var indentationIsEnabledCheckbox: JCheckBox? = JCheckBox("Indent")
+    private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance()).also {
+        it.minimum = 1
+        it.maximum = 8
+        it.allowsInvalid = false
+    }
+
+    private var indentationSpacesPerLevelField: JFormattedTextField? =
+        JFormattedTextField(indentationSpacesPerLevelFormatter).also { it.text = config!!.indentationSpacesPerLevel.toString() }
 
     override fun apply()
     {
@@ -27,17 +39,29 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         }
 
         config!!.removeUnnecessaryCommas = removeUnnecessaryCommasCheckbox!!.isSelected
-        config!!.removeUnnecessaryLineBreaksAfterArrows = removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected
+
+        config!!.removeLineBreaksAfterArrows = removeLineBreaksAfterArrowsCheckbox!!.isSelected
 
         config!!.indentationIsEnabled = indentationIsEnabledCheckbox!!.isSelected
+
+        indentationSpacesPerLevelField!!.text.toIntOrNull()?.let {
+            if (it in 0..23)
+                config!!.indentationSpacesPerLevel = it
+        }
     }
 
     override fun createComponent(): JComponent
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
+            // removals
             .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeUnnecessaryCommasCheckbox) })
-            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeUnnecessaryLineBreaksAfterArrowsCheckbox) })
-            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(indentationIsEnabledCheckbox) })
+            // line breaks
+            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeLineBreaksAfterArrowsCheckbox) })
+            // indentation
+            /*.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(indentationIsEnabledCheckbox) })
+            .addLabeledComponent("        Spaces:", JPanel(FlowLayout(FlowLayout.LEFT)).also {
+                it.add(indentationSpacesPerLevelField)
+            })*/
 
         return JPanel(BorderLayout()).also { it.add(formBuilder.panel, BorderLayout.NORTH) }
     }
@@ -45,9 +69,11 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun dispose()
     {
         removeUnnecessaryCommasCheckbox = null
-        removeUnnecessaryLineBreaksAfterArrowsCheckbox = null
+
+        removeLineBreaksAfterArrowsCheckbox = null
 
         indentationIsEnabledCheckbox = null
+        indentationSpacesPerLevelField = null
     }
 
     override fun getDisplayName(): String = "DartFormat"
@@ -61,8 +87,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         }
 
         return config!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
-                || config!!.removeUnnecessaryLineBreaksAfterArrows != removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected
+                || config!!.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox!!.isSelected
                 || config!!.indentationIsEnabled != indentationIsEnabledCheckbox!!.isSelected
+                || config!!.indentationSpacesPerLevel != indentationSpacesPerLevelField!!.text.toIntOrNull()
     }
 
     override fun reset()
@@ -74,8 +101,10 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         }
 
         removeUnnecessaryCommasCheckbox!!.isSelected = config!!.removeUnnecessaryCommas
-        removeUnnecessaryLineBreaksAfterArrowsCheckbox!!.isSelected = config!!.removeUnnecessaryLineBreaksAfterArrows
+
+        removeLineBreaksAfterArrowsCheckbox!!.isSelected = config!!.removeLineBreaksAfterArrows
 
         indentationIsEnabledCheckbox!!.isSelected = config!!.indentationIsEnabled
+        indentationSpacesPerLevelField!!.text = config!!.indentationSpacesPerLevel.toString()
     }
 }
