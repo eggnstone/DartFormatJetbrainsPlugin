@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
+import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
@@ -20,6 +21,6 @@ class DartFormatIntegrationTests
         val actualOutputTokens = Formatter().format(inputTokens)
         val actualOutputText = Indenter().indent(actualOutputTokens)
 
-        //TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 }

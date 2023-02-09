@@ -1,6 +1,5 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer
+package com.eggnstone.jetbrainsplugins.dartformat
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import org.junit.Test
 
 class ToolsCoverageTests

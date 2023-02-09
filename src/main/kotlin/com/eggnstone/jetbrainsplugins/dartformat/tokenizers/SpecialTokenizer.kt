@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
+import com.eggnstone.jetbrainsplugins.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
@@ -17,13 +18,13 @@ class SpecialTokenizer
             val previousChar = if (index > 0) input[index - 1] else null
             val nextChar = if (index < input.length - 1) input[index + 1] else null
 
-            if (currentChar == Tools.EQUAL_CHAR && nextChar == Tools.CLOSING_POINTY_BRACKET_CHAR)
+            if (currentChar == Constants.EQUAL_CHAR && nextChar == Constants.CLOSING_POINTY_BRACKET_CHAR)
             {
                 // ignore "=>" now to be treated next round
                 continue
             }
 
-            if (previousChar == Tools.EQUAL_CHAR && currentChar == Tools.CLOSING_POINTY_BRACKET_CHAR)
+            if (previousChar == Constants.EQUAL_CHAR && currentChar == Constants.CLOSING_POINTY_BRACKET_CHAR)
             {
                 if (currentText.isNotEmpty())
                     outputTokens += UnknownToken(currentText)//.substring(0, currentText.length - 1))

@@ -1,4 +1,4 @@
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.Constants
 
 class TestParams
 {
@@ -35,15 +35,15 @@ class TestParams
         )
 
         val specials = arrayOf(
-            Tools.OPENING_ANGLE_BRACKET, Tools.CLOSING_ANGLE_BRACKET,
-            Tools.OPENING_POINTY_BRACKET, Tools.CLOSING_POINTY_BRACKET,
-            Tools.OPENING_ROUND_BRACKET, Tools.CLOSING_ROUND_BRACKET,
-            Tools.OPENING_SQUARE_BRACKET, Tools.CLOSING_SQUARE_BRACKET,
-            Tools.ARROW,
-            Tools.COLON,
-            Tools.COMMA,
-            Tools.PERIOD,
-            Tools.SEMICOLON
+            Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET,
+            Constants.OPENING_POINTY_BRACKET, Constants.CLOSING_POINTY_BRACKET,
+            Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET,
+            Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET,
+            Constants.ARROW,
+            Constants.COLON,
+            Constants.COMMA,
+            Constants.PERIOD,
+            Constants.SEMICOLON
         )
 
         private fun join(array1: Array<Array<String>>, array2: Array<Array<String>>): Array<Array<String>>
