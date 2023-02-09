@@ -1,3 +1,6 @@
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
+
 class TestParams
 {
     companion object
@@ -5,6 +8,7 @@ class TestParams
         val brackets = arrayOf(
                 arrayOf("{", "}", "Angle brackets"),
                 arrayOf("(", ")", "Round brackets"),
+                arrayOf("<", ">", "Pointy brackets"),
                 arrayOf("[", "]", "Square brackets")
         )
 
@@ -24,11 +28,23 @@ class TestParams
 
         val lineBreaksAndBrackets = join(lineBreaks, brackets)
 
-        val lineBreaksAndKeywords = join2(lineBreaks, keywords)
+        val lineBreaksAndKeywords = join(lineBreaks, keywords)
 
         val quotes = arrayOf(
                 arrayOf("\"", "'", "Normal quotes"),
                 arrayOf("'", "\"", "Apostrophe")
+        )
+
+        val specials = arrayOf(
+                Tools.OPENING_ANGLE_BRACKET, Tools.CLOSING_ANGLE_BRACKET,
+                Tools.OPENING_POINTY_BRACKET, Tools.CLOSING_POINTY_BRACKET,
+                Tools.OPENING_ROUND_BRACKET, Tools.CLOSING_ROUND_BRACKET,
+                Tools.OPENING_SQUARE_BRACKET, Tools.CLOSING_SQUARE_BRACKET,
+                Tools.ARROW,
+                Tools.COLON,
+                Tools.COMMA,
+                Tools.PERIOD,
+                Tools.SEMICOLON
         )
 
         private fun join(array1: Array<Array<String>>, array2: Array<Array<String>>): Array<Array<String>>
@@ -62,7 +78,7 @@ class TestParams
             return result
         }
 
-        private fun join2(array1: Array<Array<String>>, array2: Array<String>): Array<Array<String>>
+        private fun join(array1: Array<Array<String>>, array2: Array<String>): Array<Array<String>>
         {
             var result = arrayOf<Array<String>>()
 

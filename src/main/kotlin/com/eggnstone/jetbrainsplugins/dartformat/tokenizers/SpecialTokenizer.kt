@@ -13,8 +13,27 @@ class SpecialTokenizer
         val outputTokens = arrayListOf<IToken>()
 
         var currentText = ""
-        for (currentChar in input)
+        for ((index, currentChar) in input.withIndex())
         {
+            val previousChar = if (index > 0) input[index - 1] else null
+            val nextChar = if (index < input.length - 1) input[index + 1] else null
+
+            if (currentChar == Tools.EQUAL_CHAR && nextChar == Tools.CLOSING_POINTY_BRACKET_CHAR)
+            {
+                // ignore "=>" now to be treated next round
+                continue
+            }
+
+            if (previousChar == Tools.EQUAL_CHAR && currentChar == Tools.CLOSING_POINTY_BRACKET_CHAR)
+            {
+                if (currentText.isNotEmpty())
+                    outputTokens += UnknownToken(currentText)//.substring(0, currentText.length - 1))
+
+                currentText = ""
+                outputTokens += SpecialToken.ARROW
+                continue
+            }
+
             if (Tools.isSpecial(currentChar))
             {
                 if (currentText.isNotEmpty())
@@ -25,19 +44,6 @@ class SpecialTokenizer
 
                 outputTokens += SpecialToken(currentChar.toString())
                 continue
-            }
-
-            if (currentText.isNotEmpty())
-            {
-                val previousChar = currentText.last()
-                if (Tools.isSpecial(currentChar, previousChar))
-                {
-                    outputTokens += UnknownToken(currentText.substring(0, currentText.length - 1))
-                    currentText = ""
-
-                    outputTokens += SpecialToken.ARROW
-                    continue
-                }
             }
 
             currentText += currentChar

@@ -27,7 +27,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
             if (isClosingBracket(currentToken))
             {
                 // TODO: test for multiple brackets
-                val reducedText = currentText.trim().replace(Regex("[})\\]]"), "")
+                val reducedText = currentText.trim().replace(Regex("[})>\\]]"), "")
                 if (reducedText.isEmpty())
                     currentLineLevel--
 
