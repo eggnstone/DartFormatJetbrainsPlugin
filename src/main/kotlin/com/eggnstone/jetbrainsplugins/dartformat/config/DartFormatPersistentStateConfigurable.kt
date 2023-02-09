@@ -6,10 +6,7 @@ import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.text.NumberFormat
-import javax.swing.JCheckBox
-import javax.swing.JComponent
-import javax.swing.JFormattedTextField
-import javax.swing.JPanel
+import javax.swing.*
 import javax.swing.text.NumberFormatter
 
 class DartFormatPersistentStateConfigurable : Configurable, Disposable
@@ -21,14 +18,16 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     private var removeLineBreaksAfterArrowsCheckbox: JCheckBox? = JCheckBox("Remove line breaks after arrows")
 
     private var indentationIsEnabledCheckbox: JCheckBox? = JCheckBox("Indent")
-    private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance()).also {
-        it.minimum = 1
-        it.maximum = 8
-        it.allowsInvalid = false
-    }
+    private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
+            .also {
+                it.minimum = 1
+                it.maximum = 8
+                it.allowsInvalid = false
+            }
 
     private var indentationSpacesPerLevelField: JFormattedTextField? =
-            JFormattedTextField(indentationSpacesPerLevelFormatter).also { it.text = config!!.indentationSpacesPerLevel.toString() }
+            JFormattedTextField(indentationSpacesPerLevelFormatter)
+                    .also { it.text = config!!.indentationSpacesPerLevel.toString() }
 
     override fun apply()
     {
@@ -45,45 +44,53 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         config!!.indentationIsEnabled = indentationIsEnabledCheckbox!!.isSelected
 
         indentationSpacesPerLevelField!!.text.toIntOrNull()?.let {
-            if (it in 0..23)
+            if (it in 1..8)
                 config!!.indentationSpacesPerLevel = it
         }
     }
 
+    @Suppress("JoinDeclarationAndAssignment")
     override fun createComponent(): JComponent
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
-        var panel:JPanel
 
-        // removals
-        panel = JPanel(FlowLayout(FlowLayout.LEFT))
+        formBuilder.addComponent(createRemovalsPanel())
+        formBuilder.addComponent(createLineBreaksPanel())
+        formBuilder.addComponent(createIndentationPanel())
+
+        val panel = JPanel(BorderLayout())
+        panel.add(formBuilder.panel, BorderLayout.NORTH)
+
+        return panel
+    }
+
+    private fun createIndentationPanel(): JComponent
+    {
+        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        panel.add(indentationIsEnabledCheckbox)
+        panel.add(indentationSpacesPerLevelField)
+        panel.add(JLabel("spaces"))
+
+        return panel
+    }
+
+    private fun createLineBreaksPanel(): JComponent
+    {
+        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        panel.add(removeLineBreaksAfterArrowsCheckbox)
+
+        return panel
+    }
+
+    private fun createRemovalsPanel(): JComponent
+    {
+        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+
         panel.add(removeUnnecessaryCommasCheckbox)
-        formBuilder.addComponent(panel)
 
-        // line breaks
-        formBuilder.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also
-        {
-            it.add(removeLineBreaksAfterArrowsCheckbox)
-        })
-
-        // indentation
-        formBuilder.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also
-        {
-            it.add(indentationIsEnabledCheckbox)
-            it.add(JPanel(FlowLayout(FlowLayout.LEFT)).also
-            {
-                it.add(indentationSpacesPerLevelField)
-            })
-        })
-
-        formBuilder.addLabeledComponent("        Spaces:", JPanel(FlowLayout(FlowLayout.LEFT)).also
-        {
-            it.add(indentationSpacesPerLevelField)
-        })
-
-        return JPanel(BorderLayout()).also        {
-            it.add(formBuilder.panel, BorderLayout.NORTH)
-        }
+        return panel
     }
 
     override fun dispose()
