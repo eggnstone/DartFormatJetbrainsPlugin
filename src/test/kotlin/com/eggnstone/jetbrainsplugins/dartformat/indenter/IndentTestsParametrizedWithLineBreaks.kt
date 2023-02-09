@@ -44,10 +44,10 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             UnknownToken("END")
         )
         val expectedOutputText = "void main()$newLine" +
-                "{$newLine" +
-                "    runApp(const MyApp());$newLine" +
-                "}$newLine" +
-                "END"
+            "{$newLine" +
+            "    runApp(const MyApp());$newLine" +
+            "}$newLine" +
+            "END"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -76,9 +76,9 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             SpecialToken("}")
         )
         val expectedOutputText = "void main()$newLine" +
-                "{$newLine" +
-                "    runApp(const MyApp());$newLine" +
-                "}"
+            "{$newLine" +
+            "    runApp(const MyApp());$newLine" +
+            "}"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -96,9 +96,9 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine)
         )
         val expectedOutputText = "Text {$newLine" +
-                "    Text$newLine" +
-                newLine +
-                "    Text$newLine"
+            "    Text$newLine" +
+            newLine +
+            "    Text$newLine"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

@@ -25,8 +25,8 @@ class TokenizeTestsParametrized(private val keyword: String)
     {
         val inputText = "$keyword xyz"
         val expectedTokens = arrayListOf(
-                KeywordToken(keyword),
-                UnknownToken(" xyz")
+            KeywordToken(keyword),
+            UnknownToken(" xyz")
         )
 
         val actualTokens = KeywordTokenizer().tokenize(inputText)
@@ -39,9 +39,9 @@ class TokenizeTestsParametrized(private val keyword: String)
     {
         val inputText = "abc $keyword xyz"
         val expectedTokens = arrayListOf(
-                UnknownToken("abc "),
-                KeywordToken(keyword),
-                UnknownToken(" xyz")
+            UnknownToken("abc "),
+            KeywordToken(keyword),
+            UnknownToken(" xyz")
         )
 
         val actualTokens = KeywordTokenizer().tokenize(inputText)
@@ -54,8 +54,8 @@ class TokenizeTestsParametrized(private val keyword: String)
     {
         val inputText = "abc $keyword"
         val expectedTokens = arrayListOf(
-                UnknownToken("abc "),
-                KeywordToken(keyword)
+            UnknownToken("abc "),
+            KeywordToken(keyword)
         )
 
         val actualTokens = KeywordTokenizer().tokenize(inputText)
@@ -69,9 +69,9 @@ class TokenizeTestsParametrized(private val keyword: String)
     {
         val inputText = "($keyword)"
         val expectedTokens = arrayListOf(
-                UnknownToken("("),
-                KeywordToken(keyword),
-                UnknownToken(")")
+            UnknownToken("("),
+            KeywordToken(keyword),
+            UnknownToken(")")
         )
 
         val actualTokens = KeywordTokenizer().tokenize(inputText)
@@ -84,7 +84,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     {
         val inputText = "_$keyword)"
         val expectedTokens = arrayListOf(
-                UnknownToken("_$keyword)")
+            UnknownToken("_$keyword)")
         )
 
         val actualTokens = KeywordTokenizer().tokenize(inputText)

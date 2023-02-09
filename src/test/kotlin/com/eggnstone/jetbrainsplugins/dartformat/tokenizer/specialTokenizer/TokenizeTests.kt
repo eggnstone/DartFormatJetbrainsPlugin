@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.specialTokenizer
 
+import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.SpecialTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
@@ -10,7 +11,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeTestsParametrized(private val special:String)
+class TokenizeTestsParametrized(private val special: String)
 {
     companion object
     {
@@ -24,8 +25,8 @@ class TokenizeTestsParametrized(private val special:String)
     {
         val inputText = "${special}z"
         val expectedTokens = arrayListOf(
-                SpecialToken(special),
-                UnknownToken("z")
+            SpecialToken(special),
+            UnknownToken("z")
         )
 
         val actualTokens = SpecialTokenizer().tokenize(inputText)
@@ -38,9 +39,9 @@ class TokenizeTestsParametrized(private val special:String)
     {
         val inputText = "a${special}z"
         val expectedTokens = arrayListOf(
-                UnknownToken("a"),
-                SpecialToken(special),
-                UnknownToken("z")
+            UnknownToken("a"),
+            SpecialToken(special),
+            UnknownToken("z")
         )
 
         val actualTokens = SpecialTokenizer().tokenize(inputText)
@@ -53,8 +54,8 @@ class TokenizeTestsParametrized(private val special:String)
     {
         val inputText = "a${special}"
         val expectedTokens = arrayListOf(
-                UnknownToken("a"),
-                SpecialToken(special)
+            UnknownToken("a"),
+            SpecialToken(special)
         )
 
         val actualTokens = SpecialTokenizer().tokenize(inputText)

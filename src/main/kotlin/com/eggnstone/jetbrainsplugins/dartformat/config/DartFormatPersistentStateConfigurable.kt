@@ -19,15 +19,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     private var indentationIsEnabledCheckbox: JCheckBox? = JCheckBox("Indent")
     private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
-            .also {
-                it.minimum = 1
-                it.maximum = 8
-                it.allowsInvalid = false
-            }
+        .also {
+            it.minimum = 1
+            it.maximum = 8
+            it.allowsInvalid = false
+        }
 
     private var indentationSpacesPerLevelField: JFormattedTextField? =
-            JFormattedTextField(indentationSpacesPerLevelFormatter)
-                    .also { it.text = config!!.indentationSpacesPerLevel.toString() }
+        JFormattedTextField(indentationSpacesPerLevelFormatter)
+            .also { it.text = config!!.indentationSpacesPerLevel.toString() }
 
     override fun apply()
     {
@@ -114,9 +114,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         }
 
         return config!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
-                || config!!.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox!!.isSelected
-                || config!!.indentationIsEnabled != indentationIsEnabledCheckbox!!.isSelected
-                || config!!.indentationSpacesPerLevel != indentationSpacesPerLevelField!!.text.toIntOrNull()
+            || config!!.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox!!.isSelected
+            || config!!.indentationIsEnabled != indentationIsEnabledCheckbox!!.isSelected
+            || config!!.indentationSpacesPerLevel != indentationSpacesPerLevelField!!.text.toIntOrNull()
     }
 
     override fun reset()

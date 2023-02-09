@@ -22,16 +22,16 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
     fun indentAfterKeyword()
     {
         val inputTokens = arrayListOf(
-                KeywordToken(keyword),
-                LineBreakToken(newLine),
-                KeywordToken(keyword),
-                LineBreakToken(newLine),
-                UnknownToken("text"),
-                SpecialToken(";")
+            KeywordToken(keyword),
+            LineBreakToken(newLine),
+            KeywordToken(keyword),
+            LineBreakToken(newLine),
+            UnknownToken("text"),
+            SpecialToken(";")
         )
         val expectedOutputText = "$keyword$newLine" +
-                "    $keyword$newLine" +
-                "        text;"
+            "    $keyword$newLine" +
+            "        text;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -43,26 +43,26 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
     fun closingBraceShouldDecreaseIndentationAtTextEnd()
     {
         val inputTokens = arrayListOf(
-                UnknownToken("void main"),
-                SpecialToken("("),
-                SpecialToken(")"),
-                LineBreakToken(newLine),
-                SpecialToken("{"),
-                LineBreakToken(newLine),
-                UnknownToken("runApp"),
-                SpecialToken("("),
-                UnknownToken("const MyApp"),
-                SpecialToken("("),
-                SpecialToken(")"),
-                SpecialToken(")"),
-                SpecialToken(";"),
-                LineBreakToken(newLine),
-                SpecialToken("}")
+            UnknownToken("void main"),
+            SpecialToken("("),
+            SpecialToken(")"),
+            LineBreakToken(newLine),
+            SpecialToken("{"),
+            LineBreakToken(newLine),
+            UnknownToken("runApp"),
+            SpecialToken("("),
+            UnknownToken("const MyApp"),
+            SpecialToken("("),
+            SpecialToken(")"),
+            SpecialToken(")"),
+            SpecialToken(";"),
+            LineBreakToken(newLine),
+            SpecialToken("}")
         )
         val expectedOutputText = "void main()$newLine" +
-                "{$newLine" +
-                "    runApp(const MyApp());$newLine" +
-                "}"
+            "{$newLine" +
+            "    runApp(const MyApp());$newLine" +
+            "}"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -74,15 +74,15 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
     fun doNotIndentEmptyLines()
     {
         val inputTokens = arrayListOf(
-                UnknownToken("Text"), WhiteSpaceToken(" "), SpecialToken.OPENING_ANGLE_BRACKET, LineBreakToken(newLine),
-                WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine),
-                LineBreakToken(newLine),
-                WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine)
+            UnknownToken("Text"), WhiteSpaceToken(" "), SpecialToken.OPENING_ANGLE_BRACKET, LineBreakToken(newLine),
+            WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine),
+            LineBreakToken(newLine),
+            WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine)
         )
         val expectedOutputText = "Text {$newLine" +
-                "    Text$newLine" +
-                newLine +
-                "    Text$newLine"
+            "    Text$newLine" +
+            newLine +
+            "    Text$newLine"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

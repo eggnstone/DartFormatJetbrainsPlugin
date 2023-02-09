@@ -1,7 +1,5 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-
 class Tools
 {
     companion object
@@ -34,10 +32,10 @@ class Tools
         fun containsLineBreak(text: String): Boolean = text.contains("\n") || text.contains("\r")
 
         fun isKeyword(s: String): Boolean = arrayOf(
-                "do",
-                "for",
-                "if",
-                "while"
+            "do",
+            "for",
+            "if",
+            "while"
         ).contains(s)
 
         fun isSpecial(c: Char): Boolean = ".:;,(){}[]<>".contains(c)

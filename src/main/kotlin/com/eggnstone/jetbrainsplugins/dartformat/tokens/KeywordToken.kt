@@ -1,7 +1,5 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
-
 class KeywordToken(val text: String) : IToken
 {
     override fun equals(other: Any?): Boolean = other is KeywordToken && text == other.text

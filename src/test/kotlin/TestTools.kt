@@ -37,8 +37,8 @@ class TestTools
                     continue
 
                 throw ShortAssertError(
-                        "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Difference at position $i."
+                    "\nExpected: \"$expected\"\n     but: was \"$actual\"",
+                    "Difference at position $i."
                 )
             }
 

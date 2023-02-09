@@ -17,8 +17,8 @@ class KeywordTokenizer
         {
             if (Regex("[a-zA-Z0-9_]").matches(currentChar.toString()))
             {
-                currentText += currentChar;
-                currentWord += currentChar;
+                currentText += currentChar
+                currentWord += currentChar
                 continue
             }
 
@@ -32,8 +32,8 @@ class KeywordTokenizer
                 currentText = ""
             }
 
-            currentText += currentChar;
-            currentWord = "";
+            currentText += currentChar
+            currentWord = ""
         }
 
         println("Testing $currentWord")

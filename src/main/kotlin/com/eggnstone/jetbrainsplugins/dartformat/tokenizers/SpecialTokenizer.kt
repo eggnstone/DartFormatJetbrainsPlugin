@@ -2,7 +2,6 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.KeywordToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
