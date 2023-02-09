@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class CoverageForWhiteSpaceToken
+class WhiteSpaceTokenCoverageTests
 {
     @Test
     fun testHashCode() = assertThat(WhiteSpaceToken("a").hashCode(), equalTo("a".hashCode()))

@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestRemoveLineBreaksAfterArrowsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class RemoveLineBreaksAfterArrowsTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {

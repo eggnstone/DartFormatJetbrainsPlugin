@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class CoverageForSpecialToken
+class SpecialTokenCoverageTests
 {
     @Test
     fun testHashCode() = assertThat(SpecialToken("a").hashCode(), equalTo("a".hashCode()))

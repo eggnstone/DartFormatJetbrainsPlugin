@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class CoverageForEndOfLineCommentToken
+class EndOfLineCommentTokenCoverageTests
 {
     @Test
     fun testHashCode() = assertThat(EndOfLineCommentToken("a").hashCode(), equalTo("a".hashCode()))

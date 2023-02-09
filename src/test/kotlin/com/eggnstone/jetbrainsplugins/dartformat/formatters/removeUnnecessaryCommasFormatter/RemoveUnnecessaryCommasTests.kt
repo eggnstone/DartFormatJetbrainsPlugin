@@ -9,7 +9,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class TestRemoveUnnecessaryCommas
+class RemoveUnnecessaryCommasTests
 {
     @Test
     fun removeUnnecessaryComma()

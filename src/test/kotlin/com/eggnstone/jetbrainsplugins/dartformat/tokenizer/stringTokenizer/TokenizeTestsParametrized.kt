@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestTokenizeParametrized(private val delim1: String, private val delim2: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class TokenizeTestsParametrized(private val delim1: String, private val delim2: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {

@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class CoverageForMultiLineCommentToken
+class MultiLineCommentTokenCoverageTests
 {
     @Test
     fun testHashCode() = assertThat(MultiLineCommentToken("a").hashCode(), equalTo("a".hashCode()))

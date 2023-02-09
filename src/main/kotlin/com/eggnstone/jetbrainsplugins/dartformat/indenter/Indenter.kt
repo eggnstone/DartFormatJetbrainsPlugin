@@ -17,14 +17,14 @@ class Indenter(private val spacesPerLevel: Int = 4)
         var nextLineLevel = 0
         for (currentToken in tokens)
         {
-            if (currentToken is SpecialToken && currentToken.isOpeningBracket)
+            if (isOpeningBracket(currentToken))
             {
                 currentText += currentToken.recreate()
                 nextLineLevel++
                 continue
             }
 
-            if (currentToken is SpecialToken && currentToken.isClosingBracket)
+            if (isClosingBracket(currentToken))
             {
                 // TODO: test for multiple brackets
                 val reducedText = currentText.trim().replace(Regex("[})\\]]"), "")
@@ -77,4 +77,8 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
         return pad + text
     }
+
+    private fun isClosingBracket(currentToken: IToken): Boolean = currentToken is SpecialToken && currentToken.isClosingBracket
+
+    private fun isOpeningBracket(currentToken: IToken): Boolean = currentToken is SpecialToken && currentToken.isOpeningBracket
 }

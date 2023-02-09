@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestIndentParametrizedWithLineBreaks(private val newLine: String, @Suppress("UNUSED_PARAMETER") paramName: String)
+class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppress("UNUSED_PARAMETER") paramName: String)
 {
     companion object
     {

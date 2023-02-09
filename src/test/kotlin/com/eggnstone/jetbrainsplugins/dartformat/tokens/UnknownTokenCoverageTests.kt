@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class CoverageForUnknownToken
+class UnknownTokenCoverageTests
 {
     @Test
     fun testEquals() = assertThat(UnknownToken("a") == UnknownToken("a"), equalTo(true))
