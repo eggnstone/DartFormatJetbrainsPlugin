@@ -8,6 +8,13 @@ class TestParams
             arrayOf("[", "]", "Square brackets")
         )
 
+        val keywords = arrayOf(
+                "do",
+                "for",
+                "if",
+                "while"
+        )
+
         val lineBreaks = arrayOf(
             arrayOf("\n", "\\n"),
             arrayOf("\n\r", "\\n\\r"),

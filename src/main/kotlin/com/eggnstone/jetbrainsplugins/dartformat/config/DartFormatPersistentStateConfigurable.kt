@@ -28,7 +28,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     }
 
     private var indentationSpacesPerLevelField: JFormattedTextField? =
-        JFormattedTextField(indentationSpacesPerLevelFormatter).also { it.text = config!!.indentationSpacesPerLevel.toString() }
+            JFormattedTextField(indentationSpacesPerLevelFormatter).also { it.text = config!!.indentationSpacesPerLevel.toString() }
 
     override fun apply()
     {
@@ -53,17 +53,37 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun createComponent(): JComponent
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
-            // removals
-            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeUnnecessaryCommasCheckbox) })
-            // line breaks
-            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(removeLineBreaksAfterArrowsCheckbox) })
-            // indentation
-            .addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(indentationIsEnabledCheckbox) })
-            .addLabeledComponent("        Spaces:", JPanel(FlowLayout(FlowLayout.LEFT)).also {
+        var panel:JPanel
+
+        // removals
+        panel = JPanel(FlowLayout(FlowLayout.LEFT))
+        panel.add(removeUnnecessaryCommasCheckbox)
+        formBuilder.addComponent(panel)
+
+        // line breaks
+        formBuilder.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also
+        {
+            it.add(removeLineBreaksAfterArrowsCheckbox)
+        })
+
+        // indentation
+        formBuilder.addComponent(JPanel(FlowLayout(FlowLayout.LEFT)).also
+        {
+            it.add(indentationIsEnabledCheckbox)
+            it.add(JPanel(FlowLayout(FlowLayout.LEFT)).also
+            {
                 it.add(indentationSpacesPerLevelField)
             })
+        })
 
-        return JPanel(BorderLayout()).also { it.add(formBuilder.panel, BorderLayout.NORTH) }
+        formBuilder.addLabeledComponent("        Spaces:", JPanel(FlowLayout(FlowLayout.LEFT)).also
+        {
+            it.add(indentationSpacesPerLevelField)
+        })
+
+        return JPanel(BorderLayout()).also        {
+            it.add(formBuilder.panel, BorderLayout.NORTH)
+        }
     }
 
     override fun dispose()

@@ -28,7 +28,7 @@ class DartFormatIntegrationTestsParametrized(private val newLine: String, @Suppr
     fun testEndOfLineCommentAtTextMiddle()
     {
         val inputText = "abc//this is an end of line comment${newLine}def"
-        val expectedOutputTokens = arrayListOf<IToken>(
+        val expectedOutputTokens = arrayListOf(
             UnknownToken("abc"),
             EndOfLineCommentToken("this is an end of line comment"),
             LineBreakToken(newLine),

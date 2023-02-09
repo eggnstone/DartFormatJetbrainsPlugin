@@ -6,6 +6,13 @@ class Tools
     {
         fun containsLineBreak(text: String): Boolean = text.contains("\n") || text.contains("\r")
 
+        fun isKeyword(s:String): Boolean = arrayOf(
+                "do",
+                "for",
+                "if",
+                "while"
+        ).contains(s)
+
         fun isSpecial(c: Char): Boolean = ".:;,(){}[]".contains(c)
 
         fun isSpecial(c: Char, previousChar: Char): Boolean = previousChar == '=' && c == '>'

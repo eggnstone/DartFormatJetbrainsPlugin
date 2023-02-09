@@ -36,36 +36,9 @@ class TestTools
                 if (actual[i] == expected[i])
                     continue
 
-                var startPos = i
-                var endPos1 = i
-                var endPos2 = i
-
-                while (startPos > 0 && actual[startPos] != '\n' && actual[startPos] != '\r')
-                    startPos--
-                while (startPos > 0 && (actual[startPos] == '\n' || actual[startPos] == '\r'))
-                    startPos--
-                while (startPos > 0 && actual[startPos] != '\n' && actual[startPos] != '\r')
-                    startPos--
-
-                while (endPos1 < actual.length && actual[endPos1] != '\n' && actual[endPos1] != '\r')
-                    endPos1++
-                while (endPos1 < actual.length && (actual[endPos1] == '\n' || actual[endPos1] == '\r'))
-                    endPos1++
-                while (endPos1 < actual.length && actual[endPos1] != '\n' && actual[endPos1] != '\r')
-                    endPos1++
-
-                while (endPos2 < expected.length && expected[endPos2] != '\n' && expected[endPos2] != '\r')
-                    endPos2++
-                while (endPos2 < expected.length && (expected[endPos2] == '\n' || expected[endPos2] == '\r'))
-                    endPos2++
-                while (endPos2 < expected.length && expected[endPos2] != '\n' && expected[endPos2] != '\r')
-                    endPos2++
-
-                val actualShort = actual.substring(startPos, endPos1)
-                val expectedShort = expected.substring(startPos, endPos2)
                 throw ShortAssertError(
-                    "\nExpected: \"$expectedShort\"\n     but: was \"$actualShort\"",
-                    "Difference at position $i."
+                        "\nExpected: \"$expected\"\n     but: was \"$actual\"",
+                        "Difference at position $i."
                 )
             }
 
