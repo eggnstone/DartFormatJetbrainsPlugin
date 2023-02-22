@@ -16,5 +16,5 @@ class UnknownTokenCoverageTests
     fun testRecreate() = assertThat(UnknownToken("a").recreate(), equalTo("a"))
 
     @Test
-    fun testToString() = assertThat(UnknownToken("a").toString(), equalTo("Unknown(a)"))
+    fun testToString() = assertThat(UnknownToken("a").toString(), equalTo("Unknown(\"a\")"))
 }

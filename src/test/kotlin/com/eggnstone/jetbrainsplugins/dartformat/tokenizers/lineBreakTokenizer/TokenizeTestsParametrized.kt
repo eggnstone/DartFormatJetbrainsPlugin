@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.lineBreakTokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizers.lineBreakTokenizer
 
 import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.LineBreakTokenizer

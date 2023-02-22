@@ -6,7 +6,9 @@ class TestTools
 {
     companion object
     {
-        fun <T> assertThat(actual: T, matcher: Matcher<in T>)
+        fun <T> assertThat(actual: T, matcher: Matcher<in T>) = assertThat("", actual, matcher, 2)
+
+        fun <T> assertThat(reason: String, actual: T, matcher: Matcher<in T>, stackPos: Int = 2)
         {
             if (matcher.matches(actual))
                 return
@@ -14,7 +16,7 @@ class TestTools
             val description: Description = StringDescription()
             description.appendText("\nExpected: ").appendDescriptionOf(matcher).appendText("\n     but: ")
             matcher.describeMismatch(actual, description)
-            throw ShortAssertError(description.toString(), "")
+            throw ShortAssertError(description.toString(), if (reason.isEmpty()) "" else "Reason: $reason", stackPos)
         }
 
         fun assertAreEqual(actual: String, expected: String)
@@ -23,10 +25,10 @@ class TestTools
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
             {
                 if (actual.length > expected.length)
-                    throw ShortAssertError("", "Actual is longer than expected.")
+                    throw ShortAssertError("", "Actual is longer than expected.", 1)
 
                 if (actual.length < expected.length)
-                    throw ShortAssertError("", "Actual is shorter than expected.")
+                    throw ShortAssertError("", "Actual is shorter than expected.", 1)
 
                 return
             }
@@ -38,7 +40,8 @@ class TestTools
 
                 throw ShortAssertError(
                     "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                    "Difference at position $i."
+                    "Difference at position $i.",
+                    1
                 )
             }
 

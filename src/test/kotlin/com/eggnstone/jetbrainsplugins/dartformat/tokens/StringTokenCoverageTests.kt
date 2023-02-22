@@ -10,5 +10,8 @@ class StringTokenCoverageTests
     fun testHashCode() = assertThat(StringToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
-    fun testToString() = assertThat(StringToken("a").toString(), equalTo("String(a)"))
+    fun testToString() = assertThat(StringToken("a").toString(), equalTo("String(\"a\")"))
+
+    @Test
+    fun testToStringNotClosed() = assertThat(StringToken("a", isClosed = false).toString(), equalTo("String(\"a\", isClosed=false)"))
 }

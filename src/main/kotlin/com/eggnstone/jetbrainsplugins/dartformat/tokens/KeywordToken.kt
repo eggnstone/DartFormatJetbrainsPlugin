@@ -8,5 +8,5 @@ class KeywordToken(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "Keyword($text))"
+    override fun toString(): String = "Keyword(\"$text\")"
 }

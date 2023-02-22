@@ -1,56 +1,272 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
+import com.eggnstone.jetbrainsplugins.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import java.util.*
 
 class Indenter(private val spacesPerLevel: Int = 4)
 {
-    fun indent(tokens: ArrayList<IToken>): String
+    fun indent(inputTokens: List<IToken>): String
     {
         val sb = StringBuilder()
 
-        var currentLineLevel = 0
-        var currentText = ""
-        var nextLineLevel = 0
-        for (currentToken in tokens)
+        var tokens = inputTokens
+
+        while (tokens.isNotEmpty())
         {
-            if (isOpeningBracket(currentToken))
-            {
-                currentText += currentToken.recreate()
-                nextLineLevel++
-                continue
-            }
+            val result = indentTokens(tokens)
+            for (line in result.lines)
+                sb.append(line)
 
-            if (isClosingBracket(currentToken))
-            {
-                // TODO: test for multiple brackets
-                val reducedText = currentText.trim().replace(Regex("[})>\\]]"), "")
-                if (reducedText.isEmpty())
-                    currentLineLevel--
-
-                currentText += currentToken.recreate()
-                nextLineLevel--
-                continue
-            }
-
-            if (currentToken is LineBreakToken)
-            {
-                sb.append(indent(currentText, currentLineLevel) + currentToken.recreate())
-
-                currentLineLevel = nextLineLevel
-                currentText = ""
-                continue
-            }
-
-            if (currentText.isNotEmpty() || currentToken !is WhiteSpaceToken)
-                currentText += currentToken.recreate()
+            tokens = result.remainingTokens
         }
 
-        if (currentText.isNotEmpty())
-            sb.append(indent(currentText, currentLineLevel))
+        return sb.toString()
+    }
+
+    private fun indentTokens(inputTokens: List<IToken>): IndentResult
+    {
+        println("indentTokens: ${Tools.toString(inputTokens)}")
+
+        val lines = arrayListOf<String>()
+        val remainingTokens = inputTokens.toMutableList()
+
+        var currentLevel = 0
+        var currentLine = ""
+        val currentStack = Stack<IIndent>()
+        val newStack = Stack<IIndent>()
+
+        for (token in inputTokens)
+        {
+            //println("  token: $token")
+            remainingTokens.removeAt(0)
+
+            val wasCurrentLineEmpty = currentLine.isEmpty()
+
+            // Remove leading white space
+            if (token is WhiteSpaceToken)
+            {
+                if (wasCurrentLineEmpty)
+                {
+                    println("  Token is white space & line is empty => ignore")
+                    println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
+                    println("    New stack:     \"" + Tools.toString(newStack) + "\"")
+                    println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    continue
+                }
+            }
+
+            currentLine += token.recreate()
+
+            if (token is KeywordToken)
+            {
+                if (wasCurrentLineEmpty)
+                {
+                    println("  Token is keyword => push keyword to new stack")
+                    newStack.push(KeywordIndent(token.text, -1))
+                }
+
+                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
+                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
+                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                continue
+            }
+
+            if (token is SpecialToken)
+            {
+                //var bracketType : BracketIndent? = null
+                var openingBracket = ""
+                var closingBracket = ""
+                when (token.text)
+                {
+                    Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET ->
+                    {
+                        //bracketType = BracketIndent.ANGLE
+                        openingBracket = Constants.OPENING_ANGLE_BRACKET
+                        closingBracket = Constants.CLOSING_ANGLE_BRACKET
+                    }
+
+                    Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET ->
+                    {
+                        //bracketType = BracketIndent.CURLY
+                        openingBracket = Constants.OPENING_CURLY_BRACKET
+                        closingBracket = Constants.CLOSING_CURLY_BRACKET
+                    }
+
+                    Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET ->
+                    {
+                        //bracketType = BracketIndent.ROUND
+                        openingBracket = Constants.OPENING_ROUND_BRACKET
+                        closingBracket = Constants.CLOSING_ROUND_BRACKET
+                    }
+
+                    Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET ->
+                    {
+                        //bracketType = BracketIndent.SQUARE
+                        openingBracket = Constants.OPENING_SQUARE_BRACKET
+                        closingBracket = Constants.CLOSING_SQUARE_BRACKET
+                    }
+                }
+
+                if (token.text == openingBracket)
+                {
+                    println("  Token is $openingBracket")
+
+                    if (currentStack.isEmpty())
+                    {
+                        println("    Current stack is empty => push $openingBracket to new stack")
+                        newStack.push(BracketIndent(openingBracket, -1))
+                    }
+                    else
+                    {
+                        println("    Current stack is not empty")
+                        if (currentStack.peek() is KeywordIndent)
+                        {
+                            println("      Current stack ends with keyword => replace with $openingBracket")
+                            currentStack.pop()
+                            newStack.push(BracketIndent(openingBracket, -1))
+                        }
+                        else
+                        {
+                            println("      Current stack does not end with keyword => push $openingBracket to new stack")
+                            newStack.push(BracketIndent(openingBracket, -1))
+                        }
+                    }
+
+                    println("      Current stack: \"" + Tools.toString(currentStack) + "\"")
+                    println("      New stack:     \"" + Tools.toString(newStack) + "\"")
+                    println("      Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    continue
+                }
+
+                if (token.text == closingBracket)
+                {
+                    println("  Token is $closingBracket")
+                    if (wasCurrentLineEmpty)
+                    {
+                        println("    Current line is empty")
+                        val currentStackTop = currentStack.lastOrNull()
+                        if (currentStackTop is BracketIndent && currentStackTop.text == openingBracket)
+                        {
+                            println("      Current stack ends with $openingBracket => remove $openingBracket")
+                            currentStack.pop()
+                        }
+                    }
+                    else
+                    {
+                        println("    Current line is not empty")
+
+                        val newStackTop = newStack.lastOrNull()
+                        if (newStackTop is BracketIndent && newStackTop.text == openingBracket)
+                        {
+                            println("        New stack ends with $openingBracket => remove $openingBracket")
+                            newStack.pop()
+                        }
+                        else
+                        {
+                            println("        New stack does not end with $openingBracket")
+
+                            val currentStackTop = currentStack.lastOrNull()
+                            if (currentStackTop is BracketIndent && currentStackTop.text == openingBracket)
+                            {
+                                println("      Current stack ends with $openingBracket => remove $openingBracket")
+                                currentStack.pop()
+                                // TODO: modify new stack level
+                            }
+                            else
+                            {
+                                println("      Current stack does not end with $openingBracket")
+                            }
+                        }
+                    }
+
+                    println("        Current stack: \"" + Tools.toString(currentStack) + "\"")
+                    println("        New stack:     \"" + Tools.toString(newStack) + "\"")
+                    println("        Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    continue
+                }
+            }
+
+            if (token is LineBreakToken)
+            {
+                println("  Token is line break")
+                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
+                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
+
+                val currentStackTop = currentStack.lastOrNull()
+                val currentLevel2 = currentStackTop?.level ?: 0
+                val line = indentText(currentLine, currentLevel2)
+                println("    => \"${Tools.toDisplayString(line)}\"")
+                lines += line
+
+                currentLine = ""
+
+                var currentStackLevelModifier = 0
+                val newStackTop = newStack.lastOrNull()
+                if (newStackTop != null)
+                {
+                    if (newStack.size >= 2 && newStack[0] is KeywordIndent)
+                    {
+                        println("    New stack starts with keyword and has more entries => remove keyword")
+                        newStack.removeAt(0)
+                    }
+                    else if (currentStackTop is KeywordIndent && newStack.size >= 1 && newStack[0] is BracketIndent)
+                    {
+                        println("    Current stack ends with keyword and new stack starts with bracket => remove keyword")
+                        currentStack.removeLast()
+                        currentStackLevelModifier--
+                    }
+                    else
+                        println("    No stack modification")
+
+                    for (item in newStack)
+                        when (item)
+                        {
+                            is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2+1+currentStackLevelModifier)
+                            is BracketIndent -> currentStack += BracketIndent(item.text, currentLevel2+1+currentStackLevelModifier)
+                            else -> TODO()
+                        }
+
+                    //currentStack += newStack
+                    newStack.clear()
+                }
+
+                val currentStackTop2 = currentStack.lastOrNull()
+                currentLevel = (currentStackTop2?.level ?: 0) + currentStackLevelModifier
+
+                println("\n    Current stack: \"" + Tools.toString(currentStack) + "\"")
+                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                println("    Next level:    $currentLevel\n")
+                continue
+            }
+
+            println("  Token is other: ${token::class.simpleName}")
+        }
+
+        if (currentLine.isNotEmpty())
+            lines += indentText(currentLine, currentStack.size)
+
+        return IndentResult(lines, remainingTokens)
+    }
+
+    fun indent2(inputTokens: List<IToken>): String
+    {
+        val sb = StringBuilder()
+
+        var tokens = inputTokens
+        var stack = listOf<IIndent>()
+
+        while (tokens.isNotEmpty())
+        {
+            val result = indentTokens(tokens)//, stack)
+            for (line in result.lines)
+                sb.append(line)//, stack.size))
+            //sb.append(indentText(line))//, stack.size))
+
+            tokens = result.remainingTokens
+            //stack = result.newStack
+        }
 
         return sb.toString()
     }
@@ -65,20 +281,108 @@ class Indenter(private val spacesPerLevel: Int = 4)
         return sb.toString()
     }
 
-    private fun indent(text: String, level: Int): String
+    private fun indentText(text: String, level: Int): String
     {
-        if (Tools.containsLineBreak(text))
-            throw Exception("containsLineBreak: ${Tools.toDisplayString(text)}")
+        //println("indentText: \"${Tools.toDisplayString(text)}\", level: $level")
 
         if (text.isBlank())
-            return ""
+        {
+            println("indentText: \"${Tools.toDisplayString(text)}\", level: $level is BLANK")
+            return text
+        }
+
+        if (level < 0)
+            throw Exception("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
 
         val pad = " ".repeat(level * spacesPerLevel)
 
-        return pad + text
+        //println("pad:    $pad<")
+        //println("text:   ${Tools.toDisplayString(text)}<")
+        val result = pad + text
+        //println("result: ${Tools.toDisplayString(result)}<")
+        return result
     }
 
-    private fun isClosingBracket(currentToken: IToken): Boolean = currentToken is SpecialToken && currentToken.isClosingBracket
+    private fun indentTokens2(inputTokens: List<IToken>): IndentResult
+    {
+        val lines = arrayListOf<String>()
+        val remainingTokens = inputTokens.toMutableList()
 
-    private fun isOpeningBracket(currentToken: IToken): Boolean = currentToken is SpecialToken && currentToken.isOpeningBracket
+        var currentLine = ""
+        var currentLineBracketCount = 0
+        var currentLineHasOnlyClosingBrackets = true
+        var currentLineLevel = 0
+        var currentLineStartsWithKeyword = false
+        var isInConditionalExpression = false
+        var nextLineLevel = 0
+        for (token in inputTokens)
+        {
+            //println("  token: $token")
+            remainingTokens.removeAt(0)
+
+            // Remove leading white space
+            if (currentLine.isEmpty() && token is WhiteSpaceToken)
+                continue
+
+            if (currentLine.isEmpty() && token is KeywordToken)
+            {
+                currentLineStartsWithKeyword = true
+            }
+
+            currentLine += token.recreate()
+
+            //if (token == SpecialToken.OPENING_CURLY_BRACKET)
+            if (token is SpecialToken && token.isOpeningBracket)
+            {
+                nextLineLevel++
+            }
+
+            if (token is SpecialToken && token.isClosingBracket)
+            {
+                if (currentLineHasOnlyClosingBrackets)
+                    currentLineLevel--
+
+                nextLineLevel--
+            }
+            else
+                currentLineHasOnlyClosingBrackets = false
+
+
+            if (token is LineBreakToken)
+            {
+                println(".   token is LineBreakToken")
+                println("    currentLineHasOnlyClosingBrackets: $currentLineHasOnlyClosingBrackets")
+                println("    currentLineStartsWithKeyword: $currentLineStartsWithKeyword")
+                println("    currentLineLevel: $currentLineLevel")
+                println("    nextLineLevel:    $nextLineLevel")
+
+                val line = indentText(currentLine, currentLineLevel)
+                println("    line: ${Tools.toDisplayString(line)}")
+                lines += line
+
+                currentLineBracketCount = 0
+                currentLine = ""
+                currentLineHasOnlyClosingBrackets = true
+                currentLineLevel = nextLineLevel
+                currentLineStartsWithKeyword = false
+                isInConditionalExpression = false
+                continue
+            }
+        }
+
+        if (currentLine.isNotEmpty())
+        {
+            println("f   token is LineBreakToken")
+            println("    currentLineHasOnlyClosingBrackets: $currentLineHasOnlyClosingBrackets")
+            println("    currentLineStartsWithKeyword: $currentLineStartsWithKeyword")
+            println("    currentLineLevel: $currentLineLevel")
+            println("    nextLineLevel:    $nextLineLevel")
+
+            val line = indentText(currentLine, currentLineLevel)
+            println("    line: ${Tools.toDisplayString(line)}")
+            lines += line
+        }
+
+        return IndentResult(lines, remainingTokens)
+    }
 }

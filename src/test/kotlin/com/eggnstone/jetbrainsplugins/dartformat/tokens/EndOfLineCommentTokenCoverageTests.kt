@@ -10,5 +10,5 @@ class EndOfLineCommentTokenCoverageTests
     fun testHashCode() = assertThat(EndOfLineCommentToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
-    fun testToString() = assertThat(EndOfLineCommentToken("a").toString(), equalTo("EndOfLineComment(a)"))
+    fun testToString() = assertThat(EndOfLineCommentToken("a").toString(), equalTo("EndOfLineComment(\"a\")"))
 }

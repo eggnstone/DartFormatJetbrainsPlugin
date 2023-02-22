@@ -1,22 +1,18 @@
 import com.eggnstone.jetbrainsplugins.dartformat.Constants
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 
 class TestParams
 {
     companion object
     {
         val brackets = arrayOf(
-            arrayOf("{", "}", "Angle brackets"),
+            arrayOf("<", ">", "Angle brackets"),
+            arrayOf("{", "}", "Curly brackets"),
             arrayOf("(", ")", "Round brackets"),
-            arrayOf("<", ">", "Pointy brackets"),
             arrayOf("[", "]", "Square brackets")
         )
 
-        val keywords = arrayOf(
-            "do",
-            "for",
-            "if",
-            "while"
-        )
+        val keywords = Tools.keywords
 
         val lineBreaks = arrayOf(
             arrayOf("\n", "\\n"),
@@ -35,8 +31,8 @@ class TestParams
         )
 
         val specials = arrayOf(
+            Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET,
             Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET,
-            Constants.OPENING_POINTY_BRACKET, Constants.CLOSING_POINTY_BRACKET,
             Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET,
             Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET,
             Constants.ARROW,

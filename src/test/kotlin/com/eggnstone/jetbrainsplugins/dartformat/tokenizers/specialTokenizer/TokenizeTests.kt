@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.specialTokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizers.specialTokenizer
 
 import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.SpecialTokenizer

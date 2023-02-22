@@ -1,6 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeUnnecessaryCommasFormatter
 
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveUnnecessaryCommasFormatter
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
@@ -42,7 +43,7 @@ class LeaveNecessaryCommasTests
     {
         val inputTokens = arrayListOf(
             SpecialToken(","),
-            WhiteSpaceToken("\n"),
+            LineBreakToken("\n"),
             UnknownToken("x")
         )
 

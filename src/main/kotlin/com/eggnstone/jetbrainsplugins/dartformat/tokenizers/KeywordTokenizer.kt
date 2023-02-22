@@ -36,7 +36,7 @@ class KeywordTokenizer
             currentWord = ""
         }
 
-        println("Testing $currentWord")
+        //println("Testing $currentWord")
         if (Tools.isKeyword(currentWord))
         {
             currentText = currentText.substring(0, currentText.length - currentWord.length)

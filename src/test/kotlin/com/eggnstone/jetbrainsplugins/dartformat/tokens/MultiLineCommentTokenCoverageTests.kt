@@ -10,5 +10,8 @@ class MultiLineCommentTokenCoverageTests
     fun testHashCode() = assertThat(MultiLineCommentToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
-    fun testToString() = assertThat(MultiLineCommentToken("a").toString(), equalTo("MultiLineComment(a)"))
+    fun testToString() = assertThat(MultiLineCommentToken("a").toString(), equalTo("MultiLineComment(\"a\")"))
+
+    @Test
+    fun testToStringNotClosed() = assertThat(MultiLineCommentToken("a", isClosed = false).toString(), equalTo("MultiLineComment(\"a\", isClosed=false)"))
 }

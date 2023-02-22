@@ -10,5 +10,5 @@ class SpecialTokenCoverageTests
     fun testHashCode() = assertThat(SpecialToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
-    fun testToString() = assertThat(SpecialToken("a").toString(), equalTo("Special(a)"))
+    fun testToString() = assertThat(SpecialToken("a").toString(), equalTo("Special(\"a\")"))
 }

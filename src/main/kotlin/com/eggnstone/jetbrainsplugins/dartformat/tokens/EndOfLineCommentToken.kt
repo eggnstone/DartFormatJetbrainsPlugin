@@ -16,5 +16,5 @@ class EndOfLineCommentToken(private val text: String) : IToken
 
     override fun recreate(): String = "//$text"
 
-    override fun toString(): String = "EndOfLineComment($text)"
+    override fun toString(): String = "EndOfLineComment(\"$text\")"
 }

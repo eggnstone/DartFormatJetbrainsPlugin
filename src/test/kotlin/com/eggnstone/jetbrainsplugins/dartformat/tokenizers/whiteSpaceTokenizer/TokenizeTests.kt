@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.tokenizer.whiteSpaceTokenizer
+package com.eggnstone.jetbrainsplugins.dartformat.tokenizers.whiteSpaceTokenizer
 
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.WhiteSpaceTokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken

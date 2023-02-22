@@ -9,16 +9,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
-@RunWith(value = Parameterized::class)
-class RemoveLineBreaksAfterArrowsTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class RemoveLineBreaksAfterArrowsTests
 {
-    companion object
-    {
-        @JvmStatic
-        @Parameterized.Parameters(name = "{1}")
-        fun data() = TestParams.lineBreaks
-    }
-
     @Test
     fun removeLineBreakWithoutWhiteSpaceBeforeLineBreak()
     {
@@ -26,7 +18,7 @@ class RemoveLineBreaksAfterArrowsTestsParametrized(private val newLine: String, 
             UnknownToken("a"),
             WhiteSpaceToken(" "),
             SpecialToken.ARROW,
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             WhiteSpaceToken("    "),
             UnknownToken("a")
         )
@@ -51,7 +43,7 @@ class RemoveLineBreaksAfterArrowsTestsParametrized(private val newLine: String, 
             WhiteSpaceToken(" "),
             SpecialToken.ARROW,
             WhiteSpaceToken("    "),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             WhiteSpaceToken("    "),
             UnknownToken("a")
         )

@@ -1,7 +1,10 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.KeywordToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -9,13 +12,13 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class IndentTestsParametrizedWithKeywords(private val newLine: String, private val keyword: String, @Suppress("UNUSED_PARAMETER") paramName: String)
+class IndentTestsParametrizedWithKeywords(private val keyword: String)
 {
     companion object
     {
         @JvmStatic
-        @Parameterized.Parameters(name = "{2}")
-        fun data() = TestParams.lineBreaksAndKeywords
+        @Parameterized.Parameters(name = "{0}")
+        fun data() = TestParams.keywords
     }
 
     @Test
@@ -23,15 +26,15 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
     {
         val inputTokens = arrayListOf(
             KeywordToken(keyword),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             KeywordToken(keyword),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             UnknownToken("text"),
             SpecialToken(";")
         )
-        val expectedOutputText = "$keyword$newLine" +
-            "    $keyword$newLine" +
-            "        text;"
+        val expectedOutputText = "$keyword\n" +
+                "    $keyword\n" +
+                "        text;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -46,9 +49,9 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             SpecialToken("{"),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             UnknownToken("runApp"),
             SpecialToken("("),
             UnknownToken("const MyApp"),
@@ -56,13 +59,13 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
             SpecialToken(")"),
             SpecialToken(")"),
             SpecialToken(";"),
-            LineBreakToken(newLine),
+            LineBreakToken("\n"),
             SpecialToken("}")
         )
-        val expectedOutputText = "void main()$newLine" +
-            "{$newLine" +
-            "    runApp(const MyApp());$newLine" +
-            "}"
+        val expectedOutputText = "void main()\n" +
+                "{\n" +
+                "    runApp(const MyApp());\n" +
+                "}"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -74,15 +77,18 @@ class IndentTestsParametrizedWithKeywords(private val newLine: String, private v
     fun doNotIndentEmptyLines()
     {
         val inputTokens = arrayListOf(
-            UnknownToken("Text"), WhiteSpaceToken(" "), SpecialToken.OPENING_ANGLE_BRACKET, LineBreakToken(newLine),
-            WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine),
-            LineBreakToken(newLine),
-            WhiteSpaceToken("    "), UnknownToken("Text"), LineBreakToken(newLine)
+            UnknownToken("Text0"), LineBreakToken("\n"),
+            SpecialToken.OPENING_CURLY_BRACKET, LineBreakToken("\n"),
+            UnknownToken("Text1"), LineBreakToken("\n"),
+            LineBreakToken("\n"),
+            UnknownToken("Text2"), LineBreakToken("\n")
         )
-        val expectedOutputText = "Text {$newLine" +
-            "    Text$newLine" +
-            newLine +
-            "    Text$newLine"
+        val expectedOutputText =
+            "Text0\n" +
+                    "{\n" +
+                    "    Text1\n" +
+                    "\n" +
+                    "    Text2\n"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

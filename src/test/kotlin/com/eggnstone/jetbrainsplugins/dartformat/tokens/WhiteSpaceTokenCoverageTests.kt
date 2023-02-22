@@ -10,5 +10,5 @@ class WhiteSpaceTokenCoverageTests
     fun testHashCode() = assertThat(WhiteSpaceToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
-    fun testToString() = assertThat(WhiteSpaceToken("a").toString(), equalTo("WhiteSpace(a)"))
+    fun testToString() = assertThat(WhiteSpaceToken("a").toString(), equalTo("WhiteSpace(\"a\")"))
 }

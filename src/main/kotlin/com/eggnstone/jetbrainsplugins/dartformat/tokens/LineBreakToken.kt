@@ -18,5 +18,5 @@ class LineBreakToken constructor(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "LineBreak(${Tools.toDisplayString(text)})"
+    override fun toString(): String = "LineBreak(\"${Tools.toDisplayString(text)}\")"
 }
