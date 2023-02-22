@@ -44,7 +44,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
             SpecialToken(openingBracket), LineBreakToken("\n"),
             SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
-            SpecialToken(closingBracket),LineBreakToken("\n"),
+            SpecialToken(closingBracket), LineBreakToken("\n"),
             SpecialToken(closingBracket)
         )
         val expectedOutputText =

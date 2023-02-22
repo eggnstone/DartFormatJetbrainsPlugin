@@ -1,13 +1,13 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatters.removeLineBreaksAfterArrows
 
-import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.RemoveLineBreaksAfterArrows
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 
 class RemoveLineBreaksAfterArrowsTests
 {

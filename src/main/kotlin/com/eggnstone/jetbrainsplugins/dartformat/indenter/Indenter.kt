@@ -172,7 +172,6 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             {
                                 println("      Current stack ends with $openingBracket => remove $openingBracket")
                                 currentStack.pop()
-                                // TODO: modify new stack level
                             }
                             else
                             {
@@ -223,12 +222,11 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     for (item in newStack)
                         when (item)
                         {
-                            is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2+1+currentStackLevelModifier)
-                            is BracketIndent -> currentStack += BracketIndent(item.text, currentLevel2+1+currentStackLevelModifier)
+                            is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
+                            is BracketIndent -> currentStack += BracketIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
                             else -> TODO()
                         }
 
-                    //currentStack += newStack
                     newStack.clear()
                 }
 
@@ -248,27 +246,6 @@ class Indenter(private val spacesPerLevel: Int = 4)
             lines += indentText(currentLine, currentStack.size)
 
         return IndentResult(lines, remainingTokens)
-    }
-
-    fun indent2(inputTokens: List<IToken>): String
-    {
-        val sb = StringBuilder()
-
-        var tokens = inputTokens
-        var stack = listOf<IIndent>()
-
-        while (tokens.isNotEmpty())
-        {
-            val result = indentTokens(tokens)//, stack)
-            for (line in result.lines)
-                sb.append(line)//, stack.size))
-            //sb.append(indentText(line))//, stack.size))
-
-            tokens = result.remainingTokens
-            //stack = result.newStack
-        }
-
-        return sb.toString()
     }
 
     fun recreate(tokens: ArrayList<IToken>): String
@@ -301,88 +278,5 @@ class Indenter(private val spacesPerLevel: Int = 4)
         val result = pad + text
         //println("result: ${Tools.toDisplayString(result)}<")
         return result
-    }
-
-    private fun indentTokens2(inputTokens: List<IToken>): IndentResult
-    {
-        val lines = arrayListOf<String>()
-        val remainingTokens = inputTokens.toMutableList()
-
-        var currentLine = ""
-        var currentLineBracketCount = 0
-        var currentLineHasOnlyClosingBrackets = true
-        var currentLineLevel = 0
-        var currentLineStartsWithKeyword = false
-        var isInConditionalExpression = false
-        var nextLineLevel = 0
-        for (token in inputTokens)
-        {
-            //println("  token: $token")
-            remainingTokens.removeAt(0)
-
-            // Remove leading white space
-            if (currentLine.isEmpty() && token is WhiteSpaceToken)
-                continue
-
-            if (currentLine.isEmpty() && token is KeywordToken)
-            {
-                currentLineStartsWithKeyword = true
-            }
-
-            currentLine += token.recreate()
-
-            //if (token == SpecialToken.OPENING_CURLY_BRACKET)
-            if (token is SpecialToken && token.isOpeningBracket)
-            {
-                nextLineLevel++
-            }
-
-            if (token is SpecialToken && token.isClosingBracket)
-            {
-                if (currentLineHasOnlyClosingBrackets)
-                    currentLineLevel--
-
-                nextLineLevel--
-            }
-            else
-                currentLineHasOnlyClosingBrackets = false
-
-
-            if (token is LineBreakToken)
-            {
-                println(".   token is LineBreakToken")
-                println("    currentLineHasOnlyClosingBrackets: $currentLineHasOnlyClosingBrackets")
-                println("    currentLineStartsWithKeyword: $currentLineStartsWithKeyword")
-                println("    currentLineLevel: $currentLineLevel")
-                println("    nextLineLevel:    $nextLineLevel")
-
-                val line = indentText(currentLine, currentLineLevel)
-                println("    line: ${Tools.toDisplayString(line)}")
-                lines += line
-
-                currentLineBracketCount = 0
-                currentLine = ""
-                currentLineHasOnlyClosingBrackets = true
-                currentLineLevel = nextLineLevel
-                currentLineStartsWithKeyword = false
-                isInConditionalExpression = false
-                continue
-            }
-        }
-
-        if (currentLine.isNotEmpty())
-        {
-            println("f   token is LineBreakToken")
-            println("    currentLineHasOnlyClosingBrackets: $currentLineHasOnlyClosingBrackets")
-            println("    currentLineStartsWithKeyword: $currentLineStartsWithKeyword")
-            println("    currentLineLevel: $currentLineLevel")
-            println("    nextLineLevel:    $nextLineLevel")
-
-            val line = indentText(currentLine, currentLineLevel)
-            println("    line: ${Tools.toDisplayString(line)}")
-            lines += line
-        }
-
-        return IndentResult(lines, remainingTokens)
     }
 }

@@ -114,9 +114,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         }
 
         return config!!.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox!!.isSelected
-            || config!!.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox!!.isSelected
-            || config!!.indentationIsEnabled != indentationIsEnabledCheckbox!!.isSelected
-            || config!!.indentationSpacesPerLevel != indentationSpacesPerLevelField!!.text.toIntOrNull()
+        || config!!.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox!!.isSelected
+        || config!!.indentationIsEnabled != indentationIsEnabledCheckbox!!.isSelected
+        || config!!.indentationSpacesPerLevel != indentationSpacesPerLevelField!!.text.toIntOrNull()
     }
 
     override fun reset()

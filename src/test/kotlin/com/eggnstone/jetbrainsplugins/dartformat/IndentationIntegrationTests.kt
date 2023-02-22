@@ -13,12 +13,12 @@ class IndentationIntegrationTests
     fun multipleBracketsOnlyIndentOnce()
     {
         val inputText = "abc({\n" +
-            "def;\n" +
-            "})"
+        "def;\n" +
+        "})"
 
         val expectedOutputText = "abc({\n" +
-            "    def;\n" +
-            "})"
+        "    def;\n" +
+        "})"
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -31,10 +31,10 @@ class IndentationIntegrationTests
     fun keywordIndents()
     {
         val inputText = "if()\n" +
-            "abc;"
+        "abc;"
 
         val expectedOutputText = "if()\n" +
-            "    abc;"
+        "    abc;"
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
