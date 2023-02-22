@@ -12,6 +12,7 @@ class DartFormatIntegrationTests
     private val testDataPath = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
 
     @Test
+    //@Ignore
     fun testDefaultFlutterMainDart()
     {
         val inputText = File(testDataPath + "default_flutter_main.input.dart").readText()

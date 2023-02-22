@@ -23,4 +23,16 @@ class IndentTests
 
         MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
     }
+
+    @Test
+    fun whiteSpace_atLineStart()
+    {
+        val inputTokens = arrayListOf(WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken(";"))
+        val expectedOutputText = "abc;"
+
+        val indenter = Indenter()
+        val actualOutputText = indenter.indent(inputTokens)
+
+        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+    }
 }

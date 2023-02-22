@@ -10,6 +10,9 @@ class StringTokenCoverageTests
     fun testHashCode() = assertThat(StringToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
+    fun testRecreate() = assertThat(StringToken("a").recreate(), equalTo("a"))
+
+    @Test
     fun testToString() = assertThat(StringToken("a").toString(), equalTo("String(\"a\")"))
 
     @Test

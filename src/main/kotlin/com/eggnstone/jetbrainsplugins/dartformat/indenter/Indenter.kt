@@ -175,6 +175,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             }
                             else
                             {
+                                TODO("Not covered by any test at all.")
                                 println("      Current stack does not end with $openingBracket")
                             }
                         }
@@ -212,6 +213,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     }
                     else if (currentStackTop is KeywordIndent && newStack.size >= 1 && newStack[0] is BracketIndent)
                     {
+                        TODO("Not covered by any test at all.")
                         println("    Current stack ends with keyword and new stack starts with bracket => remove keyword")
                         currentStack.removeLast()
                         currentStackLevelModifier--
@@ -269,7 +271,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
         }
 
         if (level < 0)
-            throw Exception("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
+            throw IndenterException("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
 
         val pad = " ".repeat(level * spacesPerLevel)
 

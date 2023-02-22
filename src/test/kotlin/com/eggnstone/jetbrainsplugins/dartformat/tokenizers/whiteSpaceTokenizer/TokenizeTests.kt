@@ -10,7 +10,7 @@ import org.junit.Test
 class TokenizeTests
 {
     @Test
-    fun spaceAtTextStart()
+    fun space_atTextStart()
     {
         val inputText = " b"
         val expectedTokens = arrayListOf(
@@ -24,7 +24,7 @@ class TokenizeTests
     }
 
     @Test
-    fun spaceAtTextMiddle()
+    fun space_atTextMiddle()
     {
         val inputText = "a b"
         val expectedTokens = arrayListOf(
@@ -39,7 +39,22 @@ class TokenizeTests
     }
 
     @Test
-    fun spaceAtTextEnd()
+    fun twoSpaces_atTextMiddle()
+    {
+        val inputText = "a  b"
+        val expectedTokens = arrayListOf(
+            UnknownToken("a"),
+            WhiteSpaceToken("  "),
+            UnknownToken("b")
+        )
+
+        val actualTokens = WhiteSpaceTokenizer().tokenize(inputText)
+
+        assertThat(actualTokens, equalTo(expectedTokens))
+    }
+
+    @Test
+    fun space_atTextEnd()
     {
         val inputText = "a "
         val expectedTokens = arrayListOf(

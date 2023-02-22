@@ -10,6 +10,9 @@ class MultiLineCommentTokenCoverageTests
     fun testHashCode() = assertThat(MultiLineCommentToken("a").hashCode(), equalTo("a".hashCode()))
 
     @Test
+    fun testRecreate() = assertThat(MultiLineCommentToken("a").recreate(), equalTo("/*a*/"))
+
+    @Test
     fun testToString() = assertThat(MultiLineCommentToken("a").toString(), equalTo("MultiLineComment(\"a\")"))
 
     @Test

@@ -7,7 +7,7 @@ class EndOfLineCommentToken(private val text: String) : IToken
     init
     {
         if (Tools.containsLineBreak(text))
-            throw Exception("containsLineBreak: \"${Tools.toDisplayString(text)}\"")
+            throw TokenException("containsLineBreak: \"${Tools.toDisplayString(text)}\"")
     }
 
     override fun equals(other: Any?): Boolean = other is EndOfLineCommentToken && text == other.text

@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
@@ -9,6 +10,9 @@ class CommentTokenizer
 {
     fun tokenize(input: String): ArrayList<IToken>
     {
+        if (Tools.containsLineBreak(input))
+            throw TokenizerException("CommentTokenizer.tokenize() must not be fed line breaks.")
+
         val outputTokens = arrayListOf<IToken>()
 
         var currentText = ""
@@ -22,20 +26,6 @@ class CommentTokenizer
             if (isInEolComment)
             {
                 currentText += currentChar
-
-                if (currentChar == '\n' && nextChar == '\r')
-                    continue
-
-                if (currentChar == '\r' && nextChar == '\n')
-                    continue
-
-                if (currentChar == '\n' || currentChar == '\r')
-                {
-                    outputTokens += EndOfLineCommentToken(currentText.substring(1))
-                    currentText = ""
-                    isInEolComment = false
-                }
-
                 continue
             }
 

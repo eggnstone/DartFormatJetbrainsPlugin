@@ -20,11 +20,7 @@ class SpecialToken(val text: String) : IToken
         val CLOSING_SQUARE_BRACKET = SpecialToken(Constants.CLOSING_SQUARE_BRACKET)
 
         val ARROW = SpecialToken(Constants.ARROW)
-        val COLON = SpecialToken(Constants.COLON)
         val COMMA = SpecialToken(Constants.COMMA)
-        val EQUAL = SpecialToken(Constants.EQUAL)
-        val PERIOD = SpecialToken(Constants.PERIOD)
-        val SEMICOLON = SpecialToken(Constants.SEMICOLON)
     }
 
     val isClosingBracket get() = this == CLOSING_CURLY_BRACKET || this == CLOSING_ANGLE_BRACKET || this == CLOSING_ROUND_BRACKET || this == CLOSING_SQUARE_BRACKET

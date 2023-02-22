@@ -2,6 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizers.commentTokenizer
 
 import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.CommentTokenizer
+import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.TokenizerException
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
@@ -22,6 +23,6 @@ class TokenizeEndOfLineCommentsTestsParametrized(private val newLine: String, @S
     {
         val inputText = "//comment$newLine"
 
-        assertThrows<Exception> { CommentTokenizer().tokenize(inputText) }
+        assertThrows<TokenizerException> { CommentTokenizer().tokenize(inputText) }
     }
 }
