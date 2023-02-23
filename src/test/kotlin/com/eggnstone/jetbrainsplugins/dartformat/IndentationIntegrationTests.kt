@@ -28,13 +28,45 @@ class IndentationIntegrationTests
     }
 
     @Test
-    fun keywordIndents()
+    fun keywordIndentsExpression()
     {
         val inputText = "if()\n" +
         "abc;"
 
         val expectedOutputText = "if()\n" +
         "    abc;"
+
+        val inputTokens = Tokenizer().tokenize(inputText)
+        val actualOutputTokens = Formatter().format(inputTokens)
+        val actualOutputText = Indenter().indent(actualOutputTokens)
+
+        assertThat(actualOutputText, equalTo(expectedOutputText))
+    }
+
+    @Test
+    fun keywordIndentsExpressionWithAngleBrackets()
+    {
+        val inputText = "if()\n" +
+        "abc<>;"
+
+        val expectedOutputText = "if()\n" +
+        "    abc<>;"
+
+        val inputTokens = Tokenizer().tokenize(inputText)
+        val actualOutputTokens = Formatter().format(inputTokens)
+        val actualOutputText = Indenter().indent(actualOutputTokens)
+
+        assertThat(actualOutputText, equalTo(expectedOutputText))
+    }
+
+    @Test
+    fun keywordIndentsExpressionWithRoundBrackets()
+    {
+        val inputText = "if()\n" +
+        "abc();"
+
+        val expectedOutputText = "if()\n" +
+        "    abc();"
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

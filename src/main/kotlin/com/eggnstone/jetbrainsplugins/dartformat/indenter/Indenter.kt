@@ -33,7 +33,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
         val lines = arrayListOf<String>()
         val remainingTokens = inputTokens.toMutableList()
 
-        var currentLevel: Int
+        var currentLevel = 0
         var currentLine = ""
         val currentStack = Stack<IIndent>()
         val newStack = Stack<IIndent>()
@@ -51,9 +51,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 if (wasCurrentLineEmpty)
                 {
                     println("  Token is white space & line is empty => ignore")
-                    println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
-                    println("    New stack:     \"" + Tools.toString(newStack) + "\"")
-                    println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                     continue
                 }
             }
@@ -68,9 +66,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     newStack.push(ClassKeywordIndent(token.text, -1))
                 }
 
-                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
-                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
-                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                 continue
             }
 
@@ -82,9 +78,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     newStack.push(KeywordIndent(token.text, -1))
                 }
 
-                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
-                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
-                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                 continue
             }
 
@@ -140,9 +134,18 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         }
                         else if (currentStackTop is KeywordIndent)
                         {
-                            println("      Current stack ends with keyword => replace with $openingBracket")
-                            currentStack.pop()
-                            newStack.push(BracketIndent(openingBracket, -1))
+                            println("      Current stack ends with keyword")
+                            if (wasCurrentLineEmpty)
+                            {
+                                println("        Current line was empty => replace with $openingBracket")
+                                currentStack.pop()
+                                newStack.push(BracketIndent(openingBracket, -1))
+                            }
+                            else
+                            {
+                                println("        Current line was not empty => push $openingBracket indent to new stack")
+                                newStack.push(BracketIndent(openingBracket, -1))
+                            }
                         }
                         else
                         {
@@ -151,9 +154,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         }
                     }
 
-                    println("      Current stack: \"" + Tools.toString(currentStack) + "\"")
-                    println("      New stack:     \"" + Tools.toString(newStack) + "\"")
-                    println("      Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    printInfo("      ", currentLevel, currentLine, currentStack, newStack)
                     continue
                 }
 
@@ -207,9 +208,30 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         }
                     }
 
-                    println("        Current stack: \"" + Tools.toString(currentStack) + "\"")
-                    println("        New stack:     \"" + Tools.toString(newStack) + "\"")
-                    println("        Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                    printInfo("        ", currentLevel, currentLine, currentStack, newStack)
+                    continue
+                }
+
+                if (token.text == ";")
+                {
+                    println("  Token is ;")
+                    printInfo("    ", currentLevel, currentLine, currentStack, newStack)
+                    val currentStackTop = currentStack.lastOrNull()
+                    if (currentStackTop is KeywordIndent)
+                    {
+                        println("    Current stack ends with $currentStackTop => push removal indent to new stack")
+                        newStack.push(RemovalIndent(1))
+                    }
+                    else
+                    {
+                        val newStackTop = newStack.lastOrNull()
+                        if (newStackTop is KeywordIndent)
+                        {
+                            println("    New stack ends with $newStackTop => remove $newStackTop")
+                            newStack.pop()
+                        }
+                    }
+
                     continue
                 }
             }
@@ -217,8 +239,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
             if (token is LineBreakToken)
             {
                 println("  Token is line break")
-                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
-                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
+                printInfo("    ", currentLevel, currentLine, currentStack, newStack)
 
                 val currentStackTop = currentStack.lastOrNull()
                 val currentLevel2 = currentStackTop?.level ?: 0
@@ -232,7 +253,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val newStackTop = newStack.lastOrNull()
                 if (newStackTop != null)
                 {
-                    if (newStack.size >= 2 && (newStack[0] is ClassKeywordIndent||newStack[0] is KeywordIndent))
+                    if (newStack.size >= 2 && (newStack[0] is ClassKeywordIndent || newStack[0] is KeywordIndent))
                     {
                         println("    New stack starts with (class) keyword and has more entries => remove (class) keyword")
                         newStack.removeAt(0)
@@ -253,6 +274,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             is BracketIndent -> currentStack += BracketIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
                             is ClassKeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
                             is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
+                            is RemovalIndent -> currentStack.pop()
                             else -> throw DartFormatException("Unexpected type: ${item::class.simpleName}")
                         }
 
@@ -262,9 +284,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val currentStackTop2 = currentStack.lastOrNull()
                 currentLevel = (currentStackTop2?.level ?: 0) + currentStackLevelModifier
 
-                println("\n    Current stack: \"" + Tools.toString(currentStack) + "\"")
-                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
-                println("    Next level:    $currentLevel\n")
+                println("")
+                printInfo("    ", currentLevel, currentLine, currentStack, newStack)
+                println("")
                 continue
             }
 
@@ -275,6 +297,14 @@ class Indenter(private val spacesPerLevel: Int = 4)
             lines += indentText(currentLine, currentStack.size)
 
         return IndentResult(lines, remainingTokens)
+    }
+
+    private fun printInfo(spacer: String, currentLevel: Int, currentLine: String, currentStack: Stack<IIndent>, newStack: Stack<IIndent>)
+    {
+        println("${spacer}Current level: $currentLevel")
+        println("${spacer}Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+        println("${spacer}Current stack: \"" + Tools.toString(currentStack) + "\"")
+        println("${spacer}New stack:     \"" + Tools.toString(newStack) + "\"")
     }
 
     fun recreate(tokens: ArrayList<IToken>): String

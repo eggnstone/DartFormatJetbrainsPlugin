@@ -1,7 +1,10 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.KeywordToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
