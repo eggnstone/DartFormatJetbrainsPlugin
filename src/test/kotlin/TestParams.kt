@@ -8,7 +8,6 @@ class TestParams
         val classKeywords = Tools.classKeywords
 
         val brackets = arrayOf(
-            arrayOf("<", ">", "Angle brackets"),
             arrayOf("{", "}", "Curly brackets"),
             arrayOf("(", ")", "Round brackets"),
             arrayOf("[", "]", "Square brackets")
@@ -34,12 +33,12 @@ class TestParams
 
         val specials = arrayOf(
             Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET,
-            Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET,
             Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET,
             Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET,
             Constants.ARROW,
             Constants.COLON,
             Constants.COMMA,
+            Constants.GREATER_THAN,
             Constants.PERIOD,
             Constants.SEMICOLON
         )

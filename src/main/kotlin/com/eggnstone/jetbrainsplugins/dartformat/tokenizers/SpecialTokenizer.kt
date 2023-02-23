@@ -18,13 +18,13 @@ class SpecialTokenizer
             val previousChar = if (index > 0) input[index - 1] else null
             val nextChar = if (index < input.length - 1) input[index + 1] else null
 
-            if (currentChar == Constants.EQUAL_CHAR && nextChar == Constants.CLOSING_ANGLE_BRACKET_CHAR)
+            if (currentChar == Constants.EQUAL_CHAR && nextChar == Constants.GREATER_THAN_CHAR)
             {
                 // ignore "=>" now to be treated next round
                 continue
             }
 
-            if (previousChar == Constants.EQUAL_CHAR && currentChar == Constants.CLOSING_ANGLE_BRACKET_CHAR)
+            if (previousChar == Constants.EQUAL_CHAR && currentChar == Constants.GREATER_THAN_CHAR)
             {
                 if (currentText.isNotEmpty())
                     outputTokens += UnknownToken(currentText)//.substring(0, currentText.length - 1))

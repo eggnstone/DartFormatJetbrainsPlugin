@@ -4,10 +4,6 @@ class Constants
 {
     companion object
     {
-        const val OPENING_ANGLE_BRACKET = "<"
-        const val CLOSING_ANGLE_BRACKET_CHAR = '>'
-        const val CLOSING_ANGLE_BRACKET = CLOSING_ANGLE_BRACKET_CHAR.toString()
-
         const val OPENING_CURLY_BRACKET = "{"
         const val CLOSING_CURLY_BRACKET = "}"
 
@@ -27,6 +23,9 @@ class Constants
 
         const val EQUAL_CHAR = '='
         const val EQUAL = EQUAL_CHAR.toString()
+
+        const val GREATER_THAN_CHAR = '>'
+        const val GREATER_THAN = GREATER_THAN_CHAR.toString()
 
         const val PERIOD_CHAR = '.'
         const val PERIOD = PERIOD_CHAR.toString()

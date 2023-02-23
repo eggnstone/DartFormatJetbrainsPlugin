@@ -88,12 +88,6 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 var closingBracket = ""
                 when (token.text)
                 {
-                    Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET ->
-                    {
-                        openingBracket = Constants.OPENING_ANGLE_BRACKET
-                        closingBracket = Constants.CLOSING_ANGLE_BRACKET
-                    }
-
                     Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET ->
                     {
                         openingBracket = Constants.OPENING_CURLY_BRACKET
@@ -202,7 +196,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             }
                             else
                             {
-                                TODO("Not covered by any test at all.")
+                                println(Tools.toString(inputTokens))
+                                printInfo("    ", currentLevel, currentLine, currentStack, newStack)
+                                TODO("Not covered by any test at all (1) " + Tools.shorten(Tools.toString(inputTokens), 1000))
                                 println("      Current stack does not end with $openingBracket")
                             }
                         }
@@ -250,17 +246,16 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 currentLine = ""
 
                 var currentStackLevelModifier = 0
-                val newStackTop = newStack.lastOrNull()
-                if (newStackTop != null)
+                val newStackBottom = newStack.firstOrNull()
+                if (newStackBottom != null)
                 {
-                    if (newStack.size >= 2 && (newStack[0] is ClassKeywordIndent || newStack[0] is KeywordIndent))
+                    if (newStack.size >= 2 && (newStackBottom is ClassKeywordIndent || newStackBottom is KeywordIndent))
                     {
                         println("    New stack starts with (class) keyword and has more entries => remove (class) keyword")
                         newStack.removeAt(0)
                     }
-                    else if (currentStackTop is KeywordIndent && newStack.size >= 1 && newStack[0] is BracketIndent)
+                    else if (currentStackTop is KeywordIndent && newStackBottom is BracketIndent)
                     {
-                        TODO("Not covered by any test at all.")
                         println("    Current stack ends with keyword and new stack starts with bracket => remove keyword")
                         currentStack.removeLast()
                         currentStackLevelModifier--

@@ -17,7 +17,7 @@ class Tools
         )
 
         val keywords = arrayOf(
-            "case", // ?
+            //"case", // ?
             "catch",
             "do",
             "else",
@@ -45,5 +45,13 @@ class Tools
         fun toString(input: List<IToken>): String = toDisplayString(input.joinToString { "\"" + it.recreate() + "\"" })
 
         fun toString(input: Stack<IIndent>): String = input.joinToString(separator = ",") { it.toString() }
+
+        fun shorten(s: String, maxLength: Int): String
+        {
+            if (s.length < maxLength)
+                return s
+
+            return s.substring(0, maxLength)
+        }
     }
 }
