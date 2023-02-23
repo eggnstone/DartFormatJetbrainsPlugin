@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
+import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
@@ -11,7 +12,7 @@ class CommentTokenizer
     fun tokenize(input: String): ArrayList<IToken>
     {
         if (Tools.containsLineBreak(input))
-            throw TokenizerException("CommentTokenizer.tokenize() must not be fed line breaks.")
+            throw DartFormatException("CommentTokenizer.tokenize() must not be fed line breaks.")
 
         val outputTokens = arrayListOf<IToken>()
 

@@ -5,6 +5,8 @@ class TestParams
 {
     companion object
     {
+        val classKeywords = Tools.classKeywords
+
         val brackets = arrayOf(
             arrayOf("<", ">", "Angle brackets"),
             arrayOf("{", "}", "Curly brackets"),

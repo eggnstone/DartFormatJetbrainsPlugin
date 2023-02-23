@@ -8,6 +8,14 @@ class Tools
 {
     companion object
     {
+        val classKeywords = arrayOf(
+            "abstract class",
+            "class",
+            "extends",
+            "implements",
+            "with"
+        )
+
         val keywords = arrayOf(
             "case", // ?
             "catch",

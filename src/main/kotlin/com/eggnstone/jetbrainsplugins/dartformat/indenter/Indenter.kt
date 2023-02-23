@@ -1,6 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
 import com.eggnstone.jetbrainsplugins.dartformat.Constants
+import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import java.util.*
@@ -32,7 +33,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
         val lines = arrayListOf<String>()
         val remainingTokens = inputTokens.toMutableList()
 
-        var currentLevel = 0
+        var currentLevel: Int
         var currentLine = ""
         val currentStack = Stack<IIndent>()
         val newStack = Stack<IIndent>()
@@ -59,11 +60,25 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
             currentLine += token.recreate()
 
+            if (token is ClassKeywordToken)
+            {
+                if (token.isMainClassKeyword && wasCurrentLineEmpty)
+                {
+                    println("  Token is main class keyword => push class keyword indent to new stack")
+                    newStack.push(ClassKeywordIndent(token.text, -1))
+                }
+
+                println("    Current stack: \"" + Tools.toString(currentStack) + "\"")
+                println("    New stack:     \"" + Tools.toString(newStack) + "\"")
+                println("    Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
+                continue
+            }
+
             if (token is KeywordToken)
             {
                 if (wasCurrentLineEmpty)
                 {
-                    println("  Token is keyword => push keyword to new stack")
+                    println("  Token is keyword => push keyword indent to new stack")
                     newStack.push(KeywordIndent(token.text, -1))
                 }
 
@@ -75,35 +90,30 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
             if (token is SpecialToken)
             {
-                //var bracketType : BracketIndent? = null
                 var openingBracket = ""
                 var closingBracket = ""
                 when (token.text)
                 {
                     Constants.OPENING_ANGLE_BRACKET, Constants.CLOSING_ANGLE_BRACKET ->
                     {
-                        //bracketType = BracketIndent.ANGLE
                         openingBracket = Constants.OPENING_ANGLE_BRACKET
                         closingBracket = Constants.CLOSING_ANGLE_BRACKET
                     }
 
                     Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET ->
                     {
-                        //bracketType = BracketIndent.CURLY
                         openingBracket = Constants.OPENING_CURLY_BRACKET
                         closingBracket = Constants.CLOSING_CURLY_BRACKET
                     }
 
                     Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET ->
                     {
-                        //bracketType = BracketIndent.ROUND
                         openingBracket = Constants.OPENING_ROUND_BRACKET
                         closingBracket = Constants.CLOSING_ROUND_BRACKET
                     }
 
                     Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET ->
                     {
-                        //bracketType = BracketIndent.SQUARE
                         openingBracket = Constants.OPENING_SQUARE_BRACKET
                         closingBracket = Constants.CLOSING_SQUARE_BRACKET
                     }
@@ -115,13 +125,20 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
                     if (currentStack.isEmpty())
                     {
-                        println("    Current stack is empty => push $openingBracket to new stack")
+                        println("    Current stack is empty => push $openingBracket indent to new stack")
                         newStack.push(BracketIndent(openingBracket, -1))
                     }
                     else
                     {
                         println("    Current stack is not empty")
-                        if (currentStack.peek() is KeywordIndent)
+                        val currentStackTop = currentStack.lastOrNull()
+                        if (currentStackTop is ClassKeywordIndent)
+                        {
+                            println("      Current stack ends with class keyword => replace with $openingBracket")
+                            currentStack.pop()
+                            newStack.push(BracketIndent(openingBracket, -1))
+                        }
+                        else if (currentStackTop is KeywordIndent)
                         {
                             println("      Current stack ends with keyword => replace with $openingBracket")
                             currentStack.pop()
@@ -129,7 +146,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         }
                         else
                         {
-                            println("      Current stack does not end with keyword => push $openingBracket to new stack")
+                            println("      Current stack does not end with keyword => push $openingBracket indent to new stack")
                             newStack.push(BracketIndent(openingBracket, -1))
                         }
                     }
@@ -162,6 +179,15 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         {
                             println("        New stack ends with $openingBracket => remove $openingBracket")
                             newStack.pop()
+
+                            if (openingBracket == Constants.OPENING_CURLY_BRACKET
+                                && currentStack.isEmpty()
+                                && (newStack.lastOrNull() is ClassKeywordIndent || newStack.lastOrNull() is KeywordIndent)
+                            )
+                            {
+                                println("        => remove (class) keyword, too")
+                                newStack.pop()
+                            }
                         }
                         else
                         {
@@ -197,7 +223,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val currentStackTop = currentStack.lastOrNull()
                 val currentLevel2 = currentStackTop?.level ?: 0
                 val line = indentText(currentLine, currentLevel2)
-                println("    => \"${Tools.toDisplayString(line)}\"")
+                println("    -> \"${Tools.toDisplayString(line)}\"")
                 lines += line
 
                 currentLine = ""
@@ -206,9 +232,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val newStackTop = newStack.lastOrNull()
                 if (newStackTop != null)
                 {
-                    if (newStack.size >= 2 && newStack[0] is KeywordIndent)
+                    if (newStack.size >= 2 && (newStack[0] is ClassKeywordIndent||newStack[0] is KeywordIndent))
                     {
-                        println("    New stack starts with keyword and has more entries => remove keyword")
+                        println("    New stack starts with (class) keyword and has more entries => remove (class) keyword")
                         newStack.removeAt(0)
                     }
                     else if (currentStackTop is KeywordIndent && newStack.size >= 1 && newStack[0] is BracketIndent)
@@ -224,9 +250,10 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     for (item in newStack)
                         when (item)
                         {
-                            is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
                             is BracketIndent -> currentStack += BracketIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
-                            else -> TODO()
+                            is ClassKeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
+                            is KeywordIndent -> currentStack += KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)
+                            else -> throw DartFormatException("Unexpected type: ${item::class.simpleName}")
                         }
 
                     newStack.clear()
@@ -271,14 +298,17 @@ class Indenter(private val spacesPerLevel: Int = 4)
         }
 
         if (level < 0)
-            throw IndenterException("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
+            throw DartFormatException("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
 
         val pad = " ".repeat(level * spacesPerLevel)
 
         //println("pad:    $pad<")
         //println("text:   ${Tools.toDisplayString(text)}<")
+
+        @Suppress("UnnecessaryVariable")
         val result = pad + text
         //println("result: ${Tools.toDisplayString(result)}<")
+
         return result
     }
 }

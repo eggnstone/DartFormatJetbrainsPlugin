@@ -25,6 +25,25 @@ class IndentTests
     }
 
     @Test
+    fun keywordWithOpeningAndClosingCurlyBracketInSameLine()
+    {
+        val inputTokens = arrayListOf(
+            KeywordToken("if"), WhiteSpaceToken(" "),
+            SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"),
+            WhiteSpaceToken(" "), SpecialToken("{"), SpecialToken("}"), LineBreakToken("\n"),
+            UnknownToken("abc"), SpecialToken(";")
+        )
+        val expectedOutputText =
+            "if (a == b) {}\n" +
+            "abc;"
+
+        val indenter = Indenter()
+        val actualOutputText = indenter.indent(inputTokens)
+
+        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+    }
+
+    @Test
     fun whiteSpace_atLineStart()
     {
         val inputTokens = arrayListOf(WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken(";"))

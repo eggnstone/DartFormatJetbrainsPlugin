@@ -25,9 +25,12 @@ class Tokenizer
         // TODO: fix strings in comment or vice versa?
 
         // order not important
-        tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
-        tokens = execute(SpecialTokenizer()::tokenize, tokens)
+        tokens = execute(ClassKeywordTokenizer()::tokenize, tokens)
         tokens = execute(KeywordTokenizer()::tokenize, tokens)
+
+        // order not important
+        tokens = execute(SpecialTokenizer()::tokenize, tokens)
+        tokens = execute(WhiteSpaceTokenizer()::tokenize, tokens)
 
         return tokens
     }

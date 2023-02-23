@@ -1,10 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.KeywordToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -22,7 +19,7 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
     }
 
     @Test
-    fun indentAfterKeyword()
+    fun indentAfterKeywordAfterKeyword()
     {
         val inputTokens = arrayListOf(
             KeywordToken(keyword),
