@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.integration
 
 import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class DartFormatIntegrationTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
+class EndOfLineTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") newLineName: String)
 {
     companion object
     {

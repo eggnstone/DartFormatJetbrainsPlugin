@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.integration
 
 import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
@@ -8,15 +8,13 @@ import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
-class DartFormatIntegrationDefaultFlutterMainTests
+class DefaultFlutterMainTests
 {
-    private val testDataPath = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
-
     @Test
     fun defaultFlutterMain()
     {
-        val inputText = File(testDataPath + "default_flutter_main.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "default_flutter_main.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "default_flutter_main.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "default_flutter_main.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -29,8 +27,8 @@ class DartFormatIntegrationDefaultFlutterMainTests
     @Ignore
     fun defaultFlutterMain2()
     {
-        val inputText = File(testDataPath + "default_flutter_main2.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "default_flutter_main2.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "default_flutter_main2.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "default_flutter_main2.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

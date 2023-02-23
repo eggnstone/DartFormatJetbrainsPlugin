@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.integration
 
 import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
@@ -8,15 +8,13 @@ import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
-class DartFormatIntegrationSetStateTests
+class SetStateTests
 {
-    private val testDataPath = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
-
     @Test
     fun setState_singleLine()
     {
-        val inputText = File(testDataPath + "setState_singleLine.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "setState_singleLine.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "setState_singleLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "setState_singleLine.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -28,8 +26,8 @@ class DartFormatIntegrationSetStateTests
     @Test
     fun setStateWithArrow_singleLine()
     {
-        val inputText = File(testDataPath + "setStateWithArrow_singleLine.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "setStateWithArrow_singleLine.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "setStateWithArrow_singleLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "setStateWithArrow_singleLine.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -41,8 +39,8 @@ class DartFormatIntegrationSetStateTests
     @Test
     fun setState_multipleLines()
     {
-        val inputText = File(testDataPath + "setState_multipleLines.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "setState_multipleLines.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "setState_multipleLines.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "setState_multipleLines.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -55,8 +53,8 @@ class DartFormatIntegrationSetStateTests
     @Ignore
     fun setStateWithArrow_multipleLines()
     {
-        val inputText = File(testDataPath + "setStateWithArrow_multipleLines.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "setStateWithArrow_multipleLines.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "setStateWithArrow_multipleLines.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "setStateWithArrow_multipleLines.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

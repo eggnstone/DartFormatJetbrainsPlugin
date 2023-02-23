@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat
+package com.eggnstone.jetbrainsplugins.dartformat.integration
 
 import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
@@ -7,15 +7,13 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import org.junit.Test
 import java.io.File
 
-class DartFormatIntegrationMainClassKeyWordTests
+class MainClassKeyWordTests
 {
-    private val testDataPath = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
-
     @Test
     fun normalClass()
     {
-        val inputText = File(testDataPath + "NormalClass.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "NormalClass.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "NormalClass.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClass.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -27,8 +25,8 @@ class DartFormatIntegrationMainClassKeyWordTests
     @Test
     fun normalClassWithOpeningCurlyBracketAtSameLine()
     {
-        val inputText = File(testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -40,8 +38,8 @@ class DartFormatIntegrationMainClassKeyWordTests
     @Test
     fun normalClassWithMixin()
     {
-        val inputText = File(testDataPath + "NormalClassWithMixin.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "NormalClassWithMixin.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -53,8 +51,8 @@ class DartFormatIntegrationMainClassKeyWordTests
     @Test
     fun abstractClass()
     {
-        val inputText = File(testDataPath + "AbstractClass.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "AbstractClass.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "AbstractClass.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClass.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -66,8 +64,8 @@ class DartFormatIntegrationMainClassKeyWordTests
     @Test
     fun abstractClassWithOpeningCurlyBracketAtSameLine()
     {
-        val inputText = File(testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -79,8 +77,8 @@ class DartFormatIntegrationMainClassKeyWordTests
     @Test
     fun abstractClassWithMixin()
     {
-        val inputText = File(testDataPath + "AbstractClassWithMixin.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "AbstractClassWithMixin.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

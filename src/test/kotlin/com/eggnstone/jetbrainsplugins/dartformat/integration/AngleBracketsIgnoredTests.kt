@@ -9,13 +9,11 @@ import java.io.File
 
 class AngleBracketsIgnoredTests
 {
-    private val testDataPath = "src/test/kotlin/com/eggnstone/jetbrainsplugins/dartformat/data/"
-
     @Test
     fun wordPressTools()
     {
-        val inputText = File(testDataPath + "AngleBracketsIgnored.input.dart").readText()
-        val expectedOutputText = File(testDataPath + "AngleBracketsIgnored.expected_output.dart").readText()
+        val inputText = File(IntegrationTests.testDataPath + "AngleBracketsIgnored.input.dart").readText()
+        val expectedOutputText = File(IntegrationTests.testDataPath + "AngleBracketsIgnored.expected_output.dart").readText()
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
