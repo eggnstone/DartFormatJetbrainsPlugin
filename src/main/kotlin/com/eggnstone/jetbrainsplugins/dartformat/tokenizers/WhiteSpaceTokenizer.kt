@@ -17,7 +17,7 @@ class WhiteSpaceTokenizer
         {
             if (isInInWhiteSpace)
             {
-                if (Tools.isWhiteSpace(currentChar))
+                if (Tools.isWhiteSpaceOld(currentChar))
                 {
                     currentText += currentChar
                     continue
@@ -31,7 +31,7 @@ class WhiteSpaceTokenizer
                 continue
             }
 
-            if (Tools.isWhiteSpace(currentChar))
+            if (Tools.isWhiteSpaceOld(currentChar))
             {
                 if (currentText.isNotEmpty())
                     outputTokens += UnknownToken(currentText)

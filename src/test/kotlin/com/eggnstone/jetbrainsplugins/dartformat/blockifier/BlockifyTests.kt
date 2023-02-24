@@ -24,8 +24,8 @@ class BlockifyTests
     {
         val inputText = "abc();"
 
-        val block = ExpressionBlock("abc();")
-        val expectedBlocks = arrayListOf(block)
+        val expressionBlock = ExpressionBlock("abc();")
+        val expectedBlocks = arrayListOf(expressionBlock)
 
         val blockifier = Blockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -54,8 +54,37 @@ class BlockifyTests
     {
         val inputText = "import 'package:dart_format/src/blockifier/Blockifier.dart';"
 
-        val block = ExpressionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expressionBlock = ExpressionBlock(inputText)
+        val expectedBlocks = arrayListOf(expressionBlock)
+
+        val blockifier = Blockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+    }
+
+    @Test
+    fun simpleCurlyBracketsBlock()
+    {
+        val inputText = "{}"
+
+        val curlyBracketsBlock = CurlyBracketsBlock("")
+        val expectedBlocks = arrayListOf(curlyBracketsBlock)
+
+        val blockifier = Blockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+    }
+
+    @Test
+    fun simpleCurlyBracketsBlockWithLineBreakAtTextEnd()
+    {
+        val inputText = "{}\n"
+
+        val curlyBracketsBlock = CurlyBracketsBlock("")
+        val whitespaceBlock = WhitespaceBlock("\n")
+        val expectedBlocks = arrayListOf(curlyBracketsBlock, whitespaceBlock)
 
         val blockifier = Blockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -68,8 +97,8 @@ class BlockifyTests
     {
         val inputText = "class C\n{\n}"
 
-        val innerBlock  = UnknownBlock("\n") // WhitespaceBlock
-        val innerBlocks = arrayListOf(innerBlock )
+        val innerBlock = WhitespaceBlock("\n")
+        val innerBlocks = arrayListOf(innerBlock)
         val classBlock = ClassBlock("class C\n", innerBlocks)
         val expectedBlocks = arrayListOf(classBlock)
 
@@ -84,8 +113,8 @@ class BlockifyTests
     {
         val inputText = "abstract class C\n{\n}"
 
-        val innerBlock  = UnknownBlock("\n") // WhitespaceBlock
-        val innerBlocks = arrayListOf(innerBlock )
+        val innerBlock = WhitespaceBlock("\n")
+        val innerBlocks = arrayListOf(innerBlock)
         val classBlock = ClassBlock("abstract class C\n", innerBlocks)
         val expectedBlocks = arrayListOf(classBlock)
 
@@ -100,14 +129,10 @@ class BlockifyTests
     {
         val inputText = "class C\n{\nabc();\n}"
 
-        /*
         val innerBlock1 = WhitespaceBlock("\n")
         val innerBlock2 = ExpressionBlock("abc();")
         val innerBlock3 = WhitespaceBlock("\n")
         val innerBlocks = arrayListOf(innerBlock1, innerBlock2, innerBlock3)
-        */
-        val innerBlock  = UnknownBlock("\nabc();\n") // WhitespaceBlock
-        val innerBlocks = arrayListOf(innerBlock )
         val classBlock = ClassBlock("class C\n", innerBlocks)
         val expectedBlocks = arrayListOf(classBlock)
 

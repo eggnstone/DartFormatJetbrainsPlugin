@@ -37,7 +37,9 @@ class Tools
         // TODO: add = and so on
         fun isSpecial(input: Char): Boolean = ".:;,(){}[]<>".contains(input)
 
-        fun isWhiteSpace(input: Char): Boolean = "\t ".contains(input)
+        fun isWhitespace(input: Char): Boolean = "\n\r\t ".contains(input)
+
+        fun isWhiteSpaceOld(input: Char): Boolean = "\t ".contains(input)
 
         fun shorten(s: String, maxLength: Int): String
         {

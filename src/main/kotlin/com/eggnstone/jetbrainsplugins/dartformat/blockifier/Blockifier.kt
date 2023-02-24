@@ -1,64 +1,61 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blockifier
 
+import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
+import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
-
-class State
-{
-    val blocks = arrayListOf<IBlock>()
-
-    var isInClass = false
-    var isInClassHeader = false
-    var isInClassBody = false
-
-    //var isInExpression = false
-
-    var isInWhitespace = true
-
-    var currentClassHeader = ""
-
-    var currentText = ""
-
-    //var currentBody = ""
-    //var currentFooter = ""
-}
 
 class Blockifier
 {
     fun blockify(text: String): ArrayList<IBlock>
     {
-        var state = State()
+        var state = BlockifierState()
 
         for (c in text)
         {
-            if (state.isInClass)
+            println("'${Tools.toDisplayString(c.toString())}' ${state.currentType} \"${Tools.toDisplayString(state.currentText)}\"")
+
+            if (state.currentType != BlockType.Unknown)
             {
-                state = handleInClass(c, state)
+                state = when (state.currentType)
+                {
+                    BlockType.ClassBody -> handleInClassBody(c, state)
+                    BlockType.ClassHeader -> handleInClassHeader(c, state)
+                    BlockType.CurlyBrackets -> handleInCurlyBrackets(c, state)
+                    BlockType.Whitespace -> handleInWhitespace(c, state)
+                    else -> throw DartFormatException("Unhandled BlockType: ${state.currentType}")
+                }
                 continue
             }
 
-            if (state.isInWhitespace)
-            {
-                state = handleInWhitespace(c, state)
-                continue
-            }
-
-            if (isWhitespace(c))
+            if (Tools.isWhitespace(c))
             {
                 if (state.currentText.isEmpty())
                 {
-                    state.isInWhitespace = true
+                    state.currentType = BlockType.Whitespace
+                    println("  -> ${state.currentType}")
                     state.currentText += c
                     continue
                 }
 
                 if (state.currentText == "class" || state.currentText == "abstract class")
                 {
-                    state.isInClass = true
-                    state.isInClassHeader = true
+                    state.currentType = BlockType.ClassHeader
+                    println("  -> ${state.currentType}")
                 }
 
                 state.currentText += c
                 continue
+            }
+
+            if (c == '{')
+            {
+                if (state.currentText.isEmpty())
+                {
+                    state.currentType = BlockType.CurlyBrackets
+                    println("  -> ${state.currentType}")
+                    state.currentText += c
+                    continue
+                }
             }
 
             if (c == ';')
@@ -71,44 +68,28 @@ class Blockifier
             state.currentText += c
         }
 
-        /*if (state.currentText.isNotEmpty())
-            TODO("state.currentText.isNotEmpty()")
-        if (state.isInClass)
-            TODO("state.isInClass")*/
+        if (state.currentText.isNotEmpty())
+        {
+            if (state.currentType == BlockType.Whitespace)
+                state.blocks += WhitespaceBlock(state.currentText)
+            else
+                throw DartFormatException("Unhandled BlockType at end of text: ${state.currentType}")
+        }
 
         return state.blocks
     }
 
-    private fun handleInClass(c: Char, state: State): State
+    private fun handleInClassBody(c: Char, state: BlockifierState): BlockifierState
     {
-        if (state.isInClassHeader)
+        if (c == '}')
         {
-            if (c == '{')
-            {
-                state.isInClassHeader = false
-                state.isInClassBody = true
-                state.currentClassHeader = state.currentText
-                state.currentText = ""
-            }
-
-            state.currentText += c
-            return state
-        }
-
-        if (state.isInClassBody)
-        {
-            if (c == '}')
-            {
-                state.isInClass = false
-                state.isInClassBody = false
-                val innerBlock = UnknownBlock(state.currentText.substring(1))
-                state.blocks += ClassBlock(state.currentClassHeader, arrayListOf(innerBlock))
-                state.currentClassHeader = ""
-                state.currentText = ""
-                return state
-            }
-
-            state.currentText += c
+            state.currentType = BlockType.Unknown
+            println("  -> ${state.currentType}")
+            val innerText = state.currentText.substring(1)
+            val innerBlocks = blockify(innerText)
+            state.blocks += ClassBlock(state.currentClassHeader, innerBlocks)
+            state.currentClassHeader = ""
+            state.currentText = ""
             return state
         }
 
@@ -116,15 +97,47 @@ class Blockifier
         return state
     }
 
-    private fun handleInWhitespace(c: Char, state: State): State
+    private fun handleInClassHeader(c: Char, state: BlockifierState): BlockifierState
     {
-        if (isWhitespace(c))
+        if (c == '{')
+        {
+            state.currentType = BlockType.ClassBody
+            println("  -> ${state.currentType}")
+            state.currentClassHeader = state.currentText
+            state.currentText = ""
+        }
+
+        state.currentText += c
+        return state
+    }
+
+    private fun handleInCurlyBrackets(c: Char, state: BlockifierState): BlockifierState
+    {
+        println("  handleInCurlyBrackets: '${Tools.toDisplayString(c.toString())}' \"${Tools.toDisplayString(state.currentText)}\"")
+
+        if (c != '}')
         {
             state.currentText += c
             return state
         }
 
-        state.isInWhitespace = false
+        state.currentType = BlockType.Unknown
+        println("  -> ${state.currentType}")
+        state.blocks += CurlyBracketsBlock(state.currentText.substring(1))
+        state.currentText = ""
+        return state
+    }
+
+    private fun handleInWhitespace(c: Char, state: BlockifierState): BlockifierState
+    {
+        if (Tools.isWhitespace(c))
+        {
+            state.currentText += c
+            return state
+        }
+
+        state.currentType = BlockType.Unknown
+        println("  -> ${state.currentType}")
 
         if (state.currentText.isNotEmpty())
             state.blocks += WhitespaceBlock(state.currentText)
@@ -132,6 +145,4 @@ class Blockifier
         state.currentText = c.toString()
         return state
     }
-
-    private fun isWhitespace(c: Char): Boolean = (c == ' ' || c == '\n' || c == '\r' || c == '\t')
 }
