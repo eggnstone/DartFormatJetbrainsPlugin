@@ -17,6 +17,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -31,6 +33,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -47,6 +51,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -61,6 +67,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -75,6 +83,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -90,6 +100,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -106,6 +118,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -122,6 +136,8 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 
     @Test
@@ -140,5 +156,7 @@ class BlockifyTests
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
     }
 }

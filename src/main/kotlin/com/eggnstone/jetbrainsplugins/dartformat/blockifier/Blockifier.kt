@@ -6,13 +6,28 @@ import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
 
 class Blockifier
 {
-    fun blockify(text: String): ArrayList<IBlock>
+    companion object
+    {
+        const val debug = false
+    }
+
+    fun printBlocks(blocks: List<IBlock>)
+    {
+        for (block in blocks)
+        {
+            println("Block: ${block::class.simpleName}")
+            println("  $block")
+        }
+    }
+
+    fun blockify(text: String): List<IBlock>
     {
         var state = BlockifierState()
 
         for (c in text)
         {
-            println("'${Tools.toDisplayString(c.toString())}' ${state.currentType} \"${Tools.toDisplayString(state.currentText)}\"")
+            if (debug)
+                println("'${Tools.toDisplayString(c.toString())}' ${state.currentType} \"${Tools.toDisplayString(state.currentText)}\"")
 
             if (state.currentType != BlockType.Unknown)
             {
@@ -32,7 +47,9 @@ class Blockifier
                 if (state.currentText.isEmpty())
                 {
                     state.currentType = BlockType.Whitespace
-                    println("  -> ${state.currentType}")
+                    if (debug)
+                        println("  -> ${state.currentType}")
+
                     state.currentText += c
                     continue
                 }
@@ -40,7 +57,8 @@ class Blockifier
                 if (state.currentText == "class" || state.currentText == "abstract class")
                 {
                     state.currentType = BlockType.ClassHeader
-                    println("  -> ${state.currentType}")
+                    if (debug)
+                        println("  -> ${state.currentType}")
                 }
 
                 state.currentText += c
@@ -52,7 +70,9 @@ class Blockifier
                 if (state.currentText.isEmpty())
                 {
                     state.currentType = BlockType.CurlyBrackets
-                    println("  -> ${state.currentType}")
+                    if (debug)
+                        println("  -> ${state.currentType}")
+
                     state.currentText += c
                     continue
                 }
@@ -84,7 +104,9 @@ class Blockifier
         if (c == '}')
         {
             state.currentType = BlockType.Unknown
-            println("  -> ${state.currentType}")
+            if (debug)
+                println("  -> ${state.currentType}")
+
             val innerText = state.currentText.substring(1)
             val innerBlocks = blockify(innerText)
             state.blocks += ClassBlock(state.currentClassHeader, innerBlocks)
@@ -102,7 +124,9 @@ class Blockifier
         if (c == '{')
         {
             state.currentType = BlockType.ClassBody
-            println("  -> ${state.currentType}")
+            if (debug)
+                println("  -> ${state.currentType}")
+
             state.currentClassHeader = state.currentText
             state.currentText = ""
         }
@@ -113,7 +137,8 @@ class Blockifier
 
     private fun handleInCurlyBrackets(c: Char, state: BlockifierState): BlockifierState
     {
-        println("  handleInCurlyBrackets: '${Tools.toDisplayString(c.toString())}' \"${Tools.toDisplayString(state.currentText)}\"")
+        if (debug)
+            println("  handleInCurlyBrackets: '${Tools.toDisplayString(c.toString())}' \"${Tools.toDisplayString(state.currentText)}\"")
 
         if (c != '}')
         {
@@ -122,7 +147,9 @@ class Blockifier
         }
 
         state.currentType = BlockType.Unknown
-        println("  -> ${state.currentType}")
+        if (debug)
+            println("  -> ${state.currentType}")
+
         state.blocks += CurlyBracketsBlock(state.currentText.substring(1))
         state.currentText = ""
         return state
@@ -137,7 +164,8 @@ class Blockifier
         }
 
         state.currentType = BlockType.Unknown
-        println("  -> ${state.currentType}")
+        if (debug)
+            println("  -> ${state.currentType}")
 
         if (state.currentText.isNotEmpty())
             state.blocks += WhitespaceBlock(state.currentText)
