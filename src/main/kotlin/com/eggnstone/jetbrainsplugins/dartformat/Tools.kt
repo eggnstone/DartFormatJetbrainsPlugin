@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
+import com.eggnstone.jetbrainsplugins.dartformat.blocks.IBlock
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IIndent
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import java.util.*
@@ -38,14 +39,6 @@ class Tools
 
         fun isWhiteSpace(input: Char): Boolean = "\t ".contains(input)
 
-        fun toDisplayString(input: String): String = input.replace("\n", "\\n").replace("\r", "\\r")
-
-        fun toDisplayString(input: List<String>): String = input.joinToString(separator = "") { toDisplayString(it) }
-
-        fun toString(input: List<IToken>): String = toDisplayString(input.joinToString { "\"" + it.recreate() + "\"" })
-
-        fun toString(input: Stack<IIndent>): String = input.joinToString(separator = ",") { it.toString() }
-
         fun shorten(s: String, maxLength: Int): String
         {
             if (s.length < maxLength)
@@ -53,5 +46,15 @@ class Tools
 
             return s.substring(0, maxLength)
         }
+
+        fun toDisplayString(input: String): String = input.replace("\n", "\\n").replace("\r", "\\r")
+
+        fun toBlocksDisplayString(input: List<IBlock>): String = input.joinToString(separator = "") { toDisplayString(it.toString()) }
+
+        fun toDisplayString(input: List<String>): String = input.joinToString(separator = "") { toDisplayString(it) }
+
+        fun toIndentsDisplayString(input: Stack<IIndent>): String = input.joinToString(separator = ",") { it.toString() }
+
+        fun toTokensDisplayString(input: List<IToken>): String = toDisplayString(input.joinToString { "\"" + it.recreate() + "\"" })
     }
 }

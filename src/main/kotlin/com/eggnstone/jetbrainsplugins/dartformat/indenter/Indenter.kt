@@ -28,7 +28,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentTokens(inputTokens: List<IToken>): IndentResult
     {
-        println("indentTokens: ${Tools.toString(inputTokens)}")
+        println("indentTokens: ${Tools.toTokensDisplayString(inputTokens)}")
 
         val lines = arrayListOf<String>()
         val remainingTokens = inputTokens.toMutableList()
@@ -196,9 +196,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             }
                             else
                             {
-                                println(Tools.toString(inputTokens))
+                                println(Tools.toTokensDisplayString(inputTokens))
                                 printInfo("    ", currentLevel, currentLine, currentStack, newStack)
-                                TODO("Not covered by any test at all (1) " + Tools.shorten(Tools.toString(inputTokens), 1000))
+                                TODO("Not covered by any test at all (1) " + Tools.shorten(Tools.toTokensDisplayString(inputTokens), 1000))
                                 println("      Current stack does not end with $openingBracket")
                             }
                         }
@@ -298,8 +298,8 @@ class Indenter(private val spacesPerLevel: Int = 4)
     {
         println("${spacer}Current level: $currentLevel")
         println("${spacer}Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
-        println("${spacer}Current stack: \"" + Tools.toString(currentStack) + "\"")
-        println("${spacer}New stack:     \"" + Tools.toString(newStack) + "\"")
+        println("${spacer}Current stack: \"" + Tools.toIndentsDisplayString(currentStack) + "\"")
+        println("${spacer}New stack:     \"" + Tools.toIndentsDisplayString(newStack) + "\"")
     }
 
     fun recreate(tokens: ArrayList<IToken>): String
