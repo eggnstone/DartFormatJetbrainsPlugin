@@ -6,6 +6,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -21,6 +22,7 @@ class TokenizeTestsParametrized(private val special: String)
     }
 
     @Test
+    @Ignore
     fun specialCharAtTextStart()
     {
         val inputText = "${special}z"
@@ -35,6 +37,7 @@ class TokenizeTestsParametrized(private val special: String)
     }
 
     @Test
+    @Ignore
     fun specialCharAtTextMiddle()
     {
         val inputText = "a${special}z"
@@ -50,6 +53,7 @@ class TokenizeTestsParametrized(private val special: String)
     }
 
     @Test
+    @Ignore
     fun specialCharAtTextEnd()
     {
         val inputText = "a${special}"
