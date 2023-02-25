@@ -8,5 +8,5 @@ class WhitespaceBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Whitespace(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "Whitespace(${Tools.toDisplayString2(text)})"
 }

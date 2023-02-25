@@ -35,11 +35,14 @@ class Tools
         fun isKeyword(s: String): Boolean = keywords.contains(s)
 
         // TODO: add = and so on
-        fun isSpecial(input: Char): Boolean = ".:;,(){}[]<>".contains(input)
+        fun isSpecial(c: Char): Boolean = ".:;,(){}[]<>".contains(c)
 
-        fun isWhitespace(input: Char): Boolean = "\n\r\t ".contains(input)
+        fun isWhitespace(c: Char): Boolean = "\n\r\t ".contains(c)
 
-        fun isWhiteSpaceOld(input: Char): Boolean = "\t ".contains(input)
+        fun isWhiteSpaceOld(c: Char): Boolean = "\t ".contains(c)
+
+        fun isClosingBracket(c: Char): Boolean = "})]".contains(c)
+        fun isOpeningBracket(c: Char): Boolean = "{([".contains(c)
 
         fun shorten(s: String, maxLength: Int): String
         {
@@ -49,14 +52,47 @@ class Tools
             return s.substring(0, maxLength)
         }
 
-        fun toDisplayString(input: String): String = input.replace("\n", "\\n").replace("\r", "\\r")
+        private fun blocksToDisplayString1(blocks: List<IBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })
+        fun blocksToDisplayString2(blocks: List<IBlock>): String = "[" + blocksToDisplayString1(blocks) + "]"
 
-        fun toBlocksDisplayString(input: List<IBlock>): String = input.joinToString(separator = "") { toDisplayString(it.toString()) }
+        private fun charsToDisplayString1(chars: List<Char>): String = toDisplayString1(chars.joinToString(separator = "") { "'$it'" })
+        fun charsToDisplayString2(chars: List<Char>): String = "[" + charsToDisplayString1(chars) + "]"
 
-        fun toDisplayString(input: List<String>): String = input.joinToString(separator = "") { toDisplayString(it) }
+        private fun toDisplayString1(s: String): String = s.replace("\n", "\\n").replace("\r", "\\r")
+        fun toDisplayString2(s: String): String = "\"" + toDisplayString1(s) + "\""
 
-        fun toIndentsDisplayString(input: Stack<IIndent>): String = input.joinToString(separator = ",") { it.toString() }
+        private fun toDisplayString1(c: Char): String = toDisplayString1(c.toString())
+        fun toDisplayString2(c: Char): String = "'" + toDisplayString1(c) + "'"
 
-        fun toTokensDisplayString(input: List<IToken>): String = toDisplayString(input.joinToString { "\"" + it.recreate() + "\"" })
+        private fun indentsToDisplayString1(indents: Stack<IIndent>): String = toDisplayString1(indents.joinToString(separator = ",") { it.toString() })
+        fun indentsToDisplayString2(indents: Stack<IIndent>): String = "[" + indentsToDisplayString1(indents) + "]"
+
+        private fun stringsToDisplayString1(strings: List<String>): String = toDisplayString1(strings.joinToString(separator = "") { it })
+        fun stringsToDisplayString2(strings: List<String>): String = "[" + stringsToDisplayString1(strings) + "]"
+
+        private fun tokensToDisplayString1(tokens: List<IToken>): String = toDisplayString1(tokens.joinToString { "\"" + it.recreate() + "\"" })
+        fun tokensToDisplayString2(tokens: List<IToken>): String = "[" + tokensToDisplayString1(tokens) + "]"
+
+        fun getClosingBracket(openingBracket: Char): Char
+        {
+            return when (openingBracket)
+            {
+                '{' -> '}'
+                '(' -> ')'
+                '[' -> ']'
+                else -> throw DartFormatException("Unexpected opening bracket: $openingBracket")
+            }
+        }
+
+        fun getOpeningBracket(closingBracket: Char): Char
+        {
+            return when (closingBracket)
+            {
+                '}' -> '{'
+                ')' -> '('
+                ']' -> '['
+                else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
+            }
+        }
     }
 }

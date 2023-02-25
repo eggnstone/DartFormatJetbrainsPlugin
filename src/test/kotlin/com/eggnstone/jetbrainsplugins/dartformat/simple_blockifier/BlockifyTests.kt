@@ -1,11 +1,13 @@
 package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
+import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.ISimpleBlock
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.SimpleInstructionBlock
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.SimpleWhitespaceBlock
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 
 class BlockifyTests
 {
@@ -24,11 +26,67 @@ class BlockifyTests
     }
 
     @Test
+    fun oneWhitespace()
+    {
+        val inputText = " "
+
+        val block = SimpleWhitespaceBlock(inputText)
+        val expectedBlocks = arrayListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun twoWhitespaces()
+    {
+        val inputText = "  "
+
+        val block = SimpleWhitespaceBlock(inputText)
+        val expectedBlocks = arrayListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun unexpectedEndInSimpleInstruction()
+    {
+        val inputText = "abc()"
+
+        assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
+    }
+
+    @Test
     fun oneSimpleInstruction()
     {
         val inputText = "abc();"
 
-        val block = SimpleInstructionBlock("abc();")
+        val block = SimpleInstructionBlock(inputText)
+        val expectedBlocks = arrayListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun oneSimpleInstructionSemicolonOnly()
+    {
+        val inputText = ";"
+
+        val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = arrayListOf(block)
 
         val blockifier = SimpleBlockifier()
@@ -95,11 +153,43 @@ class BlockifyTests
     }
 
     @Test
+    fun unexpectedEndInCurlyBracketBlock()
+    {
+        val inputText = "{"
+
+        assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
+    }
+
+    @Test
+    fun unexpectedEndInRoundBracketBlock()
+    {
+        val inputText = "("
+
+        assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
+    }
+
+    @Test
+    fun unexpectedEndInSquareBracketBlock()
+    {
+        val inputText = "["
+
+        assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
+    }
+
+    @Test
+    fun unexpectedCurlyBracket()
+    {
+        val inputText = "a}"
+
+        assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
+    }
+
+    @Test
     fun oneCurlyBracketBlock()
     {
         val inputText = "{}"
 
-        val block = SimpleInstructionBlock("{}")
+        val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = arrayListOf(block)
 
         val blockifier = SimpleBlockifier()
@@ -168,6 +258,38 @@ class BlockifyTests
         val block1 = SimpleInstructionBlock("{}")
         val block2 = SimpleInstructionBlock("abc();")
         val expectedBlocks = arrayListOf(block1, block2)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun simpleInstructionInsideCurlyBracketBlock()
+    {
+        val inputText = "{abc();}"
+
+        val block = SimpleInstructionBlock(inputText)
+        val expectedBlocks = arrayListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun curlyBracketBlockInsideSimpleInstruction()
+    {
+        val inputText = "abc({});"
+
+        val block = SimpleInstructionBlock(inputText)
+        val expectedBlocks = arrayListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

@@ -8,5 +8,5 @@ class ExpressionBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Expression(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "Expression(${Tools.toDisplayString2(text)})"
 }

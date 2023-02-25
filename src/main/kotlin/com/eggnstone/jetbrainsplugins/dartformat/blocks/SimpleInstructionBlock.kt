@@ -8,5 +8,5 @@ class SimpleInstructionBlock(val text: String) : ISimpleBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "SimpleInstruction(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "SimpleInstruction(${Tools.toDisplayString2(text)})"
 }

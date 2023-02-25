@@ -10,5 +10,5 @@ class StringToken(val text: String, val isClosed: Boolean = true) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "String(\"${Tools.toDisplayString(text)}${if (isClosed) "\"" else "\", isClosed=false"})"
+    override fun toString(): String = "String(${Tools.toDisplayString2(text)}${if (isClosed) "" else ", isClosed=false"})"
 }

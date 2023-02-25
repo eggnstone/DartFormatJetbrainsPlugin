@@ -27,7 +27,7 @@ class BlockifierOld
         for (c in text)
         {
             if (debug)
-                println("'${Tools.toDisplayString(c.toString())}' ${state.currentType} \"${Tools.toDisplayString(state.currentText)}\"")
+                println("${Tools.toDisplayString2(c)} ${state.currentType} ${Tools.toDisplayString2(state.currentText)}")
 
             if (state.currentType != AreaType.Unknown)
             {
@@ -142,7 +142,7 @@ class BlockifierOld
     private fun handleInCurlyBrackets(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (debug)
-            println("  handleInCurlyBrackets: '${Tools.toDisplayString(c.toString())}' \"${Tools.toDisplayString(state.currentText)}\"")
+            println("  handleInCurlyBrackets: ${Tools.toDisplayString2(c)} ${Tools.toDisplayString2(state.currentText)}")
 
         if (c != '}')
         {

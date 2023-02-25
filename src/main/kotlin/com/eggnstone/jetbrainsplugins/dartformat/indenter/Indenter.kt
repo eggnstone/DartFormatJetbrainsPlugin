@@ -28,7 +28,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentTokens(inputTokens: List<IToken>): IndentResult
     {
-        println("indentTokens: ${Tools.toTokensDisplayString(inputTokens)}")
+        println("indentTokens: ${Tools.tokensToDisplayString2(inputTokens)}")
 
         val lines = arrayListOf<String>()
         val remainingTokens = inputTokens.toMutableList()
@@ -196,9 +196,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                             }
                             else
                             {
-                                println(Tools.toTokensDisplayString(inputTokens))
+                                println(Tools.tokensToDisplayString2(inputTokens))
                                 printInfo("    ", currentLevel, currentLine, currentStack, newStack)
-                                TODO("Not covered by any test at all (1) " + Tools.shorten(Tools.toTokensDisplayString(inputTokens), 1000))
+                                TODO("Not covered by any test at all (1) " + Tools.shorten(Tools.tokensToDisplayString2(inputTokens), 1000))
                                 println("      Current stack does not end with $openingBracket")
                             }
                         }
@@ -240,7 +240,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val currentStackTop = currentStack.lastOrNull()
                 val currentLevel2 = currentStackTop?.level ?: 0
                 val line = indentText(currentLine, currentLevel2)
-                println("    -> \"${Tools.toDisplayString(line)}\"")
+                println("    -> ${Tools.toDisplayString2(line)}")
                 lines += line
 
                 currentLine = ""
@@ -297,9 +297,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
     private fun printInfo(spacer: String, currentLevel: Int, currentLine: String, currentStack: Stack<IIndent>, newStack: Stack<IIndent>)
     {
         println("${spacer}Current level: $currentLevel")
-        println("${spacer}Current line:  \"" + Tools.toDisplayString(currentLine) + "\"")
-        println("${spacer}Current stack: \"" + Tools.toIndentsDisplayString(currentStack) + "\"")
-        println("${spacer}New stack:     \"" + Tools.toIndentsDisplayString(newStack) + "\"")
+        println("${spacer}Current line:  " + Tools.toDisplayString2(currentLine))
+        println("${spacer}Current stack: " + Tools.indentsToDisplayString2(currentStack))
+        println("${spacer}New stack:     " + Tools.indentsToDisplayString2(newStack))
     }
 
     fun recreate(tokens: ArrayList<IToken>): String
@@ -314,16 +314,16 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentText(text: String, level: Int): String
     {
-        //println("indentText: \"${Tools.toDisplayString(text)}\", level: $level")
+        //println("indentText: ${Tools.toDisplayString2(text)}, level: $level")
 
         if (text.isBlank())
         {
-            println("indentText: \"${Tools.toDisplayString(text)}\", level: $level is BLANK")
+            println("indentText: ${Tools.toDisplayString2(text)}, level: $level is BLANK")
             return text
         }
 
         if (level < 0)
-            throw DartFormatException("level is negative: $level (text: \"${Tools.toDisplayString(text)}\")")
+            throw DartFormatException("level is negative: $level (text: ${Tools.toDisplayString2(text)})")
 
         val pad = " ".repeat(level * spacesPerLevel)
 

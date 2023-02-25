@@ -13,6 +13,8 @@ class TestParams
             arrayOf("[", "]", "Square brackets")
         )
 
+        val brackets2 = join(brackets, brackets)
+
         val keywords = Tools.keywords
 
         val lineBreaks = arrayOf(

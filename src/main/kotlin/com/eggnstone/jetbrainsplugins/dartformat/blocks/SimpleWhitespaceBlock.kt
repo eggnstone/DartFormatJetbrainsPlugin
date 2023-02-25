@@ -8,5 +8,5 @@ class SimpleWhitespaceBlock(val text: String) : ISimpleBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "SimpleWhitespace(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "SimpleWhitespace(${Tools.toDisplayString2(text)})"
 }

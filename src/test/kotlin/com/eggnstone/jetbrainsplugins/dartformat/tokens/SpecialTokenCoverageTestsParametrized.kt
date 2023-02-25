@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class SpecialTokenCoverageTestsParametrized(private val openingBracket: String, private val closingBracket: String, @Suppress("UNUSED_PARAMETER") paramName: String)
+class SpecialTokenCoverageTestsParametrized(private val openingBracket: String, private val closingBracket: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {

@@ -8,5 +8,5 @@ class UnknownBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Unknown(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "Unknown(${Tools.toDisplayString2(text)})"
 }

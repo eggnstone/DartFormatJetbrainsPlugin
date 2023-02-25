@@ -8,7 +8,7 @@ class EndOfLineCommentToken(private val text: String) : IToken
     init
     {
         if (Tools.containsLineBreak(text))
-            throw DartFormatException("EndOfLineCommentToken: text must not contain line breaks: \"${Tools.toDisplayString(text)}\"")
+            throw DartFormatException("EndOfLineCommentToken: text must not contain line breaks: ${Tools.toDisplayString2(text)}")
     }
 
     override fun equals(other: Any?): Boolean = other is EndOfLineCommentToken && text == other.text

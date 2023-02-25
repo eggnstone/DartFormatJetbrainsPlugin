@@ -30,5 +30,5 @@ class SpecialToken(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "Special(\"${Tools.toDisplayString(text)}\")"
+    override fun toString(): String = "Special(${Tools.toDisplayString2(text)})"
 }

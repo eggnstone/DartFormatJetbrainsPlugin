@@ -15,15 +15,16 @@ class SimpleBlockifier
 
     private val blocks = arrayListOf<ISimpleBlock>()
     private var currentAreaType: SimpleAreaType = SimpleAreaType.Unknown
-    private var currentCurlyBracketCount: Int = 0
+    private val currentBrackets = arrayListOf<Char>()
     private var currentText: String = ""
+    private var hasMainCurlyBrackets = false
 
     fun blockify(text: String): List<ISimpleBlock>
     {
         for (c in text)
         {
             if (debug)
-                println("'${Tools.toDisplayString(c.toString())}' $currentAreaType \"${Tools.toDisplayString(currentText)}\"")
+                println("${Tools.toDisplayString2(c)} $currentAreaType ${Tools.toDisplayString2(currentText)}")
 
             when (currentAreaType)
             {
@@ -35,12 +36,41 @@ class SimpleBlockifier
 
         if (currentText.isNotEmpty())
         {
-            blocks += when (currentAreaType)
+            var finalBlock: ISimpleBlock? = null
+
+            if (debug)
+                printBlocks(blocks, "Final / currentText is not empty")
+
+            if (currentAreaType == SimpleAreaType.Instruction)
             {
-                SimpleAreaType.Instruction -> SimpleInstructionBlock(currentText)
-                SimpleAreaType.Unknown -> throw DartFormatException("Unexpected area type: $currentAreaType")
-                SimpleAreaType.Whitespace -> SimpleWhitespaceBlock(currentText)
+                if (currentBrackets.isNotEmpty())
+                    throwError("Text ends but brackets not closed.")
+
+                if (currentText == ";")
+                    finalBlock = SimpleInstructionBlock(currentText)
+                else if (hasMainCurlyBrackets)
+                    finalBlock = SimpleInstructionBlock(currentText)
             }
+
+            if (finalBlock == null)
+            {
+                finalBlock = when (currentAreaType)
+                {
+                    SimpleAreaType.Instruction -> throwError("Text ends but instruction not closed.")
+                    SimpleAreaType.Unknown -> throwError("Unexpected area type: $currentAreaType") // Impossible to cover with tests.
+                    SimpleAreaType.Whitespace -> SimpleWhitespaceBlock(currentText)
+                }
+            }
+
+            if (debug)
+                println("Final block: $finalBlock")
+
+            blocks += finalBlock
+        }
+        else
+        {
+            if (debug)
+                printBlocks(blocks, "Final / currentText is empty")
         }
 
         return blocks
@@ -48,32 +78,43 @@ class SimpleBlockifier
 
     private fun handleInstructionArea(c: Char)
     {
-        if (c == ';')
+        if (c == ';' && currentBrackets.isEmpty())
         {
             blocks += SimpleInstructionBlock(currentText + c)
             reset(SimpleAreaType.Unknown, "")
             return
         }
 
-        if (c == '{')
+        if (Tools.isOpeningBracket(c))
         {
-            currentCurlyBracketCount++
+            println("XXXXXXXXXXXXXX: $currentBrackets")
+            if (c == '{' && currentBrackets.isEmpty())
+                hasMainCurlyBrackets = true
+
+            currentBrackets += c
             currentText += c
             return
         }
 
-        if (c == '}')
+        if (Tools.isClosingBracket(c))
         {
-            currentCurlyBracketCount--
+            if (currentBrackets.lastOrNull() != Tools.getOpeningBracket(c))
+                throwError("Unexpected closing bracket.")
 
-            if (currentCurlyBracketCount < 0)
-                throw DartFormatException("currentCurlyBracketCount < 0")
+            currentBrackets.removeLast()
 
-            if (currentCurlyBracketCount == 0)
+            if (currentBrackets.isEmpty())
             {
-                blocks += SimpleInstructionBlock(currentText + c)
+                if (hasMainCurlyBrackets)
+                {
+                    blocks += SimpleInstructionBlock(currentText + c)
+                    reset(SimpleAreaType.Unknown, "")
+                    return
+                }
+
+                /*blocks += SimpleInstructionBlock(currentText + c)
                 reset(SimpleAreaType.Unknown, "")
-                return
+                return*/
             }
 
             currentText += c
@@ -92,8 +133,12 @@ class SimpleBlockifier
         }
 
         reset(SimpleAreaType.Instruction, c.toString())
-        if (c == '{')
-            currentCurlyBracketCount++
+        if (Tools.isOpeningBracket(c))
+        {
+            currentBrackets += c
+            if (c == '{')
+                hasMainCurlyBrackets = true
+        }
     }
 
     private fun handleWhitespaceArea(c: Char)
@@ -108,12 +153,14 @@ class SimpleBlockifier
         reset(SimpleAreaType.Instruction, c.toString())
     }
 
-    fun printBlocks(blocks: List<ISimpleBlock>)
+    fun printBlocks(blocks: List<ISimpleBlock>, label: String = "")
     {
+        val prefix = if (label.isEmpty()) "" else "$label - "
+
         if (blocks.isEmpty())
-            println("No blocks.")
+            println("${prefix}No blocks.")
         else
-            println("${blocks.size} blocks:")
+            println("$prefix${blocks.size} blocks:")
 
         for (block in blocks)
             println("  $block")
@@ -122,7 +169,19 @@ class SimpleBlockifier
     private fun reset(areaType: SimpleAreaType, text: String)
     {
         currentAreaType = areaType
-        currentCurlyBracketCount = 0
-        this.currentText = text
+        currentBrackets.clear()
+        currentText = text
+        hasMainCurlyBrackets = false
+    }
+
+    private fun throwError(message: String): ISimpleBlock
+    {
+        println("Error: $message")
+        println("  currentAreaType:      $currentAreaType")
+        println("  currentBrackets:      ${Tools.charsToDisplayString2(currentBrackets)}")
+        println("  currentText:          ${Tools.toDisplayString2(currentText)}")
+        println("  hasMainCurlyBrackets: $hasMainCurlyBrackets")
+        printBlocks(blocks)
+        throw DartFormatException(message)
     }
 }

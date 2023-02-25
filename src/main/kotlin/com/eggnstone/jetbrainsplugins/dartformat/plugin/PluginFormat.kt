@@ -4,6 +4,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.FormatterWithConfig
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IndenterWithConfig
+import com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier.SimpleBlockifier
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -168,6 +169,9 @@ class PluginFormat : AnAction()
     private fun format(inputText: String): String
     {
         val config = getConfig()
+
+        val simpleBlocks = SimpleBlockifier().blockify(inputText)
+        SimpleBlockifier().printBlocks(simpleBlocks)
 
         val inputTokens = Tokenizer().tokenize(inputText)
 
