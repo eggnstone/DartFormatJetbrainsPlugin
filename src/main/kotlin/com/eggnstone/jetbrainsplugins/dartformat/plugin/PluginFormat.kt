@@ -171,7 +171,7 @@ class PluginFormat : AnAction()
         val config = getConfig()
 
         val simpleBlocks = SimpleBlockifier().blockify(inputText)
-        SimpleBlockifier().printBlocks(simpleBlocks)
+        //SimpleBlockifier().printBlocks(simpleBlocks)
 
         val inputTokens = Tokenizer().tokenize(inputText)
 

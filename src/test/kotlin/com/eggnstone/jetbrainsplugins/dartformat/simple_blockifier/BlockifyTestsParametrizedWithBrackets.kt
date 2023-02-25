@@ -2,7 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
 import TestParams
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
-import com.eggnstone.jetbrainsplugins.dartformat.blocks.SimpleInstructionBlock
+import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleInstructionBlock
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

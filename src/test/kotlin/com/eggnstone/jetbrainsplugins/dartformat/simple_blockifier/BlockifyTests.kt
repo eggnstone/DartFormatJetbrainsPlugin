@@ -1,9 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
-import com.eggnstone.jetbrainsplugins.dartformat.blocks.ISimpleBlock
-import com.eggnstone.jetbrainsplugins.dartformat.blocks.SimpleInstructionBlock
-import com.eggnstone.jetbrainsplugins.dartformat.blocks.SimpleWhitespaceBlock
+import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.ISimpleBlock
+import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleInstructionBlock
+import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleWhitespaceBlock
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

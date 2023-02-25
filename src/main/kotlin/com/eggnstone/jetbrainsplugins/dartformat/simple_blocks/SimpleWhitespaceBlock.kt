@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.blocks
+package com.eggnstone.jetbrainsplugins.dartformat.simple_blocks
 
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 

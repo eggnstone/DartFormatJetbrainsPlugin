@@ -3,7 +3,6 @@ package com.eggnstone.jetbrainsplugins.dartformat.integration
 import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
-import com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier.SimpleBlockifier
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import org.junit.Ignore
 import org.junit.Test
@@ -17,8 +16,8 @@ class DefaultFlutterMainTests
         val inputText = File(IntegrationTests.testDataPath + "default_flutter_main.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "default_flutter_main.expected_output.dart").readText()
 
-        val simpleBlocks = SimpleBlockifier().blockify(inputText)
-        SimpleBlockifier().printBlocks(simpleBlocks)
+        /*val simpleBlocks = SimpleBlockifier().blockify(inputText)
+        SimpleBlockifier().printBlocks(simpleBlocks)*/
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
