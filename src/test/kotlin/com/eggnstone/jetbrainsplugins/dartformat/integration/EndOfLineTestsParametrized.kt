@@ -27,7 +27,7 @@ class EndOfLineTestsParametrized(private val newLine: String, @Suppress("UNUSED_
     fun testEndOfLineCommentAtTextMiddle()
     {
         val inputText = "abc//this is an end of line comment${newLine}def"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             UnknownToken("abc"),
             EndOfLineCommentToken("this is an end of line comment"),
             LineBreakToken(newLine),

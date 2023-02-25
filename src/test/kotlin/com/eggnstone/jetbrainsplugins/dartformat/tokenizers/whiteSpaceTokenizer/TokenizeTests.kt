@@ -13,7 +13,7 @@ class TokenizeTests
     fun space_atTextStart()
     {
         val inputText = " b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             WhiteSpaceToken(" "),
             UnknownToken("b")
         )
@@ -27,7 +27,7 @@ class TokenizeTests
     fun space_atTextMiddle()
     {
         val inputText = "a b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             WhiteSpaceToken(" "),
             UnknownToken("b")
@@ -42,7 +42,7 @@ class TokenizeTests
     fun twoSpaces_atTextMiddle()
     {
         val inputText = "a  b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             WhiteSpaceToken("  "),
             UnknownToken("b")
@@ -57,7 +57,7 @@ class TokenizeTests
     fun space_atTextEnd()
     {
         val inputText = "a "
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             WhiteSpaceToken(" ")
         )

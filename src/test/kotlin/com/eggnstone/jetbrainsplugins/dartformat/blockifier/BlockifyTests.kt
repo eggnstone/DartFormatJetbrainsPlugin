@@ -12,7 +12,7 @@ class BlockifyTests
     fun emptyText()
     {
         val inputText = ""
-        val expectedBlocks = arrayListOf<IBlock>()
+        val expectedBlocks = mutableListOf<IBlock>()
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -28,7 +28,7 @@ class BlockifyTests
         val inputText = "abc();"
 
         val expressionBlock = ExpressionBlock("abc();")
-        val expectedBlocks = arrayListOf(expressionBlock)
+        val expectedBlocks = mutableListOf(expressionBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -46,7 +46,7 @@ class BlockifyTests
         val block1 = ExpressionBlock("abc();")
         val block2 = WhitespaceBlock("\n")
         val block3 = ExpressionBlock("def();")
-        val expectedBlocks = arrayListOf(block1, block2, block3)
+        val expectedBlocks = mutableListOf(block1, block2, block3)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -62,7 +62,7 @@ class BlockifyTests
         val inputText = "import 'package:dart_format/src/blockifier/Blockifier.dart';"
 
         val expressionBlock = ExpressionBlock(inputText)
-        val expectedBlocks = arrayListOf(expressionBlock)
+        val expectedBlocks = mutableListOf(expressionBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -77,8 +77,8 @@ class BlockifyTests
     {
         val inputText = "{}"
 
-        val curlyBracketBlock = CurlyBracketBlock(arrayListOf(UnknownBlock("")))
-        val expectedBlocks = arrayListOf(curlyBracketBlock)
+        val curlyBracketBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
+        val expectedBlocks = mutableListOf(curlyBracketBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -93,9 +93,9 @@ class BlockifyTests
     {
         val inputText = "{}\n"
 
-        val curlyBracketBlock = CurlyBracketBlock(arrayListOf(UnknownBlock("")))
+        val curlyBracketBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
         val whitespaceBlock = WhitespaceBlock("\n")
-        val expectedBlocks = arrayListOf(curlyBracketBlock, whitespaceBlock)
+        val expectedBlocks = mutableListOf(curlyBracketBlock, whitespaceBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -127,9 +127,9 @@ class BlockifyTests
     {
         val inputText = "class C\n{}"
 
-        val innerBlocks = arrayListOf<IBlock>()
+        val innerBlocks = mutableListOf<IBlock>()
         val classBlock = ClassBlock("class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -145,9 +145,9 @@ class BlockifyTests
         val inputText = "class C\n{\n}"
 
         val innerBlock = WhitespaceBlock("\n")
-        val innerBlocks = arrayListOf(innerBlock)
+        val innerBlocks = mutableListOf(innerBlock)
         val classBlock = ClassBlock("class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -163,10 +163,10 @@ class BlockifyTests
     {
         val inputText = "class C\n{{}}"
 
-        val innerBlock = CurlyBracketBlock(arrayListOf(UnknownBlock("")))
-        val innerBlocks = arrayListOf(innerBlock)
+        val innerBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
+        val innerBlocks = mutableListOf(innerBlock)
         val classBlock = ClassBlock("class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -181,9 +181,9 @@ class BlockifyTests
     {
         val inputText = "abstract class C\n{}"
 
-        val innerBlocks = arrayListOf<IBlock>()
+        val innerBlocks = mutableListOf<IBlock>()
         val classBlock = ClassBlock("abstract class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -199,9 +199,9 @@ class BlockifyTests
         val inputText = "abstract class C\n{\n}"
 
         val innerBlock = WhitespaceBlock("\n")
-        val innerBlocks = arrayListOf(innerBlock)
+        val innerBlocks = mutableListOf(innerBlock)
         val classBlock = ClassBlock("abstract class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -219,9 +219,9 @@ class BlockifyTests
         val innerBlock1 = WhitespaceBlock("\n")
         val innerBlock2 = ExpressionBlock("abc();")
         val innerBlock3 = WhitespaceBlock("\n")
-        val innerBlocks = arrayListOf(innerBlock1, innerBlock2, innerBlock3)
+        val innerBlocks = mutableListOf(innerBlock1, innerBlock2, innerBlock3)
         val classBlock = ClassBlock("class C\n", innerBlocks)
-        val expectedBlocks = arrayListOf(classBlock)
+        val expectedBlocks = mutableListOf(classBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)

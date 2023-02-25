@@ -2,6 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.plugin
 
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.FormatterWithConfig
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IndenterWithConfig
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier.SimpleBlockifier
@@ -27,7 +28,7 @@ class PluginFormat : AnAction()
     {
         override fun processFile(virtualFile: VirtualFile): Boolean
         {
-            //println("FormatIterator.processFile: $virtualFile")
+            //DotlinTools.println("FormatIterator.processFile: $virtualFile")
             return format(virtualFile, project)
         }
     }
@@ -44,15 +45,15 @@ class PluginFormat : AnAction()
                 for (virtualFile in virtualFiles)
                 {
                     // TODO: filter out already visited files!
-                    //println("\n  $virtualFile")
+                    //DotlinTools.println("\n  $virtualFile")
                     VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
                 }
             }
         }
         catch (err: AssertionError)
         {
-            println("While formatting: $e:")
-            println("$err")
+            DotlinLogger.log("While formatting: $e:")
+            DotlinLogger.log("$err")
         }
     }
 
@@ -79,8 +80,8 @@ class PluginFormat : AnAction()
     {
         if (!isDartFile(virtualFile))
         {
-            //println("formatDartFile: $virtualFile")
-            //println("  Not a dart file!")
+            //DotlinTools.println("formatDartFile: $virtualFile")
+            //DotlinTools.println("  Not a dart file!")
             return true
         }
 
@@ -95,8 +96,8 @@ class PluginFormat : AnAction()
         }
         catch (err: AssertionError)
         {
-            println("While formatting: $virtualFile:")
-            println("$err")
+            DotlinLogger.log("While formatting: $virtualFile:")
+            DotlinLogger.log("$err")
             return false
         }
     }
@@ -107,8 +108,8 @@ class PluginFormat : AnAction()
         {
             if (!virtualFile.isWritable)
             {
-                println("formatDartFileByBinaryContent: $virtualFile")
-                println("  !virtualFile.isWritable")
+                DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
+                DotlinLogger.log("  !virtualFile.isWritable")
                 return false
             }
 
@@ -127,8 +128,8 @@ class PluginFormat : AnAction()
         }
         catch (err: AssertionError)
         {
-            println("While formatting: $virtualFile:")
-            println("$err")
+            DotlinLogger.log("While formatting: $virtualFile:")
+            DotlinLogger.log("$err")
             return false
         }
     }
@@ -137,8 +138,8 @@ class PluginFormat : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            println("formatDartFileByFileEditor: $fileEditor")
-            println("  fileEditor !is TextEditor")
+            DotlinLogger.log("formatDartFileByFileEditor: $fileEditor")
+            DotlinLogger.log("  fileEditor !is TextEditor")
             return false
         }
 
@@ -160,8 +161,8 @@ class PluginFormat : AnAction()
         }
         catch (err: AssertionError)
         {
-            println("While formatting: $fileEditor:")
-            println("$err")
+            DotlinLogger.log("While formatting: $fileEditor:")
+            DotlinLogger.log("$err")
             return false
         }
     }

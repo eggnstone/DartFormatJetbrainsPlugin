@@ -1,5 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.config
 
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.util.ui.FormBuilder
@@ -33,7 +34,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            println("Error in apply: configState == null")
+            DotlinLogger.log("Error in apply: configState == null")
             return
         }
 
@@ -109,7 +110,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            println("Error in isModified: configState == null")
+            DotlinLogger.log("Error in isModified: configState == null")
             return false
         }
 
@@ -123,7 +124,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            println("Error in reset: configState == null")
+            DotlinLogger.log("Error in reset: configState == null")
             return
         }
 

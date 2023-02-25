@@ -13,7 +13,7 @@ class TokenizeMultiLineCommentsTests
     fun multiLineCommentAtTextStart()
     {
         val inputText = "/*comment*/def"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             MultiLineCommentToken("comment"),
             UnknownToken("def")
         )
@@ -27,7 +27,7 @@ class TokenizeMultiLineCommentsTests
     fun multiLineCommentAtTextMiddle()
     {
         val inputText = "abc/*comment*/def"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc"),
             MultiLineCommentToken("comment"),
             UnknownToken("def")
@@ -42,7 +42,7 @@ class TokenizeMultiLineCommentsTests
     fun multiLineCommentAtTextEnd()
     {
         val inputText = "abc/*comment*/"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc"),
             MultiLineCommentToken("comment")
         )
@@ -56,7 +56,7 @@ class TokenizeMultiLineCommentsTests
     fun unclosedMultiLineCommentAtTextEndNotClosedMissing1()
     {
         val inputText = "abc/*comment*"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc"),
             MultiLineCommentToken("comment*", isClosed = false)
         )
@@ -70,7 +70,7 @@ class TokenizeMultiLineCommentsTests
     fun unclosedMultiLineCommentAtTextEndNotClosedMissing2()
     {
         val inputText = "abc/*comment"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc"),
             MultiLineCommentToken("comment", isClosed = false)
         )

@@ -24,7 +24,7 @@ class TokenizeTestsParametrized(private val special: String)
     fun specialCharAtTextStart()
     {
         val inputText = "${special}z"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             SpecialToken(special),
             UnknownToken("z")
         )
@@ -38,7 +38,7 @@ class TokenizeTestsParametrized(private val special: String)
     fun specialCharAtTextMiddle()
     {
         val inputText = "a${special}z"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             SpecialToken(special),
             UnknownToken("z")
@@ -53,7 +53,7 @@ class TokenizeTestsParametrized(private val special: String)
     fun specialCharAtTextEnd()
     {
         val inputText = "a${special}"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             SpecialToken(special)
         )

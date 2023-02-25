@@ -39,7 +39,7 @@ class BlockifyTestsParametrizedWithBrackets2(
             return
 
         val block = SimpleInstructionBlock("$openingBracket1$closingBracket1$openingBracket2$closingBracket2")
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -73,7 +73,7 @@ class BlockifyTestsParametrizedWithBrackets2(
             return
 
         val block = SimpleInstructionBlock("$openingBracket1$openingBracket2$closingBracket2$closingBracket1")
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

@@ -1,15 +1,15 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.WhiteSpaceToken
 
 class WhiteSpaceTokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
         var currentText = ""
         var isInInWhiteSpace = false
@@ -17,7 +17,7 @@ class WhiteSpaceTokenizer
         {
             if (isInInWhiteSpace)
             {
-                if (Tools.isWhiteSpaceOld(currentChar))
+                if (ToolsOld.isWhiteSpaceOld(currentChar))
                 {
                     currentText += currentChar
                     continue
@@ -31,7 +31,7 @@ class WhiteSpaceTokenizer
                 continue
             }
 
-            if (Tools.isWhiteSpaceOld(currentChar))
+            if (ToolsOld.isWhiteSpaceOld(currentChar))
             {
                 if (currentText.isNotEmpty())
                     outputTokens += UnknownToken(currentText)

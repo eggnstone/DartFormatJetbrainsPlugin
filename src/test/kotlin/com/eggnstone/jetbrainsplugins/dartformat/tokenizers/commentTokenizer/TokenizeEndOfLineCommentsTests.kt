@@ -13,7 +13,7 @@ class TokenizeEndOfLineCommentsTests
     fun endOfLineCommentAtTextStart()
     {
         val inputText = "//comment"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             EndOfLineCommentToken("comment")
         )
 
@@ -26,7 +26,7 @@ class TokenizeEndOfLineCommentsTests
     fun endOfLineCommentAtTextEnd()
     {
         val inputText = "abc//comment"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc"),
             EndOfLineCommentToken("comment")
         )

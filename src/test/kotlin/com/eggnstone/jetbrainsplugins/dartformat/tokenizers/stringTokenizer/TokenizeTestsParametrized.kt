@@ -24,7 +24,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun stringAtTextStart()
     {
         val inputText = "${delim1}a string$delim1 and then the text continues."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             StringToken("${delim1}a string$delim1"),
             UnknownToken(" and then the text continues.")
         )
@@ -38,7 +38,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun stringAtTextMiddle()
     {
         val inputText = "Some text and then ${delim1}a string$delim1 and then the text continues."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim1}a string$delim1"),
             UnknownToken(" and then the text continues.")
@@ -53,7 +53,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun stringAtTextEnd()
     {
         val inputText = "Some text and then ${delim1}a string$delim1"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim1}a string$delim1")
         )
@@ -67,7 +67,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun stringAtTextEndNotClosed()
     {
         val inputText = "Some text and then ${delim1}a string"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim1}a string", isClosed = false)
         )
@@ -81,7 +81,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun stringWithOtherDelimiterToo()
     {
         val inputText = "Some text and then ${delim1}a string using ${delim2}the other delimiter${delim2}, too$delim1 and then the text continues."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim1}a string using ${delim2}the other delimiter${delim2}, too$delim1"),
             UnknownToken(" and then the text continues.")
@@ -96,7 +96,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun ignoreEscapedDelimiter()
     {
         val inputText = "Some text and then an escaped \\${delim1} delimiter."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then an escaped \\${delim1} delimiter.")
         )
 
@@ -109,7 +109,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun ignoreEscapedDelimiterInsideDelim1()
     {
         val inputText = "Some text and then ${delim1}a \\${delim1} string$delim1 and then the text continues."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim1}a \\${delim1} string$delim1"),
             UnknownToken(" and then the text continues.")
@@ -124,7 +124,7 @@ class TokenizeTestsParametrized(private val delim1: String, private val delim2: 
     fun ignoreEscapedDelimiterInsideDelim2()
     {
         val inputText = "Some text and then ${delim2}a \\${delim1} string$delim2 and then the text continues."
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("Some text and then "),
             StringToken("${delim2}a \\${delim1} string$delim2"),
             UnknownToken(" and then the text continues.")

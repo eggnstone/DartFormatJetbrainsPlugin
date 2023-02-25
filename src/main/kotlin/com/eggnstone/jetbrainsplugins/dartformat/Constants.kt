@@ -1,5 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.C
+
 class Constants
 {
     companion object
@@ -15,22 +17,11 @@ class Constants
 
         const val ARROW = "=>"
 
-        const val COLON_CHAR = ':'
-        const val COLON = COLON_CHAR.toString()
-
-        const val COMMA_CHAR = ','
-        const val COMMA = COMMA_CHAR.toString()
-
-        const val EQUAL_CHAR = '='
-        const val EQUAL = EQUAL_CHAR.toString()
-
-        const val GREATER_THAN_CHAR = '>'
-        const val GREATER_THAN = GREATER_THAN_CHAR.toString()
-
-        const val PERIOD_CHAR = '.'
-        const val PERIOD = PERIOD_CHAR.toString()
-
-        const val SEMICOLON_CHAR = ';'
-        const val SEMICOLON = SEMICOLON_CHAR.toString()
+        val COLON = C(":")
+        val COMMA = C(",")
+        val EQUAL = C("=")
+        val GREATER_THAN = C(">")
+        val PERIOD = C(".")
+        val SEMICOLON = C(";")
     }
 }

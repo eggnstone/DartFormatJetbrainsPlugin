@@ -24,7 +24,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     fun keywordAtTextStart()
     {
         val inputText = "$keyword xyz"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             KeywordToken(keyword),
             UnknownToken(" xyz")
         )
@@ -38,7 +38,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     fun keywordAtTextMiddle()
     {
         val inputText = "abc $keyword xyz"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc "),
             KeywordToken(keyword),
             UnknownToken(" xyz")
@@ -53,7 +53,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     fun keywordAtTextEnd()
     {
         val inputText = "abc $keyword"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc "),
             KeywordToken(keyword)
         )
@@ -68,7 +68,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     fun acceptKeywordWhenPrecededByBracket()
     {
         val inputText = "($keyword)"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("("),
             KeywordToken(keyword),
             UnknownToken(")")
@@ -83,7 +83,7 @@ class TokenizeTestsParametrized(private val keyword: String)
     fun leaveKeyWordWhenPrecededByUnderscore()
     {
         val inputText = "_$keyword)"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("_$keyword)")
         )
 

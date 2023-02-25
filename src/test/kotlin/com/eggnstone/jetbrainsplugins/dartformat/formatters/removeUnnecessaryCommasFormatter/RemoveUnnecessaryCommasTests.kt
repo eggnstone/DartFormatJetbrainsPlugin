@@ -12,7 +12,7 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryComma()
     {
         //val input = ",),},]"
-        val inputTokens = arrayListOf<IToken>(
+        val inputTokens = mutableListOf<IToken>(
             SpecialToken.COMMA,
             SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.COMMA,
@@ -21,7 +21,7 @@ class RemoveUnnecessaryCommasTests
             SpecialToken.CLOSING_SQUARE_BRACKET
         )
         //val expectedOutput = ")}]"
-        val expectedOutputTokens = arrayListOf<IToken>(
+        val expectedOutputTokens = mutableListOf<IToken>(
             SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.CLOSING_CURLY_BRACKET,
             SpecialToken.CLOSING_SQUARE_BRACKET
@@ -36,13 +36,13 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommaWithMultiLineComment()
     {
         //val input = ",/*multi line comment*/)"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             MultiLineCommentToken("multi line comment"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "/*multi line comment*/)"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             MultiLineCommentToken("multi line comment"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
@@ -56,14 +56,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommaWithEndOfLineAndMultiLineComment()
     {
         //val input = ",//end of line comment\n/*multi line comment*/)"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             EndOfLineCommentToken("end of line comment\\n"),
             MultiLineCommentToken("multi line comment"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "//end of line comment\\n/*multi line comment*/)"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             EndOfLineCommentToken("end of line comment\\n"),
             MultiLineCommentToken("multi line comment"),
             SpecialToken.CLOSING_ROUND_BRACKET
@@ -78,14 +78,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommaWithMultiLineAndEndOfLineComment()
     {
         //val input = ",/*multi line comment*///end of line comment\n)"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             MultiLineCommentToken("multi line comment"),
             EndOfLineCommentToken("end of line comment\\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "/*multi line comment*///end of line comment\\n)"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             MultiLineCommentToken("multi line comment"),
             EndOfLineCommentToken("end of line comment\\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
@@ -100,14 +100,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommas()
     {
         //val input = ",,,)"
-        val inputTokens = arrayListOf<IToken>(
+        val inputTokens = mutableListOf<IToken>(
             SpecialToken.COMMA,
             SpecialToken.COMMA,
             SpecialToken.COMMA,
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = ")"
-        val expectedOutputTokens = arrayListOf<IToken>(
+        val expectedOutputTokens = mutableListOf<IToken>(
             SpecialToken.CLOSING_ROUND_BRACKET
         )
 
@@ -120,14 +120,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommaTwice()
     {
         //val input = ",),)"
-        val inputTokens = arrayListOf<IToken>(
+        val inputTokens = mutableListOf<IToken>(
             SpecialToken.COMMA,
             SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.COMMA,
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "))"
-        val expectedOutputTokens = arrayListOf<IToken>(
+        val expectedOutputTokens = mutableListOf<IToken>(
             SpecialToken.CLOSING_ROUND_BRACKET,
             SpecialToken.CLOSING_ROUND_BRACKET
         )
@@ -141,13 +141,13 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryComma222222222()
     {
         //val input = ",$newLine)"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             LineBreakToken("\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "$newLine)"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             LineBreakToken("\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
@@ -161,14 +161,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommaWithEndOfLineComment()
     {
         //val input = ",//end of line comment\n)"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             EndOfLineCommentToken("end of line comment"),
             LineBreakToken("\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "//end of line comment\\n)"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             EndOfLineCommentToken("end of line comment"),
             LineBreakToken("\n"),
             SpecialToken.CLOSING_ROUND_BRACKET
@@ -183,14 +183,14 @@ class RemoveUnnecessaryCommasTests
     fun removeUnnecessaryCommasWithSpace()
     {
         //val input = ",$newLine )"
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken.COMMA,
             LineBreakToken("\n"),
             WhiteSpaceToken(" "),
             SpecialToken.CLOSING_ROUND_BRACKET
         )
         //val expectedOutput = "$newLine )"
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             LineBreakToken("\n"),
             WhiteSpaceToken(" "),
             SpecialToken.CLOSING_ROUND_BRACKET

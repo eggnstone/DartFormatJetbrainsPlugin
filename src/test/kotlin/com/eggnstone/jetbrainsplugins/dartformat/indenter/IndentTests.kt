@@ -12,7 +12,7 @@ class IndentTests
     @Test
     fun whiteSpace_atLineStart()
     {
-        val inputTokens = arrayListOf(WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken(";"))
+        val inputTokens = mutableListOf(WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken(";"))
         val expectedOutputText = "abc;"
 
         val indenter = Indenter()

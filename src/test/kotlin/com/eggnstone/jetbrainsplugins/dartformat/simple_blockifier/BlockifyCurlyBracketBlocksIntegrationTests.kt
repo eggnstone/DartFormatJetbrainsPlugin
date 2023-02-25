@@ -13,7 +13,7 @@ class BlockifyCurlyBracketBlocksIntegrationTests
         val inputText = "void main() {}"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -29,7 +29,7 @@ class BlockifyCurlyBracketBlocksIntegrationTests
         val inputText = "class C {}"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

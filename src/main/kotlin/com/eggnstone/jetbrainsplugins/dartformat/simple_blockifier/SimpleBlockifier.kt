@@ -2,6 +2,8 @@ package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.C
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.ISimpleBlock
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleInstructionBlock
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleWhitespaceBlock
@@ -13,18 +15,21 @@ class SimpleBlockifier
         private const val debug = false
     }
 
-    private val blocks = arrayListOf<ISimpleBlock>()
+    private val blocks = mutableListOf<ISimpleBlock>()
     private var currentAreaType: SimpleAreaType = SimpleAreaType.Unknown
-    private val currentBrackets = arrayListOf<Char>()
+    private val currentBrackets = mutableListOf<C>()
     private var currentText: String = ""
     private var hasMainCurlyBrackets = false
 
     fun blockify(text: String): List<ISimpleBlock>
     {
-        for (c in text)
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+        for (i in 0 until text.length)
         {
+            val c = C(text.get(i).toString())
+
             if (debug)
-                println("${Tools.toDisplayString2(c)} $currentAreaType ${Tools.toDisplayString2(currentText)}")
+                DotlinLogger.log("${Tools.toDisplayString2(c)} $currentAreaType ${Tools.toDisplayString2(currentText)}")
 
             when (currentAreaType)
             {
@@ -34,7 +39,8 @@ class SimpleBlockifier
             }
         }
 
-        if (currentText.isNotEmpty())
+        @Suppress("ReplaceSizeCheckWithIsNotEmpty") // dotlin
+        if (currentText.length > 0)
         {
             var finalBlock: ISimpleBlock? = null
 
@@ -63,9 +69,9 @@ class SimpleBlockifier
             }
 
             if (debug)
-                println("Final block: $finalBlock")
+                DotlinLogger.log("Final block: $finalBlock")
 
-            blocks += finalBlock
+            blocks.add(finalBlock) // dotlin
         }
         else
         {
@@ -76,38 +82,39 @@ class SimpleBlockifier
         return blocks
     }
 
-    private fun handleInstructionArea(c: Char)
+    private fun handleInstructionArea(c: C)
     {
-        if (c == ';' && currentBrackets.isEmpty())
+        if (c.value == ";" && currentBrackets.size == 0)
         {
-            blocks += SimpleInstructionBlock(currentText + c)
+            blocks.add(SimpleInstructionBlock(currentText + c)) // dotlin
             reset(SimpleAreaType.Unknown, "")
             return
         }
 
         if (Tools.isOpeningBracket(c))
         {
-            //println("XXXXXXXXXXXXXX: $currentBrackets")
-            if (c == '{' && currentBrackets.isEmpty())
+            //DotlinTools.println("XXXXXXXXXXXXXX: $currentBrackets")
+            if (c.value == "{" && currentBrackets.size == 0)
                 hasMainCurlyBrackets = true
 
-            currentBrackets += c
+            currentBrackets.add(c) // dotlin
             currentText += c
             return
         }
 
         if (Tools.isClosingBracket(c))
         {
-            if (currentBrackets.lastOrNull() != Tools.getOpeningBracket(c))
+            val lastOrNull = if (currentBrackets.size == 0) null else currentBrackets[currentBrackets.size - 1]
+            if (lastOrNull != Tools.getOpeningBracket(c))
                 throwError("Unexpected closing bracket.")
 
             currentBrackets.removeLast()
 
-            if (currentBrackets.isEmpty())
+            if (currentBrackets.size == 0)
             {
                 if (hasMainCurlyBrackets)
                 {
-                    blocks += SimpleInstructionBlock(currentText + c)
+                    blocks.add(SimpleInstructionBlock(currentText + c)) // dotlin
                     reset(SimpleAreaType.Unknown, "")
                     return
                 }
@@ -124,24 +131,24 @@ class SimpleBlockifier
         currentText += c
     }
 
-    private fun handleUnknownArea(c: Char)
+    private fun handleUnknownArea(c: C)
     {
         if (Tools.isWhitespace(c))
         {
-            reset(SimpleAreaType.Whitespace, c.toString())
+            reset(SimpleAreaType.Whitespace, c.value)
             return
         }
 
-        reset(SimpleAreaType.Instruction, c.toString())
+        reset(SimpleAreaType.Instruction, c.value)
         if (Tools.isOpeningBracket(c))
         {
-            currentBrackets += c
-            if (c == '{')
+            currentBrackets.add(c) // dotlin
+            if (c.value == "{")
                 hasMainCurlyBrackets = true
         }
     }
 
-    private fun handleWhitespaceArea(c: Char)
+    private fun handleWhitespaceArea(c: C)
     {
         if (Tools.isWhitespace(c))
         {
@@ -149,21 +156,23 @@ class SimpleBlockifier
             return
         }
 
-        blocks += SimpleWhitespaceBlock(currentText)
-        reset(SimpleAreaType.Instruction, c.toString())
+        blocks.add(SimpleWhitespaceBlock(currentText)) // dotlin
+        reset(SimpleAreaType.Instruction, c.value)
     }
 
     fun printBlocks(blocks: List<ISimpleBlock>, label: String = "")
     {
-        val prefix = if (label.isEmpty()) "" else "$label - "
+        @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // dotlin
+        val prefix = if (label.length == 0) "" else "$label - "
 
-        if (blocks.isEmpty())
-            println("${prefix}No blocks.")
+        @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // dotlin
+        if (blocks.size == 0)
+            DotlinLogger.log("${prefix}No blocks.")
         else
-            println("$prefix${blocks.size} blocks:")
+            DotlinLogger.log("$prefix${blocks.size} blocks:")
 
         for (block in blocks)
-            println("  $block")
+            DotlinLogger.log("  $block")
     }
 
     private fun reset(areaType: SimpleAreaType, text: String)
@@ -176,11 +185,11 @@ class SimpleBlockifier
 
     private fun throwError(message: String): ISimpleBlock
     {
-        println("Error: $message")
-        println("  currentAreaType:      $currentAreaType")
-        println("  currentBrackets:      ${Tools.charsToDisplayString2(currentBrackets)}")
-        println("  currentText:          ${Tools.toDisplayString2(currentText)}")
-        println("  hasMainCurlyBrackets: $hasMainCurlyBrackets")
+        DotlinLogger.log("Error: $message")
+        DotlinLogger.log("  currentAreaType:      $currentAreaType")
+        DotlinLogger.log("  currentBrackets:      ${Tools.charsToDisplayString2(currentBrackets)}")
+        DotlinLogger.log("  currentText:          ${Tools.toDisplayString2(currentText)}")
+        DotlinLogger.log("  hasMainCurlyBrackets: $hasMainCurlyBrackets")
         printBlocks(blocks)
         throw DartFormatException(message)
     }

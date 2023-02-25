@@ -16,11 +16,11 @@ class LeaveLineBreaksAfterArrowsTests
     @Ignore
     fun leaveLineBreakAfterArrowWhenNewStackNotEmpty()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("a"), SpecialToken("("), SpecialToken.ARROW, LineBreakToken("\n"),
             WhiteSpaceToken("  "), UnknownToken("a")
         )
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             UnknownToken("a"), SpecialToken("("), SpecialToken.ARROW, LineBreakToken("\n"),
             WhiteSpaceToken("    "), UnknownToken("a")
         )

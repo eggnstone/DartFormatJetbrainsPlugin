@@ -3,13 +3,13 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
-typealias TokenizeHandler = (String) -> ArrayList<IToken>
+typealias TokenizeHandler = (String) -> MutableList<IToken>
 
 class Tokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        var tokens = arrayListOf<IToken>(UnknownToken(input))
+        var tokens = mutableListOf<IToken>(UnknownToken(input))
 
         // TODO: combine comments and string, because they can include each other
 
@@ -35,9 +35,9 @@ class Tokenizer
         return tokens
     }
 
-    private fun execute(f: TokenizeHandler, inputTokens: ArrayList<IToken>): ArrayList<IToken>
+    private fun execute(f: TokenizeHandler, inputTokens: MutableList<IToken>): MutableList<IToken>
     {
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
         for (inputToken in inputTokens)
         {

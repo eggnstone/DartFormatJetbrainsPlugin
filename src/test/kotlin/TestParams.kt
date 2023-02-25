@@ -1,11 +1,11 @@
 import com.eggnstone.jetbrainsplugins.dartformat.Constants
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class TestParams
 {
     companion object
     {
-        val classKeywords = Tools.classKeywords
+        val classKeywords = ToolsOld.classKeywords
 
         val brackets = arrayOf(
             arrayOf("{", "}", "Curly brackets"),
@@ -15,7 +15,7 @@ class TestParams
 
         val brackets2 = join(brackets, brackets)
 
-        val keywords = Tools.keywords
+        val keywords = ToolsOld.keywords
 
         val lineBreaks = arrayOf(
             arrayOf("\n", "\\n"),
@@ -33,16 +33,16 @@ class TestParams
             arrayOf("'", "\"", "Apostrophe")
         )
 
-        val specials = arrayOf(
+        val specials = arrayOf<String>(
             Constants.OPENING_CURLY_BRACKET, Constants.CLOSING_CURLY_BRACKET,
             Constants.OPENING_ROUND_BRACKET, Constants.CLOSING_ROUND_BRACKET,
             Constants.OPENING_SQUARE_BRACKET, Constants.CLOSING_SQUARE_BRACKET,
             Constants.ARROW,
-            Constants.COLON,
-            Constants.COMMA,
-            Constants.GREATER_THAN,
-            Constants.PERIOD,
-            Constants.SEMICOLON
+            Constants.COLON.toString(),
+            Constants.COMMA.toString(),
+            Constants.GREATER_THAN.toString(),
+            Constants.PERIOD.toString(),
+            Constants.SEMICOLON.toString()
         )
 
         private fun join(array1: Array<Array<String>>, array2: Array<Array<String>>): Array<Array<String>>

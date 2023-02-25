@@ -5,7 +5,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 
 class FormatterWithConfig(private val config: DartFormatConfig)
 {
-    fun format(tokens: ArrayList<IToken>): ArrayList<IToken>
+    fun format(tokens: MutableList<IToken>): MutableList<IToken>
     {
         val formatter = Formatter(
             removeUnnecessaryCommas = config.removeUnnecessaryCommas,

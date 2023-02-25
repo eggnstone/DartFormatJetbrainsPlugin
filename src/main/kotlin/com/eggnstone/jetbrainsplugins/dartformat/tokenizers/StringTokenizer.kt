@@ -6,9 +6,9 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class StringTokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
         var currentText = ""
         var isInNormalQuotesString = false

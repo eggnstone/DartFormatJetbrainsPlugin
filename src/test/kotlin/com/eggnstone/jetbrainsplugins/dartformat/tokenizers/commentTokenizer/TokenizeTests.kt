@@ -14,7 +14,7 @@ class TokenizeTests
     fun endOfLineCommentBeforeMultiLineComment()
     {
         val inputText = "a//end of line comment/*multi line comment*/a"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             EndOfLineCommentToken("end of line comment/*multi line comment*/a")
         )
@@ -28,7 +28,7 @@ class TokenizeTests
     fun multiLineCommentBeforeEndOfLineComment()
     {
         val inputText = "a/*multi line comment*///end of line comment"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             MultiLineCommentToken("multi line comment"),
             EndOfLineCommentToken("end of line comment")
@@ -43,7 +43,7 @@ class TokenizeTests
     fun multiLineCommentInEndOfLineComment()
     {
         val inputText = "//comment/*still comment*/"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             EndOfLineCommentToken("comment/*still comment*/")
         )
 
@@ -56,7 +56,7 @@ class TokenizeTests
     fun endOfLineCommentInMultiLineComment()
     {
         val inputText = "/*comment //comment*/"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             MultiLineCommentToken("comment //comment")
         )
 

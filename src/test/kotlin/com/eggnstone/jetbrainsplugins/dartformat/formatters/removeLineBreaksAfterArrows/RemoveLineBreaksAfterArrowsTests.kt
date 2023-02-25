@@ -14,11 +14,11 @@ class RemoveLineBreaksAfterArrowsTests
     @Test
     fun removeLineBreakWithoutWhiteSpaceBeforeLineBreak()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, LineBreakToken("\n"),
             WhiteSpaceToken("    "), UnknownToken("a")
         )
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken(" "), UnknownToken("a")
         )
 
@@ -30,11 +30,11 @@ class RemoveLineBreaksAfterArrowsTests
     @Test
     fun removeLineBreakWithWhiteSpacesBeforeLineBreak()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken("    "), LineBreakToken("\n"),
             WhiteSpaceToken("    "), UnknownToken("a")
         )
-        val expectedOutputTokens = arrayListOf(
+        val expectedOutputTokens = mutableListOf(
             UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken(" "), UnknownToken("a")
         )
 

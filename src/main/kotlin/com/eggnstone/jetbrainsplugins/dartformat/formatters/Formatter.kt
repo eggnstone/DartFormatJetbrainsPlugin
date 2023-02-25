@@ -7,7 +7,7 @@ class Formatter(
     private val removeLineBreaksAfterArrows: Boolean = true
 )
 {
-    fun format(inputTokens: ArrayList<IToken>): ArrayList<IToken>
+    fun format(inputTokens: MutableList<IToken>): MutableList<IToken>
     {
         var outputTokens = inputTokens
 

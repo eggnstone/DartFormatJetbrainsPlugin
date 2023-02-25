@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class UnknownToken(val text: String) : IToken
 {
@@ -10,5 +10,5 @@ class UnknownToken(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "Unknown(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "Unknown(${ToolsOld.toDisplayString2(text)})"
 }

@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blocks
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class UnknownBlock(val text: String) : IBlock
 {
@@ -8,5 +8,5 @@ class UnknownBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Unknown(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "Unknown(${ToolsOld.toDisplayString2(text)})"
 }

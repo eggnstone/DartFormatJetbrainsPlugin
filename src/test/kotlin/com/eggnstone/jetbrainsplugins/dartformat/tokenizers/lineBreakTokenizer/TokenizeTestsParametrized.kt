@@ -24,7 +24,7 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     fun newLineAtTextStart()
     {
         val inputText = "${newLine}b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             LineBreakToken(newLine),
             UnknownToken("b")
         )
@@ -38,7 +38,7 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     fun newLineAtTextMiddle()
     {
         val inputText = "a${newLine}b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             LineBreakToken(newLine),
             UnknownToken("b")
@@ -53,7 +53,7 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     fun newLineAtTextMiddle2()
     {
         val inputText = "a${newLine}${newLine}b"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             LineBreakToken(newLine),
             LineBreakToken(newLine),
@@ -69,7 +69,7 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     fun newLineAtTextEnd()
     {
         val inputText = "a${newLine}"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("a"),
             LineBreakToken(newLine)
         )

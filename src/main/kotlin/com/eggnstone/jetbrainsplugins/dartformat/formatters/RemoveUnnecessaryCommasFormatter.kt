@@ -5,7 +5,7 @@ import com.jetbrains.rd.framework.base.deepClonePolymorphic
 
 class RemoveUnnecessaryCommasFormatter
 {
-    fun format(inputTokens: ArrayList<IToken>): ArrayList<IToken>
+    fun format(inputTokens: MutableList<IToken>): MutableList<IToken>
     {
         val outputTokens = inputTokens.deepClonePolymorphic()
 

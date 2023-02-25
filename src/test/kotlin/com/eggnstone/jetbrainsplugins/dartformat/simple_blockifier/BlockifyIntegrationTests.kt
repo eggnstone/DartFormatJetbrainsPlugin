@@ -13,7 +13,7 @@ class BlockifyIntegrationTests
         val inputText = "if (true) return;"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -29,7 +29,7 @@ class BlockifyIntegrationTests
         val inputText = "if (true) { return; }"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

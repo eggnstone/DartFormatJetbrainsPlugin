@@ -23,7 +23,7 @@ class IndentTestsParametrizedWithLineBreaksAndBrackets(private val newLine: Stri
     @Test
     fun indentBrackets()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(openingBracket),
             LineBreakToken(newLine),
             UnknownToken("Text"),

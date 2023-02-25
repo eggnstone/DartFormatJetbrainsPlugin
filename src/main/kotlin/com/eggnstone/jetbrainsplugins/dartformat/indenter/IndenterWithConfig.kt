@@ -7,7 +7,7 @@ class IndenterWithConfig(private val config: DartFormatConfig)
 {
     private val indenter = Indenter(config.indentationSpacesPerLevel)
 
-    fun indent(tokens: ArrayList<IToken>): String
+    fun indent(tokens: MutableList<IToken>): String
     {
         if (!config.indentationIsEnabled)
             return indenter.recreate(tokens)

@@ -21,7 +21,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun brackets_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
             SpecialToken(closingBracket)
@@ -40,7 +40,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun bracketsLevel2_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(openingBracket), LineBreakToken("\n"),
             SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
@@ -63,7 +63,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun openingAndClosingBracketsInSameLine_doesNotChangeIndent_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(openingBracket), UnknownToken("abc"), SpecialToken(";"), SpecialToken(closingBracket), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";")
         )
@@ -80,7 +80,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun openingAndClosingBracketsInSameLine_doesNotChangeIndent_atLineMiddle()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("abc"), SpecialToken(openingBracket), UnknownToken("def"), SpecialToken(";"), SpecialToken(closingBracket), LineBreakToken("\n"),
             UnknownToken("ghi"), SpecialToken(";")
         )
@@ -97,7 +97,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun openingAndClosingBracketsInSameLine_doesNotChangeIndent_alreadyIndented()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("abc"), SpecialToken(openingBracket), LineBreakToken("\n"),
             SpecialToken(openingBracket), UnknownToken("def"), SpecialToken(";"), SpecialToken(closingBracket), LineBreakToken("\n"),
             UnknownToken("ghi"), SpecialToken(";")
@@ -116,7 +116,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun openingBracket_atLineEnd()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("abc"), SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";"), LineBreakToken("\n"),
             SpecialToken(closingBracket)
@@ -135,7 +135,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun keywordAndBrackets_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), LineBreakToken("\n"),
             SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
@@ -156,7 +156,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
     @Test
     fun keywordAndOpeningBracketInSameLine()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), WhiteSpaceToken(" "), SpecialToken(openingBracket), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
             SpecialToken(closingBracket)

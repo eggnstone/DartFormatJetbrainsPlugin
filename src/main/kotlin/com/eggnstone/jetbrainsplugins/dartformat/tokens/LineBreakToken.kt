@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class LineBreakToken constructor(val text: String) : IToken
 {
@@ -18,5 +18,5 @@ class LineBreakToken constructor(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "LineBreak(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "LineBreak(${ToolsOld.toDisplayString2(text)})"
 }

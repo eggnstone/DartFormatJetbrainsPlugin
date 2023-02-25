@@ -14,7 +14,7 @@ class LeaveNecessaryCommasTests
     @Test
     fun leaveNecessaryCommaWithText()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(","),
             UnknownToken("x")
         )
@@ -27,7 +27,7 @@ class LeaveNecessaryCommasTests
     @Test
     fun leaveNecessaryCommaWithSpaceAndText()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(","),
             WhiteSpaceToken(" "),
             UnknownToken("x")
@@ -41,7 +41,7 @@ class LeaveNecessaryCommasTests
     @Test
     fun leaveNecessaryCommaWithNewLineAndText()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(","),
             LineBreakToken("\n"),
             UnknownToken("x")
@@ -55,7 +55,7 @@ class LeaveNecessaryCommasTests
     @Test
     fun leaveNecessaryCommaWithTextAndBracket()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             SpecialToken(","),
             UnknownToken("x"),
             SpecialToken(")")

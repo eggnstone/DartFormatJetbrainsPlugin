@@ -1,8 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blockifier
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
 
 class BlockifierOld
 {
@@ -15,8 +16,8 @@ class BlockifierOld
     {
         for (block in blocks)
         {
-            println("Block: ${block::class.simpleName}")
-            println("  $block")
+            DotlinLogger.log("Block: ${block::class.simpleName}")
+            DotlinLogger.log("  $block")
         }
     }
 
@@ -27,7 +28,7 @@ class BlockifierOld
         for (c in text)
         {
             if (debug)
-                println("${Tools.toDisplayString2(c)} ${state.currentType} ${Tools.toDisplayString2(state.currentText)}")
+                DotlinLogger.log("${ToolsOld.toDisplayString2(c)} ${state.currentType} ${ToolsOld.toDisplayString2(state.currentText)}")
 
             if (state.currentType != AreaType.Unknown)
             {
@@ -42,13 +43,14 @@ class BlockifierOld
                 continue
             }
 
-            if (Tools.isWhitespace(c))
+            if (ToolsOld.isWhitespace(c))
             {
-                if (state.currentText.isEmpty())
+                @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // dotlin
+                if (state.currentText.length == 0)
                 {
                     state.currentType = AreaType.Whitespace
                     if (debug)
-                        println("  -> ${state.currentType}")
+                        DotlinLogger.log("  -> ${state.currentType}")
 
                     state.currentText += c
                     continue
@@ -58,7 +60,7 @@ class BlockifierOld
                 {
                     state.currentType = AreaType.ClassHeader
                     if (debug)
-                        println("  -> ${state.currentType}")
+                        DotlinLogger.log("  -> ${state.currentType}")
                 }
 
                 state.currentText += c
@@ -67,11 +69,12 @@ class BlockifierOld
 
             if (c == '{')
             {
-                if (state.currentText.isEmpty())
+                @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // dotlin
+                if (state.currentText.length == 0)
                 {
                     state.currentType = AreaType.CurlyBracket
                     if (debug)
-                        println("  -> ${state.currentType}")
+                        DotlinLogger.log("  -> ${state.currentType}")
 
                     state.currentText += c
                     continue
@@ -80,7 +83,7 @@ class BlockifierOld
 
             if (c == ';')
             {
-                state.blocks += ExpressionBlock(state.currentText + c)
+                state.blocks.add( ExpressionBlock(state.currentText + c)) // dotlin
                 state.currentText = ""
                 continue
             }
@@ -91,11 +94,11 @@ class BlockifierOld
         if (state.currentText.isNotEmpty())
         {
             if (state.currentType == AreaType.CurlyBracket)
-                state.blocks += CurlyBracketBlock(arrayListOf(UnknownBlock(state.currentText)))
+                state.blocks.add( CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText)))) // dotlin
             else if (state.currentType == AreaType.Unknown)
-                state.blocks += UnknownBlock(state.currentText)
+                state.blocks.add( UnknownBlock(state.currentText)) // dotlin
             else if (state.currentType == AreaType.Whitespace)
-                state.blocks += WhitespaceBlock(state.currentText)
+                state.blocks .add( WhitespaceBlock(state.currentText)) // dotlin
             else
                 throw DartFormatException("Unhandled BlockType at end of text: ${state.currentType}")
         }
@@ -109,11 +112,11 @@ class BlockifierOld
         {
             state.currentType = AreaType.Unknown
             if (debug)
-                println("  -> ${state.currentType}")
+                DotlinLogger.log("  -> ${state.currentType}")
 
             val innerText = state.currentText.substring(1)
             val innerBlocks = blockify(innerText)
-            state.blocks += ClassBlock(state.currentClassHeader, innerBlocks)
+            state.blocks.add( ClassBlock(state.currentClassHeader, innerBlocks)) // dotlin
             state.currentClassHeader = ""
             state.currentText = ""
             return state
@@ -129,7 +132,7 @@ class BlockifierOld
         {
             state.currentType = AreaType.ClassBody
             if (debug)
-                println("  -> ${state.currentType}")
+                DotlinLogger.log("  -> ${state.currentType}")
 
             state.currentClassHeader = state.currentText
             state.currentText = ""
@@ -142,7 +145,7 @@ class BlockifierOld
     private fun handleInCurlyBrackets(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (debug)
-            println("  handleInCurlyBrackets: ${Tools.toDisplayString2(c)} ${Tools.toDisplayString2(state.currentText)}")
+            DotlinLogger.log("  handleInCurlyBrackets: ${ToolsOld.toDisplayString2(c)} ${ToolsOld.toDisplayString2(state.currentText)}")
 
         if (c != '}')
         {
@@ -152,16 +155,16 @@ class BlockifierOld
 
         state.currentType = AreaType.Unknown
         if (debug)
-            println("  -> ${state.currentType}")
+            DotlinLogger.log("  -> ${state.currentType}")
 
-        state.blocks += CurlyBracketBlock(arrayListOf(UnknownBlock(state.currentText.substring(1))))
+        state.blocks .add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
         state.currentText = ""
         return state
     }
 
     private fun handleInWhitespace(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
-        if (Tools.isWhitespace(c))
+        if (ToolsOld.isWhitespace(c))
         {
             state.currentText += c
             return state
@@ -169,10 +172,10 @@ class BlockifierOld
 
         state.currentType = AreaType.Unknown
         if (debug)
-            println("  -> ${state.currentType}")
+            DotlinLogger.log("  -> ${state.currentType}")
 
         if (state.currentText.isNotEmpty())
-            state.blocks += WhitespaceBlock(state.currentText)
+            state.blocks.add(WhitespaceBlock(state.currentText)) // dotlin
 
         state.currentText = c.toString()
         return state

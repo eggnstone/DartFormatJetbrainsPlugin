@@ -1,17 +1,17 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.ClassKeywordToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class ClassKeywordTokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
-        //println("ClassKeywordTokenizer: $input")
+        //DotlinTools.println("ClassKeywordTokenizer: $input")
 
         var currentText = ""
         for (currentChar in input)
@@ -19,9 +19,9 @@ class ClassKeywordTokenizer
             if (currentText.endsWith(" "))
             {
                 val pureText = currentText.substring(0, currentText.length - 1)
-                if (Tools.classKeywords.contains(pureText))
+                if (ToolsOld.classKeywords.contains(pureText))
                 {
-                    outputTokens += ClassKeywordToken(pureText)
+                    outputTokens.add( ClassKeywordToken(pureText)) // dotlin
                     currentText = " "
                 }
             }
@@ -29,10 +29,10 @@ class ClassKeywordTokenizer
             currentText += currentChar
         }
 
-        if (Tools.classKeywords.contains(currentText))
-            outputTokens += ClassKeywordToken(currentText)
+        if (ToolsOld.classKeywords.contains(currentText))
+            outputTokens.add( ClassKeywordToken(currentText)) // dotlin
         else
-            outputTokens += UnknownToken(currentText)
+            outputTokens.add( UnknownToken(currentText)) // dotlin
 
         return outputTokens
     }

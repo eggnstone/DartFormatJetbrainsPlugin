@@ -7,6 +7,6 @@ class ToolsCoverageTests
     @Test
     fun testConstructor()
     {
-        Tools()
+        ToolsOld()
     }
 }

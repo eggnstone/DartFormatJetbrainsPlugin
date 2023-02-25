@@ -24,7 +24,7 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
     @Test
     fun indentAfterKeywordAfterKeyword()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken(keyword),
             LineBreakToken("\n"),
             KeywordToken(keyword),
@@ -45,7 +45,7 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
     @Test
     fun closingBraceShouldDecreaseIndentationAtTextEnd()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
@@ -76,7 +76,7 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
     @Test
     fun doNotIndentEmptyLines()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("Text0"), LineBreakToken("\n"),
             SpecialToken.OPENING_CURLY_BRACKET, LineBreakToken("\n"),
             UnknownToken("Text1"), LineBreakToken("\n"),

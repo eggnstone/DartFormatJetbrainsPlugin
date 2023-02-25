@@ -13,7 +13,7 @@ class BlockifyInstructionsIntegrationTests
         val inputText = "setState(() {});"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

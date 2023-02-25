@@ -24,7 +24,7 @@ class TokenizeTestsParametrized(private val classKeyword: String)
     fun classKeywordIgnoredWhenPartOfWord()
     {
         val inputText = "${classKeyword}C"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("${classKeyword}C")
         )
 
@@ -37,7 +37,7 @@ class TokenizeTestsParametrized(private val classKeyword: String)
     fun classKeywordIgnoredWhenNotAtTextStart()
     {
         val inputText = "abc $classKeyword C"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             UnknownToken("abc $classKeyword C")
         )
 
@@ -50,7 +50,7 @@ class TokenizeTestsParametrized(private val classKeyword: String)
     fun classKeywordAlone()
     {
         val inputText = classKeyword
-        val expectedTokens = arrayListOf(ClassKeywordToken(classKeyword))
+        val expectedTokens = mutableListOf(ClassKeywordToken(classKeyword))
 
         val actualTokens = ClassKeywordTokenizer().tokenize(inputText)
 
@@ -61,7 +61,7 @@ class TokenizeTestsParametrized(private val classKeyword: String)
     fun classKeyword()
     {
         val inputText = "$classKeyword C"
-        val expectedTokens = arrayListOf(
+        val expectedTokens = mutableListOf(
             ClassKeywordToken(classKeyword),
             UnknownToken(" C")
         )

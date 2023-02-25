@@ -20,7 +20,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
     @Test
     fun mainClassKeyword_singleLine()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             ClassKeywordToken(mainClassKeyword), WhiteSpaceToken(" "), UnknownToken("C"), WhiteSpaceToken(" "), SpecialToken.OPENING_CURLY_BRACKET, SpecialToken.CLOSING_CURLY_BRACKET, LineBreakToken("\n"),
             UnknownToken("abc;")
         )
@@ -37,7 +37,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
     @Test
     fun mainClassKeyword_twoLines()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             ClassKeywordToken(mainClassKeyword), WhiteSpaceToken(" "), UnknownToken("C"), LineBreakToken("\n"),
             SpecialToken.OPENING_CURLY_BRACKET
         )
@@ -54,7 +54,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
     @Test
     fun mainClassKeyword_TODO()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             ClassKeywordToken(mainClassKeyword), WhiteSpaceToken(" "), UnknownToken("C"), LineBreakToken("\n"),
             ClassKeywordToken("with"), WhiteSpaceToken(" "), UnknownToken("_\$C"), LineBreakToken("\n"),
             SpecialToken.OPENING_CURLY_BRACKET
@@ -73,7 +73,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
     @Test
     fun mainClassKeyword_threeLines()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             ClassKeywordToken(mainClassKeyword), WhiteSpaceToken(" "), UnknownToken("C"), LineBreakToken("\n"),
             ClassKeywordToken("CK2"), WhiteSpaceToken(" "), UnknownToken("C2"), LineBreakToken("\n"),
             SpecialToken.OPENING_CURLY_BRACKET
@@ -92,7 +92,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
     @Test
     fun mainClassKeyword_fourLines()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             ClassKeywordToken(mainClassKeyword), WhiteSpaceToken(" "), UnknownToken("C"), LineBreakToken("\n"),
             ClassKeywordToken("CK2"), WhiteSpaceToken(" "), UnknownToken("C2"), LineBreakToken("\n"),
             ClassKeywordToken("CK3"), WhiteSpaceToken(" "), UnknownToken("C3"), LineBreakToken("\n"),

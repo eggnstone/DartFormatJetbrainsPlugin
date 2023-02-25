@@ -10,7 +10,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpression_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";")
         )
@@ -27,7 +27,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpressionWithRoundBrackets_atLineStart()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken("("), SpecialToken(")"), SpecialToken(";")
         )
@@ -44,7 +44,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpression_IndentationClearedAfterwards()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";")
@@ -63,7 +63,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpressionOnSameLine_IndentationClearedAfterwards()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken(";"), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";")
         )
@@ -80,7 +80,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpressionWithRoundBrackets_IndentationClearedAfterwards()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken("("), SpecialToken(")"), SpecialToken(";"), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";")
@@ -99,7 +99,7 @@ class IndentKeywordTests
     @Test
     fun keywordAndExpressionWithRoundBracketsOnSameLine_IndentationClearedAfterwards()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"), WhiteSpaceToken(" "), UnknownToken("abc"), SpecialToken("("), SpecialToken(")"), SpecialToken(";"), LineBreakToken("\n"),
             UnknownToken("def"), SpecialToken(";")
         )
@@ -116,7 +116,7 @@ class IndentKeywordTests
     @Test
     fun keywordWithOpeningAndClosingCurlyBracketInSameLine()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "),
             SpecialToken("("), UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken("=="), WhiteSpaceToken(" "), UnknownToken("b"), SpecialToken(")"),
             WhiteSpaceToken(" "), SpecialToken("{"), SpecialToken("}"), LineBreakToken("\n"),
@@ -135,7 +135,7 @@ class IndentKeywordTests
     @Test
     fun keyword_openingBracketOnNextLineReplacesKeywordInStack()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "), SpecialToken("("), SpecialToken(")"), LineBreakToken("\n"),
             UnknownToken("abc"), SpecialToken("("), LineBreakToken("\n")
         )

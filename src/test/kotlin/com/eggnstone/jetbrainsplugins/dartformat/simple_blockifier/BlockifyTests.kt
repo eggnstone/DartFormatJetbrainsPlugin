@@ -15,7 +15,7 @@ class BlockifyTests
     fun emptyText()
     {
         val inputText = ""
-        val expectedBlocks = arrayListOf<ISimpleBlock>()
+        val expectedBlocks = mutableListOf<ISimpleBlock>()
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -31,7 +31,7 @@ class BlockifyTests
         val inputText = " "
 
         val block = SimpleWhitespaceBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -47,7 +47,7 @@ class BlockifyTests
         val inputText = "  "
 
         val block = SimpleWhitespaceBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -71,7 +71,7 @@ class BlockifyTests
         val inputText = "abc();"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -87,7 +87,7 @@ class BlockifyTests
         val inputText = ";"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -104,7 +104,7 @@ class BlockifyTests
 
         val block1 = SimpleInstructionBlock("abc();")
         val block2 = SimpleInstructionBlock("def();")
-        val expectedBlocks = arrayListOf(block1, block2)
+        val expectedBlocks = mutableListOf(block1, block2)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -122,7 +122,7 @@ class BlockifyTests
         val block1 = SimpleInstructionBlock("abc();")
         val block2 = SimpleWhitespaceBlock("\n")
         val block3 = SimpleInstructionBlock("def();")
-        val expectedBlocks = arrayListOf(block1, block2, block3)
+        val expectedBlocks = mutableListOf(block1, block2, block3)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -142,7 +142,7 @@ class BlockifyTests
         val block3 = SimpleWhitespaceBlock("\n")
         val block4 = SimpleInstructionBlock("def();")
         val block5 = SimpleWhitespaceBlock("\n")
-        val expectedBlocks = arrayListOf(block1, block2, block3, block4, block5)
+        val expectedBlocks = mutableListOf(block1, block2, block3, block4, block5)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -190,7 +190,7 @@ class BlockifyTests
         val inputText = "{}"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -207,7 +207,7 @@ class BlockifyTests
 
         val block1 = SimpleInstructionBlock("{}")
         val block2 = SimpleInstructionBlock("{}")
-        val expectedBlocks = arrayListOf(block1, block2)
+        val expectedBlocks = mutableListOf(block1, block2)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -223,7 +223,7 @@ class BlockifyTests
         val inputText = "{{}}"
 
         val block = SimpleInstructionBlock("{{}}")
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -240,7 +240,7 @@ class BlockifyTests
 
         val block1 = SimpleInstructionBlock("abc();")
         val block2 = SimpleInstructionBlock("{}")
-        val expectedBlocks = arrayListOf(block1, block2)
+        val expectedBlocks = mutableListOf(block1, block2)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -257,7 +257,7 @@ class BlockifyTests
 
         val block1 = SimpleInstructionBlock("{}")
         val block2 = SimpleInstructionBlock("abc();")
-        val expectedBlocks = arrayListOf(block1, block2)
+        val expectedBlocks = mutableListOf(block1, block2)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -273,7 +273,7 @@ class BlockifyTests
         val inputText = "{abc();}"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)
@@ -289,7 +289,7 @@ class BlockifyTests
         val inputText = "abc({});"
 
         val block = SimpleInstructionBlock(inputText)
-        val expectedBlocks = arrayListOf(block)
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText)

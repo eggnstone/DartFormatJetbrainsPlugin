@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
 import com.eggnstone.jetbrainsplugins.dartformat.Constants
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class SpecialToken(val text: String) : IToken
 {
@@ -17,7 +17,7 @@ class SpecialToken(val text: String) : IToken
         val CLOSING_SQUARE_BRACKET = SpecialToken(Constants.CLOSING_SQUARE_BRACKET)
 
         val ARROW = SpecialToken(Constants.ARROW)
-        val COMMA = SpecialToken(Constants.COMMA)
+        val COMMA = SpecialToken(Constants.COMMA.value)
     }
 
     val isClosingBracket get() = this == CLOSING_CURLY_BRACKET || this == CLOSING_ROUND_BRACKET || this == CLOSING_SQUARE_BRACKET
@@ -30,5 +30,5 @@ class SpecialToken(val text: String) : IToken
 
     override fun recreate(): String = text
 
-    override fun toString(): String = "Special(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "Special(${ToolsOld.toDisplayString2(text)})"
 }

@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
@@ -9,12 +9,12 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class CommentTokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        if (Tools.containsLineBreak(input))
+        if (ToolsOld.containsLineBreak(input))
             throw DartFormatException("CommentTokenizer.tokenize() must not be fed line breaks.")
 
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
         var currentText = ""
         var isInEolComment = false

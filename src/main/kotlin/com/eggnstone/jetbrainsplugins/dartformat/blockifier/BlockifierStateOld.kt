@@ -4,7 +4,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.blocks.IBlock
 
 class BlockifierStateOld
 {
-    val blocks = arrayListOf<IBlock>()
+    val blocks = mutableListOf<IBlock>()
 
     var currentClassHeader = ""
     var currentText = ""

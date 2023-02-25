@@ -23,7 +23,7 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
     @Test
     fun closingBraceShouldDecreaseIndentationAtTextMiddle()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
@@ -57,7 +57,7 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
     @Test
     fun closingBraceShouldDecreaseIndentationAtTextEnd()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
@@ -88,7 +88,7 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
     @Test
     fun doNotIndentEmptyLines()
     {
-        val inputTokens = arrayListOf(
+        val inputTokens = mutableListOf(
             UnknownToken("Text"), LineBreakToken(newLine),
             SpecialToken.OPENING_CURLY_BRACKET, LineBreakToken(newLine),
             UnknownToken("Text"), LineBreakToken(newLine),

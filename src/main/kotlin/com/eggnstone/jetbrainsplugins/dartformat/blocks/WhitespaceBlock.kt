@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blocks
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class WhitespaceBlock(val text: String) : IBlock
 {
@@ -8,5 +8,5 @@ class WhitespaceBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Whitespace(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "Whitespace(${ToolsOld.toDisplayString2(text)})"
 }

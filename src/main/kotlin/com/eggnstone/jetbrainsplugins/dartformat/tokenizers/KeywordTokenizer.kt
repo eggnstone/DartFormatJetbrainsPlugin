@@ -1,15 +1,15 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.KeywordToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 
 class KeywordTokenizer
 {
-    fun tokenize(input: String): ArrayList<IToken>
+    fun tokenize(input: String): MutableList<IToken>
     {
-        val outputTokens = arrayListOf<IToken>()
+        val outputTokens = mutableListOf<IToken>()
 
         var currentText = ""
         var currentWord = ""
@@ -22,7 +22,7 @@ class KeywordTokenizer
                 continue
             }
 
-            if (Tools.isKeyword(currentWord))
+            if (ToolsOld.isKeyword(currentWord))
             {
                 currentText = currentText.substring(0, currentText.length - currentWord.length)
                 if (currentText.isNotEmpty())
@@ -36,8 +36,8 @@ class KeywordTokenizer
             currentWord = ""
         }
 
-        //println("Testing $currentWord")
-        if (Tools.isKeyword(currentWord))
+        //DotlinTools.println("Testing $currentWord")
+        if (ToolsOld.isKeyword(currentWord))
         {
             currentText = currentText.substring(0, currentText.length - currentWord.length)
             if (currentText.isNotEmpty())

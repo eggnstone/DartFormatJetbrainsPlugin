@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blocks
 
-import com.eggnstone.jetbrainsplugins.dartformat.Tools
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class ExpressionBlock(val text: String) : IBlock
 {
@@ -8,5 +8,5 @@ class ExpressionBlock(val text: String) : IBlock
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Expression(${Tools.toDisplayString2(text)})"
+    override fun toString(): String = "Expression(${ToolsOld.toDisplayString2(text)})"
 }
