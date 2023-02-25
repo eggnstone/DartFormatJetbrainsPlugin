@@ -10,103 +10,102 @@ class SimpleBlockifier
 {
     companion object
     {
-        const val debug = false
+        private const val debug = false
     }
+
+    private val blocks = arrayListOf<ISimpleBlock>()
+    private var currentAreaType: SimpleAreaType = SimpleAreaType.Unknown
+    private var currentCurlyBracketCount: Int = 0
+    private var currentText: String = ""
 
     fun blockify(text: String): List<ISimpleBlock>
     {
-        var state = SimpleBlockifierState()
-
         for (c in text)
         {
             if (debug)
-                println("'${Tools.toDisplayString(c.toString())}' ${state.currentAreaType} \"${Tools.toDisplayString(state.currentText)}\"")
+                println("'${Tools.toDisplayString(c.toString())}' $currentAreaType \"${Tools.toDisplayString(currentText)}\"")
 
-            state = when (state.currentAreaType)
+            when (currentAreaType)
             {
-                SimpleAreaType.Instruction -> handleInstructionArea(c, state)
-                SimpleAreaType.Unknown -> handleUnknownArea(c, state)
-                SimpleAreaType.Whitespace -> handleWhitespaceArea(c, state)
+                SimpleAreaType.Instruction -> handleInstructionArea(c)
+                SimpleAreaType.Unknown -> handleUnknownArea(c)
+                SimpleAreaType.Whitespace -> handleWhitespaceArea(c)
             }
         }
 
-        if (state.currentText.isNotEmpty())
+        if (currentText.isNotEmpty())
         {
-            state.blocks += when (state.currentAreaType)
+            blocks += when (currentAreaType)
             {
-                SimpleAreaType.Instruction -> SimpleInstructionBlock(state.currentText)
-                SimpleAreaType.Unknown -> throw DartFormatException("Unexpected area type: ${state.currentAreaType}")
-                SimpleAreaType.Whitespace -> SimpleWhitespaceBlock(state.currentText)
+                SimpleAreaType.Instruction -> SimpleInstructionBlock(currentText)
+                SimpleAreaType.Unknown -> throw DartFormatException("Unexpected area type: $currentAreaType")
+                SimpleAreaType.Whitespace -> SimpleWhitespaceBlock(currentText)
             }
         }
 
-        return state.blocks
+        return blocks
     }
 
-    private fun handleInstructionArea(c: Char, state: SimpleBlockifierState): SimpleBlockifierState
+    private fun handleInstructionArea(c: Char)
     {
         if (c == ';')
         {
-            state.blocks += SimpleInstructionBlock(state.currentText + c)
-            state.reset(SimpleAreaType.Unknown, "")
-            return state
+            blocks += SimpleInstructionBlock(currentText + c)
+            reset(SimpleAreaType.Unknown, "")
+            return
         }
 
         if (c == '{')
         {
-            state.currentCurlyBracketCount++
-            state.currentText += c
-            return state
+            currentCurlyBracketCount++
+            currentText += c
+            return
         }
 
         if (c == '}')
         {
-            state.currentCurlyBracketCount--
+            currentCurlyBracketCount--
 
-            if (state.currentCurlyBracketCount < 0)
-                throw DartFormatException("state.currentCurlyBracketCount < 0")
+            if (currentCurlyBracketCount < 0)
+                throw DartFormatException("currentCurlyBracketCount < 0")
 
-            if (state.currentCurlyBracketCount == 0)
+            if (currentCurlyBracketCount == 0)
             {
-                state.blocks += SimpleInstructionBlock(state.currentText + c)
-                state.reset(SimpleAreaType.Unknown, "")
-                return state
+                blocks += SimpleInstructionBlock(currentText + c)
+                reset(SimpleAreaType.Unknown, "")
+                return
             }
 
-            state.currentText += c
-            return state
+            currentText += c
+            return
         }
 
-        state.currentText += c
-        return state
+        currentText += c
     }
 
-    private fun handleUnknownArea(c: Char, state: SimpleBlockifierState): SimpleBlockifierState
+    private fun handleUnknownArea(c: Char)
     {
         if (Tools.isWhitespace(c))
         {
-            state.reset(SimpleAreaType.Whitespace, c.toString())
-            return state
+            reset(SimpleAreaType.Whitespace, c.toString())
+            return
         }
 
-        state.reset(SimpleAreaType.Instruction, c.toString())
+        reset(SimpleAreaType.Instruction, c.toString())
         if (c == '{')
-            state.currentCurlyBracketCount++
-
-        return state
+            currentCurlyBracketCount++
     }
 
-    private fun handleWhitespaceArea(c: Char, state: SimpleBlockifierState): SimpleBlockifierState
+    private fun handleWhitespaceArea(c: Char)
     {
         if (Tools.isWhitespace(c))
         {
-            state.currentText += c
-            return state
+            currentText += c
+            return
         }
 
-        state.blocks += SimpleWhitespaceBlock(state.currentText)
-        state.reset(SimpleAreaType.Instruction, c.toString())
-        return state
+        blocks += SimpleWhitespaceBlock(currentText)
+        reset(SimpleAreaType.Instruction, c.toString())
     }
 
     fun printBlocks(blocks: List<ISimpleBlock>)
@@ -118,5 +117,12 @@ class SimpleBlockifier
 
         for (block in blocks)
             println("  $block")
+    }
+
+    private fun reset(areaType: SimpleAreaType, text: String)
+    {
+        currentAreaType = areaType
+        currentCurlyBracketCount = 0
+        this.currentText = text
     }
 }
