@@ -4,7 +4,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
 
-class Blockifier
+class BlockifierOld
 {
     companion object
     {
@@ -22,21 +22,21 @@ class Blockifier
 
     fun blockify(text: String): List<IBlock>
     {
-        var state = BlockifierState()
+        var state = BlockifierStateOld()
 
         for (c in text)
         {
             if (debug)
                 println("'${Tools.toDisplayString(c.toString())}' ${state.currentType} \"${Tools.toDisplayString(state.currentText)}\"")
 
-            if (state.currentType != BlockType.Unknown)
+            if (state.currentType != AreaType.Unknown)
             {
                 state = when (state.currentType)
                 {
-                    BlockType.ClassBody -> handleInClassBody(c, state)
-                    BlockType.ClassHeader -> handleInClassHeader(c, state)
-                    BlockType.CurlyBrackets -> handleInCurlyBrackets(c, state)
-                    BlockType.Whitespace -> handleInWhitespace(c, state)
+                    AreaType.ClassBody -> handleInClassBody(c, state)
+                    AreaType.ClassHeader -> handleInClassHeader(c, state)
+                    AreaType.CurlyBracket -> handleInCurlyBrackets(c, state)
+                    AreaType.Whitespace -> handleInWhitespace(c, state)
                     else -> throw DartFormatException("Unhandled BlockType: ${state.currentType}")
                 }
                 continue
@@ -46,7 +46,7 @@ class Blockifier
             {
                 if (state.currentText.isEmpty())
                 {
-                    state.currentType = BlockType.Whitespace
+                    state.currentType = AreaType.Whitespace
                     if (debug)
                         println("  -> ${state.currentType}")
 
@@ -56,7 +56,7 @@ class Blockifier
 
                 if (state.currentText == "class" || state.currentText == "abstract class")
                 {
-                    state.currentType = BlockType.ClassHeader
+                    state.currentType = AreaType.ClassHeader
                     if (debug)
                         println("  -> ${state.currentType}")
                 }
@@ -69,7 +69,7 @@ class Blockifier
             {
                 if (state.currentText.isEmpty())
                 {
-                    state.currentType = BlockType.CurlyBrackets
+                    state.currentType = AreaType.CurlyBracket
                     if (debug)
                         println("  -> ${state.currentType}")
 
@@ -90,7 +90,11 @@ class Blockifier
 
         if (state.currentText.isNotEmpty())
         {
-            if (state.currentType == BlockType.Whitespace)
+            if (state.currentType == AreaType.CurlyBracket)
+                state.blocks += CurlyBracketBlock(arrayListOf(UnknownBlock(state.currentText)))
+            else if (state.currentType == AreaType.Unknown)
+                state.blocks += UnknownBlock(state.currentText)
+            else if (state.currentType == AreaType.Whitespace)
                 state.blocks += WhitespaceBlock(state.currentText)
             else
                 throw DartFormatException("Unhandled BlockType at end of text: ${state.currentType}")
@@ -99,11 +103,11 @@ class Blockifier
         return state.blocks
     }
 
-    private fun handleInClassBody(c: Char, state: BlockifierState): BlockifierState
+    private fun handleInClassBody(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (c == '}')
         {
-            state.currentType = BlockType.Unknown
+            state.currentType = AreaType.Unknown
             if (debug)
                 println("  -> ${state.currentType}")
 
@@ -119,11 +123,11 @@ class Blockifier
         return state
     }
 
-    private fun handleInClassHeader(c: Char, state: BlockifierState): BlockifierState
+    private fun handleInClassHeader(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (c == '{')
         {
-            state.currentType = BlockType.ClassBody
+            state.currentType = AreaType.ClassBody
             if (debug)
                 println("  -> ${state.currentType}")
 
@@ -135,7 +139,7 @@ class Blockifier
         return state
     }
 
-    private fun handleInCurlyBrackets(c: Char, state: BlockifierState): BlockifierState
+    private fun handleInCurlyBrackets(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (debug)
             println("  handleInCurlyBrackets: '${Tools.toDisplayString(c.toString())}' \"${Tools.toDisplayString(state.currentText)}\"")
@@ -146,16 +150,16 @@ class Blockifier
             return state
         }
 
-        state.currentType = BlockType.Unknown
+        state.currentType = AreaType.Unknown
         if (debug)
             println("  -> ${state.currentType}")
 
-        state.blocks += CurlyBracketsBlock(state.currentText.substring(1))
+        state.blocks += CurlyBracketBlock(arrayListOf(UnknownBlock(state.currentText.substring(1))))
         state.currentText = ""
         return state
     }
 
-    private fun handleInWhitespace(c: Char, state: BlockifierState): BlockifierState
+    private fun handleInWhitespace(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (Tools.isWhitespace(c))
         {
@@ -163,7 +167,7 @@ class Blockifier
             return state
         }
 
-        state.currentType = BlockType.Unknown
+        state.currentType = AreaType.Unknown
         if (debug)
             println("  -> ${state.currentType}")
 

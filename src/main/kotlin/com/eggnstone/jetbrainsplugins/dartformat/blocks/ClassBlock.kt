@@ -8,5 +8,5 @@ class ClassBlock(val header: String, val blocks: List<IBlock>) : IBlock
 
     override fun hashCode(): Int = ("$header|${Tools.toBlocksDisplayString(blocks)}").hashCode()
 
-    override fun toString(): String = "Class(\"${Tools.toDisplayString(header)}\", \"${Tools.toBlocksDisplayString(blocks)}\")"
+    override fun toString(): String = "Class(\"${Tools.toDisplayString(header)}\", [${Tools.toBlocksDisplayString(blocks)}])"
 }

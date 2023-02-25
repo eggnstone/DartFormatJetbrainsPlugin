@@ -15,19 +15,11 @@ class RemoveLineBreaksAfterArrowsTests
     fun removeLineBreakWithoutWhiteSpaceBeforeLineBreak()
     {
         val inputTokens = arrayListOf(
-            UnknownToken("a"),
-            WhiteSpaceToken(" "),
-            SpecialToken.ARROW,
-            LineBreakToken("\n"),
-            WhiteSpaceToken("    "),
-            UnknownToken("a")
+            UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, LineBreakToken("\n"),
+            WhiteSpaceToken("    "), UnknownToken("a")
         )
         val expectedOutputTokens = arrayListOf(
-            UnknownToken("a"),
-            WhiteSpaceToken(" "),
-            SpecialToken.ARROW,
-            WhiteSpaceToken(" "),
-            UnknownToken("a")
+            UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken(" "), UnknownToken("a")
         )
 
         val actualOutputTokens = RemoveLineBreaksAfterArrows().format(inputTokens)
@@ -36,23 +28,14 @@ class RemoveLineBreaksAfterArrowsTests
     }
 
     @Test
-    fun removeLineBreakWithWhiteSpaceBeforeLineBreak()
+    fun removeLineBreakWithWhiteSpacesBeforeLineBreak()
     {
         val inputTokens = arrayListOf(
-            UnknownToken("a"),
-            WhiteSpaceToken(" "),
-            SpecialToken.ARROW,
-            WhiteSpaceToken("    "),
-            LineBreakToken("\n"),
-            WhiteSpaceToken("    "),
-            UnknownToken("a")
+            UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken("    "), LineBreakToken("\n"),
+            WhiteSpaceToken("    "), UnknownToken("a")
         )
         val expectedOutputTokens = arrayListOf(
-            UnknownToken("a"),
-            WhiteSpaceToken(" "),
-            SpecialToken.ARROW,
-            WhiteSpaceToken(" "),
-            UnknownToken("a")
+            UnknownToken("a"), WhiteSpaceToken(" "), SpecialToken.ARROW, WhiteSpaceToken(" "), UnknownToken("a")
         )
 
         val actualOutputTokens = RemoveLineBreaksAfterArrows().format(inputTokens)

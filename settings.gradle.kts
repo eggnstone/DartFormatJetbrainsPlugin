@@ -1,1 +1,1 @@
-rootProject.name = "DartFormat"
+rootProject.name = "DartFormatJetBrainsPlugin"
