@@ -13,6 +13,12 @@ import org.junit.jupiter.api.assertThrows
 class BlockifyTests
 {
     @Test
+    fun dummy()
+    {
+        MatcherAssert.assertThat("true", equals(false))
+    }
+
+    @Test
     fun emptyText()
     {
         val inputText = ""
