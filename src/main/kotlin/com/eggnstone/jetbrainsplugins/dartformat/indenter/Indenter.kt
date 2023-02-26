@@ -1,10 +1,10 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
+import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
+import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import java.util.*
 
 class Indenter(private val spacesPerLevel: Int = 4)

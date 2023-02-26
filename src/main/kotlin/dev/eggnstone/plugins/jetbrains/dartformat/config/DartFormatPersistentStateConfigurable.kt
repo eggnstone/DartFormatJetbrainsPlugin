@@ -1,9 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.util.ui.FormBuilder
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.text.NumberFormat

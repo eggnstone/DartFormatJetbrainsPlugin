@@ -4,7 +4,6 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.ISimpleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleInstructionBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleWhitespaceBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleBlockifier
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

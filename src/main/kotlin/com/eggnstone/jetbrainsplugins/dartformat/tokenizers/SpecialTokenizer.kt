@@ -1,10 +1,10 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 
 class SpecialTokenizer
 {

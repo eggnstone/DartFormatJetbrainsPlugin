@@ -1,11 +1,11 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.MultiLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 
 class CommentTokenizer
 {

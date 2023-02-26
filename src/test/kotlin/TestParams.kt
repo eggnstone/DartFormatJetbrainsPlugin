@@ -1,5 +1,5 @@
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 
 class TestParams
 {

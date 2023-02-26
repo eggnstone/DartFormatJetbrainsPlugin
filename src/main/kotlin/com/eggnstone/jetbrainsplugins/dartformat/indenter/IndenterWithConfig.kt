@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 
 class IndenterWithConfig(private val config: DartFormatConfig)
 {

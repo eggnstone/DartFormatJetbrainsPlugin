@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.formatters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 
 class FormatterWithConfig(private val config: DartFormatConfig)
 {

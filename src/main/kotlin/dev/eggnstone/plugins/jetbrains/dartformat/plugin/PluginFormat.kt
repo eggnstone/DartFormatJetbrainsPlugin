@@ -1,11 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.FormatterWithConfig
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IndenterWithConfig
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleBlockifier
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -19,6 +15,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentIterator
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleBlockifier
 
 typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
 

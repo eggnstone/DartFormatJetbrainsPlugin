@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 
 class EndOfLineCommentToken(private val text: String) : IToken
 {
