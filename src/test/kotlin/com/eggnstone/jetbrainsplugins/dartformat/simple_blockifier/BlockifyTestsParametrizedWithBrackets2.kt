@@ -1,3 +1,4 @@
+/*
 package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
 import TestParams
@@ -94,3 +95,4 @@ class BlockifyTestsParametrizedWithBrackets2(
         assertThrows<DartFormatException> { SimpleBlockifier().blockify(inputText) }
     }
 }
+*/

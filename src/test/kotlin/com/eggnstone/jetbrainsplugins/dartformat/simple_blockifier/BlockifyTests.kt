@@ -298,4 +298,36 @@ class BlockifyTests
 
         blockifier.printBlocks(actualBlocks)
     }
+
+    @Test
+    fun conditionalAndSimpleCurlyBracketBlock()
+    {
+        val inputText = "if (true) {}"
+
+        val block = SimpleInstructionBlock(inputText)
+        val expectedBlocks = mutableListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
+
+    @Test
+    fun conditionalAndSimpleExpression()
+    {
+        val inputText = "if (true) ;"
+
+        val block = SimpleInstructionBlock(inputText)
+        val expectedBlocks = mutableListOf(block)
+
+        val blockifier = SimpleBlockifier()
+        val actualBlocks = blockifier.blockify(inputText)
+
+        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+
+        blockifier.printBlocks(actualBlocks)
+    }
 }

@@ -57,8 +57,8 @@ class SimpleBlockifier
 
                 if (currentText == ";")
                     finalBlock = SimpleInstructionBlock(currentText)
-                else if (hasMainCurlyBrackets)
-                    finalBlock = SimpleInstructionBlock(currentText)
+                /*else if (hasMainCurlyBrackets)
+                    finalBlock = SimpleInstructionBlock(currentText) // TODO*/
             }
 
             if (finalBlock == null)
@@ -97,7 +97,6 @@ class SimpleBlockifier
 
         if (Tools.isOpeningBracket(c))
         {
-            //DotlinTools.println("TODO? $currentBrackets")
             if (c.value == "{" && currentBrackets.size == 0)
                 hasMainCurlyBrackets = true
 
