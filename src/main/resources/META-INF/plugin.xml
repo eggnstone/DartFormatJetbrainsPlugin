@@ -78,8 +78,8 @@
     </extensions>
     <!--
     Cannot change package anymore:
-    Old: com.eggnstone.jetbrainsplugins
-    New: dev.eggnstone.plugins.jetbrains
+    Old: com.eggnstone.jetbrainsplugins.DartFormat
+    New: dev.eggnstone.plugins.jetbrains.DartFormat
     -->
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>
     <name>DartFormat</name>
