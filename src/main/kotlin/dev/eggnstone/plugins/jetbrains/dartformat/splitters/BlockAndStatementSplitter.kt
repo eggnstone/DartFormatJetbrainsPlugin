@@ -36,17 +36,13 @@ class BlockAndStatementSplitter : ISplitter
             {
                 currentText += c
                 val tempRemainingText = remainingText.substring(1)
-
-                //println("- Calling Splitter ...")
                 val result = Splitter().split(tempRemainingText)
                 remainingText = result.remainingText
 
                 if (!result.remainingText.startsWith("}"))
-                    TODO() // throw
+                    TODO() // throw DartFormatException("Unexpected TODO")
 
-                parts += Block("{", "}", result.parts)
-
-                //println("- Called Splitter.")
+                parts += Block(currentText, "}", result.parts)
 
                 if (remainingText == "}")
                     return SplitResult("", parts)

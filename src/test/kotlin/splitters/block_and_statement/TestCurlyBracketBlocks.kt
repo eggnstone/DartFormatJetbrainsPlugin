@@ -36,4 +36,21 @@ class TestCurlyBracketBlocks
 
         PartTools.printParts(result.parts)
     }
+
+    @Test
+    fun simpleBlockWithTextBefore()
+    {
+        val inputText = "abc {}"
+
+        val expectedRemainingText = ""
+        val expectedPart = Block("abc {", "}")
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        val result = BlockAndStatementSplitter().split(inputText)
+
+        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+
+        PartTools.printParts(result.parts)
+    }
 }
