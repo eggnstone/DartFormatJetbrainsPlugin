@@ -2,49 +2,65 @@ package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockInstructionBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.PlainInstructionBlock
 
 class InstructionBlockifier : IBlockifier
 {
-    override fun blockify(inputText: String): BlockifyResult
+    override fun blockify(inputText2: String): BlockifyResult
     {
-        println("InstructionBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+        println("InstructionBlockifier.blockify: ${Tools.shorten(inputText2, 100)}")
 
-        if (inputText.isEmpty())
+        if (inputText2.isEmpty())
             throw DartFormatException("Unexpected empty text.")
 
-        var header = ""
+        val blocks = mutableListOf<IBlock>()
+        var currentText = ""
 
-        @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
-        for (i in 0 until inputText.length) // workaround for dotlin for: for (c in text)
+        var remainingText = inputText2
+        while (remainingText.isNotEmpty())
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
-            val c = inputText.get(i).toString() // workaround for dotlin for: for (c in text)
+            val c = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
+            println("c: $c")
 
             if (c == ";")
             {
-                header += c
-                val remainingText = inputText.substring(i + 1)
-                return BlockifyResult(remainingText, listOf(InstructionBlock(header, "")))
+                currentText += c
+                val resultRemainingText = remainingText.substring(1)
+                return BlockifyResult(resultRemainingText, listOf(PlainInstructionBlock(currentText)))
             }
 
             if (c == "{")
             {
-                header += c
-                val remainingText = inputText.substring(i + 1)
-                val result = MasterBlockifier().blockify(remainingText)
-                //remainingText = result.remainingText
-                //blocks
+                currentText += c
+                val tempRemainingText = remainingText.substring(1)
+
+                println("- Calling MasterBlockifier ...")
+                val result = MasterBlockifier().blockify(tempRemainingText)
+                remainingText = result.remainingText
+
+                if (!result.remainingText.startsWith("}"))
+                    TODO() // throw
+
+                blocks += BlockInstructionBlock("{", "}", result.blocks)
+
+                println("- Called MasterBlockifier.")
+                println("header:        ${Tools.toDisplayString2(currentText)}")
+                println("remainingText: ${Tools.toDisplayString2(remainingText)}")
+
+                if (remainingText == "}")
+                    return BlockifyResult("", blocks)
+
                 TODO()
-                return BlockifyResult("", listOf(InstructionBlock(inputText, "", result.blocks)))
+                continue
             }
 
-            header += c
-            continue
+            currentText += c
+            remainingText = remainingText.substring(1)
         }
 
         throw DartFormatException("Unexpected end of instruction.")
-        TODO()
-        return BlockifyResult("", listOf(InstructionBlock(inputText, "")))
     }
 }

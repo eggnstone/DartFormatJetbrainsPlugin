@@ -2,9 +2,9 @@ package blockifiers.instruction
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockInstructionBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -26,7 +26,7 @@ class TestCurlyBracketBlocks
         val inputText = "{}"
 
         val expectedRemainingText = ""
-        val expectedBlock = InstructionBlock("{", "}")
+        val expectedBlock = BlockInstructionBlock("{", "}")
         val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = InstructionBlockifier().blockify(inputText)

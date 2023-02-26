@@ -4,7 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.PlainInstructionBlock
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -26,7 +26,7 @@ class TestSemicolons
         val inputText = ";"
 
         val expectedRemainingText = ""
-        val expectedBlock = InstructionBlock(";", "")
+        val expectedBlock = PlainInstructionBlock(";")
         val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = InstructionBlockifier().blockify(inputText)
@@ -43,7 +43,7 @@ class TestSemicolons
         val inputText = "abc();"
 
         val expectedRemainingText = ""
-        val expectedBlock = InstructionBlock("abc();", "")
+        val expectedBlock = PlainInstructionBlock("abc();")
         val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = InstructionBlockifier().blockify(inputText)
