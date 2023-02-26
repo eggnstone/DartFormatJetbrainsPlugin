@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-//data class BlockifyResult(val remainingText: String, val block: IBlock)
-data class BlockifyResult(val remainingText: String, val blocks: List<IBlock>)
+data class BlockifyResult(val remainingText: String, val parts: List<IPart>)

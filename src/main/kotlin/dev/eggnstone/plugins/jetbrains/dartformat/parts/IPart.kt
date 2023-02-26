@@ -1,6 +1,6 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.blocks
+package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
-interface IBlock
+interface IPart
 {
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int

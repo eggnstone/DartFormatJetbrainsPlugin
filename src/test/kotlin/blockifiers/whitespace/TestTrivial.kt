@@ -2,9 +2,9 @@ package blockifiers.whitespace
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.WhitespaceBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -26,15 +26,15 @@ class TestTrivial
         val inputText = " "
 
         val expectedRemainingText = ""
-        val expectedBlock = WhitespaceBlock(" ")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Whitespace(" ")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -43,15 +43,15 @@ class TestTrivial
         val inputText = "\t"
 
         val expectedRemainingText = ""
-        val expectedBlock = WhitespaceBlock("\t")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Whitespace("\t")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -60,15 +60,15 @@ class TestTrivial
         val inputText = "\n"
 
         val expectedRemainingText = ""
-        val expectedBlock = WhitespaceBlock("\n")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Whitespace("\n")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -77,15 +77,15 @@ class TestTrivial
         val inputText = "\r"
 
         val expectedRemainingText = ""
-        val expectedBlock = WhitespaceBlock("\r")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Whitespace("\r")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -94,14 +94,14 @@ class TestTrivial
         val inputText = " \n\r\t"
 
         val expectedRemainingText = ""
-        val expectedBlock = WhitespaceBlock(" \n\r\t")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Whitespace(" \n\r\t")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 }

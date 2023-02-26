@@ -2,9 +2,9 @@ package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockInstructionBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.PlainInstructionBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
 class InstructionBlockifier : IBlockifier
 {
@@ -15,7 +15,7 @@ class InstructionBlockifier : IBlockifier
         if (inputText2.isEmpty())
             throw DartFormatException("Unexpected empty text.")
 
-        val blocks = mutableListOf<IBlock>()
+        val parts = mutableListOf<IPart>()
         var currentText = ""
 
         var remainingText = inputText2
@@ -29,7 +29,7 @@ class InstructionBlockifier : IBlockifier
             {
                 currentText += c
                 val resultRemainingText = remainingText.substring(1)
-                return BlockifyResult(resultRemainingText, listOf(PlainInstructionBlock(currentText)))
+                return BlockifyResult(resultRemainingText, listOf(Statement(currentText)))
             }
 
             if (c == "{")
@@ -44,14 +44,14 @@ class InstructionBlockifier : IBlockifier
                 if (!result.remainingText.startsWith("}"))
                     TODO() // throw
 
-                blocks += BlockInstructionBlock("{", "}", result.blocks)
+                parts += Block("{", "}", result.parts)
 
                 println("- Called MasterBlockifier.")
                 println("header:        ${Tools.toDisplayString2(currentText)}")
                 println("remainingText: ${Tools.toDisplayString2(remainingText)}")
 
                 if (remainingText == "}")
-                    return BlockifyResult("", blocks)
+                    return BlockifyResult("", parts)
 
                 TODO()
                 continue

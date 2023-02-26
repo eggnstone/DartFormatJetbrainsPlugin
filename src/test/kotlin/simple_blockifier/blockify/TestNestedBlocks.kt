@@ -15,8 +15,8 @@ class TestNestedBlocks
         val inputText = "{{}}"
 
         val part1 = TextPart("{}")
-        val block1 = SimpleInstructionBlock2("{", "}", mutableListOf(part1))
-        val expectedBlocks = mutableListOf(block1)
+        val block = SimpleInstructionBlock2("{", "}", mutableListOf(part1))
+        val expectedBlocks = mutableListOf(block)
 
         val blockifier = SimpleBlockifier()
         val actualBlocks = blockifier.blockify(inputText, true)

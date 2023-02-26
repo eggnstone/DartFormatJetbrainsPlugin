@@ -16,7 +16,7 @@ class SimpleInstructionBlock2(val header: String, val footer: String, val parts:
         && footer == other.footer
         && parts == other.parts
 
-    override fun hashCode(): Int = ("$header|$footer|${Tools.partsToDisplayString2(parts)}").hashCode()
+    override fun hashCode(): Int = 0//("$header|$footer|${Tools.partsToDisplayString2(parts)}").hashCode()
 
     override fun toString(): String = "SimpleInstruction2(${Tools.toDisplayString2(header)}, ${Tools.toDisplayString2(footer)}, ${parts.size} parts)"
 }

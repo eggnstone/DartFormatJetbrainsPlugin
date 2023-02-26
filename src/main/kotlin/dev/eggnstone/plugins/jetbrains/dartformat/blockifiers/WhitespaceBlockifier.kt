@@ -2,7 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
 class WhitespaceBlockifier : IBlockifier
 {
@@ -31,9 +31,9 @@ class WhitespaceBlockifier : IBlockifier
                 throw DartFormatException("Unexpected non-whitespace at beginning of text.")
 
             val remainingText = inputText.substring(i)
-            return BlockifyResult(remainingText, listOf(WhitespaceBlock(whitespace)))
+            return BlockifyResult(remainingText, listOf(Whitespace(whitespace)))
         }
 
-        return BlockifyResult("", listOf(WhitespaceBlock(inputText)))
+        return BlockifyResult("", listOf(Whitespace(inputText)))
     }
 }

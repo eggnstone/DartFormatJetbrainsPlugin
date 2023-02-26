@@ -2,9 +2,9 @@ package blockifiers.instruction
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.PlainInstructionBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -26,15 +26,15 @@ class TestSemicolons
         val inputText = ";"
 
         val expectedRemainingText = ""
-        val expectedBlock = PlainInstructionBlock(";")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Statement(";")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = InstructionBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -43,14 +43,14 @@ class TestSemicolons
         val inputText = "abc();"
 
         val expectedRemainingText = ""
-        val expectedBlock = PlainInstructionBlock("abc();")
-        val expectedBlocks = listOf<IBlock>(expectedBlock)
+        val expectedPart = Statement("abc();")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val result = InstructionBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(result.blocks)
+        PartTools.printParts(result.parts)
     }
 }

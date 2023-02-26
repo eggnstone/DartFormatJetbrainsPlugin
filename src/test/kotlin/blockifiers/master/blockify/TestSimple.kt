@@ -1,10 +1,10 @@
 package blockifiers.master.blockify
 
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.PlainInstructionBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -17,15 +17,15 @@ class TestSimple
         val inputText = " "
 
         val expectedRemainingText = ""
-        val block1 = WhitespaceBlock(" ")
-        val expectedBlocks = listOf<IBlock>(block1)
+        val expectedPart = Whitespace(" ")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(actualResult.blocks)
+        PartTools.printParts(actualResult.parts)
     }
 
     @Test
@@ -34,15 +34,15 @@ class TestSimple
         val inputText = ";"
 
         val expectedRemainingText = ""
-        val block1 = PlainInstructionBlock(";")
-        val expectedBlocks = mutableListOf<IBlock>(block1)
+        val expectedPart = Statement(";")
+        val expectedParts = mutableListOf<IPart>(expectedPart)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(actualResult.blocks)
+        PartTools.printParts(actualResult.parts)
     }
 
     @Test
@@ -51,16 +51,16 @@ class TestSimple
         val inputText = ";;"
 
         val expectedRemainingText = ""
-        val block1 = PlainInstructionBlock(";")
-        val block2 = PlainInstructionBlock(";")
-        val expectedBlocks = mutableListOf<IBlock>(block1, block2)
+        val expectedPart1 = Statement(";")
+        val expectedPart2 = Statement(";")
+        val expectedParts = mutableListOf<IPart>(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(actualResult.blocks)
+        PartTools.printParts(actualResult.parts)
     }
 
     @Test
@@ -69,16 +69,16 @@ class TestSimple
         val inputText = " ;"
 
         val expectedRemainingText = ""
-        val block1 = WhitespaceBlock(" ")
-        val block2 = PlainInstructionBlock(";")
-        val expectedBlocks = mutableListOf(block1, block2)
+        val expectedPart1 = Whitespace(" ")
+        val expectedPart2 = Statement(";")
+        val expectedParts = mutableListOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(actualResult.blocks)
+        PartTools.printParts(actualResult.parts)
     }
 
     @Test
@@ -87,15 +87,15 @@ class TestSimple
         val inputText = "; "
 
         val expectedRemainingText = ""
-        val block1 = PlainInstructionBlock(";")
-        val block2 = WhitespaceBlock(" ")
-        val expectedBlocks = mutableListOf(block1, block2)
+        val expectedPart1 = Statement(";")
+        val expectedPart2 = Whitespace(" ")
+        val expectedParts = mutableListOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
 
-        BlockTools.printBlocks(actualResult.blocks)
+        PartTools.printParts(actualResult.parts)
     }
 }

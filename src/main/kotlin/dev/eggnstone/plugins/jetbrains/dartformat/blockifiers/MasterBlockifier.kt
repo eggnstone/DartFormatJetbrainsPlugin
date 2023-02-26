@@ -2,7 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class MasterBlockifier
 {
@@ -10,7 +10,7 @@ class MasterBlockifier
     {
         println("MasterBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
 
-        val blocks = mutableListOf<IBlock>()
+        val parts = mutableListOf<IPart>()
 
         var remainingText = inputText
         while (remainingText.isNotEmpty())
@@ -18,14 +18,14 @@ class MasterBlockifier
             val blockifier = getBlockifier(remainingText)
             @Suppress("FoldInitializerAndIfToElvis")
             if (blockifier == null)
-                return BlockifyResult(remainingText, blocks)
+                return BlockifyResult(remainingText, parts)
 
             val result = blockifier.blockify(remainingText)
             remainingText = result.remainingText
-            blocks += result.blocks
+            parts += result.parts
         }
 
-        return BlockifyResult("", blocks)
+        return BlockifyResult("", parts)
     }
 
     fun getBlockifier(inputText: String): IBlockifier?
