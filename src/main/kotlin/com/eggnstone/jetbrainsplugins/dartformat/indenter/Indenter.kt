@@ -267,9 +267,9 @@ class Indenter(private val spacesPerLevel: Int = 4)
                     for (item in newStack)
                         when (item)
                         {
-                            is BracketIndent -> currentStack.add( BracketIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
-                            is ClassKeywordIndent -> currentStack .add( KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
-                            is KeywordIndent -> currentStack .add( KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
+                            is BracketIndent -> currentStack.add(BracketIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
+                            is ClassKeywordIndent -> currentStack.add(KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
+                            is KeywordIndent -> currentStack.add(KeywordIndent(item.text, currentLevel2 + 1 + currentStackLevelModifier)) // dotlin
                             is RemovalIndent -> currentStack.pop()
                             else -> throw DartFormatException("Unexpected type: ${item::class.simpleName}")
                         }
@@ -290,7 +290,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
         }
 
         if (currentLine.isNotEmpty())
-            lines.add( indentText(currentLine, currentStack.size)) // dotlin
+            lines.add(indentText(currentLine, currentStack.size)) // dotlin
 
         return IndentResult(lines, remainingTokens)
     }

@@ -17,7 +17,7 @@ class SpecialToken(val text: String) : IToken
         val CLOSING_SQUARE_BRACKET = SpecialToken(Constants.CLOSING_SQUARE_BRACKET)
 
         val ARROW = SpecialToken(Constants.ARROW)
-        val COMMA = SpecialToken(Constants.COMMA.value)
+        val COMMA = SpecialToken(Constants.COMMA)
     }
 
     val isClosingBracket get() = this == CLOSING_CURLY_BRACKET || this == CLOSING_ROUND_BRACKET || this == CLOSING_SQUARE_BRACKET

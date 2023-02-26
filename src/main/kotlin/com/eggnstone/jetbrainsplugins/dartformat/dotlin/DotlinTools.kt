@@ -4,32 +4,29 @@ class DotlinTools
 {
     companion object
     {
-        fun contains(s: String, c: DotlinChar): Boolean
+        fun contains(s: String, searchChar: String): Boolean
         {
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
-                val sc = DotlinChar(s.get(i).toString())
-                if (sc == c)
+                val originalChar = s.get(i).toString()
+                if (originalChar == searchChar)
                     return true
             }
 
             return false
         }
 
-        fun replace(s: String, searchChar: DotlinChar, replaceText: String): String
+        fun replace(s: String, searchChar: String, replaceText: String): String
         {
             var result = ""
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
-                val sc = DotlinChar(s.get(i).toString())
-                if (sc == searchChar)
-                    result += replaceText
-                else
-                    result += sc.value
+                val originalChar = s.get(i).toString()
+                result += if (originalChar == searchChar) replaceText else originalChar
             }
 
             return result

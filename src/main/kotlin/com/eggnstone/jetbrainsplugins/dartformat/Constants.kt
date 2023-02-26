@@ -1,7 +1,5 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
-import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinChar
-
 class Constants
 {
     companion object
@@ -16,12 +14,11 @@ class Constants
         const val CLOSING_SQUARE_BRACKET = "]"
 
         const val ARROW = "=>"
-
-        val COLON = DotlinChar(":")
-        val COMMA = DotlinChar(",")
-        val EQUAL = DotlinChar("=")
-        val GREATER_THAN = DotlinChar(">")
-        val PERIOD = DotlinChar(".")
-        val SEMICOLON = DotlinChar(";")
+        const val COLON = ":"
+        const val COMMA = ","
+        const val EQUAL = "="
+        const val GREATER_THAN = ">"
+        const val PERIOD = "."
+        const val SEMICOLON = ";"
     }
 }

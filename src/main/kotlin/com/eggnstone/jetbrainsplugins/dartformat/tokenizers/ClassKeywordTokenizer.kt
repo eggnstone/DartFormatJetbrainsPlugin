@@ -21,7 +21,7 @@ class ClassKeywordTokenizer
                 val pureText = currentText.substring(0, currentText.length - 1)
                 if (ToolsOld.classKeywords.contains(pureText))
                 {
-                    outputTokens.add( ClassKeywordToken(pureText)) // dotlin
+                    outputTokens.add(ClassKeywordToken(pureText)) // dotlin
                     currentText = " "
                 }
             }
@@ -30,9 +30,9 @@ class ClassKeywordTokenizer
         }
 
         if (ToolsOld.classKeywords.contains(currentText))
-            outputTokens.add( ClassKeywordToken(currentText)) // dotlin
+            outputTokens.add(ClassKeywordToken(currentText)) // dotlin
         else
-            outputTokens.add( UnknownToken(currentText)) // dotlin
+            outputTokens.add(UnknownToken(currentText)) // dotlin
 
         return outputTokens
     }

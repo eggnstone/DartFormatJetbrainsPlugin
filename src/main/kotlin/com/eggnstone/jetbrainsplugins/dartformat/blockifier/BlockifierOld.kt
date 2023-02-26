@@ -83,7 +83,7 @@ class BlockifierOld
 
             if (c == ';')
             {
-                state.blocks.add( ExpressionBlock(state.currentText + c)) // dotlin
+                state.blocks.add(ExpressionBlock(state.currentText + c)) // dotlin
                 state.currentText = ""
                 continue
             }
@@ -94,11 +94,11 @@ class BlockifierOld
         if (state.currentText.isNotEmpty())
         {
             if (state.currentType == AreaType.CurlyBracket)
-                state.blocks.add( CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText)))) // dotlin
+                state.blocks.add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText)))) // dotlin
             else if (state.currentType == AreaType.Unknown)
-                state.blocks.add( UnknownBlock(state.currentText)) // dotlin
+                state.blocks.add(UnknownBlock(state.currentText)) // dotlin
             else if (state.currentType == AreaType.Whitespace)
-                state.blocks .add( WhitespaceBlock(state.currentText)) // dotlin
+                state.blocks.add(WhitespaceBlock(state.currentText)) // dotlin
             else
                 throw DartFormatException("Unhandled BlockType at end of text: ${state.currentType}")
         }
@@ -116,7 +116,7 @@ class BlockifierOld
 
             val innerText = state.currentText.substring(1)
             val innerBlocks = blockify(innerText)
-            state.blocks.add( ClassBlock(state.currentClassHeader, innerBlocks)) // dotlin
+            state.blocks.add(ClassBlock(state.currentClassHeader, innerBlocks)) // dotlin
             state.currentClassHeader = ""
             state.currentText = ""
             return state
@@ -157,7 +157,7 @@ class BlockifierOld
         if (debug)
             DotlinLogger.log("  -> ${state.currentType}")
 
-        state.blocks .add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
+        state.blocks.add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
         state.currentText = ""
         return state
     }
