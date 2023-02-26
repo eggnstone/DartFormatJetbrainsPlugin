@@ -29,7 +29,7 @@ class TestSimple
     }
 
     @Test
-    fun oneInstruction()
+    fun oneStatement()
     {
         val inputText = ";"
 
@@ -46,7 +46,7 @@ class TestSimple
     }
 
     @Test
-    fun twoInstructions()
+    fun twoStatements()
     {
         val inputText = ";;"
 
@@ -64,7 +64,7 @@ class TestSimple
     }
 
     @Test
-    fun oneWhitespaceAndOneInstruction()
+    fun oneWhitespaceAndOneStatement()
     {
         val inputText = " ;"
 
@@ -82,7 +82,7 @@ class TestSimple
     }
 
     @Test
-    fun oneInstructionAndOneWhitespace()
+    fun oneStatementAndOneWhitespace()
     {
         val inputText = "; "
 

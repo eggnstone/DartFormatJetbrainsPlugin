@@ -6,19 +6,19 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
-class InstructionSplitter : ISplitter
+class BlockAndStatementSplitter : ISplitter
 {
-    override fun split(inputText2: String): SplitResult
+    override fun split(inputText: String): SplitResult
     {
-        println("InstructionSplitter.split: ${Tools.shorten(inputText2, 100)}")
+        println("BlockAndStatementSplitter.split: ${Tools.shorten(inputText, 100)}")
 
-        if (inputText2.isEmpty())
+        if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
 
         val parts = mutableListOf<IPart>()
         var currentText = ""
 
-        var remainingText = inputText2
+        var remainingText = inputText
         while (remainingText.isNotEmpty())
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
@@ -61,6 +61,6 @@ class InstructionSplitter : ISplitter
             remainingText = remainingText.substring(1)
         }
 
-        throw DartFormatException("Unexpected end of instruction.")
+        throw DartFormatException("Unexpected end of block or statement.")
     }
 }

@@ -1,6 +1,6 @@
 package splitters.splitter.getSplitter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.BlockAndStatementSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
 import org.hamcrest.CoreMatchers.equalTo
@@ -26,7 +26,7 @@ class TestSimple
 
         val splitter = Splitter().getSplitter(inputText)
 
-        MatcherAssert.assertThat(splitter is InstructionSplitter, equalTo(true))
+        MatcherAssert.assertThat(splitter is BlockAndStatementSplitter, equalTo(true))
     }
 
     @Test

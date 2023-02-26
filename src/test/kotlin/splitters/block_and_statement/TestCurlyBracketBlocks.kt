@@ -1,10 +1,10 @@
-package splitters.instruction
+package splitters.block_and_statement
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.BlockAndStatementSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -17,7 +17,7 @@ class TestCurlyBracketBlocks
     {
         val inputText = "}"
 
-        assertThrows<DartFormatException> { InstructionSplitter().split(inputText) }
+        assertThrows<DartFormatException> { BlockAndStatementSplitter().split(inputText) }
     }
 
     @Test
@@ -29,7 +29,7 @@ class TestCurlyBracketBlocks
         val expectedPart = Block("{", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = InstructionSplitter().split(inputText)
+        val result = BlockAndStatementSplitter().split(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))

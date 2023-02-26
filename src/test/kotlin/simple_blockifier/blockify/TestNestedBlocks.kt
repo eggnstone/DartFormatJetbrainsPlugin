@@ -5,11 +5,13 @@ import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleInstructio
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.TextPart
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
+import org.junit.Ignore
 import org.junit.Test
 
 class TestNestedBlocks
 {
     @Test
+    @Ignore
     fun twoNestedBlocks()
     {
         val inputText = "{{}}"

@@ -1,7 +1,7 @@
-package splitters.instruction
+package splitters.block_and_statement
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.BlockAndStatementSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,6 +12,6 @@ class TestTrivial
     {
         val inputText = ""
 
-        assertThrows<DartFormatException> { InstructionSplitter().split(inputText) }
+        assertThrows<DartFormatException> { BlockAndStatementSplitter().split(inputText) }
     }
 }

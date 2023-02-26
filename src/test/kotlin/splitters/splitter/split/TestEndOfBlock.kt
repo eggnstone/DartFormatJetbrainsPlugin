@@ -28,7 +28,7 @@ class TestEndOfBlock
     }
 
     @Test
-    fun oneInstruction()
+    fun oneStatement()
     {
         val inputText = ";"
 
@@ -45,7 +45,7 @@ class TestEndOfBlock
     }
 
     @Test
-    fun twoInstructions()
+    fun twoStatements()
     {
         val inputText = ";;"
 
@@ -63,7 +63,7 @@ class TestEndOfBlock
     }
 
     @Test
-    fun oneWhitespaceAndOneInstruction()
+    fun oneWhitespaceAndOneStatement()
     {
         val inputText = " ;"
 
@@ -81,7 +81,7 @@ class TestEndOfBlock
     }
 
     @Test
-    fun oneInstructionAndOneWhitespace()
+    fun oneStatementAndOneWhitespace()
     {
         val inputText = "; "
 

@@ -39,9 +39,9 @@ class Splitter : ISplitter
         if (Tools.isWhitespace(c))
             return WhitespaceSplitter()
 
-        if (c == "}")
-            return null
+        if (c != "}")
+            return BlockAndStatementSplitter()
 
-        return InstructionSplitter()
+        return null
     }
 }
