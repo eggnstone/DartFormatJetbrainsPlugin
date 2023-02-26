@@ -177,7 +177,7 @@ class BlockifyTests
     }
 
     @Test
-    fun unexpectedCurlyBracket()
+    fun unexpectedClosingCurlyBracket()
     {
         val inputText = "a}"
 
