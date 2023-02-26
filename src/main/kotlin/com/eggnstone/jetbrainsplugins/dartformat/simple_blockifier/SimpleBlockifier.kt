@@ -38,6 +38,7 @@ class SimpleBlockifier
                 SimpleAreaType.Instruction -> handleInstructionArea(c)
                 SimpleAreaType.Unknown -> handleUnknownArea(c)
                 SimpleAreaType.Whitespace -> handleWhitespaceArea(c)
+                else -> throwError("only necessary because of dotlin")
             }
         }
 
@@ -88,7 +89,8 @@ class SimpleBlockifier
     {
         if (c.value == ";" && currentBrackets.size == 0)
         {
-            blocks.add(SimpleInstructionBlock(currentText + c)) // dotlin
+            val dotlinC: String = c.value // dotlin
+            blocks.add(SimpleInstructionBlock(currentText + dotlinC))
             reset(SimpleAreaType.Unknown, "")
             return
         }
@@ -100,7 +102,8 @@ class SimpleBlockifier
                 hasMainCurlyBrackets = true
 
             currentBrackets.add(c) // dotlin
-            currentText += c
+            val dotlinC: String = c.value // dotlin
+            currentText += dotlinC
             return
         }
 
@@ -126,11 +129,13 @@ class SimpleBlockifier
                 return*/
             }
 
-            currentText += c
+            val dotlinC: String = c.value // dotlin
+            currentText += dotlinC
             return
         }
 
-        currentText += c
+        val dotlinC: String = c.value // dotlin
+        currentText += dotlinC
     }
 
     private fun handleUnknownArea(c: C)
@@ -154,7 +159,8 @@ class SimpleBlockifier
     {
         if (Tools.isWhitespace(c))
         {
-            currentText += c
+            val dotlinC: String = c.value // dotlin
+            currentText += dotlinC
             return
         }
 
@@ -173,8 +179,17 @@ class SimpleBlockifier
         else
             DotlinLogger.log("$prefix${blocks.size} blocks:")
 
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+        for (i in 0 until blocks.size)
+        {
+            val block = blocks[i]
+            DotlinLogger.log("  $block")
+        }
+
+        /* dotlin
         for (block in blocks)
             DotlinLogger.log("  $block")
+        */
     }
 
     private fun reset(areaType: SimpleAreaType, text: String)

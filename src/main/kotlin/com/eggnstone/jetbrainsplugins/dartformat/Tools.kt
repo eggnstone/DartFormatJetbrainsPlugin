@@ -43,7 +43,6 @@ class Tools
         private fun toDisplayString1(c: C): String = toDisplayString1(c.value)
         fun toDisplayString2(c: C): String = "'" + toDisplayString1(c) + "'"
 
-        /*
         private fun stringsToDisplayString1(strings: List<String>): String
         {
             var result = ""
@@ -62,18 +61,12 @@ class Tools
 
             return result
         }
-        */
 
         //fun stringsToDisplayString2(strings: List<String>): String = "[" + stringsToDisplayString1(strings) + "]"
 
         fun getOpeningBracket(closingBracket: C): C
         {
-
             /* dotlin
-            return when (closingBracket.value)
-            */
-
-            @Suppress("LiftReturnOrAssignment") // dotlin
             return when (closingBracket.value)
             {
                 "}" -> C("{")
@@ -81,7 +74,8 @@ class Tools
                 "]" -> C("[")
                 else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
             }
-            /*
+            */
+            @Suppress("LiftReturnOrAssignment") // dotlin
             when (closingBracket.value)
             {
                 "}" -> return C("{")
@@ -89,7 +83,6 @@ class Tools
                 "]" -> return C("[")
                 else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
             }
-            */
         }
     }
 }
