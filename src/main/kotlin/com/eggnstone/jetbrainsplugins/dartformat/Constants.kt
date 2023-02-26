@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat
 
-import com.eggnstone.jetbrainsplugins.dartformat.dotlin.C
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinChar
 
 class Constants
 {
@@ -17,11 +17,11 @@ class Constants
 
         const val ARROW = "=>"
 
-        val COLON = C(":")
-        val COMMA = C(",")
-        val EQUAL = C("=")
-        val GREATER_THAN = C(">")
-        val PERIOD = C(".")
-        val SEMICOLON = C(";")
+        val COLON = DotlinChar(":")
+        val COMMA = DotlinChar(",")
+        val EQUAL = DotlinChar("=")
+        val GREATER_THAN = DotlinChar(">")
+        val PERIOD = DotlinChar(".")
+        val SEMICOLON = DotlinChar(";")
     }
 }

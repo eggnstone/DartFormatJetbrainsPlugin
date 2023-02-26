@@ -66,9 +66,9 @@ class BlockifyTests
     }
 
     @Test
-    fun oneSimpleInstruction()
+    fun oneSimpleInstructionSemicolonOnly()
     {
-        val inputText = "abc();"
+        val inputText = ";"
 
         val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = mutableListOf(block)
@@ -82,9 +82,9 @@ class BlockifyTests
     }
 
     @Test
-    fun oneSimpleInstructionSemicolonOnly()
+    fun oneSimpleInstruction()
     {
-        val inputText = ";"
+        val inputText = "abc();"
 
         val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = mutableListOf(block)

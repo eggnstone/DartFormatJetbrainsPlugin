@@ -2,7 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.dotlin
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 
-class C(val value: String)
+class DotlinChar(val value: String)
 {
     init
     {
@@ -20,7 +20,7 @@ class C(val value: String)
             throw DartFormatException("other::class.simpleName == \"Char\"")
         */
 
-        return other is C && value == other.value
+        return other is DotlinChar && value == other.value
     }
 
     override fun hashCode(): Int = value.hashCode()

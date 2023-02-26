@@ -2,7 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.simple_blockifier
 
 import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.Tools
-import com.eggnstone.jetbrainsplugins.dartformat.dotlin.C
+import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinChar
 import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.ISimpleBlock
 import com.eggnstone.jetbrainsplugins.dartformat.simple_blocks.SimpleInstructionBlock
@@ -17,7 +17,7 @@ class SimpleBlockifier
 
     private val blocks = mutableListOf<ISimpleBlock>()
     private var currentAreaType: SimpleAreaType = SimpleAreaType.Unknown
-    private val currentBrackets = mutableListOf<C>()
+    private val currentBrackets = mutableListOf<DotlinChar>()
     private var currentText: String = ""
     private var hasMainCurlyBrackets = false
 
@@ -28,7 +28,7 @@ class SimpleBlockifier
         {
             // dotlin
             @Suppress("ReplaceGetOrSet")
-            val c = C(text.get(i).toString())
+            val c = DotlinChar(text.get(i).toString())
 
             if (debug)
                 DotlinLogger.log("${Tools.toDisplayString2(c)} $currentAreaType ${Tools.toDisplayString2(currentText)}")
@@ -85,7 +85,7 @@ class SimpleBlockifier
         return blocks
     }
 
-    private fun handleInstructionArea(c: C)
+    private fun handleInstructionArea(c: DotlinChar)
     {
         if (c.value == ";" && currentBrackets.size == 0)
         {
@@ -138,7 +138,7 @@ class SimpleBlockifier
         currentText += dotlinC
     }
 
-    private fun handleUnknownArea(c: C)
+    private fun handleUnknownArea(c: DotlinChar)
     {
         if (Tools.isWhitespace(c))
         {
@@ -155,7 +155,7 @@ class SimpleBlockifier
         }
     }
 
-    private fun handleWhitespaceArea(c: C)
+    private fun handleWhitespaceArea(c: DotlinChar)
     {
         if (Tools.isWhitespace(c))
         {

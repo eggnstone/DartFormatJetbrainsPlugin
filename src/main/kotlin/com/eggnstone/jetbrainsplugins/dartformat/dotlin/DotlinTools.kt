@@ -4,13 +4,13 @@ class DotlinTools
 {
     companion object
     {
-        fun contains(s: String, c: C): Boolean
+        fun contains(s: String, c: DotlinChar): Boolean
         {
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
-                val sc = C(s.get(i).toString())
+                val sc = DotlinChar(s.get(i).toString())
                 if (sc == c)
                     return true
             }
@@ -18,14 +18,14 @@ class DotlinTools
             return false
         }
 
-        fun replace(s: String, searchChar: C, replaceText: String): String
+        fun replace(s: String, searchChar: DotlinChar, replaceText: String): String
         {
             var result = ""
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
-                val sc = C(s.get(i).toString())
+                val sc = DotlinChar(s.get(i).toString())
                 if (sc == searchChar)
                     result += replaceText
                 else
