@@ -1,7 +1,6 @@
-/*
-package blockifiers.blockify
+package blockifiers.master.blockify
 
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.Blockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 import org.hamcrest.CoreMatchers.equalTo
@@ -16,11 +15,10 @@ class TestTrivial
         val inputText = ""
         val expectedBlocks = mutableListOf<IBlock>()
 
-        val actualBlocks = Blockifier().blockify(inputText)
+        val actualBlocks = MasterBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
 
         BlockTools.printBlocks(actualBlocks)
     }
 }
-*/

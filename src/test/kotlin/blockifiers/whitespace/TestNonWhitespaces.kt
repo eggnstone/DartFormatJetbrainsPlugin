@@ -9,7 +9,7 @@ import org.hamcrest.MatcherAssert
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
-class TestWithNonWhitespace
+class TestNonWhitespaces
 {
     @Test
     fun unexpectedNonWhitespace()

@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleAreaType
 
-class Blockifier
+class BlockifierOld
 {
     private val blocks = mutableListOf<IBlock>()
     private var currentAreaType: SimpleAreaType = SimpleAreaType.Unknown

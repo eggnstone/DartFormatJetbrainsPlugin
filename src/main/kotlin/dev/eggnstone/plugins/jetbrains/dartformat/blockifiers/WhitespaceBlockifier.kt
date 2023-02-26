@@ -4,9 +4,9 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
 
-class WhitespaceBlockifier
+class WhitespaceBlockifier : IBlockifier
 {
-    fun blockify(inputText: String): BlockifyResult
+    override fun blockify(inputText: String): BlockifyResult
     {
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")

@@ -1,6 +1,7 @@
+/*
 package blockifiers.blockify
 
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.Blockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.BlockifierOld2
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
@@ -18,7 +19,7 @@ class TestWhitespace
         val block = WhitespaceBlock(" ")
         val expectedBlocks = mutableListOf<IBlock>(block)
 
-        val blockifier = Blockifier()
+        val blockifier = BlockifierOld2()
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
@@ -34,7 +35,7 @@ class TestWhitespace
         val block = WhitespaceBlock("\t")
         val expectedBlocks = mutableListOf<IBlock>(block)
 
-        val blockifier = Blockifier()
+        val blockifier = BlockifierOld2()
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
@@ -50,7 +51,7 @@ class TestWhitespace
         val block = WhitespaceBlock("\n")
         val expectedBlocks = mutableListOf<IBlock>(block)
 
-        val blockifier = Blockifier()
+        val blockifier = BlockifierOld2()
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
@@ -66,7 +67,7 @@ class TestWhitespace
         val block = WhitespaceBlock("\r")
         val expectedBlocks = mutableListOf<IBlock>(block)
 
-        val blockifier = Blockifier()
+        val blockifier = BlockifierOld2()
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
@@ -82,7 +83,7 @@ class TestWhitespace
         val block = WhitespaceBlock(" \n\r\t")
         val expectedBlocks = mutableListOf<IBlock>(block)
 
-        val blockifier = Blockifier()
+        val blockifier = BlockifierOld2()
         val actualBlocks = blockifier.blockify(inputText)
 
         MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
@@ -90,3 +91,4 @@ class TestWhitespace
         BlockTools.printBlocks(actualBlocks)
     }
 }
+*/
