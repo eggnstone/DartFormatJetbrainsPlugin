@@ -3,9 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.ISimpleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleInstructionBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleWhitespaceBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.*
 
 class SimpleBlockifier
 {
@@ -20,7 +18,7 @@ class SimpleBlockifier
     private var currentText: String = ""
     private var hasMainCurlyBrackets = false
 
-    fun blockify(text: String): List<ISimpleBlock>
+    fun blockify(text: String, createParts: Boolean = false): List<ISimpleBlock>
     {
         @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
         for (i in 0 until text.length) // workaround for dotlin for: for (c in text)
@@ -33,7 +31,7 @@ class SimpleBlockifier
 
             when (currentAreaType)
             {
-                SimpleAreaType.Instruction -> handleInstructionArea(c)
+                SimpleAreaType.Instruction -> handleInstructionArea(c, createParts)
                 SimpleAreaType.Unknown -> handleUnknownArea(c)
                 SimpleAreaType.Whitespace -> handleWhitespaceArea(c)
                 else -> throwError("only necessary because of dotlin") // workaround for dotlin for: else missing
@@ -54,7 +52,7 @@ class SimpleBlockifier
                     throwError("Text ends but brackets not closed.")
 
                 if (currentText == ";")
-                    finalBlock = SimpleInstructionBlock(currentText)
+                    finalBlock = createSimpleInstructionBlock(currentText, createParts)
                 /*else if (hasMainCurlyBrackets)
                     finalBlock = SimpleInstructionBlock(currentText) // TODO: necessary or not? No test covers this. */
             }
@@ -83,11 +81,26 @@ class SimpleBlockifier
         return blocks
     }
 
-    private fun handleInstructionArea(c: String)
+    private fun createSimpleInstructionBlock(text: String, createParts: Boolean): ISimpleBlock
+    {
+        if (!createParts)
+            return SimpleInstructionBlock(text)
+
+        val blockifier = SimpleBlockifier()
+        val blocks = blockifier.blockify(text)
+
+        val parts = mutableListOf<IPart>()
+        for (block in blocks)
+            parts += TextPart(block.toString())
+
+        return SimpleInstructionBlock2(text, "", parts)
+    }
+
+    private fun handleInstructionArea(c: String, createParts: Boolean)
     {
         if (c == ";" && currentBrackets.size == 0)
         {
-            blocks.add(SimpleInstructionBlock(currentText + c))
+            blocks.add(createSimpleInstructionBlock(currentText + c, createParts))
             reset(SimpleAreaType.Unknown, "")
             return
         }
@@ -114,7 +127,7 @@ class SimpleBlockifier
             {
                 if (hasMainCurlyBrackets)
                 {
-                    blocks.add(SimpleInstructionBlock(currentText + c)) // workaround for dotlin for: +=
+                    blocks.add(createSimpleInstructionBlock(currentText + c, createParts)) // workaround for dotlin for: +=
                     reset(SimpleAreaType.Unknown, "")
                     return
                 }

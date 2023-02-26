@@ -1,6 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.ISimpleBlock
 
 class Tools
 {
@@ -17,6 +20,15 @@ class Tools
         }
 
         fun toDisplayString2(s: String): String = "\"" + toDisplayString1(s) + "\""
+
+        private fun blocksToDisplayString1(blocks: List<ISimpleBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })
+        fun blocksToDisplayString2(blocks: List<ISimpleBlock>): String = "[" + blocksToDisplayString1(blocks) + "]"
+
+        private fun blocksToDisplayString1a(blocks: List<IBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })
+        fun blocksToDisplayString2a(blocks: List<IBlock>): String = "[" + blocksToDisplayString1a(blocks) + "]"
+
+        private fun partsToDisplayString1(parts: List<IPart>): String = toDisplayString1(parts.joinToString(separator = "") { it.toString() })
+        fun partsToDisplayString2(parts: List<IPart>): String = "[" + partsToDisplayString1(parts) + "]"
 
         private fun stringsToDisplayString1(strings: List<String>): String
         {
