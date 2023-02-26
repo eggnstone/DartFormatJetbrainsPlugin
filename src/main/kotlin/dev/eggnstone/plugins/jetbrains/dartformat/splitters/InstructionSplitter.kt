@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
@@ -6,11 +6,11 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
-class InstructionBlockifier : IBlockifier
+class InstructionSplitter : ISplitter
 {
-    override fun blockify(inputText2: String): BlockifyResult
+    override fun split(inputText2: String): SplitResult
     {
-        println("InstructionBlockifier.blockify: ${Tools.shorten(inputText2, 100)}")
+        println("InstructionSplitter.split: ${Tools.shorten(inputText2, 100)}")
 
         if (inputText2.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -29,7 +29,7 @@ class InstructionBlockifier : IBlockifier
             {
                 currentText += c
                 val resultRemainingText = remainingText.substring(1)
-                return BlockifyResult(resultRemainingText, listOf(Statement(currentText)))
+                return SplitResult(resultRemainingText, listOf(Statement(currentText)))
             }
 
             if (c == "{")
@@ -37,8 +37,8 @@ class InstructionBlockifier : IBlockifier
                 currentText += c
                 val tempRemainingText = remainingText.substring(1)
 
-                println("- Calling MasterBlockifier ...")
-                val result = MasterBlockifier().blockify(tempRemainingText)
+                println("- Calling Splitter ...")
+                val result = Splitter().split(tempRemainingText)
                 remainingText = result.remainingText
 
                 if (!result.remainingText.startsWith("}"))
@@ -46,12 +46,12 @@ class InstructionBlockifier : IBlockifier
 
                 parts += Block("{", "}", result.parts)
 
-                println("- Called MasterBlockifier.")
+                println("- Called Splitter.")
                 println("header:        ${Tools.toDisplayString2(currentText)}")
                 println("remainingText: ${Tools.toDisplayString2(remainingText)}")
 
                 if (remainingText == "}")
-                    return BlockifyResult("", parts)
+                    return SplitResult("", parts)
 
                 TODO()
                 continue

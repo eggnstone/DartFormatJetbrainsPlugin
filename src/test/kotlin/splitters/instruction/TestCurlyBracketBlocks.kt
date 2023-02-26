@@ -1,35 +1,35 @@
-package blockifiers.whitespace
+package splitters.instruction
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.WhitespaceBlockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
-class TestNonWhitespaces
+class TestCurlyBracketBlocks
 {
     @Test
-    fun unexpectedNonWhitespace()
+    fun unexpectedClosingCurlyBracket()
     {
-        val inputText = "a"
+        val inputText = "}"
 
-        assertThrows<DartFormatException> { WhitespaceBlockifier().blockify(inputText) }
+        assertThrows<DartFormatException> { InstructionSplitter().split(inputText) }
     }
 
     @Test
-    fun nonWhitespaceEndsBlock()
+    fun simpleBlock()
     {
-        val inputText = " a"
+        val inputText = "{}"
 
-        val expectedRemainingText = "a"
-        val expectedPart = Whitespace(" ")
+        val expectedRemainingText = ""
+        val expectedPart = Block("{", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = WhitespaceBlockifier().blockify(inputText)
+        val result = InstructionSplitter().split(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))

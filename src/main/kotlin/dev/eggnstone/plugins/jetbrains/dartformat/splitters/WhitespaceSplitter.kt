@@ -1,14 +1,14 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
-class WhitespaceBlockifier : IBlockifier
+class WhitespaceSplitter : ISplitter
 {
-    override fun blockify(inputText: String): BlockifyResult
+    override fun split(inputText: String): SplitResult
     {
-        println("WhitespaceBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+        println("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -31,9 +31,9 @@ class WhitespaceBlockifier : IBlockifier
                 throw DartFormatException("Unexpected non-whitespace at beginning of text.")
 
             val remainingText = inputText.substring(i)
-            return BlockifyResult(remainingText, listOf(Whitespace(whitespace)))
+            return SplitResult(remainingText, listOf(Whitespace(whitespace)))
         }
 
-        return BlockifyResult("", listOf(Whitespace(inputText)))
+        return SplitResult("", listOf(Whitespace(inputText)))
     }
 }

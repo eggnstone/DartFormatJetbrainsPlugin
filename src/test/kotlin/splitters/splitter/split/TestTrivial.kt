@@ -1,8 +1,8 @@
-package blockifiers.master.blockify
+package splitters.splitter.split
 
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -17,7 +17,7 @@ class TestTrivial
         val expectedParts = listOf<IPart>()
         val expectedRemainingText = ""
 
-        val actualResult = MasterBlockifier().blockify(inputText)
+        val actualResult = Splitter().split(inputText)
 
         MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))

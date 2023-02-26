@@ -1,7 +1,7 @@
-package blockifiers.master.getBlockifier
+package splitters.instruction
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,6 +12,6 @@ class TestTrivial
     {
         val inputText = ""
 
-        assertThrows<DartFormatException> { MasterBlockifier().getBlockifier(inputText) }
+        assertThrows<DartFormatException> { InstructionSplitter().split(inputText) }
     }
 }

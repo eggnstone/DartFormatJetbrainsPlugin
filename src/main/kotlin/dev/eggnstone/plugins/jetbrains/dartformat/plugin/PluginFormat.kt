@@ -15,11 +15,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentIterator
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
 
 typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
 
@@ -172,7 +172,7 @@ class PluginFormat : AnAction()
     {
         val config = getConfig()
 
-        val result = MasterBlockifier().blockify(inputText)
+        val result = Splitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)

@@ -1,34 +1,34 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class MasterBlockifier
+class Splitter : ISplitter
 {
-    fun blockify(inputText: String): BlockifyResult
+    override fun split(inputText: String): SplitResult
     {
-        println("MasterBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+        println("Splitter.split: ${Tools.shorten(inputText, 100)}")
 
         val parts = mutableListOf<IPart>()
 
         var remainingText = inputText
         while (remainingText.isNotEmpty())
         {
-            val blockifier = getBlockifier(remainingText)
+            val splitter = getSplitter(remainingText)
             @Suppress("FoldInitializerAndIfToElvis")
-            if (blockifier == null)
-                return BlockifyResult(remainingText, parts)
+            if (splitter == null)
+                return SplitResult(remainingText, parts)
 
-            val result = blockifier.blockify(remainingText)
+            val result = splitter.split(remainingText)
             remainingText = result.remainingText
             parts += result.parts
         }
 
-        return BlockifyResult("", parts)
+        return SplitResult("", parts)
     }
 
-    fun getBlockifier(inputText: String): IBlockifier?
+    fun getSplitter(inputText: String): ISplitter?
     {
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -37,11 +37,11 @@ class MasterBlockifier
         val c = inputText.get(0).toString() // workaround for dotlin for: for (c in text)
 
         if (Tools.isWhitespace(c))
-            return WhitespaceBlockifier()
+            return WhitespaceSplitter()
 
         if (c == "}")
             return null
 
-        return InstructionBlockifier()
+        return InstructionSplitter()
     }
 }

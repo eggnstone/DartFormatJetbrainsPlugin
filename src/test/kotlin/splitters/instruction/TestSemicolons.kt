@@ -1,10 +1,10 @@
-package blockifiers.instruction
+package splitters.instruction
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.InstructionSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -17,7 +17,7 @@ class TestSemicolons
     {
         val inputText = "a"
 
-        assertThrows<DartFormatException> { InstructionBlockifier().blockify(inputText) }
+        assertThrows<DartFormatException> { InstructionSplitter().split(inputText) }
     }
 
     @Test
@@ -29,7 +29,7 @@ class TestSemicolons
         val expectedPart = Statement(";")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = InstructionBlockifier().blockify(inputText)
+        val result = InstructionSplitter().split(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
@@ -46,7 +46,7 @@ class TestSemicolons
         val expectedPart = Statement("abc();")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = InstructionBlockifier().blockify(inputText)
+        val result = InstructionSplitter().split(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
