@@ -43,6 +43,7 @@ class Tools
         private fun toDisplayString1(c: C): String = toDisplayString1(c.value)
         fun toDisplayString2(c: C): String = "'" + toDisplayString1(c) + "'"
 
+        /*
         private fun stringsToDisplayString1(strings: List<String>): String
         {
             var result = ""
@@ -61,8 +62,9 @@ class Tools
 
             return result
         }
+        */
 
-        fun stringsToDisplayString2(strings: List<String>): String = "[" + stringsToDisplayString1(strings) + "]"
+        //fun stringsToDisplayString2(strings: List<String>): String = "[" + stringsToDisplayString1(strings) + "]"
 
         fun getOpeningBracket(closingBracket: C): C
         {
@@ -72,7 +74,7 @@ class Tools
             */
 
             @Suppress("LiftReturnOrAssignment") // dotlin
-            when (closingBracket.value)
+            return when (closingBracket.value)
             {
                 "}" -> C("{")
                 ")" -> C("(")

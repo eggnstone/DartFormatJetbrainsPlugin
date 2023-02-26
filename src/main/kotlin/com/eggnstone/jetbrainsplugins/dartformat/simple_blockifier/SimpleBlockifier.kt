@@ -27,6 +27,7 @@ class SimpleBlockifier
         for (i in 0 until text.length)
         {
             // dotlin
+            @Suppress("ReplaceGetOrSet")
             val c = C(text.get(i).toString())
 
             if (debug)
@@ -94,7 +95,7 @@ class SimpleBlockifier
 
         if (Tools.isOpeningBracket(c))
         {
-            //DotlinTools.println("XXXXXXXXXXXXXX: $currentBrackets")
+            //DotlinTools.println("TODO? $currentBrackets")
             if (c.value == "{" && currentBrackets.size == 0)
                 hasMainCurlyBrackets = true
 
