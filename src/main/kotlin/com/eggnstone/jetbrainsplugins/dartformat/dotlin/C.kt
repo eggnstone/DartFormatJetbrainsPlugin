@@ -15,8 +15,10 @@ class C(val value: String)
         if (other == null)
             throw DartFormatException("other == null")
 
+        /* dotlin
         if (other::class.simpleName == "Char")
             throw DartFormatException("other::class.simpleName == \"Char\"")
+        */
 
         return other is C && value == other.value
     }

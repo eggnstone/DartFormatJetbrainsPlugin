@@ -26,6 +26,7 @@ class SimpleBlockifier
         @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
         for (i in 0 until text.length)
         {
+            // dotlin
             val c = C(text.get(i).toString())
 
             if (debug)

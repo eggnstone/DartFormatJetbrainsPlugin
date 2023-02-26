@@ -16,9 +16,16 @@ class Tools
         {
             var result = ""
 
+            /* dotlin
             for (c in chars)
                 result += toDisplayString1(c)
+            */
 
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until chars.size)
+                result += toDisplayString1(chars[i])
+
+            // dotlin
             //return toDisplayString1(chars.joinToString(separator = "") { "'$it'" })
 
             return result
@@ -40,9 +47,16 @@ class Tools
         {
             var result = ""
 
+            /* dotlin
             for (s in strings)
                 result += toDisplayString1(s)
+            */
 
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until strings.size)
+                result += toDisplayString1(strings[i])
+
+            // dotlin
             //return toDisplayString1(strings.joinToString(separator = "") { it })
 
             return result
@@ -52,13 +66,28 @@ class Tools
 
         fun getOpeningBracket(closingBracket: C): C
         {
+
+            /* dotlin
             return when (closingBracket.value)
+            */
+
+            @Suppress("LiftReturnOrAssignment") // dotlin
+            when (closingBracket.value)
             {
                 "}" -> C("{")
                 ")" -> C("(")
                 "]" -> C("[")
                 else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
             }
+            /*
+            when (closingBracket.value)
+            {
+                "}" -> return C("{")
+                ")" -> return C("(")
+                "]" -> return C("[")
+                else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
+            }
+            */
         }
     }
 }
