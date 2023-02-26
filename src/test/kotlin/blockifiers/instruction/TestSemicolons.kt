@@ -1,14 +1,24 @@
 package blockifiers.instruction
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 
 class TestSemicolons
 {
+    @Test
+    fun missingSemicolon()
+    {
+        val inputText = "a"
+
+        assertThrows<DartFormatException> { InstructionBlockifier().blockify(inputText) }
+    }
+
     @Test
     fun singleSemicolon()
     {

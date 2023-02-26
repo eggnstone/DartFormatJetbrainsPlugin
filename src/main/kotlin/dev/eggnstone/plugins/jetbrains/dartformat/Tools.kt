@@ -71,5 +71,13 @@ class Tools
                 else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
             }
         }
+
+        fun shorten(s: String, maxLength: Int): String
+        {
+            if (s.length < maxLength)
+                return s
+
+            return s.substring(0, maxLength)
+        }
     }
 }

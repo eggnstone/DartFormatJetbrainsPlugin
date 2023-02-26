@@ -14,11 +14,13 @@ class TestTrivial
     {
         val inputText = ""
         val expectedBlocks = mutableListOf<IBlock>()
+        val expectedRemainingText=""
 
-        val actualBlocks = MasterBlockifier().blockify(inputText)
+        val actualResult = MasterBlockifier().blockify(inputText)
 
-        MatcherAssert.assertThat(actualBlocks, equalTo(expectedBlocks))
+        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
+        MatcherAssert.assertThat(actualResult.blocks, equalTo(expectedBlocks))
 
-        BlockTools.printBlocks(actualBlocks)
+        BlockTools.printBlocks(actualResult.blocks)
     }
 }

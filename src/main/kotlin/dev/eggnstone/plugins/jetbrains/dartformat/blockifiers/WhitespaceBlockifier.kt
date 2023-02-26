@@ -8,6 +8,8 @@ class WhitespaceBlockifier : IBlockifier
 {
     override fun blockify(inputText: String): BlockifyResult
     {
+        println("WhitespaceBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
 

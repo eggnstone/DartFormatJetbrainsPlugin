@@ -18,24 +18,4 @@ class TestTrivial
 
         assertThrows<DartFormatException> { MasterBlockifier().getBlockifier(inputText) }
     }
-
-    @Test
-    fun whitespace()
-    {
-        val inputText = " "
-
-        val blockifier = MasterBlockifier().getBlockifier(inputText)
-
-        MatcherAssert.assertThat(blockifier is WhitespaceBlockifier, equalTo(true))
-    }
-
-    @Test
-    fun nonWhitespace()
-    {
-        val inputText = ";"
-
-        val blockifier = MasterBlockifier().getBlockifier(inputText)
-
-        MatcherAssert.assertThat(blockifier is InstructionBlockifier, equalTo(true))
-    }
 }

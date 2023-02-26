@@ -6,23 +6,29 @@ import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 
 class MasterBlockifier
 {
-    fun blockify(inputText: String): List<IBlock>
+    fun blockify(inputText: String): MasterBlockifyResult
     {
+        println("MasterBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+
         val blocks = mutableListOf<IBlock>()
 
         var remainingText = inputText
         while (remainingText.isNotEmpty())
         {
             val blockifier = getBlockifier(remainingText)
+            @Suppress("FoldInitializerAndIfToElvis")
+            if (blockifier == null)
+                return MasterBlockifyResult(remainingText, blocks)
+
             val result = blockifier.blockify(remainingText)
             remainingText = result.remainingText
             blocks += result.block
         }
 
-        return blocks
+        return MasterBlockifyResult("", blocks)
     }
 
-    fun getBlockifier(inputText: String): IBlockifier
+    fun getBlockifier(inputText: String): IBlockifier?
     {
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -32,6 +38,9 @@ class MasterBlockifier
 
         if (Tools.isWhitespace(c))
             return WhitespaceBlockifier()
+
+        if (c == "}")
+            return null
 
         return InstructionBlockifier()
     }

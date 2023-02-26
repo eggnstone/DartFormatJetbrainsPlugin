@@ -9,16 +9,15 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
 
-class TestSimple
+class TestEndOfBlock
 {
     @Test
-    fun oneWhitespace()
+    fun closingCurlyBracket()
     {
-        val inputText = " "
+        val inputText = "}abc();"
 
-        val expectedRemainingText=""
-        val block1 = WhitespaceBlock(" ")
-        val expectedBlocks = mutableListOf<IBlock>(block1)
+        val expectedRemainingText = "}abc();"
+        val expectedBlocks = mutableListOf<IBlock>()
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -33,7 +32,7 @@ class TestSimple
     {
         val inputText = ";"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf<IBlock>(block1)
 
@@ -50,7 +49,7 @@ class TestSimple
     {
         val inputText = ";;"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val block2 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf<IBlock>(block1, block2)
@@ -68,7 +67,7 @@ class TestSimple
     {
         val inputText = " ;"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = WhitespaceBlock(" ")
         val block2 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf(block1, block2)
@@ -86,7 +85,7 @@ class TestSimple
     {
         val inputText = "; "
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val block2 = WhitespaceBlock(" ")
         val expectedBlocks = mutableListOf(block1, block2)

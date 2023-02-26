@@ -1,12 +1,15 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.blockifiers
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.InstructionBlock
 
 class InstructionBlockifier : IBlockifier
 {
     override fun blockify(inputText: String): BlockifyResult
     {
+        println("InstructionBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
+
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
 
@@ -29,15 +32,16 @@ class InstructionBlockifier : IBlockifier
             {
                 header += c
                 val remainingText = inputText.substring(i + 1)
-                val blocks = MasterBlockifier().blockify(remainingText)
+                val result = MasterBlockifier().blockify(remainingText)
                 TODO()
-                return BlockifyResult("", InstructionBlock(inputText, "", blocks))
+                return BlockifyResult("", InstructionBlock(inputText, "", result.blocks))
             }
 
             header += c
             continue
         }
 
+        throw DartFormatException("Unexpected end of instruction.")
         TODO()
         return BlockifyResult("", InstructionBlock(inputText, ""))
     }
