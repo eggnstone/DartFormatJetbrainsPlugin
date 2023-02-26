@@ -1,8 +1,8 @@
 package blockifiers.master.blockify
 
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
@@ -35,7 +35,7 @@ class TestSimple
 
         val expectedRemainingText = ""
         val expectedPart = Statement(";")
-        val expectedParts = mutableListOf<IPart>(expectedPart)
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -53,7 +53,7 @@ class TestSimple
         val expectedRemainingText = ""
         val expectedPart1 = Statement(";")
         val expectedPart2 = Statement(";")
-        val expectedParts = mutableListOf<IPart>(expectedPart1, expectedPart2)
+        val expectedParts = listOf<IPart>(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -71,7 +71,7 @@ class TestSimple
         val expectedRemainingText = ""
         val expectedPart1 = Whitespace(" ")
         val expectedPart2 = Statement(";")
-        val expectedParts = mutableListOf(expectedPart1, expectedPart2)
+        val expectedParts = listOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -89,7 +89,7 @@ class TestSimple
         val expectedRemainingText = ""
         val expectedPart1 = Statement(";")
         val expectedPart2 = Whitespace(" ")
-        val expectedParts = mutableListOf(expectedPart1, expectedPart2)
+        val expectedParts = listOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 

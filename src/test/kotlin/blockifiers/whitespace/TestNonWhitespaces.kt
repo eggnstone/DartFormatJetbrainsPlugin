@@ -2,8 +2,8 @@ package blockifiers.whitespace
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.WhitespaceBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert

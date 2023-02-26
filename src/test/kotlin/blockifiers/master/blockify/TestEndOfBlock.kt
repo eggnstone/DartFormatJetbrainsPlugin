@@ -1,8 +1,8 @@
 package blockifiers.master.blockify
 
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
@@ -17,7 +17,7 @@ class TestEndOfBlock
         val inputText = "}abc();"
 
         val expectedRemainingText = "}abc();"
-        val expectedParts = mutableListOf<IPart>()
+        val expectedParts = listOf<IPart>()
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -33,8 +33,8 @@ class TestEndOfBlock
         val inputText = ";"
 
         val expectedRemainingText = ""
-        val block1 = Statement(";")
-        val expectedParts = mutableListOf<IPart>(block1)
+        val expectedPart = Statement(";")
+        val expectedParts = listOf<IPart>(expectedPart)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -50,9 +50,9 @@ class TestEndOfBlock
         val inputText = ";;"
 
         val expectedRemainingText = ""
-        val block1 = Statement(";")
-        val block2 = Statement(";")
-        val expectedParts = mutableListOf<IPart>(block1, block2)
+        val expectedPart1 = Statement(";")
+        val expectedPart2 = Statement(";")
+        val expectedParts = listOf<IPart>(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -68,9 +68,9 @@ class TestEndOfBlock
         val inputText = " ;"
 
         val expectedRemainingText = ""
-        val block1 = Whitespace(" ")
-        val block2 = Statement(";")
-        val expectedParts = mutableListOf(block1, block2)
+        val expectedPart1 = Whitespace(" ")
+        val expectedPart2 = Statement(";")
+        val expectedParts = listOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -86,9 +86,9 @@ class TestEndOfBlock
         val inputText = "; "
 
         val expectedRemainingText = ""
-        val block1 = Statement(";")
-        val block2 = Whitespace(" ")
-        val expectedParts = mutableListOf(block1, block2)
+        val expectedPart1 = Statement(";")
+        val expectedPart2 = Whitespace(" ")
+        val expectedParts = listOf(expectedPart1, expectedPart2)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 

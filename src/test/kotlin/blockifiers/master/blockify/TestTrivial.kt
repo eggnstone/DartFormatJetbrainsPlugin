@@ -1,8 +1,8 @@
 package blockifiers.master.blockify
 
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.MasterBlockifier
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -14,7 +14,7 @@ class TestTrivial
     {
         val inputText = ""
 
-        val expectedParts = mutableListOf<IPart>()
+        val expectedParts = listOf<IPart>()
         val expectedRemainingText = ""
 
         val actualResult = MasterBlockifier().blockify(inputText)

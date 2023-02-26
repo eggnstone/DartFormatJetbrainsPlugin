@@ -3,8 +3,8 @@ package blockifiers.instruction
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.InstructionBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
