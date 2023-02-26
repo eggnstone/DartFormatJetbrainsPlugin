@@ -3,6 +3,8 @@ package com.eggnstone.jetbrainsplugins.dartformat.integration
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -20,6 +22,9 @@ class IndentationTests
         "    def;\n" +
         "})"
 
+        val result = Splitter().split(inputText)
+        PartTools.printParts(result.parts)
+
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
         val actualOutputText = Indenter().indent(actualOutputTokens)
@@ -35,6 +40,9 @@ class IndentationTests
 
         val expectedOutputText = "if()\n" +
         "    abc;"
+
+        val result = Splitter().split(inputText)
+        PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -52,6 +60,9 @@ class IndentationTests
         val expectedOutputText = "if()\n" +
         "    abc<>;"
 
+        val result = Splitter().split(inputText)
+        PartTools.printParts(result.parts)
+
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
         val actualOutputText = Indenter().indent(actualOutputTokens)
@@ -67,6 +78,9 @@ class IndentationTests
 
         val expectedOutputText = "if()\n" +
         "    abc();"
+
+        val result = Splitter().split(inputText)
+        PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

@@ -10,7 +10,7 @@ class BlockAndStatementSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        println("BlockAndStatementSplitter.split: ${Tools.shorten(inputText, 100)}")
+        //println("BlockAndStatementSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -23,7 +23,7 @@ class BlockAndStatementSplitter : ISplitter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
             val c = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
-            println("c: $c")
+            //println("c: $c")
 
             if (c == ";")
             {
@@ -37,7 +37,7 @@ class BlockAndStatementSplitter : ISplitter
                 currentText += c
                 val tempRemainingText = remainingText.substring(1)
 
-                println("- Calling Splitter ...")
+                //println("- Calling Splitter ...")
                 val result = Splitter().split(tempRemainingText)
                 remainingText = result.remainingText
 
@@ -46,12 +46,13 @@ class BlockAndStatementSplitter : ISplitter
 
                 parts += Block("{", "}", result.parts)
 
-                println("- Called Splitter.")
-                println("header:        ${Tools.toDisplayString2(currentText)}")
-                println("remainingText: ${Tools.toDisplayString2(remainingText)}")
+                //println("- Called Splitter.")
 
                 if (remainingText == "}")
                     return SplitResult("", parts)
+
+                println("currentText:   ${Tools.toDisplayString2(currentText)}")
+                println("remainingText: ${Tools.toDisplayString2(remainingText)}")
 
                 TODO()
                 continue

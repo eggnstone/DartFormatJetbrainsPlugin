@@ -8,8 +8,9 @@ class PartTools
     {
         fun printParts(parts: List<IPart>)
         {
+            DotlinLogger.log("${parts.size} parts:")
             for (part in parts)
-                DotlinLogger.log(part.toString())
+                DotlinLogger.log("  $part")
         }
     }
 }

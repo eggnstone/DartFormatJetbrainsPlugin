@@ -8,7 +8,7 @@ class Splitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        println("Splitter.split: ${Tools.shorten(inputText, 100)}")
+        //println("Splitter.split: ${Tools.shorten(inputText, 100)}")
 
         val parts = mutableListOf<IPart>()
 
