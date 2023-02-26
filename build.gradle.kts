@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.0"
 }
 
-group = "com.eggnstone.jetbrainsplugins"
+group = "dev.eggnstone.plugins.jetbrains"
 version = "1.3.1"
 
 repositories {

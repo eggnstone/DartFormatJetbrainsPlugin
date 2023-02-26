@@ -1,9 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat.blockifier
 
-import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
-import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 
 class BlockifierOld
 {

@@ -1,4 +1,4 @@
-import com.eggnstone.jetbrainsplugins.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class TestParams

@@ -1,7 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers.commentTokenizer
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.CommentTokenizer
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows

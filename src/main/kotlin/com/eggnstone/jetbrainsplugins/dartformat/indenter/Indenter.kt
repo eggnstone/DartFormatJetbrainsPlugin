@@ -1,9 +1,9 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
-import com.eggnstone.jetbrainsplugins.dartformat.Constants
-import com.eggnstone.jetbrainsplugins.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
-import com.eggnstone.jetbrainsplugins.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import java.util.*
 

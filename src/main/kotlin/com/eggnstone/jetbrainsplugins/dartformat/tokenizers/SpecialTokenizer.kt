@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokenizers
 
-import com.eggnstone.jetbrainsplugins.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.SpecialToken

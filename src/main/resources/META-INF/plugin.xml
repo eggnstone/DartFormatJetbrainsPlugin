@@ -1,8 +1,8 @@
 <idea-plugin>
     <actions>
         <action
-                class="com.eggnstone.jetbrainsplugins.dartformat.plugin.PluginFormat"
-                id="com.eggnstone.jetbrainsplugins.dartformat.Format">
+                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.PluginFormat"
+                id="dev.eggnstone.plugins.jetbrains.dartformat.Format">
             <keyboard-shortcut
                     first-keystroke="control alt COMMA"
                     keymap="$default"/>
@@ -70,12 +70,17 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable
                 displayName="DartFormat"
-                id="com.eggnstone.jetbrainsplugins.dartformat.DartFormatSettings"
-                instance="com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateConfigurable">
+                id="dev.eggnstone.plugins.jetbrains.dartformat.DartFormatSettings"
+                instance="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable">
         </applicationConfigurable>
         <applicationService
-                serviceImplementation="com.eggnstone.jetbrainsplugins.dartformat.config.DartFormatPersistentStateComponent"/>
+                serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
     </extensions>
+    <!--
+    Cannot change package anymore:
+    Old: com.eggnstone.jetbrainsplugins
+    New: dev.eggnstone.plugins.jetbrains
+    -->
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>
     <name>DartFormat</name>
     <vendor

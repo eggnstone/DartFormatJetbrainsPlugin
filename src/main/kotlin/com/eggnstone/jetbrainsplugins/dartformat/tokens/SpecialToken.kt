@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
-import com.eggnstone.jetbrainsplugins.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
 class SpecialToken(val text: String) : IToken
