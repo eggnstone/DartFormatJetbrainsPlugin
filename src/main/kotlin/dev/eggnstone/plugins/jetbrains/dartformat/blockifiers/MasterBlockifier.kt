@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 
 class MasterBlockifier
 {
-    fun blockify(inputText: String): MasterBlockifyResult
+    fun blockify(inputText: String): BlockifyResult
     {
         println("MasterBlockifier.blockify: ${Tools.shorten(inputText, 100)}")
 
@@ -18,14 +18,14 @@ class MasterBlockifier
             val blockifier = getBlockifier(remainingText)
             @Suppress("FoldInitializerAndIfToElvis")
             if (blockifier == null)
-                return MasterBlockifyResult(remainingText, blocks)
+                return BlockifyResult(remainingText, blocks)
 
             val result = blockifier.blockify(remainingText)
             remainingText = result.remainingText
-            blocks += result.block
+            blocks += result.blocks
         }
 
-        return MasterBlockifyResult("", blocks)
+        return BlockifyResult("", blocks)
     }
 
     fun getBlockifier(inputText: String): IBlockifier?

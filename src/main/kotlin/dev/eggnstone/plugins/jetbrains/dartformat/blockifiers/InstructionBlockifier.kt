@@ -25,7 +25,7 @@ class InstructionBlockifier : IBlockifier
             {
                 header += c
                 val remainingText = inputText.substring(i + 1)
-                return BlockifyResult(remainingText, InstructionBlock(header, ""))
+                return BlockifyResult(remainingText, listOf(InstructionBlock(header, "")))
             }
 
             if (c == "{")
@@ -33,8 +33,10 @@ class InstructionBlockifier : IBlockifier
                 header += c
                 val remainingText = inputText.substring(i + 1)
                 val result = MasterBlockifier().blockify(remainingText)
+                //remainingText = result.remainingText
+                //blocks
                 TODO()
-                return BlockifyResult("", InstructionBlock(inputText, "", result.blocks))
+                return BlockifyResult("", listOf(InstructionBlock(inputText, "", result.blocks)))
             }
 
             header += c
@@ -43,6 +45,6 @@ class InstructionBlockifier : IBlockifier
 
         throw DartFormatException("Unexpected end of instruction.")
         TODO()
-        return BlockifyResult("", InstructionBlock(inputText, ""))
+        return BlockifyResult("", listOf(InstructionBlock(inputText, "")))
     }
 }

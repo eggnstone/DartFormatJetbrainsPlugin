@@ -16,9 +16,9 @@ class TestSimple
     {
         val inputText = " "
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = WhitespaceBlock(" ")
-        val expectedBlocks = mutableListOf<IBlock>(block1)
+        val expectedBlocks = listOf<IBlock>(block1)
 
         val actualResult = MasterBlockifier().blockify(inputText)
 
@@ -33,7 +33,7 @@ class TestSimple
     {
         val inputText = ";"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf<IBlock>(block1)
 
@@ -50,7 +50,7 @@ class TestSimple
     {
         val inputText = ";;"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val block2 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf<IBlock>(block1, block2)
@@ -68,7 +68,7 @@ class TestSimple
     {
         val inputText = " ;"
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = WhitespaceBlock(" ")
         val block2 = InstructionBlock(";", "")
         val expectedBlocks = mutableListOf(block1, block2)
@@ -86,7 +86,7 @@ class TestSimple
     {
         val inputText = "; "
 
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
         val block1 = InstructionBlock(";", "")
         val block2 = WhitespaceBlock(" ")
         val expectedBlocks = mutableListOf(block1, block2)

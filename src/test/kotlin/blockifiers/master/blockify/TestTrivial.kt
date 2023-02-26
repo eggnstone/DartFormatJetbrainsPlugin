@@ -14,7 +14,7 @@ class TestTrivial
     {
         val inputText = ""
         val expectedBlocks = mutableListOf<IBlock>()
-        val expectedRemainingText=""
+        val expectedRemainingText = ""
 
         val actualResult = MasterBlockifier().blockify(inputText)
 

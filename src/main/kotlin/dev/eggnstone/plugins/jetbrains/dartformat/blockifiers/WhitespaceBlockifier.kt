@@ -31,9 +31,9 @@ class WhitespaceBlockifier : IBlockifier
                 throw DartFormatException("Unexpected non-whitespace at beginning of text.")
 
             val remainingText = inputText.substring(i)
-            return BlockifyResult(remainingText, WhitespaceBlock(whitespace))
+            return BlockifyResult(remainingText, listOf(WhitespaceBlock(whitespace)))
         }
 
-        return BlockifyResult("", WhitespaceBlock(inputText))
+        return BlockifyResult("", listOf(WhitespaceBlock(inputText)))
     }
 }

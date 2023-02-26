@@ -2,8 +2,9 @@ package blockifiers.whitespace
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.blockifiers.WhitespaceBlockifier
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.BlockTools
+import dev.eggnstone.plugins.jetbrains.dartformat.blocks.IBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.blocks.WhitespaceBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -26,13 +27,14 @@ class TestTrivial
 
         val expectedRemainingText = ""
         val expectedBlock = WhitespaceBlock(" ")
+        val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.block, equalTo(expectedBlock))
+        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
 
-        DotlinLogger.log(result.block.toString())
+        BlockTools.printBlocks(result.blocks)
     }
 
     @Test
@@ -42,13 +44,14 @@ class TestTrivial
 
         val expectedRemainingText = ""
         val expectedBlock = WhitespaceBlock("\t")
+        val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.block, equalTo(expectedBlock))
+        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
 
-        DotlinLogger.log(result.block.toString())
+        BlockTools.printBlocks(result.blocks)
     }
 
     @Test
@@ -58,13 +61,14 @@ class TestTrivial
 
         val expectedRemainingText = ""
         val expectedBlock = WhitespaceBlock("\n")
+        val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.block, equalTo(expectedBlock))
+        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
 
-        DotlinLogger.log(result.block.toString())
+        BlockTools.printBlocks(result.blocks)
     }
 
     @Test
@@ -74,13 +78,14 @@ class TestTrivial
 
         val expectedRemainingText = ""
         val expectedBlock = WhitespaceBlock("\r")
+        val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.block, equalTo(expectedBlock))
+        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
 
-        DotlinLogger.log(result.block.toString())
+        BlockTools.printBlocks(result.blocks)
     }
 
     @Test
@@ -90,12 +95,13 @@ class TestTrivial
 
         val expectedRemainingText = ""
         val expectedBlock = WhitespaceBlock(" \n\r\t")
+        val expectedBlocks = listOf<IBlock>(expectedBlock)
 
         val result = WhitespaceBlockifier().blockify(inputText)
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.block, equalTo(expectedBlock))
+        MatcherAssert.assertThat(result.blocks, equalTo(expectedBlocks))
 
-        DotlinLogger.log(result.block.toString())
+        BlockTools.printBlocks(result.blocks)
     }
 }
