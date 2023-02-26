@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.integration.instruction_block
+package simple_blockifier.integration.instruction_block
 
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleInstructionBlock

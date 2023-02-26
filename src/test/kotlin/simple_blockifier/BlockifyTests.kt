@@ -1,6 +1,7 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier
+package simple_blockifier
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.simple_blockifier.SimpleBlockifier
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.ISimpleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleInstructionBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.SimpleWhitespaceBlock
