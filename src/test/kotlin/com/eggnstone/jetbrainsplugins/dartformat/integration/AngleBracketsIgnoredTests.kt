@@ -6,6 +6,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import integration.IntegrationConstants
 import org.junit.Test
 import java.io.File
 
@@ -14,8 +15,8 @@ class AngleBracketsIgnoredTests
     @Test
     fun wordPressTools()
     {
-        val inputText = File(IntegrationTests.testDataPath + "AngleBracketsIgnored.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "AngleBracketsIgnored.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "AngleBracketsIgnored.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "AngleBracketsIgnored.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)

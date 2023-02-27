@@ -6,6 +6,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import integration.IntegrationConstants
 import org.junit.Test
 import java.io.File
 
@@ -14,8 +15,8 @@ class MainClassKeyWordTests
     @Test
     fun normalClass()
     {
-        val inputText = File(IntegrationTests.testDataPath + "NormalClass.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClass.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "NormalClass.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "NormalClass.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
@@ -30,8 +31,8 @@ class MainClassKeyWordTests
     @Test
     fun normalClassWithOpeningCurlyBracketAtSameLine()
     {
-        val inputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
@@ -46,8 +47,8 @@ class MainClassKeyWordTests
     @Test
     fun normalClassWithMixin()
     {
-        val inputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "NormalClassWithMixin.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "NormalClassWithMixin.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
@@ -62,8 +63,8 @@ class MainClassKeyWordTests
     @Test
     fun abstractClass()
     {
-        val inputText = File(IntegrationTests.testDataPath + "AbstractClass.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClass.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "AbstractClass.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "AbstractClass.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
@@ -78,8 +79,8 @@ class MainClassKeyWordTests
     @Test
     fun abstractClassWithOpeningCurlyBracketAtSameLine()
     {
-        val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
@@ -94,8 +95,8 @@ class MainClassKeyWordTests
     @Test
     fun abstractClassWithMixin()
     {
-        val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.input.dart").readText()
-        val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.testDataPath + "AbstractClassWithMixin.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.testDataPath + "AbstractClassWithMixin.expected_output.dart").readText()
 
         val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
