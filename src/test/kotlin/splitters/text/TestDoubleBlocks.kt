@@ -20,10 +20,10 @@ class TestDoubleBlocks
         val expectedParts = listOf<IPart>(expectedPart)
 
         val result = TextSplitter().split(inputText)
+        PartTools.printParts(expectedParts, "Expected")
+        PartTools.printParts(result.parts, "Actual  ")
 
         MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 }

@@ -6,9 +6,17 @@ class PartTools
 {
     companion object
     {
-        fun printParts(parts: List<IPart>)
+        fun printParts(parts: List<IPart>, label: String = "")
         {
-            DotlinLogger.log("${parts.size} parts:")
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // workaround for dotlin for: isEmpty
+            val prefix = if (label.length == 0) "" else "$label - "
+
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // workaround for dotlin for: isEmpty
+            if (parts.size == 0)
+                DotlinLogger.log("${prefix}No parts.")
+            else
+                DotlinLogger.log("$prefix${parts.size} parts:")
+
             for (part in parts)
                 DotlinLogger.log("  $part")
         }

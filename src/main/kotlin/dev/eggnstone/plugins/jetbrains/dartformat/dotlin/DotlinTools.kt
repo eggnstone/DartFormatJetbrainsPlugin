@@ -33,12 +33,14 @@ class DotlinTools
             return result
         }
 
-        /*fun substring(s:String, startIndex:Int, endIndex:Int): String
+        fun substring(s: String, startIndex: Int, endIndex: Int = -1): String
         {
             var result = ""
 
+            val maxIndex = if (endIndex == -1) s.length else minOf(s.length, endIndex)
+
             @Suppress("ReplaceManualRangeWithIndicesCalls")
-            for (i in startIndex until minOf(s.length, endIndex))
+            for (i in startIndex until maxIndex)
             {
                 @Suppress("ReplaceGetOrSet")
                 val originalChar = s.get(i).toString()
@@ -46,6 +48,6 @@ class DotlinTools
             }
 
             return result
-        }*/
+        }
     }
 }
