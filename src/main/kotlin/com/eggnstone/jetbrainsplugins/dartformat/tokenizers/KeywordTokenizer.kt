@@ -36,7 +36,7 @@ class KeywordTokenizer
             currentWord = ""
         }
 
-        //DotlinTools.println("Testing $currentWord")
+        //DotlinLogger.log("Testing $currentWord")
         if (ToolsOld.isKeyword(currentWord))
         {
             currentText = currentText.substring(0, currentText.length - currentWord.length)

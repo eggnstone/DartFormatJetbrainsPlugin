@@ -41,7 +41,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
         for (token in inputTokens)
         {
-            //DotlinTools.println("  token: $token")
+            //DotlinLogger.log("  token: $token")
             remainingTokens.removeAt(0)
 
             val wasCurrentLineEmpty = currentLine.isEmpty()
@@ -315,7 +315,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentText(text: String, level: Int): String
     {
-        //DotlinTools.println("indentText: ${Tools.toDisplayString2(text)}, level: $level")
+        //DotlinLogger.log("indentText: ${Tools.toDisplayString2(text)}, level: $level")
 
         if (text.isBlank())
         {
@@ -328,12 +328,12 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
         val pad = " ".repeat(level * spacesPerLevel)
 
-        //DotlinTools.println("pad:    $pad<")
-        //DotlinTools.println("text:   ${Tools.toDisplayString(text)}<")
+        //DotlinLogger.log("pad:    $pad<")
+        //DotlinLogger.log("text:   ${Tools.toDisplayString(text)}<")
 
         @Suppress("UnnecessaryVariable")
         val result = pad + text
-        //DotlinTools.println("result: ${Tools.toDisplayString(result)}<")
+        //DotlinLogger.log("result: ${Tools.toDisplayString(result)}<")
 
         return result
     }

@@ -8,7 +8,7 @@ class MasterSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //println("MasterSplitter.split: ${Tools.shorten(inputText, 100)}")
+        //DotlinLogger.log("MasterSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         val parts = mutableListOf<IPart>()
 

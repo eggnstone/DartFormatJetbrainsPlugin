@@ -29,7 +29,7 @@ class PluginFormat : AnAction()
     {
         override fun processFile(virtualFile: VirtualFile): Boolean
         {
-            //DotlinTools.println("FormatIterator.processFile: $virtualFile")
+            //DotlinLogger.log("FormatIterator.processFile: $virtualFile")
             return format(virtualFile, project)
         }
     }
@@ -46,7 +46,7 @@ class PluginFormat : AnAction()
                 for (virtualFile in virtualFiles)
                 {
                     // TODO: filter out already visited files!
-                    //DotlinTools.println("\n  $virtualFile")
+                    //DotlinLogger.log("\n  $virtualFile")
                     VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
                 }
             }
@@ -81,8 +81,8 @@ class PluginFormat : AnAction()
     {
         if (!isDartFile(virtualFile))
         {
-            //DotlinTools.println("formatDartFile: $virtualFile")
-            //DotlinTools.println("  Not a dart file!")
+            //DotlinLogger.log("formatDartFile: $virtualFile")
+            //DotlinLogger.log("  Not a dart file!")
             return true
         }
 

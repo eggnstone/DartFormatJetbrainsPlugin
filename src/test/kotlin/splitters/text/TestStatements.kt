@@ -87,4 +87,21 @@ class TestStatements
 
         PartTools.printParts(result.parts)
     }
+
+    @Test
+    fun subLevelBlock()
+    {
+        val inputText = "abc({});"
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement("abc({});")
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        val result = TextSplitter().split(inputText)
+
+        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+
+        PartTools.printParts(result.parts)
+    }
 }
