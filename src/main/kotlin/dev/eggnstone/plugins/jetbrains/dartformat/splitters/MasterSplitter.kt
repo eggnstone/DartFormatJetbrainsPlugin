@@ -4,11 +4,11 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class Splitter : ISplitter
+class MasterSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //println("Splitter.split: ${Tools.shorten(inputText, 100)}")
+        //println("MasterSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         val parts = mutableListOf<IPart>()
 
@@ -22,7 +22,8 @@ class Splitter : ISplitter
 
             val result = splitter.split(remainingText)
             remainingText = result.remainingText
-            parts += result.parts
+            //parts += result.parts // dotlin
+            parts.addAll(result.parts)
         }
 
         return SplitResult("", parts)
@@ -40,7 +41,7 @@ class Splitter : ISplitter
             return WhitespaceSplitter()
 
         if (c != "}")
-            return BlockAndStatementSplitter()
+            return TextSplitter()
 
         return null
     }

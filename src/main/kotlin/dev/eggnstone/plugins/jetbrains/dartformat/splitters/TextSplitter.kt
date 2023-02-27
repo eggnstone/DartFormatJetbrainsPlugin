@@ -2,15 +2,15 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Block
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
-class BlockAndStatementSplitter : ISplitter
+class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //println("BlockAndStatementSplitter.split: ${Tools.shorten(inputText, 100)}")
+        //println("TextSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         if (inputText.isEmpty())
             throw DartFormatException("Unexpected empty text.")
@@ -36,13 +36,13 @@ class BlockAndStatementSplitter : ISplitter
             {
                 currentText += c
                 val tempRemainingText = remainingText.substring(1)
-                val result = Splitter().split(tempRemainingText)
+                val result = MasterSplitter().split(tempRemainingText)
                 remainingText = result.remainingText
 
                 if (!result.remainingText.startsWith("}"))
                     TODO() // throw DartFormatException("Unexpected TODO")
 
-                parts += Block(currentText, "}", result.parts)
+                parts += SingleBlock(currentText, "}", result.parts)
 
                 if (remainingText == "}")
                     return SplitResult("", parts)

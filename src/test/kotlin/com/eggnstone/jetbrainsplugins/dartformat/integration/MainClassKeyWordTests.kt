@@ -5,7 +5,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 import org.junit.Test
 import java.io.File
 
@@ -17,7 +17,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "NormalClass.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClass.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
@@ -33,7 +33,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
@@ -49,7 +49,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "NormalClassWithMixin.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
@@ -65,7 +65,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "AbstractClass.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClass.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
@@ -81,7 +81,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)
@@ -97,7 +97,7 @@ class MainClassKeyWordTests
         val inputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.input.dart").readText()
         val expectedOutputText = File(IntegrationTests.testDataPath + "AbstractClassWithMixin.expected_output.dart").readText()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)

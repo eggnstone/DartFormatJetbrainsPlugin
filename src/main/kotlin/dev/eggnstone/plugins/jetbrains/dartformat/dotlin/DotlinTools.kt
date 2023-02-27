@@ -21,6 +21,7 @@ class DotlinTools
         fun replace(s: String, searchChar: String, replaceText: String): String
         {
             var result = ""
+
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
@@ -31,5 +32,20 @@ class DotlinTools
 
             return result
         }
+
+        /*fun substring(s:String, startIndex:Int, endIndex:Int): String
+        {
+            var result = ""
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls")
+            for (i in startIndex until minOf(s.length, endIndex))
+            {
+                @Suppress("ReplaceGetOrSet")
+                val originalChar = s.get(i).toString()
+                result += originalChar
+            }
+
+            return result
+        }*/
     }
 }

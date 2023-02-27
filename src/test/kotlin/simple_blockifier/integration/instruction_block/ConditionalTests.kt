@@ -11,7 +11,7 @@ class ConditionalTests
     @Test
     fun conditionalWithInstruction()
     {
-        val inputText = "if (true) return;"
+        val inputText = "if (true) statement;"
 
         val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = mutableListOf(block)
@@ -27,7 +27,7 @@ class ConditionalTests
     @Test
     fun conditionalWithCurlyBracketBlock()
     {
-        val inputText = "if (true) { return; }"
+        val inputText = "if (true) { statement; }"
 
         val block = SimpleInstructionBlock(inputText)
         val expectedBlocks = mutableListOf(block)

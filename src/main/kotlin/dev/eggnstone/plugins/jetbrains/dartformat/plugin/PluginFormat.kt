@@ -19,7 +19,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 
 typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
 
@@ -172,7 +172,7 @@ class PluginFormat : AnAction()
     {
         val config = getConfig()
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)

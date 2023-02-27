@@ -34,7 +34,7 @@ class SimpleBlockifier
                 SimpleAreaType.Instruction -> handleInstructionArea(c, createParts)
                 SimpleAreaType.Unknown -> handleUnknownArea(c)
                 SimpleAreaType.Whitespace -> handleWhitespaceArea(c)
-                else -> throwError("only necessary because of dotlin") // workaround for dotlin for: else missing
+                //else -> throwError("only necessary because of dotlin") // workaround for dotlin for: else missing
             }
         }
 
@@ -87,11 +87,11 @@ class SimpleBlockifier
             return SimpleInstructionBlock(text)
 
         val blockifier = SimpleBlockifier()
-        val blocks = blockifier.blockify(text)
+        //val blocks = blockifier.blockify(text)
 
         val parts = mutableListOf<IPart>()
-        for (block in blocks)
-            parts += TextPart(block.toString())
+        /*for (block in blocks)
+            parts += TextPart(block.toString())*/
 
         return SimpleInstructionBlock2(text, "", parts)
     }

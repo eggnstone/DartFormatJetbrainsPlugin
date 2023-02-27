@@ -1,7 +1,7 @@
-package splitters.splitter.getSplitter
+package splitters.master.getSplitter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.BlockAndStatementSplitter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -14,7 +14,7 @@ class TestSimple
     {
         val inputText = " "
 
-        val splitter = Splitter().getSplitter(inputText)
+        val splitter = MasterSplitter().getSplitter(inputText)
 
         MatcherAssert.assertThat(splitter is WhitespaceSplitter, equalTo(true))
     }
@@ -24,9 +24,9 @@ class TestSimple
     {
         val inputText = ";"
 
-        val splitter = Splitter().getSplitter(inputText)
+        val splitter = MasterSplitter().getSplitter(inputText)
 
-        MatcherAssert.assertThat(splitter is BlockAndStatementSplitter, equalTo(true))
+        MatcherAssert.assertThat(splitter is TextSplitter, equalTo(true))
     }
 
     @Test
@@ -34,7 +34,7 @@ class TestSimple
     {
         val inputText = "}"
 
-        val splitter = Splitter().getSplitter(inputText)
+        val splitter = MasterSplitter().getSplitter(inputText)
 
         MatcherAssert.assertThat(splitter, equalTo(null))
     }

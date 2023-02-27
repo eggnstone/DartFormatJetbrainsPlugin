@@ -8,7 +8,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.Splitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -36,7 +36,7 @@ class EndOfLineTestsParametrized(private val newLine: String, @Suppress("UNUSED_
             UnknownToken("def")
         )
 
-        val result = Splitter().split(inputText)
+        val result = MasterSplitter().split(inputText)
         PartTools.printParts(result.parts)
 
         val inputTokens = Tokenizer().tokenize(inputText)

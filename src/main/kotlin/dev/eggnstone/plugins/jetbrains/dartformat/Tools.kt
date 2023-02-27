@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.simple_blocks.ISimpleBlock
 
 class Tools
 {
@@ -20,10 +19,25 @@ class Tools
 
         fun toDisplayString2(s: String): String = "\"" + toDisplayString1(s) + "\""
 
-        private fun blocksToDisplayString1(blocks: List<ISimpleBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })
-        fun blocksToDisplayString2(blocks: List<ISimpleBlock>): String = "[" + blocksToDisplayString1(blocks) + "]"
+        //private fun blocksToDisplayString1(blocks: List<ISimpleBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })
+        //fun blocksToDisplayString2(blocks: List<ISimpleBlock>): String = "[" + blocksToDisplayString1(blocks) + "]"
 
-        private fun partsToDisplayString1(parts: List<IPart>): String = toDisplayString1(parts.joinToString(separator = "") { it.toString() })
+        private fun partsToDisplayString1(parts: List<IPart>): String
+        {
+            var result = ""
+
+            /* dotlin
+            for (s in strings)
+                result += toDisplayString1(s)
+            */
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until parts.size)
+                result += toDisplayString1(parts.toString())
+
+            return result
+        }
+
         fun partsToDisplayString2(parts: List<IPart>): String = "[" + partsToDisplayString1(parts) + "]"
 
         private fun stringsToDisplayString1(strings: List<String>): String
@@ -68,12 +82,13 @@ class Tools
             }
         }
 
-        fun shorten(s: String, maxLength: Int): String
+        /*fun shorten(s: String, maxLength: Int): String
         {
             if (s.length < maxLength)
                 return s
 
-            return s.substring(0, maxLength)
-        }
+            return DotlinTools.substring(s, 0, maxLength) // dotlin
+            //return s.substring(0, maxLength)
+        }*/
     }
 }
