@@ -9,10 +9,11 @@ class DotlinTools
 
     companion object
     {
+        // String.contains
         fun containsChar(s: String, searchChar: String): Boolean
         {
             if (searchChar.length != 1)
-                throw DartFormatException("Use containsText() instead!")
+                throw DartFormatException("Use containsString() instead!")
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
@@ -26,6 +27,7 @@ class DotlinTools
             return false
         }
 
+        // String.contains
         fun containsString(s: String, searchText: String): Boolean
         {
             //DotlinLogger.log("Searching: ${Tools.toDisplayString2(searchText)}")
@@ -41,6 +43,7 @@ class DotlinTools
             return false
         }
 
+        // String.repeat
         fun getSpaces(count: Int): String
         {
             //  " ".repeat
@@ -52,18 +55,23 @@ class DotlinTools
             return result
         }
 
+        // String.isEmpty
         @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
         fun isEmpty(s: String) = s.length == 0
 
+        // List<T>.isEmpty
         @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
         fun <T> isEmpty(l: List<T>): Boolean = l.size == 0
 
+        // String.isNotEmpty
         @Suppress("ReplaceSizeCheckWithIsNotEmpty")
         fun isNotEmpty(s: String) = s.length > 0
 
+        // kotlin minOf
         @Suppress("MemberVisibilityCanBePrivate")
         fun minOf(a: Int, b: Int): Int = if (a < b) a else b
 
+        // String.replace
         fun replace(s: String, searchChar: String, replaceText: String): String
         {
             var result = ""
@@ -79,6 +87,7 @@ class DotlinTools
             return result
         }
 
+        // String.split
         fun split(s: String, delimiter: String): List<String>
         {
             val result = mutableListOf<String>()
@@ -111,6 +120,7 @@ class DotlinTools
             return result
         }
 
+        // String.startsWith
         fun startsWith(s: String, searchText: String): Boolean
         {
             if (s.length < searchText.length)
@@ -119,6 +129,7 @@ class DotlinTools
             return substring(s, searchText.length) == searchText
         }
 
+        // String.substring
         fun substring(s: String, startIndex: Int, endIndex: Int = -1): String
         {
             var result = ""
@@ -142,6 +153,7 @@ class DotlinTools
             return result
         }
 
+        // String.trim
         fun trim(s: String): String
         {
             var startIndex = 0
