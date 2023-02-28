@@ -1,9 +1,8 @@
 package indenters.master.indentParts
 
+import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 
 class TestTrivial
@@ -17,6 +16,6 @@ class TestTrivial
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 }

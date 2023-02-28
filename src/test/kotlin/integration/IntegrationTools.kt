@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.integration
+package integration
 
 import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter

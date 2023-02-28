@@ -4,7 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import org.junit.Test
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestSingleBlockClasses
 {
@@ -17,7 +17,7 @@ class TestSingleBlockClasses
         val expectedPart = SingleBlock("class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -29,6 +29,6 @@ class TestSingleBlockClasses
         val expectedPart = SingleBlock("abstract class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

@@ -1,9 +1,8 @@
 package indenters.statement
 
+import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.StatementIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 
 class TestComplex
@@ -19,7 +18,7 @@ class TestComplex
 
         val actualText = StatementIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -32,7 +31,7 @@ class TestComplex
 
         val actualText = StatementIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -47,7 +46,7 @@ class TestComplex
 
         val actualText = StatementIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -60,6 +59,6 @@ class TestComplex
 
         val actualText = StatementIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 }

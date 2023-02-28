@@ -44,14 +44,14 @@ class Tools
         fun isOpeningBracket(c: String): Boolean = DotlinTools.containsChar("{([", c)
         fun isWhitespace(c: String): Boolean = DotlinTools.containsChar("\n\r\t ", c)
 
-        /*fun shorten(s: String, maxLength: Int): String
-       {
-           if (s.length < maxLength)
-               return s
+        fun shorten(s: String, maxLength: Int): String
+        {
+            if (s.length < maxLength)
+                return s
 
-           return DotlinTools.substring(s, 0, maxLength) // dotlin
-           //return s.substring(0, maxLength)
-       }*/
+            return DotlinTools.substring(s, 0, maxLength) // dotlin
+            //return s.substring(0, maxLength)
+        }
 
         fun toDisplayString(s: String): String = "\"" + DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n") + "\""
         fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"

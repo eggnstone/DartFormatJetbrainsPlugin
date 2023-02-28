@@ -8,7 +8,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestStatements
 {
@@ -29,7 +29,7 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -41,7 +41,7 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -53,7 +53,7 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -66,7 +66,7 @@ class TestStatements
         val expectedPart = SingleBlock("if (true) {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -78,7 +78,7 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -90,7 +90,7 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -102,6 +102,6 @@ class TestStatements
         val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

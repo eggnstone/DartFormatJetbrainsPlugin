@@ -3,7 +3,7 @@ package splitters.master.split
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 import org.junit.Test
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestTrivial
 {
@@ -15,6 +15,6 @@ class TestTrivial
         val expectedParts = listOf<IPart>()
         val expectedRemainingText = ""
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

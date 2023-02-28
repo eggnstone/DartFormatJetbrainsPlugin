@@ -1,10 +1,9 @@
 package indenters.singleBlock
 
+import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 
 class TestSimple
@@ -19,7 +18,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -33,6 +32,6 @@ class TestSimple
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 }

@@ -1,6 +1,7 @@
 package com.eggnstone.jetbrainsplugins.dartformat.integration
 
 import integration.IntegrationConstants
+import integration.IntegrationTools
 import org.junit.Ignore
 import org.junit.Test
 import java.io.File

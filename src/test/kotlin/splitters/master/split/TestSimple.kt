@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 import org.junit.Test
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestSimple
 {
@@ -18,7 +18,7 @@ class TestSimple
         val expectedPart = Whitespace(" ")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -30,7 +30,7 @@ class TestSimple
         val expectedPart = Statement(";")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -43,7 +43,7 @@ class TestSimple
         val expectedPart2 = Statement(";")
         val expectedParts = listOf<IPart>(expectedPart1, expectedPart2)
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -56,7 +56,7 @@ class TestSimple
         val expectedPart2 = Statement(";")
         val expectedParts = listOf(expectedPart1, expectedPart2)
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -69,6 +69,6 @@ class TestSimple
         val expectedPart2 = Whitespace(" ")
         val expectedParts = listOf(expectedPart1, expectedPart2)
 
-        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

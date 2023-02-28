@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestNonWhitespaces
 {
@@ -27,6 +27,6 @@ class TestNonWhitespaces
         val expectedPart = Whitespace(" ")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(WhitespaceSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(WhitespaceSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

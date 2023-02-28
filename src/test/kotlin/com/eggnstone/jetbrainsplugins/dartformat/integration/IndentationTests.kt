@@ -3,6 +3,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.integration
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
+import integration.IntegrationTools
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test

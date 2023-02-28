@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import org.junit.Test
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestDoubleBlocks
 {
@@ -21,6 +21,6 @@ class TestDoubleBlocks
         val expectedPart = DoubleBlock("if (true) {", "} else {", "}", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

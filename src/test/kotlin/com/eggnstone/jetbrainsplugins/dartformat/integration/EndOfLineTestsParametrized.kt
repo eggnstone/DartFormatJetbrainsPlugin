@@ -7,6 +7,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
+import integration.IntegrationTools
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test

@@ -1,10 +1,9 @@
 package indenters.master.indentParts
 
+import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 
 class TestSimple
@@ -18,7 +17,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, CoreMatchers.equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -30,7 +29,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, CoreMatchers.equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -42,7 +41,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, CoreMatchers.equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -54,7 +53,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, CoreMatchers.equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -66,6 +65,6 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        MatcherAssert.assertThat(actualText, CoreMatchers.equalTo(expectedText))
+        assertAreEqual(actualText, expectedText)
     }
 }

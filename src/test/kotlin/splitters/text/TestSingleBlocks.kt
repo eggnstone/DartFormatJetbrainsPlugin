@@ -7,7 +7,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import splitters.SplitterTools
+import splitters.SplitterTestTools
 
 class TestSingleBlocks
 {
@@ -28,7 +28,7 @@ class TestSingleBlocks
         val expectedPart = SingleBlock("{", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -40,7 +40,7 @@ class TestSingleBlocks
         val expectedPart = SingleBlock("abc {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -55,6 +55,6 @@ class TestSingleBlocks
         val expectedPart = SingleBlock("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

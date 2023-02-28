@@ -1,9 +1,8 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
 import TestParams
+import TestTools.Companion.assertAreEqual
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -34,7 +33,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -57,7 +56,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -74,7 +73,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -91,7 +90,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -110,7 +109,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -129,7 +128,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -150,7 +149,7 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -169,6 +168,6 @@ class IndentTestsParametrizedBrackets(private val openingBracket: String, privat
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        MatcherAssert.assertThat(actualOutputText, equalTo(expectedOutputText))
+        assertAreEqual(actualOutputText, expectedOutputText)
     }
 }
