@@ -53,7 +53,9 @@ class Tools
             //return s.substring(0, maxLength)
         }
 
-        fun toDisplayString(s: String): String = "\"" + DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n") + "\""
+        fun toDisplayString(s: String): String = "\"" + toDisplayStringSimple(s) + "\""
+        fun toDisplayStringSimple(s: String): String = DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n")
+
         fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
         fun toDisplayStringForStrings(strings: List<String>): String = "[" + toDisplayStringForStringsInternal(strings) + "]"
 

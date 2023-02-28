@@ -13,6 +13,7 @@ class SetStateTests
     {
         val inputText = File(IntegrationConstants.testDataPath + "setState_singleLine.input.dart").readText()
         val expectedOutputText = File(IntegrationConstants.testDataPath + "setState_singleLine.expected_output.dart").readText()
+        // TODO
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -22,6 +23,7 @@ class SetStateTests
     {
         val inputText = File(IntegrationConstants.testDataPath + "setStateWithArrow_singleLine.input.dart").readText()
         val expectedOutputText = File(IntegrationConstants.testDataPath + "setStateWithArrow_singleLine.expected_output.dart").readText()
+        // TODO
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
