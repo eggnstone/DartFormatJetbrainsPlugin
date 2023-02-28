@@ -2,11 +2,26 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class MasterSplitter : ISplitter
 {
+    fun splitAll(inputText: String): List<IPart>
+    {
+        val splitResult = split(inputText)
+        if (splitResult.remainingText.isNotEmpty())
+        {
+            DotlinLogger.log("MasterSplitter.splitAll")
+            DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+            DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            throw DartFormatException("splitResult.remainingText.isNotEmpty()")
+        }
+
+        return splitResult.parts
+    }
+
     override fun split(inputText: String): SplitResult
     {
         //DotlinLogger.log("MasterSplitter.split: ${Tools.shorten(inputText, 100)}")

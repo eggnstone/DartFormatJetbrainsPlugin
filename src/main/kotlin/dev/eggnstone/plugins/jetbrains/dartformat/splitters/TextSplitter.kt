@@ -68,7 +68,12 @@ class TextSplitter : ISplitter
                 remainingText = result.remainingText
 
                 if (!DotlinTools.startsWith(remainingText, "}"))
+                {
+                    DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
+                    DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+                    DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
                     TODO("error")
+                }
 
                 if (isDoubleBlock)
                 {
@@ -78,7 +83,7 @@ class TextSplitter : ISplitter
                     DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
                     DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                    TODO("error")
+                    TODO("is double block")
                 }
 
                 if (remainingText == "}")
@@ -108,7 +113,8 @@ class TextSplitter : ISplitter
                 DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
                 DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
                 DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                TODO("error")
+                //TODO("error: no else is unhandled")
+                return SplitResult("", listOf(SingleBlock(currentText, remainingText, result.parts)))
             }
 
             if (Tools.isOpeningBracket(c))

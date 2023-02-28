@@ -3,8 +3,6 @@ package com.eggnstone.jetbrainsplugins.dartformat.integration
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
 import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -22,8 +20,7 @@ class IndentationTests
         "    def;\n" +
         "})"
 
-        val result = MasterSplitter().split(inputText)
-        PartTools.printParts(result.parts)
+        IntegrationTools.test(inputText, expectedOutputText)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -41,8 +38,7 @@ class IndentationTests
         val expectedOutputText = "if()\n" +
         "    abc;"
 
-        val result = MasterSplitter().split(inputText)
-        PartTools.printParts(result.parts)
+        IntegrationTools.test(inputText, expectedOutputText)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -60,8 +56,7 @@ class IndentationTests
         val expectedOutputText = "if()\n" +
         "    abc<>;"
 
-        val result = MasterSplitter().split(inputText)
-        PartTools.printParts(result.parts)
+        IntegrationTools.test(inputText, expectedOutputText)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)
@@ -79,8 +74,7 @@ class IndentationTests
         val expectedOutputText = "if()\n" +
         "    abc();"
 
-        val result = MasterSplitter().split(inputText)
-        PartTools.printParts(result.parts)
+        IntegrationTools.test(inputText, expectedOutputText)
 
         val inputTokens = Tokenizer().tokenize(inputText)
         val actualOutputTokens = Formatter().format(inputTokens)

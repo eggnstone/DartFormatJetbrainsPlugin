@@ -1,8 +1,8 @@
 package splitters.whitespace
 
+import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
 import org.hamcrest.CoreMatchers.equalTo
@@ -31,10 +31,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        assertAreEqual(result.remainingText, expectedRemainingText)
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -48,10 +46,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        assertAreEqual(result.remainingText, expectedRemainingText)
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -65,10 +61,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        assertAreEqual(result.remainingText, expectedRemainingText)
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -82,10 +76,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        assertAreEqual(result.remainingText, expectedRemainingText)
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 
     @Test
@@ -99,9 +91,7 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
+        assertAreEqual(result.remainingText, expectedRemainingText)
         MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
     }
 }

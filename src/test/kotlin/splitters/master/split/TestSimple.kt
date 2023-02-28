@@ -1,13 +1,11 @@
 package splitters.master.split
 
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
+import splitters.SplitterTools
 
 class TestSimple
 {
@@ -20,12 +18,7 @@ class TestSimple
         val expectedPart = Whitespace(" ")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val actualResult = MasterSplitter().split(inputText)
-
-        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
-
-        PartTools.printParts(actualResult.parts)
+        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -37,12 +30,7 @@ class TestSimple
         val expectedPart = Statement(";")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val actualResult = MasterSplitter().split(inputText)
-
-        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
-
-        PartTools.printParts(actualResult.parts)
+        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -55,12 +43,7 @@ class TestSimple
         val expectedPart2 = Statement(";")
         val expectedParts = listOf<IPart>(expectedPart1, expectedPart2)
 
-        val actualResult = MasterSplitter().split(inputText)
-
-        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
-
-        PartTools.printParts(actualResult.parts)
+        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -73,12 +56,7 @@ class TestSimple
         val expectedPart2 = Statement(";")
         val expectedParts = listOf(expectedPart1, expectedPart2)
 
-        val actualResult = MasterSplitter().split(inputText)
-
-        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
-
-        PartTools.printParts(actualResult.parts)
+        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -91,11 +69,6 @@ class TestSimple
         val expectedPart2 = Whitespace(" ")
         val expectedParts = listOf(expectedPart1, expectedPart2)
 
-        val actualResult = MasterSplitter().split(inputText)
-
-        MatcherAssert.assertThat(actualResult.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(actualResult.parts, equalTo(expectedParts))
-
-        PartTools.printParts(actualResult.parts)
+        SplitterTools.test(MasterSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

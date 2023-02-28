@@ -153,7 +153,7 @@ class DotlinTools
             if (s.length < searchText.length)
                 return false
 
-            return substring(s, searchText.length) == searchText
+            return substring(s, 0, searchText.length) == searchText
         }
 
         // String.substring

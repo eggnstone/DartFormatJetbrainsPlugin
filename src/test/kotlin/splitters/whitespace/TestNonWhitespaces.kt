@@ -2,13 +2,11 @@ package splitters.whitespace
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
+import splitters.SplitterTools
 
 class TestNonWhitespaces
 {
@@ -29,11 +27,6 @@ class TestNonWhitespaces
         val expectedPart = Whitespace(" ")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = WhitespaceSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(WhitespaceSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

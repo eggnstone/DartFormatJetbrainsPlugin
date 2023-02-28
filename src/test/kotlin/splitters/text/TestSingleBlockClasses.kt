@@ -1,14 +1,12 @@
 package splitters.text
 
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
+import splitters.SplitterTools
 
-class TestClasses
+class TestSingleBlockClasses
 {
     @Test
     fun simpleClass()
@@ -19,12 +17,7 @@ class TestClasses
         val expectedPart = SingleBlock("class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -36,11 +29,6 @@ class TestClasses
         val expectedPart = SingleBlock("abstract class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

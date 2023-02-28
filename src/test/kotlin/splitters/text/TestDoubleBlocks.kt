@@ -1,10 +1,12 @@
 package splitters.text
 
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
+import splitters.SplitterTools
 
 class TestDoubleBlocks
 {
@@ -19,13 +21,6 @@ class TestDoubleBlocks
         val expectedPart = DoubleBlock("if (true) {", "} else {", "}", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-        //PartTools.printParts(expectedParts, "Expected")
-        //PartTools.printParts(result.parts, "Actual  ")
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }

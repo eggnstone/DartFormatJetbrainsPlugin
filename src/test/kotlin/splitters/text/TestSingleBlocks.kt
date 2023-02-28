@@ -1,12 +1,13 @@
 package splitters.text
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
+import splitters.SplitterTools
 
 class TestSingleBlocks
 {
@@ -27,12 +28,7 @@ class TestSingleBlocks
         val expectedPart = SingleBlock("{", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
@@ -44,29 +40,21 @@ class TestSingleBlocks
         val expectedPart = SingleBlock("abc {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
-    fun conditionalWithSimpleIf()
+    fun TODO_NAME()
     {
-        val inputText = "if (true) { statement; }"
+        val inputText = "class C\n" +
+        "{\n" +
+        "}"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace(" "), Statement("statement;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "}", parts)
+        val parts = listOf(Whitespace("\n"))
+        val expectedPart = SingleBlock("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val result = TextSplitter().split(inputText)
-
-        MatcherAssert.assertThat(result.remainingText, equalTo(expectedRemainingText))
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
-
-        PartTools.printParts(result.parts)
+        SplitterTools.test(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 }
