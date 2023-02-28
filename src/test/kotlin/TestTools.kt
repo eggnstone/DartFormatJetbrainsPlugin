@@ -22,11 +22,11 @@ class TestTools
 
         fun assertAreEqual(actual: List<String>, expected: List<String>)
         {
-            assertAreEqual(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected))
+            assertAreEqual(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 2) // stackPos doesn't seem to work
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
-        fun assertAreEqual(actual: String, expected: String)
+        fun assertAreEqual(actual: String, expected: String, stackPos: Int = 1)
         {
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
@@ -35,14 +35,14 @@ class TestTools
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
                         "Actual is longer than expected.",
-                        1
+                        stackPos
                     )
 
                 if (actual.length < expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
                         "Actual is shorter than expected.",
-                        1
+                        stackPos
                     )
 
                 return

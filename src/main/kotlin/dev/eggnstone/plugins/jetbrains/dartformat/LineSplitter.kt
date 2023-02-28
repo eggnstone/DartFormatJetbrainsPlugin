@@ -12,11 +12,11 @@ class LineSplitter
         if (DotlinTools.isEmpty(s))
             return listOf()
 
-        if (DotlinTools.containsString(s, "\r\n"))
-            return split(s, "\r\n")
-
         if (DotlinTools.containsString(s, "\n\r"))
             return split(s, "\n\r")
+
+        if (DotlinTools.containsString(s, "\r\n"))
+            return split(s, "\r\n")
 
         if (DotlinTools.containsChar(s, "\n"))
             return split(s, "\n")
@@ -29,22 +29,35 @@ class LineSplitter
 
     private fun split(s: String, delimiter: String): List<String>
     {
-        DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
+        DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
+
+        if (s == delimiter)
+            return listOf(delimiter)
 
         val outputLines = mutableListOf<String>()
 
+        var currentText = ""
         val lines = DotlinTools.split(s, delimiter)
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            outputLines.add(if (i < lines.size - 1) line + delimiter else line)
+            if (line.length == 0)
+            {
+                outputLines.add(currentText + delimiter)
+                currentText = ""
+            }
+            else
+                currentText = line
         }
 
-        DotlinLogger.log(Tools.toDisplayString(s) + " '${Tools.toDisplayString(delimiter)}'")
-        DotlinLogger.log("  -> " + Tools.toDisplayStringForStrings(lines))
-        DotlinLogger.log("  -> " + Tools.toDisplayStringForStrings(outputLines))
+        if (currentText.isNotEmpty())
+            outputLines.add(currentText)
+
+        DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")
+        DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(lines))
+        DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(outputLines))
 
         return outputLines
     }

@@ -14,7 +14,7 @@ class TestSimple
     {
         val inputParts = listOf(Whitespace("\n\r\t "), Statement("abc();"))
 
-        val expectedText = "abc();"
+        val expectedText = "\n\rabc();"
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
@@ -26,7 +26,7 @@ class TestSimple
     {
         val inputParts = listOf(Statement("abc();"), Whitespace("\n\r\t "))
 
-        val expectedText = "abc();"
+        val expectedText = "abc();\n\r"
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
@@ -38,7 +38,7 @@ class TestSimple
     {
         val inputParts = listOf(Whitespace("\n\r\t "), Statement("abc();"), Whitespace("\n\r\t "))
 
-        val expectedText = "abc();"
+        val expectedText = "\n\rabc();\n\r"
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
@@ -62,7 +62,7 @@ class TestSimple
     {
         val inputParts = listOf(Statement("abc();"), Whitespace("\n\r\t "), Statement("def();"))
 
-        val expectedText = "abc(); def();"
+        val expectedText = "abc();\n\rdef();"
 
         val actualText = MasterIndenter().indentParts(inputParts)
 

@@ -12,6 +12,8 @@ class DotlinTools
         // String.contains
         fun containsChar(s: String, searchChar: String): Boolean
         {
+            //DotlinLogger.log("DotlinTools.containsChar(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchChar)})")
+
             if (searchChar.length != 1)
                 throw DartFormatException("Use containsString() instead!")
 
@@ -30,10 +32,14 @@ class DotlinTools
         // String.contains
         fun containsString(s: String, searchText: String): Boolean
         {
-            //DotlinLogger.log("Searching: ${Tools.toDisplayString2(searchText)}")
+            //DotlinLogger.log("DotlinTools.containsString(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
+
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
+            if (searchText.length == 0)
+                return true
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
-            for (i in 0 until s.length - searchText.length)
+            for (i in 0 until s.length - searchText.length + 1)
             {
                 //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
                 if (substring(s, i, i + searchText.length) == searchText)
@@ -88,19 +94,29 @@ class DotlinTools
         }
 
         // String.split
+        // Warning! This is my own implementation and actually differs from Kotlin's String.split!
         fun split(s: String, delimiter: String): List<String>
         {
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
+            if (delimiter.length == 0)
+                throw DartFormatException("delimiter.length == 0")
+
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
+            if (s.length == 0)
+                return listOf("")
+
             val result = mutableListOf<String>()
 
             var currentText = ""
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
-            for (i in 0 until s.length)
+            var i = 0
+            while (i < s.length - delimiter.length + 1)
             {
                 @Suppress("ReplaceGetOrSet")
-                val c = s.get(i).toString()
+                val candidate = substring(s, i, i + delimiter.length)
 
-                if (c == delimiter)
+                if (candidate == delimiter)
                 {
                     if (isNotEmpty(currentText))
                     {
@@ -108,14 +124,25 @@ class DotlinTools
                         currentText = ""
                     }
 
+                    result.add("") // indicator for found delimiter
+                    i += delimiter.length
                     continue
                 }
 
+                @Suppress("ReplaceGetOrSet")
+                val c = s.get(i).toString()
                 currentText += c
+                i++
             }
 
-            if (isNotEmpty(currentText))
-                result.add(currentText)
+            //DotlinLogger.log("    currentText: ${Tools.toDisplayString(currentText)}")
+            //DotlinLogger.log("    loop rest:   ${Tools.toDisplayString(s.substring(i))}")
+
+            val rest = currentText + s.substring(i)
+            //DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
+
+            if (isNotEmpty(rest))
+                result.add(rest)
 
             return result
         }
@@ -132,6 +159,12 @@ class DotlinTools
         // String.substring
         fun substring(s: String, startIndex: Int, endIndex: Int = -1): String
         {
+            if (startIndex < 0)
+                throw DartFormatException("startIndex < 0")
+
+            if (endIndex > s.length)
+                throw DartFormatException("endIndex > s.length")
+
             var result = ""
 
             val maxIndex = if (endIndex == -1) s.length else minOf(s.length, endIndex)

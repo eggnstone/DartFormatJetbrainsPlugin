@@ -28,13 +28,22 @@ class SingleBlockIndenter : IIndenter
         DotlinLogger.log("body: ${Tools.toDisplayString(body)}")
 
         val lines = lineSplitter.split(body)
+        DotlinLogger.log("  Lines :${lines.size}")
         var indentedBody = ""
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            indentedBody += "X" + DotlinTools.getSpaces(4) + line
+            DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
+            if (line.isBlank())
+            {
+                indentedBody += line
+                //indentedBody += "1" + DotlinTools.getSpaces(4) + "2" + line + "3"
+            }
+            else
+                indentedBody += DotlinTools.getSpaces(4) + line
+            //indentedBody +=  "1"+DotlinTools.getSpaces(4) + "2"+line+"3"
         }
 
         @Suppress("UnnecessaryVariable")

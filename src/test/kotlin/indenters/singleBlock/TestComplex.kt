@@ -18,7 +18,7 @@ class TestComplex
                 "if (true)\n" +
                 "{",
                 "}",
-                listOf(Whitespace("\n"), Statement("def();"), Whitespace("\n"))
+                listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n"))
             )
 
         val expectedText = "if (true)\n" +

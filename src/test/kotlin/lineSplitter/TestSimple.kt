@@ -18,7 +18,31 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
     }
 
     @Test
-    fun oneLineBreak()
+    fun onlyLinebreak()
+    {
+        val inputText = lineBreak
+
+        val expectedLines = listOf(lineBreak)
+
+        val actualLines = LineSplitter().split(inputText)
+
+        TestTools.assertAreEqual(actualLines, expectedLines)
+    }
+
+    @Test
+    fun textAndLineBreak()
+    {
+        val inputText = "a${lineBreak}"
+
+        val expectedLines = listOf("a$lineBreak")
+
+        val actualLines = LineSplitter().split(inputText)
+
+        TestTools.assertAreEqual(actualLines, expectedLines)
+    }
+
+    @Test
+    fun textAndLineBreakAndText()
     {
         val inputText = "a${lineBreak}b"
 
