@@ -1,6 +1,10 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 
@@ -9,6 +13,7 @@ class SingleBlockIndenter : IIndenter
     companion object
     {
         private val masterIndenter = MasterIndenter()
+        private val lineSplitter = LineSplitter()
     }
 
     override fun indentPart(part: IPart): String
@@ -18,8 +23,22 @@ class SingleBlockIndenter : IIndenter
 
         val singleBlock: SingleBlock = part
 
+        DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
+        val body = masterIndenter.indentParts(singleBlock.parts)
+        DotlinLogger.log("body: ${Tools.toDisplayString(body)}")
+
+        val lines = lineSplitter.split(body)
+        var indentedBody = ""
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+        for (i in 0 until lines.size) // workaround for dotlin
+        {
+            @Suppress("ReplaceGetOrSet") // workaround for dotlin
+            val line = lines.get(i) // workaround for dotlin
+            indentedBody += "X" + DotlinTools.getSpaces(4) + line
+        }
+
         @Suppress("UnnecessaryVariable")
-        val result = singleBlock.header + masterIndenter.indentParts(singleBlock.parts) + singleBlock.footer
+        val result = singleBlock.header + indentedBody + singleBlock.footer
 
         return result
     }

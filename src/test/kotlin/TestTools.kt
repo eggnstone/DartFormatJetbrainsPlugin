@@ -32,10 +32,18 @@ class TestTools
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
             {
                 if (actual.length > expected.length)
-                    throw ShortAssertError("", "Actual is longer than expected.", 1)
+                    throw ShortAssertError(
+                        "\nExpected: \"$expected\"\n     but: was \"$actual\"",
+                        "Actual is longer than expected.",
+                        1
+                    )
 
                 if (actual.length < expected.length)
-                    throw ShortAssertError("", "Actual is shorter than expected.", 1)
+                    throw ShortAssertError(
+                        "\nExpected: \"$expected\"\n     but: was \"$actual\"",
+                        "Actual is shorter than expected.",
+                        1
+                    )
 
                 return
             }

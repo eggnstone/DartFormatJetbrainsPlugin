@@ -35,11 +35,11 @@ class LineSplitter
 
         val lines = DotlinTools.split(s, delimiter)
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-        for (index in 0 until lines.size) // workaround for dotlin
+        for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
-            val line = lines.get(index) // workaround for dotlin
-            outputLines.add(if (index < lines.size - 1) line + delimiter else line)
+            val line = lines.get(i) // workaround for dotlin
+            outputLines.add(if (i < lines.size - 1) line + delimiter else line)
         }
 
         DotlinLogger.log(Tools.toDisplayString(s) + " '${Tools.toDisplayString(delimiter)}'")

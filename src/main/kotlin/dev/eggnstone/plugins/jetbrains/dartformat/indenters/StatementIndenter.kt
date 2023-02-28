@@ -26,10 +26,10 @@ class StatementIndenter : IIndenter
         var result = ""
 
         @Suppress("ReplaceManualRangeWithIndicesCalls")
-        for (lineIndex in 0 until lines.size) // workaround for dotlin
+        for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
-            val line = lines.get(lineIndex) // workaround for dotlin
+            val line = lines.get(i) // workaround for dotlin
 
             val levels = levelsCalculator.calcLevels(line)
             val pad = DotlinTools.getSpaces(currentLevel * 4)

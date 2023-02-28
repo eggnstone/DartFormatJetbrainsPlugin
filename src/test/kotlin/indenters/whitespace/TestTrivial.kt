@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 class TestTrivial
 {
     @Test
-    fun whitespaceThrowsException()
+    fun nonWhitespaceThrowsException()
     {
         val inputPart = Statement("")
 

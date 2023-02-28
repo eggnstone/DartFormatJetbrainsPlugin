@@ -11,6 +11,20 @@ class WhitespaceIndenter : IIndenter
         if (part !is Whitespace)
             throw DartFormatException("Unexpected non-Whitespace type.")
 
-        return ""
+        val whitespace: Whitespace = part
+
+        var result = ""
+
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+        for (i in 0 until whitespace.text.length) // workaround for dotlin
+        {
+            @Suppress("ReplaceGetOrSet") // workaround for dotlin
+            val c = whitespace.text.get(i).toString() // workaround for dotlin
+
+            if (c == "\n" || c == "\r")
+                result += c
+        }
+
+        return result
     }
 }

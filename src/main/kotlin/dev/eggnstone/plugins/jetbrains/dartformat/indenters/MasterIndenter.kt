@@ -16,7 +16,7 @@ class MasterIndenter : IIndenter
 
     override fun indentPart(part: IPart): String
     {
-        DotlinLogger.log("MasterIndenter.indentPart: ${Tools.toDisplayString(part.toString())}")
+        DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
         return indenter.indentPart(part)
@@ -67,10 +67,10 @@ class MasterIndenter : IIndenter
         val lines = lineSplitter.split(recreatedPart)
         DotlinLogger.log("  Lines ${Tools.toDisplayStringForStrings(lines)}")
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-        for (lineIndex in 0 until lines.size) // workaround for dotlin
+        for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
-            val line = lines.get(lineIndex) // workaround for dotlin
+            val line = lines.get(i) // workaround for dotlin
             val levels = levelsCalculator.calcLevels(line)
 
             val currentLevelText = if (levels.currentLevel < 0) "-" + levels.currentLevel.toString() else if (levels.currentLevel == 0) "0" else "+" + levels.currentLevel.toString()
@@ -82,7 +82,7 @@ class MasterIndenter : IIndenter
             conditionals += levels.conditionals
             currentLevel += levels.currentLevel
             nextLevel += levels.nextLevel
-            DotlinLogger.log("    Line #$lineIndex: ${Tools.toDisplayString(line)}    curr=$currentLevelText    next=$nextLevelText    cond=$conditionalsText")
+            DotlinLogger.log("    Line #$i: ${Tools.toDisplayString(line)}    curr=$currentLevelText    next=$nextLevelText    cond=$conditionalsText")
             DotlinLogger.log("      conditionals:  $oldConditionals + ${levels.conditionals} = $conditionals")
             DotlinLogger.log("      currentLevel:  $oldCurrentLevel + ${levels.currentLevel} = $currentLevel")
             DotlinLogger.log("      nextLevel:     $oldNextLevel + ${levels.nextLevel} = $nextLevel")
@@ -141,7 +141,17 @@ class MasterIndenter : IIndenter
         if (DotlinTools.isEmpty(parts))
             return ""
 
-        TODO()
+        var result = ""
+
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+        for (i in 0 until parts.size) // workaround for dotlin
+        {
+            @Suppress("ReplaceGetOrSet") // workaround for dotlin
+            val part = parts.get(i) // workaround for dotlin
+            result += indentPart(part)
+        }
+
+        return result
     }
 
     fun getIndenter(inputPart: IPart): IIndenter

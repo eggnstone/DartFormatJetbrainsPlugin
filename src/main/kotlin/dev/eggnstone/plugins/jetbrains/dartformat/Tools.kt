@@ -61,14 +61,13 @@ class Tools
         {
             var result = ""
 
-            /* dotlin
-            for (s in strings)
-                result += toDisplayString1(s)
-            */
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
-            for (i in 0 until parts.size)
-                result += toDisplayString(parts.toString())
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+            for (i in 0 until parts.size) // workaround for dotlin
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin
+                val part = parts.get(i) // workaround for dotlin
+                result += part.toString()
+            }
 
             return result
         }

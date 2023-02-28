@@ -8,11 +8,35 @@ import org.junit.Test
 class TestSimple
 {
     @Test
-    fun emptyText()
+    fun space()
     {
-        val inputPart = Whitespace("\n\r\t ")
+        val inputPart = Whitespace(" ")
 
         val expectedText = ""
+
+        val actualText = WhitespaceIndenter().indentPart(inputPart)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun lineBreak()
+    {
+        val inputPart = Whitespace("\n")
+
+        val expectedText = "\n"
+
+        val actualText = WhitespaceIndenter().indentPart(inputPart)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun mixed()
+    {
+        val inputPart = Whitespace(" \n\r\t ")
+
+        val expectedText = "\n\r"
 
         val actualText = WhitespaceIndenter().indentPart(inputPart)
 
