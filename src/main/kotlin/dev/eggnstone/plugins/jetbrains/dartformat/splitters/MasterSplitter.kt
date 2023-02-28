@@ -11,7 +11,7 @@ class MasterSplitter : ISplitter
     fun splitAll(inputText: String): List<IPart>
     {
         val splitResult = split(inputText)
-        if (splitResult.remainingText.isNotEmpty())
+        if (DotlinTools.isNotEmpty(splitResult.remainingText))
         {
             DotlinLogger.log("MasterSplitter.splitAll")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")

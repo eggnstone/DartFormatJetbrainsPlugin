@@ -52,7 +52,7 @@ class LineSplitter
                 currentText = line
         }
 
-        if (currentText.isNotEmpty())
+        if (DotlinTools.isNotEmpty(currentText))
             outputLines.add(currentText)
 
         DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")

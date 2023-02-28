@@ -40,7 +40,7 @@ class TextSplitter : ISplitter
             DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
             DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-            if (c == ";" && currentBrackets.isEmpty())
+            if (c == ";" && DotlinTools.isEmpty(currentBrackets))
             {
                 currentText += c
                 remainingText = DotlinTools.substring(remainingText, 1)

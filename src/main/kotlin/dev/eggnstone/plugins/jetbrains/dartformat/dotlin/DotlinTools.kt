@@ -61,6 +61,9 @@ class DotlinTools
             return result
         }
 
+        // String.isBlank
+        fun isBlank(s: String): Boolean = isEmpty(trim(s))
+
         // String.isEmpty
         @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
         fun isEmpty(s: String) = s.length == 0
@@ -138,7 +141,7 @@ class DotlinTools
             //DotlinLogger.log("    currentText: ${Tools.toDisplayString(currentText)}")
             //DotlinLogger.log("    loop rest:   ${Tools.toDisplayString(s.substring(i))}")
 
-            val rest = currentText + s.substring(i)
+            val rest = currentText + substring(s, i)
             //DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
 
             if (isNotEmpty(rest))

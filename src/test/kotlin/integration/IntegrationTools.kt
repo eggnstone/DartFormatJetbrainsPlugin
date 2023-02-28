@@ -24,8 +24,8 @@ class IntegrationTools
             PartTools.printParts(parts)
 
             val actualOutputText = MasterIndenter().indentParts(parts)
-            val actualOutputText2= Tools.toDisplayStringSimple( actualOutputText)
-            val expectedOutputText2= Tools.toDisplayStringSimple( expectedOutputText)
+            val actualOutputText2 = Tools.toDisplayStringSimple(actualOutputText)
+            val expectedOutputText2 = Tools.toDisplayStringSimple(expectedOutputText)
 
             //TestTools.assertAreEqual(actualOutputText, expectedOutputText)
             TestTools.assertAreEqual(actualOutputText2, expectedOutputText2)
