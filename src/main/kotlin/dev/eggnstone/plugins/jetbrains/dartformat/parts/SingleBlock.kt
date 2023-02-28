@@ -10,7 +10,19 @@ class SingleBlock(val header: String, val footer: String, val parts: List<IPart>
         && footer == other.footer
         && parts == other.parts
 
-    override fun hashCode(): Int = ("$header|$footer|${Tools.partsToDisplayString2(parts)}").hashCode()
+    override fun hashCode(): Int = ("$header|$footer|${Tools.toDisplayStringForParts(parts)}").hashCode()
 
-    override fun toString(): String = "SingleBlock(${Tools.toDisplayString2(header)}, ${Tools.toDisplayString2(footer)}, ${parts.size} parts)"
+    override fun recreate(): String = header + recreateParts() + footer
+
+    override fun toString(): String = "SingleBlock(${Tools.toDisplayString(header)}, ${Tools.toDisplayString(footer)}, ${parts.size} parts)"
+
+    private fun recreateParts(): String
+    {
+        var result = ""
+
+        for (part in parts)
+            result += part.recreate()
+
+        return result
+    }
 }

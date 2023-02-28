@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeEndOfLineCommentsTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class TokenizeEndOfLineCommentsTestsParametrized(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -21,7 +21,7 @@ class TokenizeEndOfLineCommentsTestsParametrized(private val newLine: String, @S
     @Test
     fun endOfLineCommentWithLineBreakMustThrowException()
     {
-        val inputText = "//comment$newLine"
+        val inputText = "//comment$lineBreak"
 
         assertThrows<DartFormatException> { CommentTokenizer().tokenize(inputText) }
     }

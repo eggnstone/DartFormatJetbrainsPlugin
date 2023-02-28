@@ -8,5 +8,7 @@ class Whitespace(val text: String) : IPart
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Whitespace(${Tools.toDisplayString2(text)})"
+    override fun recreate(): String = text
+
+    override fun toString(): String = "Whitespace(${Tools.toDisplayString(text)})"
 }

@@ -1,3 +1,4 @@
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
@@ -17,6 +18,12 @@ class TestTools
             description.appendText("\nExpected: ").appendDescriptionOf(matcher).appendText("\n     but: ")
             matcher.describeMismatch(actual, description)
             throw ShortAssertError(description.toString(), if (reason.isEmpty()) "" else "Reason: $reason", stackPos)
+        }
+
+        fun assertAreEqual(actual: List<String>, expected: List<String>)
+        {
+            assertAreEqual(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected))
+            //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
         fun assertAreEqual(actual: String, expected: String)

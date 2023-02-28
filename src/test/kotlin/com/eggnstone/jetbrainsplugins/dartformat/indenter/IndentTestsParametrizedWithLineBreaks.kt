@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class IndentTestsParametrizedWithLineBreaks(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -27,9 +27,9 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             SpecialToken("{"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("runApp"),
             SpecialToken("("),
             UnknownToken("const MyApp"),
@@ -37,15 +37,15 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             SpecialToken(")"),
             SpecialToken(")"),
             SpecialToken(";"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             SpecialToken("}"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("END")
         )
-        val expectedOutputText = "void main()$newLine" +
-        "{$newLine" +
-        "    runApp(const MyApp());$newLine" +
-        "}$newLine" +
+        val expectedOutputText = "void main()$lineBreak" +
+        "{$lineBreak" +
+        "    runApp(const MyApp());$lineBreak" +
+        "}$lineBreak" +
         "END"
 
         val indenter = Indenter()
@@ -61,9 +61,9 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             UnknownToken("void main"),
             SpecialToken("("),
             SpecialToken(")"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             SpecialToken("{"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("runApp"),
             SpecialToken("("),
             UnknownToken("const MyApp"),
@@ -71,12 +71,12 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
             SpecialToken(")"),
             SpecialToken(")"),
             SpecialToken(";"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             SpecialToken("}")
         )
-        val expectedOutputText = "void main()$newLine" +
-        "{$newLine" +
-        "    runApp(const MyApp());$newLine" +
+        val expectedOutputText = "void main()$lineBreak" +
+        "{$lineBreak" +
+        "    runApp(const MyApp());$lineBreak" +
         "}"
 
         val indenter = Indenter()
@@ -89,17 +89,17 @@ class IndentTestsParametrizedWithLineBreaks(private val newLine: String, @Suppre
     fun doNotIndentEmptyLines()
     {
         val inputTokens = mutableListOf(
-            UnknownToken("Text"), LineBreakToken(newLine),
-            SpecialToken.OPENING_CURLY_BRACKET, LineBreakToken(newLine),
-            UnknownToken("Text"), LineBreakToken(newLine),
-            LineBreakToken(newLine),
-            UnknownToken("Text"), LineBreakToken(newLine)
+            UnknownToken("Text"), LineBreakToken(lineBreak),
+            SpecialToken.OPENING_CURLY_BRACKET, LineBreakToken(lineBreak),
+            UnknownToken("Text"), LineBreakToken(lineBreak),
+            LineBreakToken(lineBreak),
+            UnknownToken("Text"), LineBreakToken(lineBreak)
         )
-        val expectedOutputText = "Text$newLine" +
-        "{$newLine" +
-        "    Text$newLine" +
-        newLine +
-        "    Text$newLine"
+        val expectedOutputText = "Text$lineBreak" +
+        "{$lineBreak" +
+        "    Text$lineBreak" +
+        lineBreak +
+        "    Text$lineBreak"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

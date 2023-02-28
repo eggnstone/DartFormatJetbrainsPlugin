@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class TokenizeTestsParametrized(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -23,9 +23,9 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     @Test
     fun newLineAtTextStart()
     {
-        val inputText = "${newLine}b"
+        val inputText = "${lineBreak}b"
         val expectedTokens = mutableListOf(
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("b")
         )
 
@@ -35,12 +35,12 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     }
 
     @Test
-    fun newLineAtTextMiddle()
+    fun lineBreakAtTextMiddle()
     {
-        val inputText = "a${newLine}b"
+        val inputText = "a${lineBreak}b"
         val expectedTokens = mutableListOf(
             UnknownToken("a"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("b")
         )
 
@@ -50,13 +50,13 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     }
 
     @Test
-    fun newLineAtTextMiddle2()
+    fun lineBreakAtTextMiddle2()
     {
-        val inputText = "a${newLine}${newLine}b"
+        val inputText = "a${lineBreak}${lineBreak}b"
         val expectedTokens = mutableListOf(
             UnknownToken("a"),
-            LineBreakToken(newLine),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
+            LineBreakToken(lineBreak),
             UnknownToken("b")
         )
 
@@ -66,12 +66,12 @@ class TokenizeTestsParametrized(private val newLine: String, @Suppress("UNUSED_P
     }
 
     @Test
-    fun newLineAtTextEnd()
+    fun lineBreakAtTextEnd()
     {
-        val inputText = "a${newLine}"
+        val inputText = "a${lineBreak}"
         val expectedTokens = mutableListOf(
             UnknownToken("a"),
-            LineBreakToken(newLine)
+            LineBreakToken(lineBreak)
         )
 
         val actualTokens = LineBreakTokenizer().tokenize(inputText)

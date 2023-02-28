@@ -40,22 +40,24 @@ class Tools
             }
         }
 
-        fun isClosingBracket(c: String): Boolean = DotlinTools.contains("})]", c)
-        fun isOpeningBracket(c: String): Boolean = DotlinTools.contains("{([", c)
-        fun isWhitespace(c: String): Boolean = DotlinTools.contains("\n\r\t ", c)
+        fun isClosingBracket(c: String): Boolean = DotlinTools.containsChar("})]", c)
+        fun isOpeningBracket(c: String): Boolean = DotlinTools.containsChar("{([", c)
+        fun isWhitespace(c: String): Boolean = DotlinTools.containsChar("\n\r\t ", c)
 
-        fun partsToDisplayString2(parts: List<IPart>): String = "[" + partsToDisplayString(parts) + "]"
+        /*fun shorten(s: String, maxLength: Int): String
+       {
+           if (s.length < maxLength)
+               return s
 
-        fun stringsToDisplayString2(strings: List<String>): String = "[" + stringsToDisplayString(strings) + "]"
+           return DotlinTools.substring(s, 0, maxLength) // dotlin
+           //return s.substring(0, maxLength)
+       }*/
 
-        fun toDisplayString(s: String): String
-        {
-            return DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n")
-        }
+        fun toDisplayString(s: String): String = "\"" + DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n") + "\""
+        fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
+        fun toDisplayStringForStrings(strings: List<String>): String = "[" + toDisplayStringForStringsInternal(strings) + "]"
 
-        fun toDisplayString2(s: String): String = "\"" + toDisplayString(s) + "\""
-
-        private fun partsToDisplayString(parts: List<IPart>): String
+        private fun toDisplayStringForPartsInternal(parts: List<IPart>): String
         {
             var result = ""
 
@@ -71,16 +73,7 @@ class Tools
             return result
         }
 
-        /*fun shorten(s: String, maxLength: Int): String
-        {
-            if (s.length < maxLength)
-                return s
-
-            return DotlinTools.substring(s, 0, maxLength) // dotlin
-            //return s.substring(0, maxLength)
-        }*/
-
-        private fun stringsToDisplayString(strings: List<String>): String
+        private fun toDisplayStringForStringsInternal(strings: List<String>): String
         {
             var result = ""
 
@@ -91,7 +84,12 @@ class Tools
 
             @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
             for (i in 0 until strings.size)
+            {
+                if (i > 0)
+                    result += ","
+
                 result += toDisplayString(strings[i])
+            }
 
             // dotlin
             //return toDisplayString1(strings.joinToString(separator = "") { it })

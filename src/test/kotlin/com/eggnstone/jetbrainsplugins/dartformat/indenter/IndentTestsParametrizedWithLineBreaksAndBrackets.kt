@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class IndentTestsParametrizedWithLineBreaksAndBrackets(private val newLine: String, private val openingBracket: String, private val closingBracket: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class IndentTestsParametrizedWithLineBreaksAndBrackets(private val lineBreak: String, private val openingBracket: String, private val closingBracket: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -25,16 +25,16 @@ class IndentTestsParametrizedWithLineBreaksAndBrackets(private val newLine: Stri
     {
         val inputTokens = mutableListOf(
             SpecialToken(openingBracket),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("Text"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             SpecialToken(closingBracket),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("END")
         )
-        val expectedOutputText = "$openingBracket$newLine" +
-        "    Text$newLine" +
-        "$closingBracket$newLine" +
+        val expectedOutputText = "$openingBracket$lineBreak" +
+        "    Text$lineBreak" +
+        "$closingBracket$lineBreak" +
         "END"
 
         val indenter = Indenter()

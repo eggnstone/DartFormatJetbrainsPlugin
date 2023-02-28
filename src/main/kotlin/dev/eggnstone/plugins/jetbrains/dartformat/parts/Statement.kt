@@ -8,5 +8,7 @@ class Statement(val text: String) : IPart
 
     override fun hashCode(): Int = text.hashCode()
 
-    override fun toString(): String = "Statement(${Tools.toDisplayString2(text)})"
+    override fun recreate(): String = text
+
+    override fun toString(): String = "Statement(${Tools.toDisplayString(text)})"
 }

@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class EndOfLineTestsParametrized(private val newLine: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class EndOfLineTestsParametrized(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -28,11 +28,11 @@ class EndOfLineTestsParametrized(private val newLine: String, @Suppress("UNUSED_
     @Test
     fun testEndOfLineCommentAtTextMiddle()
     {
-        val inputText = "abc//this is an end of line comment${newLine}def"
+        val inputText = "abc//this is an end of line comment${lineBreak}def"
         val expectedOutputTokens = mutableListOf(
             UnknownToken("abc"),
             EndOfLineCommentToken("this is an end of line comment"),
-            LineBreakToken(newLine),
+            LineBreakToken(lineBreak),
             UnknownToken("def")
         )
 

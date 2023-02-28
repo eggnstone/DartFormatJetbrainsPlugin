@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 class PartTools
 {
@@ -8,11 +9,9 @@ class PartTools
     {
         fun printParts(parts: List<IPart>, label: String = "")
         {
-            @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // workaround for dotlin for: isEmpty
-            val prefix = if (label.length == 0) "" else "$label - "
+            val prefix = if (DotlinTools.isEmpty(label)) "" else "$label - "
 
-            @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // workaround for dotlin for: isEmpty
-            if (parts.size == 0)
+            if (DotlinTools.isEmpty(parts))
                 DotlinLogger.log("${prefix}No parts.")
             else
                 DotlinLogger.log("$prefix${parts.size} parts:")
