@@ -1,4 +1,4 @@
-package linesplitter.split
+package lineSplitter
 
 import TestParams
 import TestTools

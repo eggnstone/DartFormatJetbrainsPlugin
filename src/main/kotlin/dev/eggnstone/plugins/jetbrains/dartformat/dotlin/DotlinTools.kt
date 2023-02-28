@@ -1,17 +1,18 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.dotlin
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 
 class DotlinTools
 {
-    // .add() should be replaces with +=
+    // .add() should be replaced with +=
 
     companion object
     {
         fun containsChar(s: String, searchChar: String): Boolean
         {
             if (searchChar.length != 1)
-                TODO()
+                throw DartFormatException("Use containsText() instead!")
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
@@ -80,7 +81,7 @@ class DotlinTools
 
         fun split(s: String, delimiter: String): List<String>
         {
-            var result = mutableListOf<String>()
+            val result = mutableListOf<String>()
 
             var currentText = ""
 

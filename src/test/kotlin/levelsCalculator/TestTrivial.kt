@@ -1,4 +1,4 @@
-package levelscalculator.calclevels
+package levelsCalculator
 
 import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
 import org.hamcrest.CoreMatchers.equalTo

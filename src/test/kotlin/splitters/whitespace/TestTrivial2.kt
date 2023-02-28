@@ -1,10 +1,10 @@
-package whitespacesplitter.split
+package splitters.whitespace
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.WhitespaceSplitter
 import org.junit.Test
 
-class TestTrivial
+class TestTrivial2
 {
     @Test
     fun emptyText()

@@ -1,4 +1,4 @@
-package whitespacesplitter.split
+package splitters.whitespace
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.WhitespaceSplitter

@@ -1,0 +1,21 @@
+package indenters.whitespace
+
+import TestTools
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.WhitespaceIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import org.junit.Test
+
+class TestTrivial
+{
+    @Test
+    fun emptyText()
+    {
+        val inputPart = Whitespace("")
+
+        val expectedText = ""
+
+        val actualText = WhitespaceIndenter().indentPart(inputPart)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+}

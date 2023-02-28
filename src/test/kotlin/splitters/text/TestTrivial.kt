@@ -8,7 +8,7 @@ import org.junit.jupiter.api.assertThrows
 class TestTrivial
 {
     @Test
-    fun empty()
+    fun emptyText()
     {
         val inputText = ""
 

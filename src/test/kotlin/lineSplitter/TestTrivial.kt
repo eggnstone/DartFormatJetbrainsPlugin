@@ -1,4 +1,4 @@
-package linesplitter.split
+package lineSplitter
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
