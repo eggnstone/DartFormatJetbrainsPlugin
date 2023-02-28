@@ -1,6 +1,6 @@
 package indenters.doubleBlock
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.DoubleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
@@ -10,7 +10,6 @@ import org.junit.Test
 
 class TestSimple
 {
-
     @Test
     fun doubleBlock()
     {
@@ -27,7 +26,7 @@ class TestSimple
         "else\n" +
         "{}"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = DoubleBlockIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }
@@ -52,7 +51,7 @@ class TestSimple
         "{\n" +
         "}"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = DoubleBlockIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }

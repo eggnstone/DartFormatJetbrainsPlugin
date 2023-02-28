@@ -16,7 +16,7 @@ class TestTrivial
         val expectedNextLevel = 0
         val expectedConditionals = 0
 
-        val actualLevels = LevelsCalculator.calcLevels(inputText)
+        val actualLevels = LevelsCalculator().calcLevels(inputText)
 
         MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
         MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))

@@ -1,6 +1,6 @@
 package indenters.singleBlock
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
@@ -26,7 +26,7 @@ class TestComplex
         "    abc();\n" +
         "}"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }

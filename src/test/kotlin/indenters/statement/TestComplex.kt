@@ -1,6 +1,6 @@
 package indenters.statement
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.StatementIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -17,13 +17,26 @@ class TestComplex
         "    if (true)\n" +
         "        abc();"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }
 
     @Test
-    fun threNestedIfs()
+    fun twoNestedIfsInOneLine()
+    {
+        val inputPart = Statement("if (true) if (true)\nabc();")
+
+        val expectedText = "if (true) if (true)\n" +
+        "        abc();"
+
+        val actualText = StatementIndenter().indentPart(inputPart)
+
+        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+    }
+
+    @Test
+    fun threeNestedIfs()
     {
         val inputPart = Statement("if (true)\nif (true)\nif (true)\nabc();")
 
@@ -32,7 +45,20 @@ class TestComplex
         "        if (true)\n" +
         "            abc();"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter().indentPart(inputPart)
+
+        MatcherAssert.assertThat(actualText, equalTo(expectedText))
+    }
+
+    @Test
+    fun threeNestedIfsInOneLine()
+    {
+        val inputPart = Statement("if (true) if (true) if (true)\nabc();")
+
+        val expectedText = "if (true) if (true) if (true)\n" +
+        "            abc();"
+
+        val actualText = StatementIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }

@@ -1,8 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.eggnstone.jetbrainsplugins.dartformat.formatters.FormatterWithConfig
-import com.eggnstone.jetbrainsplugins.dartformat.indenter.IndenterWithConfig
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -18,6 +15,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 
@@ -25,6 +23,12 @@ typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolea
 
 class PluginFormat : AnAction()
 {
+    companion object
+    {
+        private val masterSplitter = MasterSplitter()
+        private val masterIndenter = MasterIndenter()
+    }
+
     private class FormatIterator(private val format: FormatHandler, private val project: Project) : ContentIterator
     {
         override fun processFile(virtualFile: VirtualFile): Boolean
@@ -172,17 +176,22 @@ class PluginFormat : AnAction()
     {
         val config = getConfig()
 
-        val result = MasterSplitter().split(inputText)
-        PartTools.printParts(result.parts)
+        val splitResult = masterSplitter.split(inputText)
+        PartTools.printParts(splitResult.parts)
 
-        val inputTokens = Tokenizer().tokenize(inputText)
+        @Suppress("UnnecessaryVariable")
+        val indentResult = masterIndenter.indentParts(splitResult.parts)
+
+        return indentResult
+
+        /*val inputTokens = Tokenizer().tokenize(inputText)
 
         val outputTokens = FormatterWithConfig(config).format(inputTokens)
 
         @Suppress("UnnecessaryVariable")
         val outputText = IndenterWithConfig(config).indent(outputTokens)
 
-        return outputText
+        return outputText*/
     }
 
     private fun getConfig(): DartFormatConfig

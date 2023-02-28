@@ -9,6 +9,11 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
 class MasterIndenter : IIndenter
 {
+    companion object
+    {
+        private val levelsCalculator = LevelsCalculator()
+    }
+
     override fun indentPart(part: IPart): String
     {
         DotlinLogger.log("MasterIndenter.indentPart: ${Tools.toDisplayString(part.toString())}")
@@ -66,7 +71,7 @@ class MasterIndenter : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(lineIndex) // workaround for dotlin
-            val levels = LevelsCalculator.calcLevels(line)
+            val levels = levelsCalculator.calcLevels(line)
 
             val currentLevelText = if (levels.currentLevel < 0) "-" + levels.currentLevel.toString() else if (levels.currentLevel == 0) "0" else "+" + levels.currentLevel.toString()
             val nextLevelText = if (levels.nextLevel < 0) "-" + levels.nextLevel.toString() else if (levels.nextLevel == 0) "0" else "+" + levels.nextLevel.toString()
@@ -144,8 +149,8 @@ class MasterIndenter : IIndenter
         @Suppress("LiftReturnOrAssignment")
         when (inputPart)
         {
-            is SingleBlock -> return SingleBlockIndenter()
             is DoubleBlock -> return DoubleBlockIndenter()
+            is SingleBlock -> return SingleBlockIndenter()
             is Statement -> return StatementIndenter()
             is Whitespace -> return WhitespaceIndenter()
             else -> TODO()

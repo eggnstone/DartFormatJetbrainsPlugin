@@ -1,6 +1,6 @@
 package indenters.singleBlock
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
@@ -9,7 +9,6 @@ import org.junit.Test
 
 class TestSimple
 {
-
     @Test
     fun singleBlock()
     {
@@ -18,7 +17,7 @@ class TestSimple
         val expectedText = "class C\n" +
         "{}"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }
@@ -32,7 +31,7 @@ class TestSimple
         "{\n" +
         "}"
 
-        val actualText = MasterIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter().indentPart(inputPart)
 
         MatcherAssert.assertThat(actualText, equalTo(expectedText))
     }
