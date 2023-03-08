@@ -1,4 +1,4 @@
-package indenters.singleBlock
+package indenters.singleBlock.indentHeader
 
 import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
@@ -11,21 +11,13 @@ import org.junit.jupiter.api.assertThrows
 class TestTrivial
 {
     @Test
-    fun whitespaceThrowsException()
+    fun emptyHeader()
     {
-        val inputPart = Whitespace("")
+        val inputText = ""
 
-        assertThrows<DartFormatException> { SingleBlockIndenter().indentPart(inputPart) }
-    }
+        val expectedText = ""
 
-    @Test
-    fun singleBlock()
-    {
-        val inputPart = SingleBlock("header{", "}footer")
-
-        val expectedText = "header{}footer"
-
-        val actualText = SingleBlockIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter().indentHeader(inputText)
 
         assertAreEqual(actualText, expectedText)
     }

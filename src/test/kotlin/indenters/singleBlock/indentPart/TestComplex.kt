@@ -1,4 +1,4 @@
-package indenters.singleBlock
+package indenters.singleBlock.indentPart
 
 import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter

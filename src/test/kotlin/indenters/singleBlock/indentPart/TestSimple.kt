@@ -1,4 +1,4 @@
-package indenters.singleBlock
+package indenters.singleBlock.indentPart
 
 import TestTools.Companion.assertAreEqual
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
@@ -29,6 +29,20 @@ class TestSimple
         val expectedText = "class C\n" +
         "{\n" +
         "}"
+
+        val actualText = SingleBlockIndenter().indentPart(inputPart)
+
+        assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun singleBlockWithMultiLineHeader()
+    {
+        val inputPart = SingleBlock("class C\nwith X\n{", "}")
+
+        val expectedText = "class C\n" +
+        "    with X\n"+
+        "{}"
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 

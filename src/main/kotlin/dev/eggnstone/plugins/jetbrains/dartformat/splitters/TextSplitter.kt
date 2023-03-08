@@ -36,9 +36,9 @@ class TextSplitter : ISplitter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
             val c = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
-            DotlinLogger.log("c: $c")
-            DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
-            DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+            //DotlinLogger.log("c: $c")
+            //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
+            //DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
             if (c == ";" && DotlinTools.isEmpty(currentBrackets))
             {

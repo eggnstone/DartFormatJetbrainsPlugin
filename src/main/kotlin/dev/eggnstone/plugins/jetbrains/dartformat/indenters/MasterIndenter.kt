@@ -1,8 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
-import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
@@ -22,7 +20,7 @@ class MasterIndenter : IIndenter
         return indenter.indentPart(part)
     }
 
-    fun indentPart2(part: IPart): String
+    /*fun indentPart2(part: IPart): String
     {
         var currentLevel = 0
         var currentLine = ""
@@ -42,7 +40,7 @@ class MasterIndenter : IIndenter
             TODO()
         }
 
-        /*
+        *//*
         if (true) if (true)
             abc();
 
@@ -61,7 +59,7 @@ class MasterIndenter : IIndenter
         else
         {
         }
-        */
+        *//*
 
         val recreatedPart = part.recreate()
         val lines = lineSplitter.split(recreatedPart)
@@ -89,22 +87,22 @@ class MasterIndenter : IIndenter
 
             if (oldConditionals > 0 && levels.currentLevel > 0 && levels.nextLevel > 0)
             {
-                DotlinLogger.log("      --")
+                DotlinLogger.log("      levels--")
                 conditionals--
                 currentLevel--
                 nextLevel--
             }
-            /*else
-                DotlinLogger.log("      no--")*/
+            *//*else
+                DotlinLogger.log("      no levels--")*//*
 
-            /*if (line.startsWith("if"))
+            *//*if (line.startsWith("if"))
             {
                 //isConditional = true
             }
             else if (line.startsWith("{"))
             {
                 //cond
-                *//*if (isConditional)
+                *//**//*if (isConditional)
                     {
                         currentLevel--
                         nextLevel--
@@ -112,7 +110,7 @@ class MasterIndenter : IIndenter
                     else
                     {
                         //OK
-                    }*//*
+                    }*//**//*
                 }
                 else if (line.startsWith("}"))
                 {
@@ -124,7 +122,7 @@ class MasterIndenter : IIndenter
                     {
                         //TODO()
                     }
-                }*/
+                }*//*
 
             val pad = DotlinTools.getSpaces(currentLevel * 4)
 
@@ -134,7 +132,7 @@ class MasterIndenter : IIndenter
         }
 
         return result
-    }
+    }*/
 
     fun indentParts(parts: List<IPart>): String
     {

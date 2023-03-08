@@ -22,12 +22,6 @@ class IndentationTests
         "})"
 
         IntegrationTools.test(inputText, expectedOutputText)
-
-        val inputTokens = Tokenizer().tokenize(inputText)
-        val actualOutputTokens = Formatter().format(inputTokens)
-        val actualOutputText = Indenter().indent(actualOutputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
     }
 
     @Test
@@ -40,12 +34,6 @@ class IndentationTests
         "    abc;"
 
         IntegrationTools.test(inputText, expectedOutputText)
-
-        val inputTokens = Tokenizer().tokenize(inputText)
-        val actualOutputTokens = Formatter().format(inputTokens)
-        val actualOutputText = Indenter().indent(actualOutputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
     }
 
     @Test
@@ -76,11 +64,5 @@ class IndentationTests
         "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
-
-        val inputTokens = Tokenizer().tokenize(inputText)
-        val actualOutputTokens = Formatter().format(inputTokens)
-        val actualOutputText = Indenter().indent(actualOutputTokens)
-
-        assertThat(actualOutputText, equalTo(expectedOutputText))
     }
 }
