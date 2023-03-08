@@ -16,7 +16,7 @@ class TestComplex
         "    if (true)\n" +
         "        abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -29,7 +29,7 @@ class TestComplex
         val expectedText = "if (true) if (true)\n" +
         "        abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -44,7 +44,7 @@ class TestComplex
         "        if (true)\n" +
         "            abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -57,7 +57,7 @@ class TestComplex
         val expectedText = "if (true) if (true) if (true)\n" +
         "            abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

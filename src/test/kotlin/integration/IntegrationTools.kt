@@ -14,7 +14,7 @@ class IntegrationTools
             val parts = MasterSplitter().splitAll(inputText)
             PartTools.printParts(parts)
 
-            val actualOutputText = MasterIndenter().indentParts(parts)
+            val actualOutputText = MasterIndenter(4).indentParts(parts)
 
             TestTools.assertAreEqual(actualOutputText, expectedOutputText)
         }

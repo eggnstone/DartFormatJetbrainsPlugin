@@ -25,7 +25,7 @@ class TestComplex
         "    abc();\n" +
         "}"
 
-        val actualText = SingleBlockIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

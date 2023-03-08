@@ -4,15 +4,16 @@ import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class BlockIndenter
+class BlockIndenter(spacesPerLevel: Int)
 {
     companion object
     {
-        private val masterIndenter = MasterIndenter()
         private val lineSplitter = LineSplitter()
     }
 
-    fun indentParts(parts: List<IPart>): String
+    private var masterIndenter = MasterIndenter(spacesPerLevel)
+
+    fun indentParts(parts: List<IPart>, spacesPerLevel: Int): String
     {
         val body = masterIndenter.indentParts(parts)
         val lines = lineSplitter.split(body)

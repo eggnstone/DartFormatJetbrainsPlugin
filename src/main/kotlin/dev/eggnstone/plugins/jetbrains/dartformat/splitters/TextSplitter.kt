@@ -39,7 +39,6 @@ class TextSplitter : ISplitter
             val currentChar = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
 
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
-            val nextChar = if (remainingText.length < 2) "" else remainingText.get(1).toString() // workaround for dotlin for: for (c in text)
             //DotlinLogger.log("c: $c")
             //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
             //DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
@@ -84,9 +83,9 @@ class TextSplitter : ISplitter
                 if (!DotlinTools.startsWith(remainingText, "}"))
                 {
                     DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                    DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+                    DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                    TODO("error 1 ${Tools.toDisplayString(currentChar)}")
+                    TODO("error 1 ${Tools.toDisplayString(currentText)} ${Tools.toDisplayString(header)} ${Tools.toDisplayString(remainingText)}")
                 }
 
                 if (isDoubleBlock)
@@ -95,7 +94,7 @@ class TextSplitter : ISplitter
                         return SplitResult("", listOf(DoubleBlock(header, currentText, "}", parts1, result.parts)))
 
                     DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                    DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+                    DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
                     TODO("is double block")
                 }
@@ -125,7 +124,7 @@ class TextSplitter : ISplitter
                 }
 
                 //DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                //DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+                //DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
                 //DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
                 //TODO("error: no else is unhandled")
                 return SplitResult("", listOf(SingleBlock(currentText, remainingText, result.parts)))
@@ -148,7 +147,7 @@ class TextSplitter : ISplitter
                 val lastOpeningBracket = currentBrackets.removeLast()
                 val expectedClosingBracket = Tools.getClosingBracket(lastOpeningBracket)
                 if (currentChar != expectedClosingBracket)
-                    TODO("error 2 ${Tools.toDisplayString(currentChar)}")
+                    TODO("error 2 ${Tools.toDisplayString(remainingText)}")
             }
 
             currentText += currentChar
@@ -156,7 +155,7 @@ class TextSplitter : ISplitter
         }
 
         DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-        DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+        DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
         DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
         throw DartFormatException("Unexpected end of block or statement.")
     }

@@ -33,7 +33,7 @@ class TestTools
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
-        fun assertAreEqual(actual: String, expected: String, stackPos: Int = 1)
+        fun assertAreEqual(actual: String, expected: String)
         {
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)

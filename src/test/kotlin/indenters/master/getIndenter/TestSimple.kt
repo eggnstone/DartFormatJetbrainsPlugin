@@ -16,7 +16,7 @@ class TestSimple
     {
         val inputPart = Whitespace("")
 
-        val indenter = MasterIndenter().getIndenter(inputPart)
+        val indenter = MasterIndenter(4).getIndenter(inputPart)
 
         MatcherAssert.assertThat(indenter is WhitespaceIndenter, equalTo(true))
     }
@@ -26,7 +26,7 @@ class TestSimple
     {
         val inputPart = Statement("")
 
-        val indenter = MasterIndenter().getIndenter(inputPart)
+        val indenter = MasterIndenter(4).getIndenter(inputPart)
 
         MatcherAssert.assertThat(indenter is StatementIndenter, equalTo(true))
     }
@@ -36,7 +36,7 @@ class TestSimple
     {
         val inputPart = SingleBlock("", "")
 
-        val indenter = MasterIndenter().getIndenter(inputPart)
+        val indenter = MasterIndenter(4).getIndenter(inputPart)
 
         MatcherAssert.assertThat(indenter is SingleBlockIndenter, equalTo(true))
     }
@@ -46,7 +46,7 @@ class TestSimple
     {
         val inputPart = DoubleBlock("", "", "")
 
-        val indenter = MasterIndenter().getIndenter(inputPart)
+        val indenter = MasterIndenter(4).getIndenter(inputPart)
 
         MatcherAssert.assertThat(indenter is DoubleBlockIndenter, equalTo(true))
     }

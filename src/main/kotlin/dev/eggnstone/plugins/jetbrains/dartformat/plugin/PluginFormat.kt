@@ -26,7 +26,6 @@ class PluginFormat : AnAction()
     companion object
     {
         private val masterSplitter = MasterSplitter()
-        private val masterIndenter = MasterIndenter()
     }
 
     private class FormatIterator(private val format: FormatHandler, private val project: Project) : ContentIterator
@@ -178,6 +177,8 @@ class PluginFormat : AnAction()
 
         val splitResult = masterSplitter.split(inputText)
         PartTools.printParts(splitResult.parts)
+
+        val masterIndenter = MasterIndenter(config.indentationSpacesPerLevel)
 
         @Suppress("UnnecessaryVariable")
         val indentResult = masterIndenter.indentParts(splitResult.parts)

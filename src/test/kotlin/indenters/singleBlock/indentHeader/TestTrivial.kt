@@ -12,7 +12,7 @@ class TestTrivial
     {
         val inputText = ""
 
-        assertThrows<DartFormatException> { SingleBlockIndenter().indentHeader(inputText) }
+        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentHeader(inputText) }
     }
 
     @Test
@@ -20,6 +20,6 @@ class TestTrivial
     {
         val inputText = " "
 
-        assertThrows<DartFormatException> { SingleBlockIndenter().indentHeader(inputText) }
+        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentHeader(inputText) }
     }
 }

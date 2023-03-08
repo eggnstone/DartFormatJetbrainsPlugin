@@ -1,15 +1,14 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
-import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
-class MasterIndenter : IIndenter
+class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {
-    companion object
+    /*companion object
     {
         private val levelsCalculator = LevelsCalculator()
-    }
+    }*/
 
     override fun indentPart(part: IPart): String
     {
@@ -156,10 +155,10 @@ class MasterIndenter : IIndenter
         @Suppress("LiftReturnOrAssignment")
         when (inputPart)
         {
-            is DoubleBlock -> return DoubleBlockIndenter()
-            is SingleBlock -> return SingleBlockIndenter()
-            is Statement -> return StatementIndenter()
-            is Whitespace -> return WhitespaceIndenter()
+            is DoubleBlock -> return DoubleBlockIndenter(4)
+            is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
+            is Statement -> return StatementIndenter(spacesPerLevel)
+            is Whitespace -> return WhitespaceIndenter(spacesPerLevel)
             else -> TODO()
         }
     }

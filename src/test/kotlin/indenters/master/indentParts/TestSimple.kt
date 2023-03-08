@@ -15,7 +15,7 @@ class TestSimple
 
         val expectedText = "\n\rabc();"
 
-        val actualText = MasterIndenter().indentParts(inputParts)
+        val actualText = MasterIndenter(4).indentParts(inputParts)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -27,7 +27,7 @@ class TestSimple
 
         val expectedText = "abc();\n\r"
 
-        val actualText = MasterIndenter().indentParts(inputParts)
+        val actualText = MasterIndenter(4).indentParts(inputParts)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -39,7 +39,7 @@ class TestSimple
 
         val expectedText = "\n\rabc();\n\r"
 
-        val actualText = MasterIndenter().indentParts(inputParts)
+        val actualText = MasterIndenter(4).indentParts(inputParts)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -51,7 +51,7 @@ class TestSimple
 
         val expectedText = "abc();def();"
 
-        val actualText = MasterIndenter().indentParts(inputParts)
+        val actualText = MasterIndenter(4).indentParts(inputParts)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -63,7 +63,7 @@ class TestSimple
 
         val expectedText = "abc();\n\rdef();"
 
-        val actualText = MasterIndenter().indentParts(inputParts)
+        val actualText = MasterIndenter(4).indentParts(inputParts)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

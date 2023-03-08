@@ -4,7 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
-class WhitespaceIndenter : IIndenter
+class WhitespaceIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     override fun indentPart(part: IPart): String
     {

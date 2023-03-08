@@ -14,7 +14,7 @@ class TestSimple
 
         val expectedText = ""
 
-        val actualText = WhitespaceIndenter().indentPart(inputPart)
+        val actualText = WhitespaceIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -26,7 +26,7 @@ class TestSimple
 
         val expectedText = "\n"
 
-        val actualText = WhitespaceIndenter().indentPart(inputPart)
+        val actualText = WhitespaceIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -38,7 +38,7 @@ class TestSimple
 
         val expectedText = "\n\r"
 
-        val actualText = WhitespaceIndenter().indentPart(inputPart)
+        val actualText = WhitespaceIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

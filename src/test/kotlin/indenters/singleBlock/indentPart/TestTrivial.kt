@@ -15,7 +15,7 @@ class TestTrivial
     {
         val inputPart = Whitespace("")
 
-        assertThrows<DartFormatException> { SingleBlockIndenter().indentPart(inputPart) }
+        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentPart(inputPart) }
     }
 
     @Test
@@ -25,7 +25,7 @@ class TestTrivial
 
         val expectedText = "header{}footer"
 
-        val actualText = SingleBlockIndenter().indentPart(inputPart)
+        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

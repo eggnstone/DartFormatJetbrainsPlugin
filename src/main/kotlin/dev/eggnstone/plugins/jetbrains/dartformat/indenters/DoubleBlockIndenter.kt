@@ -4,7 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class DoubleBlockIndenter : IIndenter
+class DoubleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     override fun indentPart(part: IPart): String
     {
@@ -16,8 +16,9 @@ class DoubleBlockIndenter : IIndenter
         //DotlinLogger.log("parts1: ${Tools.toDisplayStringForParts(doubleBlock.parts1)}")
         //DotlinLogger.log("parts2: ${Tools.toDisplayStringForParts(doubleBlock.parts2)}")
 
-        val indentedBody1 = BlockIndenter().indentParts(doubleBlock.parts1)
-        val indentedBody2 = BlockIndenter().indentParts(doubleBlock.parts2)
+        val blockIndenter = BlockIndenter(spacesPerLevel)
+        val indentedBody1 = blockIndenter.indentParts(doubleBlock.parts1, spacesPerLevel)
+        val indentedBody2 = blockIndenter.indentParts(doubleBlock.parts2, spacesPerLevel)
 
         @Suppress("UnnecessaryVariable")
         val result = doubleBlock.header + indentedBody1 + doubleBlock.middle + indentedBody2 + doubleBlock.footer

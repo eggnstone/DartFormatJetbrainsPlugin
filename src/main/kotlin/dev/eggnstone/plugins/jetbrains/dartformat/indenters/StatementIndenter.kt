@@ -7,7 +7,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
-class StatementIndenter : IIndenter
+class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     companion object
     {

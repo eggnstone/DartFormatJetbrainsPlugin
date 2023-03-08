@@ -32,7 +32,7 @@ class TestComplex
         "    def();\n" +
         "}"
 
-        val actualText = DoubleBlockIndenter().indentPart(inputPart)
+        val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

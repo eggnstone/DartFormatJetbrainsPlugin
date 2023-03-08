@@ -15,7 +15,7 @@ class TestSimple
         val expectedText = "if\n" +
         "    abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -28,7 +28,7 @@ class TestSimple
         val expectedText = "if\n" +
         "    abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -41,7 +41,7 @@ class TestSimple
         val expectedText = "if()\n" +
         "    abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -54,7 +54,7 @@ class TestSimple
         val expectedText = "if ()\n" +
         "    abc();"
 
-        val actualText = StatementIndenter().indentPart(inputPart)
+        val actualText = StatementIndenter(4).indentPart(inputPart)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }

@@ -7,7 +7,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 
-class SingleBlockIndenter : IIndenter
+class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     companion object
     {
@@ -25,7 +25,8 @@ class SingleBlockIndenter : IIndenter
 
         //DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
 
-        val indentedBody = BlockIndenter().indentParts(singleBlock.parts)
+        val blockIndenter = BlockIndenter(spacesPerLevel)
+        val indentedBody = blockIndenter.indentParts(singleBlock.parts, spacesPerLevel)
 
         @Suppress("UnnecessaryVariable")
         val result = header + indentedBody + singleBlock.footer

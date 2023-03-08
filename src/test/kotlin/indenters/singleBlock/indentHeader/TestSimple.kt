@@ -13,7 +13,7 @@ class TestSimple
 
         val expectedText = "class C {"
 
-        val actualText = SingleBlockIndenter().indentHeader(inputText)
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -25,7 +25,7 @@ class TestSimple
 
         val expectedText = "class C\n{"
 
-        val actualText = SingleBlockIndenter().indentHeader(inputText)
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
@@ -37,7 +37,7 @@ class TestSimple
 
         val expectedText = "class C\n    with X\n{"
 
-        val actualText = SingleBlockIndenter().indentHeader(inputText)
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
