@@ -1,8 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
 class MasterIndenter : IIndenter
@@ -14,7 +13,7 @@ class MasterIndenter : IIndenter
 
     override fun indentPart(part: IPart): String
     {
-        DotlinLogger.log("MasterIndenter.indentPart: $part")
+        //DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
         return indenter.indentPart(part)

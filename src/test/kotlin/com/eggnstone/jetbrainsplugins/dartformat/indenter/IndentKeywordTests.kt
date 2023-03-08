@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -37,7 +37,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -56,7 +56,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -73,7 +73,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -92,7 +92,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -109,7 +109,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -128,7 +128,7 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -145,6 +145,6 @@ class IndentKeywordTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 }

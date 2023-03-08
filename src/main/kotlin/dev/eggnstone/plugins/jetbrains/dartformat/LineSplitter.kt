@@ -1,13 +1,12 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 class LineSplitter
 {
     fun split(s: String): List<String>
     {
-        DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
+        //DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
 
         if (DotlinTools.isEmpty(s))
             return listOf()
@@ -29,7 +28,7 @@ class LineSplitter
 
     private fun split(s: String, delimiter: String): List<String>
     {
-        DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
+        //DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
 
         if (s == delimiter)
             return listOf(delimiter)
@@ -37,12 +36,14 @@ class LineSplitter
         val outputLines = mutableListOf<String>()
 
         var currentText = ""
-        val lines = DotlinTools.split(s, delimiter)
+        val lines = StringSplitter.split(s, delimiter)
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // workaround for dotlin
+            @Suppress("LiftReturnOrAssignment")
             if (line.length == 0)
             {
                 outputLines.add(currentText + delimiter)
@@ -55,9 +56,9 @@ class LineSplitter
         if (DotlinTools.isNotEmpty(currentText))
             outputLines.add(currentText)
 
-        DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")
-        DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(lines))
-        DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(outputLines))
+        //DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")
+        //DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(lines))
+        //DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(outputLines))
 
         return outputLines
     }

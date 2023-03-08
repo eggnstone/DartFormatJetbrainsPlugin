@@ -15,11 +15,11 @@ class IndentationTests
     {
         val inputText = "abc({\n" +
         "def;\n" +
-        "})"
+        "});"
 
         val expectedOutputText = "abc({\n" +
         "    def;\n" +
-        "})"
+        "});"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }

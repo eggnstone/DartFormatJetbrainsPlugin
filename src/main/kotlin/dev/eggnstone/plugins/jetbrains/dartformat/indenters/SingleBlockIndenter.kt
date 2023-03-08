@@ -3,7 +3,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -24,7 +23,7 @@ class SingleBlockIndenter : IIndenter
 
         val header = indentHeader(singleBlock.header)
 
-        DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
+        //DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
 
         val indentedBody = BlockIndenter().indentParts(singleBlock.parts)
 
@@ -52,7 +51,7 @@ class SingleBlockIndenter : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
-            DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+            //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
             val pad = if (DotlinTools.isBlank(headerLine)) TODO("untested") else "    "
             result += pad + headerLine
         }

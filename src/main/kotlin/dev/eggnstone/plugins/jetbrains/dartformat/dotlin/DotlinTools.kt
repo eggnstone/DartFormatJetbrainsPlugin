@@ -96,60 +96,6 @@ class DotlinTools
             return result
         }
 
-        // String.split
-        // Warning! This is my own implementation and actually differs from Kotlin's String.split!
-        fun split(s: String, delimiter: String): List<String>
-        {
-            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
-            if (delimiter.length == 0)
-                throw DartFormatException("delimiter.length == 0")
-
-            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
-            if (s.length == 0)
-                return listOf("")
-
-            val result = mutableListOf<String>()
-
-            var currentText = ""
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls")
-            var i = 0
-            while (i < s.length - delimiter.length + 1)
-            {
-                @Suppress("ReplaceGetOrSet")
-                val candidate = substring(s, i, i + delimiter.length)
-
-                if (candidate == delimiter)
-                {
-                    if (isNotEmpty(currentText))
-                    {
-                        result.add(currentText)
-                        currentText = ""
-                    }
-
-                    result.add("") // indicator for found delimiter
-                    i += delimiter.length
-                    continue
-                }
-
-                @Suppress("ReplaceGetOrSet")
-                val c = s.get(i).toString()
-                currentText += c
-                i++
-            }
-
-            //DotlinLogger.log("    currentText: ${Tools.toDisplayString(currentText)}")
-            //DotlinLogger.log("    loop rest:   ${Tools.toDisplayString(s.substring(i))}")
-
-            val rest = currentText + substring(s, i)
-            //DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
-
-            if (isNotEmpty(rest))
-                result.add(rest)
-
-            return result
-        }
-
         // String.startsWith
         fun startsWith(s: String, searchText: String): Boolean
         {

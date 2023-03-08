@@ -1,9 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
@@ -16,6 +16,8 @@ class StatementIndenter : IIndenter
 
     override fun indentPart(part: IPart): String
     {
+        //DotlinLogger.log("StatementIndenter.indentPart: ${Tools.toDisplayString(part.toString())}")
+
         if (part !is Statement)
             throw DartFormatException("Unexpected non-Statement type.")
 
@@ -32,9 +34,14 @@ class StatementIndenter : IIndenter
             val line = lines.get(i) // workaround for dotlin
 
             val levels = levelsCalculator.calcLevels(line)
-            val pad = DotlinTools.getSpaces(currentLevel * 4)
+            //DotlinLogger.log("  levels: ($levels)")
+            //DotlinLogger.log("    currentLevel: $currentLevel")
+
+            val tempLevel = currentLevel + levels.currentLevel
+            val pad = DotlinTools.getSpaces(tempLevel * 4)
             result += pad + line
             currentLevel += levels.nextLevel
+            //DotlinLogger.log("    currentLevel: $currentLevel")
 
             /*if (lineIndex == 0)
             {

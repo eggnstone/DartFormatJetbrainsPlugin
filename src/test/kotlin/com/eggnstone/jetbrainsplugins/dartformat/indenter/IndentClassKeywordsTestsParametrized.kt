@@ -1,6 +1,6 @@
 package com.eggnstone.jetbrainsplugins.dartformat.indenter
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +30,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -47,7 +47,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -66,7 +66,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -85,7 +85,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -106,6 +106,6 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
     }
 }

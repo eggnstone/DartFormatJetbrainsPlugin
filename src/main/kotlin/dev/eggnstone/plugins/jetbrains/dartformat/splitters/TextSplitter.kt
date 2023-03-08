@@ -13,7 +13,7 @@ class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //DotlinLogger.log("TextSplitter.split: ${Tools.shorten(inputText, 100)}")
+        //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -49,9 +49,9 @@ class TextSplitter : ISplitter
                 {
                     if (DotlinTools.startsWith(DotlinTools.trim(remainingText), "else "))
                     {
-                        DotlinLogger.log("Expecting 'else' branch.")
-                        DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                        DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
+                        //DotlinLogger.log("Expecting 'else' branch.")
+                        //DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
+                        //DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
                         continue
                     }
 
@@ -95,12 +95,12 @@ class TextSplitter : ISplitter
                 {
                     if (DotlinTools.startsWith(DotlinTools.trim(DotlinTools.substring(remainingText, 1)), "else "))
                     {
-                        DotlinLogger.log("Expecting 'else' branch.")
-                        DotlinLogger.log("c:               ${Tools.toDisplayString(c)}")
-                        DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
-                        DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
-                        DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
-                        DotlinLogger.log("result.parts:    ${Tools.toDisplayStringForParts(result.parts)}")
+                        //DotlinLogger.log("Expecting 'else' branch.")
+                        //DotlinLogger.log("c:               ${Tools.toDisplayString(c)}")
+                        //tlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+                        //DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+                        //DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
+                        //DotlinLogger.log("result.parts:    ${Tools.toDisplayStringForParts(result.parts)}")
                         isDoubleBlock = true
                         header = currentText
                         parts1 = result.parts

@@ -1,6 +1,6 @@
 package indenters.statement
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.StatementIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
@@ -27,6 +27,6 @@ class TestTrivial
 
         val actualText = StatementIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 }

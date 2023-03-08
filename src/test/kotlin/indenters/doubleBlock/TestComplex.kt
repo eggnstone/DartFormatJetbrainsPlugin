@@ -1,6 +1,6 @@
 package indenters.doubleBlock
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.DoubleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
@@ -34,6 +34,6 @@ class TestComplex
 
         val actualText = DoubleBlockIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 }

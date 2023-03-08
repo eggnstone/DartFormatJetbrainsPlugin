@@ -1,6 +1,6 @@
 package indenters.singleBlock.indentPart
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -27,6 +27,6 @@ class TestTrivial
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 }

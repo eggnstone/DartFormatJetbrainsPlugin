@@ -1,10 +1,10 @@
-package splitters.whitespace
+package typeSplitter
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.WhitespaceSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.TypeSplitter
 import org.junit.Test
 
-class TestTrivial2
+class TestTrivial
 {
     @Test
     fun emptyText()
@@ -13,7 +13,7 @@ class TestTrivial2
 
         val expectedLines = listOf<String>()
 
-        val actualLines = WhitespaceSplitter().split(inputText)
+        val actualLines = TypeSplitter().split(inputText)
 
         TestTools.assertAreEqual(actualLines, expectedLines)
     }
@@ -25,7 +25,7 @@ class TestTrivial2
 
         val expectedLines = listOf(" ")
 
-        val actualLines = WhitespaceSplitter().split(inputText)
+        val actualLines = TypeSplitter().split(inputText)
 
         TestTools.assertAreEqual(actualLines, expectedLines)
     }
@@ -37,7 +37,7 @@ class TestTrivial2
 
         val expectedLines = listOf("a")
 
-        val actualLines = WhitespaceSplitter().split(inputText)
+        val actualLines = TypeSplitter().split(inputText)
 
         TestTools.assertAreEqual(actualLines, expectedLines)
     }

@@ -7,6 +7,9 @@ class Tools
 {
     companion object
     {
+        private const val closingBrackets = "])}"
+        private const val openingBrackets = "{[("
+
         fun getOpeningBracket(closingBracket: String): String
         {
             /* dotlin
@@ -40,8 +43,9 @@ class Tools
             }
         }
 
-        fun isClosingBracket(c: String): Boolean = DotlinTools.containsChar("})]", c)
-        fun isOpeningBracket(c: String): Boolean = DotlinTools.containsChar("{([", c)
+        fun isClosingBracket(c: String): Boolean = DotlinTools.containsChar(closingBrackets, c)
+        fun isOpeningBracket(c: String): Boolean = DotlinTools.containsChar(openingBrackets, c)
+        fun isBracket(c: String): Boolean = DotlinTools.containsChar(openingBrackets + closingBrackets, c)
         fun isWhitespace(c: String): Boolean = DotlinTools.containsChar("\n\r\t ", c)
 
         fun shorten(s: String, maxLength: Int): String

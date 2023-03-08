@@ -1,6 +1,6 @@
 package levelsCalculator
 
-import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

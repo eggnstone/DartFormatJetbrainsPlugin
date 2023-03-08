@@ -1,6 +1,6 @@
 package indenters.singleBlock.indentPart
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
@@ -18,7 +18,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -32,7 +32,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -41,11 +41,11 @@ class TestSimple
         val inputPart = SingleBlock("class C\nwith X\n{", "}")
 
         val expectedText = "class C\n" +
-        "    with X\n"+
+        "    with X\n" +
         "{}"
 
         val actualText = SingleBlockIndenter().indentPart(inputPart)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 }

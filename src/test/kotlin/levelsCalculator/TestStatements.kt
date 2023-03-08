@@ -1,6 +1,6 @@
 package levelsCalculator
 
-import dev.eggnstone.plugins.jetbrains.dartformat.LevelsCalculator
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -56,9 +56,25 @@ class TestStatements
     }
 
     @Test
-    fun ifWithCondition()
+    fun ifWithConditionWithSpace()
     {
         val inputText = "if (true)"
+
+        val expectedCurrentLevel = 0
+        val expectedNextLevel = 1
+        val expectedConditionals = 1
+
+        val actualLevels = LevelsCalculator().calcLevels(inputText)
+
+        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
+        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
+        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
+    fun ifWithConditionWithoutSpace()
+    {
+        val inputText = "if(true)"
 
         val expectedCurrentLevel = 0
         val expectedNextLevel = 1

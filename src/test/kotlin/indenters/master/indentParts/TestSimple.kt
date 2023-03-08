@@ -1,6 +1,6 @@
 package indenters.master.indentParts
 
-import TestTools.Companion.assertAreEqual
+import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
@@ -17,7 +17,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -29,7 +29,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -41,7 +41,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -53,7 +53,7 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 
     @Test
@@ -65,6 +65,6 @@ class TestSimple
 
         val actualText = MasterIndenter().indentParts(inputParts)
 
-        assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual(actualText, expectedText)
     }
 }
