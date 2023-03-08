@@ -4,6 +4,6 @@ class IntegrationConstants
 {
     companion object
     {
-        const val testDataPath = "src/test/kotlin/integration/data/"
+        const val dataFilesPath = "src/test/kotlin/integration/dataFiles/"
     }
 }

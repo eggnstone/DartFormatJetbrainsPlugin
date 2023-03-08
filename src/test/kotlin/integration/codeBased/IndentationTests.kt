@@ -1,4 +1,4 @@
-package com.eggnstone.jetbrainsplugins.dartformat.integration
+package integration.codeBased
 
 import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
