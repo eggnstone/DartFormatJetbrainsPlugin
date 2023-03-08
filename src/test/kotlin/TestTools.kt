@@ -1,4 +1,5 @@
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
@@ -20,13 +21,27 @@ class TestTools
             throw ShortAssertError(description.toString(), if (reason.isEmpty()) "" else "Reason: $reason", stackPos)
         }
 
-        fun assertAreEqual(actual: List<String>, expected: List<String>)
+        fun assertStringsAreEqual(actual: List<String>, expected: List<String>)
         {
-            assertAreEqual(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 2) // stackPos doesn't seem to work
+            assertAreEqualInternal(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 2) // stackPos doesn't seem to work
+            //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
+        }
+
+        fun assertPartsAreEqual(actual: List<IPart>, expected: List<IPart>)
+        {
+            assertAreEqualInternal(Tools.toDisplayStringForParts(actual), Tools.toDisplayStringForParts(expected), 2) // stackPos doesn't seem to work
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
         fun assertAreEqual(actual: String, expected: String, stackPos: Int = 1)
+        {
+            val actualSimple = Tools.toDisplayStringSimple(actual)
+            val expectedSimple = Tools.toDisplayStringSimple(expected)
+
+            assertAreEqualInternal(actualSimple, expectedSimple)
+        }
+
+        private fun assertAreEqualInternal(actual: String, expected: String, stackPos: Int = 1)
         {
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))

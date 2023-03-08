@@ -15,7 +15,7 @@ class TestComplex
 
         val actualParts = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualParts, expectedParts)
+        TestTools.assertStringsAreEqual(actualParts, expectedParts)
     }
 
     @Test
@@ -27,7 +27,7 @@ class TestComplex
 
         val actualParts = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualParts, expectedParts)
+        TestTools.assertStringsAreEqual(actualParts, expectedParts)
     }
 
     @Test
@@ -39,6 +39,6 @@ class TestComplex
 
         val actualParts = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualParts, expectedParts)
+        TestTools.assertStringsAreEqual(actualParts, expectedParts)
     }
 }

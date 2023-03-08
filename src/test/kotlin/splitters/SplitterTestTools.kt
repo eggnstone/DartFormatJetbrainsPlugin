@@ -4,8 +4,6 @@ import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.ISplitter
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 
 class SplitterTestTools
 {
@@ -20,7 +18,8 @@ class SplitterTestTools
             TestTools.assertAreEqual(Tools.toDisplayStringSimple(actualResult.remainingText), Tools.toDisplayStringSimple(expectedRemainingText))
             //TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
 
-            MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
+            TestTools.assertPartsAreEqual(actualResult.parts, expectedParts)
+            //MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
         }
     }
 }

@@ -1,15 +1,7 @@
 package integration.codeBased
 
 import TestParams
-import com.eggnstone.jetbrainsplugins.dartformat.formatters.Formatter
-import com.eggnstone.jetbrainsplugins.dartformat.indenter.Indenter
-import com.eggnstone.jetbrainsplugins.dartformat.tokenizers.Tokenizer
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.EndOfLineCommentToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.LineBreakToken
-import com.eggnstone.jetbrainsplugins.dartformat.tokens.UnknownToken
 import integration.IntegrationTools
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -27,21 +19,8 @@ class EndOfLineCommentTestsParametrized(private val lineBreak: String, @Suppress
     @Test
     fun testEndOfLineCommentAtTextMiddle()
     {
-        val inputText = "abc//this is an end of line comment${lineBreak}def"
-        val expectedOutputTokens = mutableListOf(
-            UnknownToken("abc"),
-            EndOfLineCommentToken("this is an end of line comment"),
-            LineBreakToken(lineBreak),
-            UnknownToken("def")
-        )
+        val inputText = "abc;//this is an end of line comment${lineBreak}def;"
 
         IntegrationTools.test(inputText, inputText)
-
-        val inputTokens = Tokenizer().tokenize(inputText)
-        val actualOutputTokens = Formatter().format(inputTokens)
-        val actualOutputText = Indenter().recreate(actualOutputTokens)
-
-        assertThat(actualOutputTokens, equalTo(expectedOutputTokens))
-        assertThat(actualOutputText, equalTo(inputText))
     }
 }

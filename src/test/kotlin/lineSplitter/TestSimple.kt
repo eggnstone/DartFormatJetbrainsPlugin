@@ -26,7 +26,7 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val actualLines = LineSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 
     @Test
@@ -38,7 +38,7 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val actualLines = LineSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 
     @Test
@@ -50,6 +50,6 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val actualLines = LineSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 }

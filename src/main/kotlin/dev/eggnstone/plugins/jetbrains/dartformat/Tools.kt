@@ -72,7 +72,7 @@ class Tools
             {
                 @Suppress("ReplaceGetOrSet") // workaround for dotlin
                 val part = parts.get(i) // workaround for dotlin
-                result += part.toString()
+                result += toDisplayStringSimple(part.toString())
             }
 
             return result

@@ -15,7 +15,7 @@ class TestSimple
 
         val actualLines = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 
     @Test
@@ -27,7 +27,7 @@ class TestSimple
 
         val actualLines = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 
     @Test
@@ -39,7 +39,7 @@ class TestSimple
 
         val actualParts = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualParts, expectedParts)
+        TestTools.assertStringsAreEqual(actualParts, expectedParts)
     }
 
     @Test
@@ -51,6 +51,6 @@ class TestSimple
 
         val actualParts = TypeSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualParts, expectedParts)
+        TestTools.assertStringsAreEqual(actualParts, expectedParts)
     }
 }

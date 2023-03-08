@@ -16,7 +16,7 @@ class TestComplex
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
-        TestTools.assertAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
 
     @Test
@@ -29,7 +29,7 @@ class TestComplex
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
-        TestTools.assertAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
 
     @Test
@@ -42,7 +42,7 @@ class TestComplex
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
-        TestTools.assertAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
 
     @Test
@@ -55,6 +55,6 @@ class TestComplex
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
-        TestTools.assertAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
 }

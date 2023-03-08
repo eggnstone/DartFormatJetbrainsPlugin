@@ -15,6 +15,6 @@ class TestTrivial
 
         val actualLines = LineSplitter().split(inputText)
 
-        TestTools.assertAreEqual(actualLines, expectedLines)
+        TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
 }

@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -35,14 +36,25 @@ class TextSplitter : ISplitter
         while (DotlinTools.isNotEmpty(remainingText))
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
-            val c = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
+            val currentChar = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
+
+            @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+            val nextChar = if (remainingText.length < 2) "" else remainingText.get(1).toString() // workaround for dotlin for: for (c in text)
             //DotlinLogger.log("c: $c")
             //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
             //DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-            if (c == ";" && DotlinTools.isEmpty(currentBrackets))
+            if (remainingText.startsWith("//") || remainingText.startsWith("/*"))
             {
-                currentText += c
+                val extractionResult = CommentExtractor.extract(remainingText)
+                currentText += extractionResult.comment
+                remainingText = extractionResult.remainingText
+                continue
+            }
+
+            if (currentChar == ";" && DotlinTools.isEmpty(currentBrackets))
+            {
+                currentText += currentChar
                 remainingText = DotlinTools.substring(remainingText, 1)
 
                 if (DotlinTools.startsWith(DotlinTools.trim(remainingText), "else"))
@@ -61,9 +73,9 @@ class TextSplitter : ISplitter
                 return SplitResult(remainingText, listOf(Statement(currentText)))
             }
 
-            if (c == "{" && DotlinTools.isEmpty(currentBrackets))
+            if (currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
             {
-                currentText += c
+                currentText += currentChar
                 remainingText = DotlinTools.substring(remainingText, 1)
 
                 val result = MasterSplitter().split(remainingText)
@@ -74,7 +86,7 @@ class TextSplitter : ISplitter
                     DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
                     DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                    TODO("error 1 ${Tools.toDisplayString(c)}")
+                    TODO("error 1 ${Tools.toDisplayString(currentChar)}")
                 }
 
                 if (isDoubleBlock)
@@ -119,10 +131,10 @@ class TextSplitter : ISplitter
                 return SplitResult("", listOf(SingleBlock(currentText, remainingText, result.parts)))
             }
 
-            if (Tools.isOpeningBracket(c))
-                currentBrackets.add(c)
+            if (Tools.isOpeningBracket(currentChar))
+                currentBrackets.add(currentChar)
 
-            if (Tools.isClosingBracket(c))
+            if (Tools.isClosingBracket(currentChar))
             {
                 if (DotlinTools.isEmpty(currentBrackets))
                 {
@@ -135,11 +147,11 @@ class TextSplitter : ISplitter
 
                 val lastOpeningBracket = currentBrackets.removeLast()
                 val expectedClosingBracket = Tools.getClosingBracket(lastOpeningBracket)
-                if (c != expectedClosingBracket)
-                    TODO("error 2 ${Tools.toDisplayString(c)}")
+                if (currentChar != expectedClosingBracket)
+                    TODO("error 2 ${Tools.toDisplayString(currentChar)}")
             }
 
-            currentText += c
+            currentText += currentChar
             remainingText = DotlinTools.substring(remainingText, 1)
         }
 

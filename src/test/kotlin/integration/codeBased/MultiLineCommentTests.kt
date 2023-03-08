@@ -16,7 +16,7 @@ class MultiLineCommentTests
         IntegrationTools.test(inputText, expectedOutputText)
     }
 
-   @Test
+    @Test
     fun multiLineCommentInStatementWithMisleadingStatement()
     {
         val inputText = "if (true) /*multi line def(); comment*/\nabc();"
