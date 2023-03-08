@@ -3,10 +3,8 @@ package splitters.string
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.StringSplitter
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 
-class TestComplexWithoutTrim
+class TestComplexWithTrim
 {
     @Test
     fun trimStart()
@@ -14,9 +12,9 @@ class TestComplexWithoutTrim
         val inputText = " a\n"
         val inputDelimiter = "\n"
 
-        val expectedResult = listOf(" a", "")
+        val expectedResult = listOf("a", "")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -27,9 +25,9 @@ class TestComplexWithoutTrim
         val inputText = "a \n"
         val inputDelimiter = "\n"
 
-        val expectedResult = listOf("a ", "")
+        val expectedResult = listOf("a", "")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -40,9 +38,9 @@ class TestComplexWithoutTrim
         val inputText = " a \n"
         val inputDelimiter = "\n"
 
-        val expectedResult = listOf(" a ", "")
+        val expectedResult = listOf("a", "")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -53,9 +51,9 @@ class TestComplexWithoutTrim
         val inputText = " a \n b "
         val inputDelimiter = "\n"
 
-        val expectedResult = listOf(" a ", "", " b ")
+        val expectedResult = listOf("a", "", "b")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
