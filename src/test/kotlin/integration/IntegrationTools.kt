@@ -15,12 +15,16 @@ class IntegrationTools
     {
         fun test(inputText: String, expectedOutputText: String)
         {
+            /*
             val inputTokens = Tokenizer().tokenize(inputText)
             val actualOutputTokens = Formatter().format(inputTokens)
             //val actualOutputText = Indenter().indent(actualOutputTokens)
             val tempText = Indenter().recreate(actualOutputTokens)
 
             val parts = MasterSplitter().splitAll(tempText)
+            */
+
+            val parts = MasterSplitter().splitAll(inputText)
             PartTools.printParts(parts)
 
             val actualOutputText = MasterIndenter().indentParts(parts)

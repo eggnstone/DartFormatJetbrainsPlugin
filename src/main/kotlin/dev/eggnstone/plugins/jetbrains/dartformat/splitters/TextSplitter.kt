@@ -74,7 +74,7 @@ class TextSplitter : ISplitter
                     DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
                     DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                    TODO("error")
+                    TODO("error 1 ${Tools.toDisplayString(c)}")
                 }
 
                 if (isDoubleBlock)
@@ -97,7 +97,7 @@ class TextSplitter : ISplitter
                     {
                         //DotlinLogger.log("Expecting 'else' branch.")
                         //DotlinLogger.log("c:               ${Tools.toDisplayString(c)}")
-                        //tlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+                        //DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
                         //DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
                         //DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                         //DotlinLogger.log("result.parts:    ${Tools.toDisplayStringForParts(result.parts)}")
@@ -112,9 +112,9 @@ class TextSplitter : ISplitter
                     TODO("whitespace after else")
                 }
 
-                DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
-                DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
+                //DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
+                //DotlinLogger.log("currentHeader: ${Tools.toDisplayString(header)}")
+                //DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
                 //TODO("error: no else is unhandled")
                 return SplitResult("", listOf(SingleBlock(currentText, remainingText, result.parts)))
             }
@@ -136,7 +136,7 @@ class TextSplitter : ISplitter
                 val lastOpeningBracket = currentBrackets.removeLast()
                 val expectedClosingBracket = Tools.getClosingBracket(lastOpeningBracket)
                 if (c != expectedClosingBracket)
-                    TODO("error")
+                    TODO("error 2 ${Tools.toDisplayString(c)}")
             }
 
             currentText += c

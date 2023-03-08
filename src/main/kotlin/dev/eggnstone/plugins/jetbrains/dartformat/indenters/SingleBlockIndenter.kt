@@ -36,7 +36,8 @@ class SingleBlockIndenter : IIndenter
     fun indentHeader(header: String): String
     {
         if (DotlinTools.isEmpty(header))
-            return ""
+            throw DartFormatException("Unexpected empty header.")
+            //return ""
 
         if (!header.endsWith("{"))
             throw DartFormatException("Unexpected header end: " + Tools.toDisplayString(DotlinTools.substring(header, header.length - 1)))
