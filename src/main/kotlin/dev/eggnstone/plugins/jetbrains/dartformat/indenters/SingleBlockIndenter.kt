@@ -53,7 +53,20 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
             //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
-            val pad = if (DotlinTools.isBlank(headerLine)) TODO("untested") else "    "
+            
+            var pad = ""
+            if (headerLine.startsWith("async ") || headerLine.trim() == "async")
+            {
+                // no padding for "async..."
+            }
+            else
+            {
+                if (DotlinTools.isBlank(headerLine))
+                    TODO("untested")
+                else
+                    pad = DotlinTools.getSpaces(spacesPerLevel)
+            }
+
             result += pad + headerLine
         }
 
