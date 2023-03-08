@@ -1,6 +1,7 @@
 package splitters
 
 import TestTools
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.ISplitter
 import org.hamcrest.CoreMatchers
@@ -16,7 +17,9 @@ class SplitterTestTools
             //DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
             //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
 
-            TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
+            TestTools.assertAreEqual(Tools.toDisplayStringSimple(actualResult.remainingText), Tools.toDisplayStringSimple(expectedRemainingText))
+            //TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
+
             MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
         }
     }

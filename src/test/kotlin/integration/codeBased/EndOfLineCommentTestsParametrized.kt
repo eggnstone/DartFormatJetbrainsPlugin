@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class EndOfLineTestsParametrized(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class EndOfLineCommentTestsParametrized(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
