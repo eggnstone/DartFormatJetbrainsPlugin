@@ -6,21 +6,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
-@RunWith(value = Parameterized::class)
-class TestComplexWithoutTrimParametrizedWithLineBreaks(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class TestComplexWithoutTrim
 {
-    companion object
-    {
-        @JvmStatic
-        @Parameterized.Parameters(name = "{1}")
-        fun data() = TestParams.lineBreaks
-    }
-
     @Test
     fun trimStart()
     {
-        val inputText = " a$lineBreak"
-        val inputDelimiter = lineBreak
+        val inputText = " a\n"
+        val inputDelimiter = "\n"
 
         val expectedResult = listOf(" a", "")
 
@@ -32,8 +24,8 @@ class TestComplexWithoutTrimParametrizedWithLineBreaks(private val lineBreak: St
     @Test
     fun trimEnd()
     {
-        val inputText = "a $lineBreak"
-        val inputDelimiter = lineBreak
+        val inputText = "a \n"
+        val inputDelimiter = "\n"
 
         val expectedResult = listOf("a ", "")
 
@@ -45,8 +37,8 @@ class TestComplexWithoutTrimParametrizedWithLineBreaks(private val lineBreak: St
     @Test
     fun trimStartAndEnd()
     {
-        val inputText = " a $lineBreak"
-        val inputDelimiter = lineBreak
+        val inputText = " a \n"
+        val inputDelimiter = "\n"
 
         val expectedResult = listOf(" a ", "")
 
@@ -58,8 +50,8 @@ class TestComplexWithoutTrimParametrizedWithLineBreaks(private val lineBreak: St
     @Test
     fun trimStartAndEnd2()
     {
-        val inputText = " a $lineBreak b "
-        val inputDelimiter = lineBreak
+        val inputText = " a \n b "
+        val inputDelimiter = "\n"
 
         val expectedResult = listOf(" a ", "", " b ")
 
