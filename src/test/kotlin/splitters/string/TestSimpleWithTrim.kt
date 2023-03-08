@@ -1,10 +1,10 @@
-package stringSplitter
+package splitters.string
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.StringSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.StringSplitter
 import org.junit.Test
 
-class TestSimple
+class TestSimpleWithTrim
 {
     @Test
     fun delimiterNotInText()
@@ -14,7 +14,7 @@ class TestSimple
 
         val expectedResult = listOf("a")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -27,7 +27,7 @@ class TestSimple
 
         val expectedResult = listOf("a")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -40,7 +40,7 @@ class TestSimple
 
         val expectedResult = listOf("ab")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -53,7 +53,7 @@ class TestSimple
 
         val expectedResult = listOf("ab")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -66,7 +66,7 @@ class TestSimple
 
         val expectedResult = listOf("")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -79,7 +79,7 @@ class TestSimple
 
         val expectedResult = listOf("")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -92,7 +92,7 @@ class TestSimple
 
         val expectedResult = listOf("", "a")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -105,7 +105,7 @@ class TestSimple
 
         val expectedResult = listOf("", "a")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -118,7 +118,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -131,7 +131,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -144,7 +144,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "b")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -157,7 +157,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "b")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -170,7 +170,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "b", "", "c")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -183,7 +183,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "b", "", "c")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -196,7 +196,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "", "b")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -209,7 +209,7 @@ class TestSimple
 
         val expectedResult = listOf("a", "", "", "b")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }

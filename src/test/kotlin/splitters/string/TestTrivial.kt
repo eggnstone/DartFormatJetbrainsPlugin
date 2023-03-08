@@ -1,8 +1,8 @@
-package stringSplitter
+package splitters.string
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.StringSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.StringSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -14,7 +14,7 @@ class TestTrivial
         val inputText = ""
         val inputDelimiter = ""
 
-        assertThrows<DartFormatException> { StringSplitter.split(inputText, inputDelimiter) }
+        assertThrows<DartFormatException> { StringSplitter.split(inputText, inputDelimiter, trim = false) }
     }
 
     @Test
@@ -23,7 +23,7 @@ class TestTrivial
         val inputText = "a"
         val inputDelimiter = ""
 
-        assertThrows<DartFormatException> { StringSplitter.split(inputText, inputDelimiter) }
+        assertThrows<DartFormatException> { StringSplitter.split(inputText, inputDelimiter, trim = false) }
     }
 
     @Test
@@ -34,7 +34,7 @@ class TestTrivial
 
         val expectedResult = listOf("")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
@@ -47,7 +47,7 @@ class TestTrivial
 
         val expectedResult = listOf("")
 
-        val actualResult = StringSplitter.split(inputText, inputDelimiter)
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }

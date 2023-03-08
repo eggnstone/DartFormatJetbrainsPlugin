@@ -1,7 +1,7 @@
-package lineSplitter
+package splitters.line
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
 import org.junit.Test
 
 class TestTrivial

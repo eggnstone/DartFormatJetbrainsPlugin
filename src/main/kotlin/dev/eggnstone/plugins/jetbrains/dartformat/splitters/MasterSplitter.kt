@@ -36,10 +36,13 @@ class MasterSplitter : ISplitter
             if (splitter == null)
                 return SplitResult(remainingText, parts)
 
-            val result = splitter.split(remainingText)
-            remainingText = result.remainingText
+            val splitResult = splitter.split(remainingText)
+            DotlinLogger.log("Result from splitter:")
+            DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+            DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
-            parts.addAll(result.parts)
+            parts.addAll(splitResult.parts)
         }
 
         return SplitResult("", parts)

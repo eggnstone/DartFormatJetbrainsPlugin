@@ -65,4 +65,26 @@ class IndentationTests
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
+
+    @Test
+    fun ifBlockInsideFunction()
+    {
+        val inputText = "void main()\n" +
+        "{\n" +
+        "if (true)\n" +
+        "{\n" +
+        "abc();\n" +
+        "}\n" +
+        "}\n"
+
+        val expectedText = "void main()\n" +
+        "{\n" +
+        "    if (true)\n" +
+        "    {\n" +
+        "        abc();\n" +
+        "    }\n" +
+        "}\n"
+
+        IntegrationTools.test(inputText, expectedText)
+    }
 }

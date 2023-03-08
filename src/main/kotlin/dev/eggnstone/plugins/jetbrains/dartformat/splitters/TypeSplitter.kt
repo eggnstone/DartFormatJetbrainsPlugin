@@ -1,16 +1,15 @@
-package dev.eggnstone.plugins.jetbrains.dartformat
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
-
-data class SplitType(val name: String, val function: (String) -> Boolean, val combineSame: Boolean)
 
 class TypeSplitter
 {
     companion object
     {
         val types = listOf(
-            SplitType("Bracket", Tools::isBracket, false),
-            SplitType("Whitespace", Tools::isWhitespace, true)
+            SplitType("Bracket", Tools.Companion::isBracket, false),
+            SplitType("Whitespace", Tools.Companion::isWhitespace, true)
         )
     }
 

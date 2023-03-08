@@ -1,8 +1,8 @@
-package lineSplitter
+package splitters.line
 
 import TestParams
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

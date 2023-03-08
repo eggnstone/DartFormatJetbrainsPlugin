@@ -3,8 +3,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
-data class ExtractionResult(val comment: String, val remainingText: String)
-
 class CommentExtractor
 {
     companion object

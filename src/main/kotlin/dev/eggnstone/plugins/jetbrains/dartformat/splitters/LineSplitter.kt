@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
@@ -36,7 +36,7 @@ class LineSplitter
         val outputLines = mutableListOf<String>()
 
         var currentText = ""
-        val lines = StringSplitter.split(s, delimiter)
+        val lines = StringSplitter.split(s, delimiter, trim = true)
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {

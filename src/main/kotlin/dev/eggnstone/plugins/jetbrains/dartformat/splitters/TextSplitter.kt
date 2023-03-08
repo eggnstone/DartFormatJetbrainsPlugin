@@ -14,7 +14,7 @@ class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
+        DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -38,10 +38,14 @@ class TextSplitter : ISplitter
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
             val currentChar = remainingText.get(0).toString() // workaround for dotlin for: for (c in text)
 
-            @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
-            //DotlinLogger.log("c: $c")
-            //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(Tools.shorten(remainingText, 100))}")
-            //DotlinLogger.log("  currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+            /*
+            DotlinLogger.log("---")
+            DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
+            DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+            DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+            DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
+            DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
+            */
 
             if (remainingText.startsWith("//") || remainingText.startsWith("/*"))
             {
@@ -82,9 +86,12 @@ class TextSplitter : ISplitter
 
                 if (!DotlinTools.startsWith(remainingText, "}"))
                 {
-                    DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                    DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
-                    DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
+                    DotlinLogger.log("---")
+                    DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
+                    DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+                    DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+                    DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
+                    DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                     TODO("error 1 ${Tools.toDisplayString(currentText)} ${Tools.toDisplayString(header)} ${Tools.toDisplayString(remainingText)}")
                 }
 
@@ -93,14 +100,20 @@ class TextSplitter : ISplitter
                     if (remainingText == "}")
                         return SplitResult("", listOf(DoubleBlock(header, currentText, "}", parts1, result.parts)))
 
-                    DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                    DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
-                    DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
+                    DotlinLogger.log("---")
+                    DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
+                    DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+                    DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+                    DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
+                    DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                     TODO("is double block")
                 }
 
                 if (remainingText == "}")
+                {
+                    DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
                     return SplitResult("", listOf(SingleBlock(currentText, "}", result.parts)))
+                }
 
                 if (DotlinTools.startsWith(DotlinTools.trim(DotlinTools.substring(remainingText, 1)), "else"))
                 {
@@ -123,11 +136,14 @@ class TextSplitter : ISplitter
                     TODO("whitespace after else")
                 }
 
-                //DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-                //DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
-                //DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
-                //TODO("error: no else is unhandled")
-                return SplitResult("", listOf(SingleBlock(currentText, remainingText, result.parts)))
+                DotlinLogger.log("---")
+                DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
+                DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+                DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+                DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
+                DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
+                DotlinLogger.log("- Returning SingleBlock (no else)")
+                return SplitResult(remainingText.substring(1), listOf(SingleBlock(currentText, "}", result.parts)))
             }
 
             if (Tools.isOpeningBracket(currentChar))
@@ -137,9 +153,11 @@ class TextSplitter : ISplitter
             {
                 if (DotlinTools.isEmpty(currentBrackets))
                 {
+                    DotlinLogger.log("---")
+                    DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
                     DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
-                    DotlinLogger.log("currentHeader:   ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+                    DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                     throw DartFormatException("Unexpected closing curly bracket.")
                 }
@@ -154,9 +172,11 @@ class TextSplitter : ISplitter
             remainingText = DotlinTools.substring(remainingText, 1)
         }
 
-        DotlinLogger.log("currentText:   ${Tools.toDisplayString(currentText)}")
-        DotlinLogger.log("header:        ${Tools.toDisplayString(header)}")
-        DotlinLogger.log("remainingText: ${Tools.toDisplayString(remainingText)}")
+        DotlinLogger.log("---")
+        DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
+        DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
+        DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
+        DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
         throw DartFormatException("Unexpected end of block or statement.")
     }
 }

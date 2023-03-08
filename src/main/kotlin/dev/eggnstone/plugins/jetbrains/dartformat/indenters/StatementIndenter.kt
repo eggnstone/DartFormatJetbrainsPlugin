@@ -1,11 +1,11 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
 
 class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
 {

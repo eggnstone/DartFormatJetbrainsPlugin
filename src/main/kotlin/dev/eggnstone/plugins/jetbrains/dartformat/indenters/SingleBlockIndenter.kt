@@ -1,11 +1,11 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
 
 class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 {
@@ -53,7 +53,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
             //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
-            
+
             var pad = ""
             if (headerLine.startsWith("async ") || headerLine.trim() == "async")
             {

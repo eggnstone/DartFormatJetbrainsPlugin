@@ -1,7 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
-import dev.eggnstone.plugins.jetbrains.dartformat.TypeSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
 
 class LevelsCalculator
 {
