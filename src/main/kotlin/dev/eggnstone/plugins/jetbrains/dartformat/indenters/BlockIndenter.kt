@@ -26,7 +26,7 @@ class BlockIndenter(spacesPerLevel: Int)
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
             //DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
-            val pad = if (DotlinTools.isBlank(line)) "" else DotlinTools.getSpaces(4)
+            val pad = if (DotlinTools.isBlank(line)) "" else DotlinTools.getSpaces(spacesPerLevel)
             indentedBody += pad + line
         }
 

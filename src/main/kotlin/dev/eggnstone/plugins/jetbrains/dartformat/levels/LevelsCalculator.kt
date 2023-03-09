@@ -1,19 +1,27 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
 
 class LevelsCalculator
 {
-    fun calcLevels(line: String): Levels
+    fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
+        DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
+
         if (DotlinTools.isEmpty(line))
-            return Levels(0, 0, 0)
+            return Levels(0, listOf())
 
         var brackets = 0
         var conditionals = 0
-        var currentLevel = 0
-        var nextLevel = 0
+
+        val currentBracketPackages = oldBracketPackages.toMutableList()
+        var currentBrackets = mutableListOf<String>()
+        var currentLineIndex = lineIndex
+
         val items = TypeSplitter().split(line)
         //DotlinLogger.log("  items: (${Tools.toDisplayStringForStrings(items)})")
 
@@ -21,28 +29,36 @@ class LevelsCalculator
         {
             if (item == "if")
             {
-                //DotlinLogger.log("    if -> conditionals++ / nextLevel++")
                 conditionals++
-                nextLevel++
                 continue
             }
 
-            if (item.length == 1 && item == "{")// Tools.isOpeningBracket(item))
+            if (item.length == 1 && Tools.isOpeningBracket(item))
             {
-                //DotlinLogger.log("    ${Tools.toDisplayString(item)}  = opening -> nextLevel++")
-                //DotlinLogger.log("    ${Tools.toDisplayString(item)}  = opening { -> nextLevel++")
                 brackets++
-                //nextLevel++
+                currentBrackets += item
                 continue
             }
 
-            if (item.length == 1 && item == "}")// Tools.isClosingBracket(item))
+            if (item.length == 1 && Tools.isClosingBracket(item))
             {
-                //DotlinLogger.log("    ${Tools.toDisplayString(item)} = closing -> currentLevel-- / nextLevel--")
-                //DotlinLogger.log("    ${Tools.toDisplayString(item)} = closing } -> currentLevel-- / nextLevel--")
+                if (DotlinTools.isEmpty(currentBrackets))
+                {
+                    // TODO: what to do when one bracket is removed and therefore an old bracket package is used but then new brackets are added?
+                    if (DotlinTools.isEmpty(currentBracketPackages))
+                        throw DartFormatException("DotlinTools.isEmpty(currentBrackets)")
+
+                    val tempBracketPackage = currentBracketPackages.removeLast()
+                    currentBrackets = tempBracketPackage.brackets.toMutableList()
+                    currentLineIndex = tempBracketPackage.lineIndex
+                }
+
+                if (item != Tools.getClosingBracket(currentBrackets.last()))
+                    throw DartFormatException("item != currentBrackets.last() Expected: ${currentBrackets.last()} Is: $item")
+
                 brackets--
-                //currentLevel--
-                //nextLevel--
+                currentBrackets.removeLast()
+
                 continue
             }
 
@@ -52,11 +68,10 @@ class LevelsCalculator
             //DotlinLogger.log("    ${Tools.toDisplayString(item)} = ? -> nothing")
         }
 
-        if (brackets < 0)
-            currentLevel += brackets
 
-        nextLevel += brackets
+        if (DotlinTools.isNotEmpty(currentBrackets))
+            currentBracketPackages += BracketPackage(currentBrackets, lineIndex)
 
-        return Levels(currentLevel, nextLevel, conditionals)
+        return Levels(conditionals, currentBracketPackages)
     }
 }

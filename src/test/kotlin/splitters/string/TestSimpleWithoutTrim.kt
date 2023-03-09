@@ -213,4 +213,17 @@ class TestSimpleWithoutTrim
 
         TestTools.assertStringsAreEqual(actualResult, expectedResult)
     }
+
+    @Test
+    fun onlySpacesAfterDelimiter()
+    {
+        val inputText = "abc,    "
+        val inputDelimiter = ","
+
+        val expectedResult = listOf("abc", "", "    ")
+
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+
+        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+    }
 }

@@ -36,7 +36,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         @Suppress("LiftReturnOrAssignment")
         when (inputPart)
         {
-            is DoubleBlock -> return DoubleBlockIndenter(4)
+            is DoubleBlock -> return DoubleBlockIndenter(spacesPerLevel)
             is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)
             is Whitespace -> return WhitespaceIndenter(spacesPerLevel)

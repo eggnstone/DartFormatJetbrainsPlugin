@@ -1,5 +1,6 @@
 package levels.levelsCalculator
 
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.BracketPackage
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -12,15 +13,14 @@ class TestStatements
     {
         val inputText = ";"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 0
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 0
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -28,15 +28,14 @@ class TestStatements
     {
         val inputText = "abc();"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 0
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 0
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -44,15 +43,14 @@ class TestStatements
     {
         val inputText = "if"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 1
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 1
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -60,15 +58,14 @@ class TestStatements
     {
         val inputText = "if (true)"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 1
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 1
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -76,15 +73,14 @@ class TestStatements
     {
         val inputText = "if(true)"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 1
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 1
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -92,15 +88,14 @@ class TestStatements
     {
         val inputText = "if (true) if (true)"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 2
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 2
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 
     @Test
@@ -108,14 +103,13 @@ class TestStatements
     {
         val inputText = "if (true) if (true) if (true)"
 
-        val expectedCurrentLevel = 0
-        val expectedNextLevel = 3
+        val expectedBracketPackagesSize = 0
         val expectedConditionals = 3
 
-        val actualLevels = LevelsCalculator().calcLevels(inputText)
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
 
-        MatcherAssert.assertThat(actualLevels.currentLevel, equalTo(expectedCurrentLevel))
-        MatcherAssert.assertThat(actualLevels.nextLevel, equalTo(expectedNextLevel))
-        MatcherAssert.assertThat(actualLevels.conditionals, equalTo(expectedConditionals))
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
 }

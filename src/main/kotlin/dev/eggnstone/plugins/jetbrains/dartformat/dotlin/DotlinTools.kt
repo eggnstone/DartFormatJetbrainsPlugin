@@ -76,6 +76,10 @@ class DotlinTools
         @Suppress("ReplaceSizeCheckWithIsNotEmpty")
         fun isNotEmpty(s: String) = s.length > 0
 
+        // List<T>.isEmpty
+        @Suppress("ReplaceSizeCheckWithIsNotEmpty")
+        fun <T> isNotEmpty(l: List<T>): Boolean = l.size > 0
+
         // kotlin minOf
         @Suppress("MemberVisibilityCanBePrivate")
         fun minOf(a: Int, b: Int): Int = if (a < b) a else b
@@ -164,6 +168,21 @@ class DotlinTools
             }
 
             return substring(s, startIndex, endIndex + 1)
+        }
+
+        fun toMutableListOfString(s: String): MutableList<String>
+        {
+            var result = mutableListOf<String>()
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls")
+            for (i in 0 until s.length)
+            {
+                @Suppress("ReplaceGetOrSet")
+                val c = s.get(i).toString()
+                result += c
+            }
+
+            return result
         }
     }
 }

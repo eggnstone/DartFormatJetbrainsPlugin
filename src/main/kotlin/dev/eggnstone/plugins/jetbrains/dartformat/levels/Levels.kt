@@ -1,3 +1,3 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
-data class Levels(val currentLevel: Int, val nextLevel: Int, val conditionals: Int)
+data class Levels(val newConditionals: Int, val newBracketPackages: List<BracketPackage>)
