@@ -11,13 +11,13 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TokenizeTestsParametrized(private val delim1: String, private val delim2: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class TokenizeTestsParametrizedWithQuotesWithOtherQuotes(private val delim1: String, private val delim2: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
         @JvmStatic
         @Parameterized.Parameters(name = "{2}")
-        fun data() = TestParams.quotes
+        fun data() = TestParams.quotesWithOtherQuotes
     }
 
     @Test

@@ -14,7 +14,7 @@ class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
+        DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -30,6 +30,9 @@ class TextSplitter : ISplitter
         //var currentMiddle = ""
         var currentText = ""
         var isDoubleBlock = false
+        var isInApostrophes = false
+        var isInAssignment = false
+        var isInNormalQuotes = false
         //val parts = mutableListOf<IPart>()
 
         var remainingText = inputText
@@ -47,6 +50,56 @@ class TextSplitter : ISplitter
             DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
             */
 
+            if (isInNormalQuotes)
+            {
+                if (remainingText.startsWith("\\\""))
+                {
+                    currentText += "\\\""
+                    remainingText = DotlinTools.substring(remainingText, 2)
+                    continue
+                }
+
+                if (remainingText.startsWith("\""))
+                    isInNormalQuotes = false
+
+                currentText += currentChar
+                remainingText = DotlinTools.substring(remainingText, 1)
+                continue
+            }
+
+            if (isInApostrophes)
+            {
+                if (remainingText.startsWith("\\'"))
+                {
+                    currentText += "\\'"
+                    remainingText = DotlinTools.substring(remainingText, 2)
+                    continue
+                }
+
+                if (remainingText.startsWith("'"))
+                    isInApostrophes = false
+
+                currentText += currentChar
+                remainingText = DotlinTools.substring(remainingText, 1)
+                continue
+            }
+
+            if (remainingText.startsWith("\""))
+            {
+                isInNormalQuotes = true
+                currentText += currentChar
+                remainingText = DotlinTools.substring(remainingText, 1)
+                continue
+            }
+
+            if (remainingText.startsWith("'"))
+            {
+                isInApostrophes = true
+                currentText += currentChar
+                remainingText = DotlinTools.substring(remainingText, 1)
+                continue
+            }
+
             if (remainingText.startsWith("//") || remainingText.startsWith("/*"))
             {
                 val extractionResult = CommentExtractor.extract(remainingText)
@@ -54,6 +107,9 @@ class TextSplitter : ISplitter
                 remainingText = extractionResult.remainingText
                 continue
             }
+
+            if (currentChar == "=" && DotlinTools.isEmpty(currentBrackets))
+                isInAssignment = true
 
             if (currentChar == ";" && DotlinTools.isEmpty(currentBrackets))
             {
@@ -76,7 +132,12 @@ class TextSplitter : ISplitter
                 return SplitResult(remainingText, listOf(Statement(currentText)))
             }
 
-            if (currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
+            /*if (isInAssignment&&  currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
+            {
+
+            }*/
+
+            if (!isInAssignment && currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
             {
                 currentText += currentChar
                 remainingText = DotlinTools.substring(remainingText, 1)
@@ -149,10 +210,13 @@ class TextSplitter : ISplitter
             }
 
             if (Tools.isOpeningBracket(currentChar))
-                currentBrackets.add(currentChar)
-
-            if (Tools.isClosingBracket(currentChar))
             {
+                DotlinLogger.log("+ Adding: $currentChar")
+                currentBrackets.add(currentChar)
+            }
+            else if (Tools.isClosingBracket(currentChar))
+            {
+                DotlinLogger.log("- Removing: $currentChar")
                 if (DotlinTools.isEmpty(currentBrackets))
                 {
                     DotlinLogger.log("---")
@@ -161,7 +225,7 @@ class TextSplitter : ISplitter
                     DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
                     DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
                     DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
-                    throw DartFormatException("Unexpected closing curly bracket.")
+                    throw DartFormatException("Unexpected closing bracket: currentChar=${Tools.toDisplayString(currentChar)} remainingText=${Tools.toDisplayString(remainingText)}")
                 }
 
                 val lastOpeningBracket = currentBrackets.removeLast()

@@ -29,8 +29,20 @@ class TestParams
         val lineBreaksAndKeywords = join(lineBreaks, keywords)
 
         val quotes = arrayOf(
-            arrayOf("\"", "'", "Normal quotes"),
-            arrayOf("'", "\"", "Apostrophe")
+            arrayOf("\"", "Normal quotes"),
+            arrayOf("'", "Apostrophes")
+        )
+
+        val quotesWithOtherQuotes = arrayOf(
+            arrayOf("\"", "'", "Normal quotes and apostrophes"),
+            arrayOf("'", "\"", "Apostrophes and normal quotes")
+        )
+
+        val quotesWithInnerQuotes = arrayOf(
+            arrayOf("\"", "'", "Normal quotes with inner apostrophes"),
+            arrayOf("\"", "\\\"", "Normal quotes with inner escaped normal quotes"),
+            arrayOf("'", "\"", "Apostrophes with inner normal quotes"),
+            arrayOf("'", "\\'", "Apostrophes with inner escaped apostrophes")
         )
 
         val specials = arrayOf(

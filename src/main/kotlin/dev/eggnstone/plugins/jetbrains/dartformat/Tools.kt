@@ -48,10 +48,13 @@ class Tools
         fun isBracket(c: String): Boolean = DotlinTools.containsChar(openingBrackets + closingBrackets, c)
         fun isWhitespace(c: String): Boolean = DotlinTools.containsChar("\n\r\t ", c)
 
-        fun shorten(s: String, maxLength: Int): String
+        fun shorten(s: String, maxLength: Int, addEllipsis: Boolean): String
         {
             if (s.length < maxLength)
                 return s
+
+            if (addEllipsis)
+                return DotlinTools.substring(s, 0, maxLength - 4) + " ..."// dotlin
 
             return DotlinTools.substring(s, 0, maxLength) // dotlin
             //return s.substring(0, maxLength)

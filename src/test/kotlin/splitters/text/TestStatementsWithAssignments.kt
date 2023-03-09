@@ -1,58 +1,32 @@
 package splitters.text
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 import splitters.SplitterTestTools
 
-class TestSingleBlocks
+class TestStatementsWithAssignments
 {
     @Test
-    fun unexpectedClosingCurlyBracket()
+    fun assignmentInt()
     {
-        val inputText = "}"
-
-        assertThrows<DartFormatException> { TextSplitter().split(inputText) }
-    }
-
-    @Test
-    fun simpleBlock()
-    {
-        val inputText = "{}"
+        val inputText = "final int i = 0;"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("{", "}")
+        val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
     @Test
-    fun simpleBlockWithTextBefore()
+    fun assignmentString()
     {
-        val inputText = "abc {}"
+        val inputText = "final String s = \"abc\";"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("abc {", "}")
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
-
-    @Test
-    fun TODO_NAME()
-    {
-        val inputText = "class C\n" +
-        "{\n" +
-        "}"
-
-        val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"))
-        val expectedPart = SingleBlock("class C\n{", "}", parts)
+        val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -61,11 +35,22 @@ class TestSingleBlocks
     @Test
     fun pseudoAssignmentWithForLoop()
     {
-        val inputText = "for (int i = 0; i < 10; i++) {}"
+        val inputText = "for (int i = 0; i < 10; i++) abc(i);"
 
         val expectedRemainingText = ""
-        val parts = listOf<IPart>()
-        val expectedPart = SingleBlock("for (int i = 0; i < 10; i++) {", "}", parts)
+        val expectedPart = Statement(inputText)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun assignmentWithCurlyBrackets()
+    {
+        val inputText = "final List<String> = <String>{\"a\",\"b\"};"
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
