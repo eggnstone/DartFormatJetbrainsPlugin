@@ -18,6 +18,17 @@ class DefaultFlutterMainTests
     }
 
     @Test
+    fun defaultFlutterMainSimplifiedLineBreaks()
+    {
+        val inputTextRaw = File(IntegrationConstants.dataFilesPath + "default_flutter_main.input.dart").readText()
+        val inputText = inputTextRaw.replace("\r\n", "\n")
+        val expectedOutputTextRaw = File(IntegrationConstants.dataFilesPath + "default_flutter_main.expected_output.dart").readText()
+        val expectedOutputText = expectedOutputTextRaw.replace("\r\n", "\n")
+
+        IntegrationTools.test(inputText, expectedOutputText)
+    }
+
+    @Test
     @Ignore
     fun defaultFlutterMain2()
     {

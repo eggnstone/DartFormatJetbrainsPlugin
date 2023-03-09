@@ -21,11 +21,13 @@ class TestSimple
     @Test
     fun twoLines()
     {
-        val inputText = "class C\n" +
-        "{"
+        val inputText =
+            "class C\n" +
+            "{"
 
-        val expectedText = "class C\n" +
-        "{"
+        val expectedText =
+            "class C\n" +
+            "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -35,13 +37,15 @@ class TestSimple
     @Test
     fun threeLines()
     {
-        val inputText = "class C\n" +
-        "with X\n" +
-        "{"
+        val inputText =
+            "class C\n" +
+            "with X\n" +
+            "{"
 
-        val expectedText = "class C\n" +
-        "    with X\n" +
-        "{"
+        val expectedText =
+            "class C\n" +
+            "    with X\n" +
+            "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -51,13 +55,53 @@ class TestSimple
     @Test
     fun voidMainAsync()
     {
-        val inputText = "void main()\n" +
-        "async\n" +
-        "{"
+        val inputText =
+            "void main()\n" +
+            "async\n" +
+            "{"
 
-        val expectedText = "void main()\n" +
-        "async\n" +
-        "{"
+        val expectedText =
+            "void main()\n" +
+            "async\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun annotation()
+    {
+        val inputText =
+            "@annotation\n" +
+            "void main()\n" +
+            "{"
+
+        val expectedText =
+            "@annotation\n" +
+            "void main()\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun annotations()
+    {
+        val inputText =
+            "@annotation1\n" +
+            "@annotation2\n" +
+            "void main()\n" +
+            "{"
+
+        val expectedText =
+            "@annotation1\n" +
+            "@annotation2\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 

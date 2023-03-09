@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
@@ -10,6 +11,8 @@ class StringSplitter
     {
         fun split(s: String, delimiter: String, trim: Boolean): List<String>
         {
+            DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
+
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (delimiter.length == 0)
                 throw DartFormatException("delimiter.length == 0")
@@ -35,13 +38,11 @@ class StringSplitter
                     {
                         if (trim)
                         {
-                            if (DotlinTools.isEmpty(currentText.trim()))
-                            {
-                                TODO("DotlinTools.isEmpty(currentText.trim())")
-                                result.add("/*currentText is empty*/")
-                            }
+                            val trimmedCurrentText = Tools.trimWithoutLineBreaks(currentText)
+                            if (DotlinTools.isEmpty(trimmedCurrentText))
+                                TODO("DotlinTools.isEmpty(trimmedCurrentText)")
 
-                            result.add(currentText.trim())
+                            result.add(trimmedCurrentText)
                         }
                         else
                             result.add(currentText)
@@ -70,14 +71,20 @@ class StringSplitter
             {
                 if (trim)
                 {
-                    if (DotlinTools.isEmpty(rest.trim()))
+                    val trimmedRest = Tools.trimWithoutLineBreaks(rest)
+                    if (DotlinTools.isEmpty(trimmedRest))
                     {
-                        TODO()
-                        DotlinLogger.log("DotlinTools.isEmpty(rest.trim())")
-                        //result.add("/*rest is empty*/")
+                        //TODO("DotlinTools.isEmpty(trimmedRest)")
+
+                        /*if (rest.contains("\n") || rest.contains("\r"))
+                            TODO("DotlinTools.isEmpty(trimmedRest)")*/
+
+                        //TODO("Rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim")
+                        //result.add("/*rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim*/")
+                        result.add("_EMPTY_")
                     }
                     else
-                        result.add(rest.trim())
+                        result.add(trimmedRest)
                 }
                 else
                     result.add(rest)

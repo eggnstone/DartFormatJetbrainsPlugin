@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -45,18 +46,40 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         val shortenedHeader = DotlinTools.substring(header, 0, header.length - 1)
 
         val headerLines = lineSplitter.split(shortenedHeader)
-        var result = if (headerLines.isEmpty()) "" else headerLines[0]
+        if (headerLines.isEmpty())
+            return "{"
+
+        var result = headerLines[0]
+
+        var startIndex = 1
+
+        // Fix annotations
+        while (startIndex < headerLines.size)
+        {
+            if (headerLines[startIndex - 1].startsWith("@"))
+            {
+                result += headerLines[startIndex]
+                startIndex++
+                continue
+            }
+
+            break
+        }
 
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-        for (i in 1 until headerLines.size) // workaround for dotlin
+        for (i in startIndex until headerLines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
-            //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+            DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
 
             var pad = ""
-            if (headerLine.startsWith("async ") || headerLine.trim() == "async")
+            if (/*headerLine.startsWith("@")
+                ||*/ headerLine.startsWith("async ")
+                || headerLine.trim() == "async"
+            )
             {
+                //// no padding for @-annotations and "async..."
                 // no padding for "async..."
             }
             else

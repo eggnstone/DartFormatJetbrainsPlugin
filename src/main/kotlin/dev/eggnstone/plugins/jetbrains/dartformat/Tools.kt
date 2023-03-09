@@ -101,5 +101,60 @@ class Tools
 
             return result
         }
+
+        fun trimWithoutLineBreaks(s: String): String
+        {
+            //return s
+            return trimEndWithoutLineBreaks(s)
+            //return trimStartWithoutLineBreaks(trimEndWithoutLineBreaks(s))
+        }
+
+        fun trimStartWithoutLineBreaks(s: String): String
+        {
+            var startText = ""
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until s.length)
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
+                if (c == "\n" || c == "\r")
+                {
+                    startText += c
+                    continue
+                }
+
+                if (c == "\t" || c == " ")
+                    continue
+
+                return startText + DotlinTools.substring(s, i)
+            }
+
+            return startText
+        }
+
+        fun trimEndWithoutLineBreaks(s: String): String
+        {
+            var endText = ""
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in s.length - 1 downTo 0)
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
+                if (c == "\n" || c == "\r")
+                {
+                    endText = c + endText
+                    continue
+                }
+
+                if (c == "\t" || c == " ")
+                    continue
+
+                return DotlinTools.substring(s, 0, i + 1) + endText
+            }
+
+            return endText
+        }
     }
 }

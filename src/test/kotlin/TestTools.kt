@@ -38,7 +38,7 @@ class TestTools
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)
 
-            assertAreEqualInternal(actualSimple, expectedSimple)
+            assertAreEqualInternal(actualSimple, expectedSimple, 3)
         }
 
         private fun assertAreEqualInternal(actual: String, expected: String, stackPos: Int = 1)
@@ -71,7 +71,7 @@ class TestTools
                 throw ShortAssertError(
                     "\nExpected: \"$expected\"\n     but: was \"$actual\"",
                     "Difference at position $i.",
-                    1
+                    stackPos
                 )
             }
 
