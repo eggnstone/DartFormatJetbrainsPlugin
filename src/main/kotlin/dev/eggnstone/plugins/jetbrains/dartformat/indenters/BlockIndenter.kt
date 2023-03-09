@@ -1,5 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
@@ -15,8 +17,11 @@ class BlockIndenter(spacesPerLevel: Int)
 
     fun indentParts(parts: List<IPart>, spacesPerLevel: Int): String
     {
+        DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
+
         val body = masterIndenter.indentParts(parts)
-        val lines = lineSplitter.split(body)
+        DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
+        val lines = lineSplitter.split(body, trim = false)
 
         //DotlinLogger.log("  Lines :${lines.size}")
         var indentedBody = ""
@@ -30,6 +35,7 @@ class BlockIndenter(spacesPerLevel: Int)
             indentedBody += pad + line
         }
 
+        DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
         return indentedBody
     }
 }

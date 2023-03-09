@@ -112,4 +112,19 @@ class TestStatements
         MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
         MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
     }
+
+    @Test
+    fun commentWithIf()
+    {
+        val inputText = "// comment if (true)"
+
+        val expectedBracketPackagesSize = 0
+        val expectedConditionals = 0
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
+
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
 }

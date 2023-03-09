@@ -11,6 +11,9 @@ class StringSplitter
     {
         fun split(s: String, delimiter: String, trim: Boolean): List<String>
         {
+            /*if (s.contains("    abc"))
+                TODO()*/
+
             DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
@@ -38,7 +41,7 @@ class StringSplitter
                     {
                         if (trim)
                         {
-                            val trimmedCurrentText = Tools.trimWithoutLineBreaks(currentText)
+                            val trimmedCurrentText = Tools.trimSimple(currentText)
                             if (DotlinTools.isEmpty(trimmedCurrentText))
                                 TODO("DotlinTools.isEmpty(trimmedCurrentText)")
 
@@ -71,7 +74,7 @@ class StringSplitter
             {
                 if (trim)
                 {
-                    val trimmedRest = Tools.trimWithoutLineBreaks(rest)
+                    val trimmedRest = Tools.trimSimple(rest)
                     if (DotlinTools.isEmpty(trimmedRest))
                     {
                         //TODO("DotlinTools.isEmpty(trimmedRest)")
@@ -81,7 +84,7 @@ class StringSplitter
 
                         //TODO("Rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim")
                         //result.add("/*rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim*/")
-                        result.add("_EMPTY_")
+                        //result.add("_EMPTY2_")
                     }
                     else
                         result.add(trimmedRest)

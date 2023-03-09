@@ -66,6 +66,7 @@ class IndentationTests
         IntegrationTools.test(inputText, expectedOutputText)
     }
 
+    // TODO: write non-integration test
     @Test
     fun ifBlockInsideFunction()
     {

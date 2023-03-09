@@ -13,7 +13,7 @@ class TestTrivial
 
         val expectedLines = listOf<String>()
 
-        val actualLines = LineSplitter().split(inputText)
+        val actualLines = LineSplitter().split(inputText, false)
 
         TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }

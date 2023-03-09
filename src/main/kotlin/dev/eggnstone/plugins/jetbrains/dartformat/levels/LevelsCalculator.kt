@@ -27,6 +27,9 @@ class LevelsCalculator
 
         for (item in items)
         {
+            if (item == "//")
+                break
+
             if (item == "if")
             {
                 conditionals++
@@ -67,7 +70,6 @@ class LevelsCalculator
 
             //DotlinLogger.log("    ${Tools.toDisplayString(item)} = ? -> nothing")
         }
-
 
         if (DotlinTools.isNotEmpty(currentBrackets))
             currentBracketPackages += BracketPackage(currentBrackets, lineIndex)

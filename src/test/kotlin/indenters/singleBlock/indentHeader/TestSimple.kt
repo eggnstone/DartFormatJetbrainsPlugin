@@ -2,6 +2,7 @@ package indenters.singleBlock.indentHeader
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.SingleBlockIndenter
+import org.junit.Ignore
 import org.junit.Test
 
 class TestSimple
@@ -101,6 +102,100 @@ class TestSimple
             "@annotation1\n" +
             "@annotation2\n" +
             "void main()\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun endOfLineCommentAtTextStart()
+    {
+        val inputText =
+            "//comment\n" +
+            "void main()\n" +
+            "{"
+
+        val expectedText =
+            "//comment\n" +
+            "void main()\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun endOfLineCommentWithQuotesAtTextStart()
+    {
+        val inputText =
+            "//\"comment1\"\n" +
+            "//    \"comment2\"    \n" +
+            "void main()\n" +
+            "{"
+
+        val expectedText =
+            "//\"comment1\"\n" +
+            "//    \"comment2\"\n" +
+            "void main()\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun endOfLineCommentAtTextMiddle()
+    {
+        val inputText =
+            "void main()\n" +
+            "//comment\n" +
+            "{"
+
+        val expectedText =
+            "void main()\n" +
+            "//comment\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    @Ignore
+    fun multiCommentAtTextStart()
+    {
+        val inputText =
+            "/*comment*/\n" +
+            "void main()\n" +
+            "{"
+
+        val expectedText =
+            "/*comment*/\n" +
+            "void main()\n" +
+            "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    @Ignore
+    fun multiCommentAtTextMiddle()
+    {
+        val inputText =
+            "void main()\n" +
+            "/*comment*/\n" +
+            "{"
+
+        val expectedText =
+            "void main()\n" +
+            "/*comment*/\n" +
             "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)

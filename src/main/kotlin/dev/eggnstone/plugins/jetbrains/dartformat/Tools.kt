@@ -72,6 +72,9 @@ class Tools
             {
                 @Suppress("ReplaceGetOrSet") // workaround for dotlin
                 val part = parts.get(i) // workaround for dotlin
+                if (DotlinTools.isNotEmpty(result))
+                    result += ","
+
                 result += toDisplayStringSimple(part.toString())
             }
 
@@ -102,14 +105,23 @@ class Tools
             return result
         }
 
-        fun trimWithoutLineBreaks(s: String): String
+        fun trimSimple(s: String): String
         {
             //return s
-            return trimEndWithoutLineBreaks(s)
-            //return trimStartWithoutLineBreaks(trimEndWithoutLineBreaks(s))
+            //return trimEndSimple(s)
+            return trimStartSimple(trimEndSimple(s))
+            /*val t = trimStartSimple(trimEndSimple(s))
+            if (t == s)
+                return s
+
+            DotlinLogger.log("s: $s")
+            DotlinLogger.log("t: $t")
+            TODO()
+            return "1${s}2"*/
         }
 
-        fun trimStartWithoutLineBreaks(s: String): String
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun trimStartSimple(s: String): String
         {
             var startText = ""
 
@@ -133,7 +145,8 @@ class Tools
             return startText
         }
 
-        fun trimEndWithoutLineBreaks(s: String): String
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun trimEndSimple(s: String): String
         {
             var endText = ""
 

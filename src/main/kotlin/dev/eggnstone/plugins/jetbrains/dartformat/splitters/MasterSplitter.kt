@@ -37,9 +37,11 @@ class MasterSplitter : ISplitter
                 return SplitResult(remainingText, parts)
 
             val splitResult = splitter.split(remainingText)
+            /*
             DotlinLogger.log("Result from splitter:")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
             DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            */
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
             parts.addAll(splitResult.parts)

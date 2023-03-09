@@ -23,7 +23,7 @@ class TestTrivial
     {
         val inputPart = SingleBlock("header{", "}footer")
 
-        val expectedText = "header{}footer"
+        val expectedText = "header {}footer"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 

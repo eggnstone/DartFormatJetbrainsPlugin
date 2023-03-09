@@ -14,7 +14,7 @@ class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
+        //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -111,7 +111,7 @@ class TextSplitter : ISplitter
 
                 if (remainingText == "}")
                 {
-                    DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
+                    //DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
                     return SplitResult("", listOf(SingleBlock(currentText, "}", result.parts)))
                 }
 
@@ -136,6 +136,7 @@ class TextSplitter : ISplitter
                     TODO("whitespace after else")
                 }
 
+                /*
                 DotlinLogger.log("---")
                 DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
                 DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
@@ -143,6 +144,7 @@ class TextSplitter : ISplitter
                 DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
                 DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                 DotlinLogger.log("- Returning SingleBlock (no else)")
+                */
                 return SplitResult(remainingText.substring(1), listOf(SingleBlock(currentText, "}", result.parts)))
             }
 

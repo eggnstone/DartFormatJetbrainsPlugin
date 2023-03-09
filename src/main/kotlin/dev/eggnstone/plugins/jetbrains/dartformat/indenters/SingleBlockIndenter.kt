@@ -45,7 +45,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val shortenedHeader = DotlinTools.substring(header, 0, header.length - 1)
 
-        val headerLines = lineSplitter.split(shortenedHeader)
+        val headerLines = lineSplitter.split(shortenedHeader, true)
         if (headerLines.isEmpty())
             return "{"
 
@@ -56,7 +56,9 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         // Fix annotations
         while (startIndex < headerLines.size)
         {
-            if (headerLines[startIndex - 1].startsWith("@"))
+            if (headerLines[startIndex - 1].startsWith("@")
+                || headerLines[startIndex - 1].startsWith("//")
+            )
             {
                 result += headerLines[startIndex]
                 startIndex++
@@ -74,13 +76,11 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
 
             var pad = ""
-            if (/*headerLine.startsWith("@")
-                ||*/ headerLine.startsWith("async ")
-                || headerLine.trim() == "async"
+            if (headerLine.startsWith("//")
+                || (headerLine.startsWith("async ") || headerLine.trim() == "async")
             )
             {
-                //// no padding for @-annotations and "async..."
-                // no padding for "async..."
+                // no padding for "async...", "//..."
             }
             else
             {
@@ -93,7 +93,11 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             result += pad + headerLine
         }
 
-        result += "{"
+        //result += "{"
+
+        // TODO: find a better solution
+        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(DotlinTools.substring(result, result.length - 1))
+        result += if (endsWithWhitespace) "{" else " {"
 
         return result
     }

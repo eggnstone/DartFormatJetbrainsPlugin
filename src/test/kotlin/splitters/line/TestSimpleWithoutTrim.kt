@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class TestSimpleWithoutTrim(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {
@@ -24,7 +24,7 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val expectedLines = listOf(lineBreak)
 
-        val actualLines = LineSplitter().split(inputText)
+        val actualLines = LineSplitter().split(inputText, false)
 
         TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
@@ -36,7 +36,7 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val expectedLines = listOf("a$lineBreak")
 
-        val actualLines = LineSplitter().split(inputText)
+        val actualLines = LineSplitter().split(inputText, false)
 
         TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }
@@ -48,7 +48,7 @@ class TestSimple(private val lineBreak: String, @Suppress("UNUSED_PARAMETER") un
 
         val expectedLines = listOf("a$lineBreak", "b")
 
-        val actualLines = LineSplitter().split(inputText)
+        val actualLines = LineSplitter().split(inputText, false)
 
         TestTools.assertStringsAreEqual(actualLines, expectedLines)
     }

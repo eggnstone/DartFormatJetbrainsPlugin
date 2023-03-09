@@ -25,7 +25,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             throw DartFormatException("Unexpected non-Statement type.")
 
         val recreatedPart = part.recreate()
-        val lines = LineSplitter().split(recreatedPart)
+        val lines = LineSplitter().split(recreatedPart, true)
 
         var currentConditionals = 0
         var currentLevel = 0

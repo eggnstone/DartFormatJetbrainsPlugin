@@ -220,7 +220,7 @@ class TestSimpleWithTrim
         val inputText = "abc,    "
         val inputDelimiter = ","
 
-        val expectedResult = listOf("abc", "", "_EMPTY_")
+        val expectedResult = listOf("abc", "") //, "_EMPTY_")
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = true)
 
