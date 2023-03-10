@@ -8,8 +8,10 @@ class TypeSplitter
     companion object
     {
         val types = listOf(
-            SplitType("Bracket", Tools.Companion::isBracket, false),
-            SplitType("Whitespace", Tools.Companion::isWhitespace, true)
+            //SplitType("Bracket", Tools.Companion::isBracket, false), dotlin
+            //SplitType("Whitespace", Tools.Companion::isWhitespace, true), dotlin
+            SplitType("Bracket", { c: String -> Tools.isBracket(c) }, false),
+            SplitType("Whitespace", { c: String -> Tools.isWhitespace(c) }, true),
         )
     }
 

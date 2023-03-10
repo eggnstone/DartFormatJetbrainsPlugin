@@ -3,6 +3,25 @@ package dev.eggnstone.plugins.jetbrains.dartformat.dotlin
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 
+/*class A
+{
+    companion object
+    {
+        fun a()
+        {
+        }
+    }
+}
+
+class B
+{
+    fun b()
+    {
+        val f = A.Companion::a
+        f()
+    }
+}*/
+
 class DotlinTools
 {
     // .add() should be replaced with +=
@@ -109,6 +128,15 @@ class DotlinTools
             return substring(s, 0, searchText.length) == searchText
         }
 
+        // String.endsWith
+        fun endsWith(s: String, searchText: String): Boolean
+        {
+            if (s.length < searchText.length)
+                return false
+
+            return substring(s, s.length - searchText.length) == searchText
+        }
+
         // String.substring
         fun substring(s: String, startIndex: Int, endIndex: Int = -1): String
         {
@@ -172,17 +200,24 @@ class DotlinTools
 
         fun toMutableListOfString(s: String): MutableList<String>
         {
-            var result = mutableListOf<String>()
+            val result = mutableListOf<String>()
+            //val result :MutableList<String> = mutableListOf<String>()
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
                 val c = s.get(i).toString()
-                result += c
+                //result += c dotlin
+                result.add(c)
             }
 
             return result
+        }
+
+        fun last(list: List<String>): String
+        {
+            return list[list.size - 1]
         }
     }
 }

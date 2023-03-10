@@ -52,14 +52,14 @@ class TextSplitter : ISplitter
 
             if (isInNormalQuotes)
             {
-                if (remainingText.startsWith("\\\""))
+                if (DotlinTools.startsWith(remainingText, "\\\""))
                 {
                     currentText += "\\\""
                     remainingText = DotlinTools.substring(remainingText, 2)
                     continue
                 }
 
-                if (remainingText.startsWith("\""))
+                if (DotlinTools.startsWith(remainingText, "\""))
                     isInNormalQuotes = false
 
                 currentText += currentChar
@@ -69,14 +69,14 @@ class TextSplitter : ISplitter
 
             if (isInApostrophes)
             {
-                if (remainingText.startsWith("\\'"))
+                if (DotlinTools.startsWith(remainingText, "\\'"))
                 {
                     currentText += "\\'"
                     remainingText = DotlinTools.substring(remainingText, 2)
                     continue
                 }
 
-                if (remainingText.startsWith("'"))
+                if (DotlinTools.startsWith(remainingText, "'"))
                     isInApostrophes = false
 
                 currentText += currentChar
@@ -84,7 +84,7 @@ class TextSplitter : ISplitter
                 continue
             }
 
-            if (remainingText.startsWith("\""))
+            if (DotlinTools.startsWith(remainingText, "\""))
             {
                 isInNormalQuotes = true
                 currentText += currentChar
@@ -92,7 +92,7 @@ class TextSplitter : ISplitter
                 continue
             }
 
-            if (remainingText.startsWith("'"))
+            if (DotlinTools.startsWith(remainingText, "'"))
             {
                 isInApostrophes = true
                 currentText += currentChar
@@ -100,7 +100,7 @@ class TextSplitter : ISplitter
                 continue
             }
 
-            if (remainingText.startsWith("//") || remainingText.startsWith("/*"))
+            if (DotlinTools.startsWith(remainingText, "//") || DotlinTools.startsWith(remainingText, "/*"))
             {
                 val extractionResult = CommentExtractor.extract(remainingText)
                 currentText += extractionResult.comment
@@ -206,7 +206,7 @@ class TextSplitter : ISplitter
                 DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
                 DotlinLogger.log("- Returning SingleBlock (no else)")
                 */
-                return SplitResult(remainingText.substring(1), listOf(SingleBlock(currentText, "}", result.parts)))
+                return SplitResult(DotlinTools.substring(remainingText, 1), listOf(SingleBlock(currentText, "}", result.parts)))
             }
 
             if (Tools.isOpeningBracket(currentChar))

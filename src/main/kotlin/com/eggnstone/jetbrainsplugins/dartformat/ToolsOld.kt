@@ -4,6 +4,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.blocks.IBlock
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IIndent
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import java.util.*
 
 class ToolsOld
@@ -50,7 +51,7 @@ class ToolsOld
             if (s.length < maxLength)
                 return s
 
-            return s.substring(0, maxLength)
+            return DotlinTools.substring(s,0, maxLength)
         }
 
         private fun blocksToDisplayString1(blocks: List<IBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })

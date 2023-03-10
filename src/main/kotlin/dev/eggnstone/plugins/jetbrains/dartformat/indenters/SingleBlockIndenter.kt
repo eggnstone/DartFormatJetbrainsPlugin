@@ -40,7 +40,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         if (DotlinTools.isEmpty(header))
             throw DartFormatException("Unexpected empty header.")
 
-        if (!header.endsWith("{"))
+        if (!DotlinTools.endsWith(header,"{"))
             throw DartFormatException("Unexpected header end: " + Tools.toDisplayString(DotlinTools.substring(header, header.length - 1)))
 
         val shortenedHeader = DotlinTools.substring(header, 0, header.length - 1)
@@ -56,8 +56,8 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         // Fix annotations
         while (startIndex < headerLines.size)
         {
-            if (headerLines[startIndex - 1].startsWith("@")
-                || headerLines[startIndex - 1].startsWith("//")
+            if (DotlinTools.startsWith(headerLines[startIndex - 1],"@")
+                || DotlinTools.startsWith(headerLines[startIndex - 1],"//")
             )
             {
                 result += headerLines[startIndex]
@@ -76,8 +76,8 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
 
             var pad = ""
-            if (headerLine.startsWith("//")
-                || (headerLine.startsWith("async ") || headerLine.trim() == "async")
+            if ( DotlinTools.startsWith(headerLine,"//")
+                || ( DotlinTools.startsWith(headerLine,"async ") || DotlinTools.trim(headerLine) == "async")
             )
             {
                 // no padding for "async...", "//..."

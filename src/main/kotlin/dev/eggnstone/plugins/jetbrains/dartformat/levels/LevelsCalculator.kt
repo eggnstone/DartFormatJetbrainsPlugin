@@ -20,7 +20,7 @@ class LevelsCalculator
 
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
-        var currentLineIndex = lineIndex
+        //var currentLineIndex = lineIndex
 
         val items = TypeSplitter().split(line)
         //DotlinLogger.log("  items: (${Tools.toDisplayStringForStrings(items)})")
@@ -39,7 +39,8 @@ class LevelsCalculator
             if (item.length == 1 && Tools.isOpeningBracket(item))
             {
                 brackets++
-                currentBrackets += item
+                //currentBrackets += item dotlin
+                currentBrackets.add(item)
                 continue
             }
 
@@ -53,11 +54,13 @@ class LevelsCalculator
 
                     val tempBracketPackage = currentBracketPackages.removeLast()
                     currentBrackets = tempBracketPackage.brackets.toMutableList()
-                    currentLineIndex = tempBracketPackage.lineIndex
+                    //currentLineIndex = tempBracketPackage.lineIndex
                 }
 
-                if (item != Tools.getClosingBracket(currentBrackets.last()))
-                    throw DartFormatException("item != currentBrackets.last() Expected: ${currentBrackets.last()} Is: $item")
+                val lastItem = DotlinTools.last(currentBrackets);
+                //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
+                if (item != Tools.getClosingBracket(lastItem))
+                    throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
 
                 brackets--
                 currentBrackets.removeLast()
@@ -72,7 +75,10 @@ class LevelsCalculator
         }
 
         if (DotlinTools.isNotEmpty(currentBrackets))
-            currentBracketPackages += BracketPackage(currentBrackets, lineIndex)
+        {
+            //currentBracketPackages += BracketPackage(currentBrackets, lineIndex) dotlin
+            currentBracketPackages.add(BracketPackage(currentBrackets, lineIndex))
+        }
 
         return Levels(conditionals, currentBracketPackages)
     }

@@ -28,9 +28,11 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         val lines = LineSplitter().split(recreatedPart, true)
 
         var currentConditionals = 0
-        var currentLevel = 0
+        //var currentLevel = 0
         var result = ""
-        var currentBracketPackages = listOf<BracketPackage>()
+
+        var currentBracketPackages: List<BracketPackage> = listOf() // ok
+        //var currentBracketPackages = listOf<BracketPackage>()
 
         @Suppress("ReplaceManualRangeWithIndicesCalls")
         for (lineIndex in 0 until lines.size) // workaround for dotlin
@@ -45,13 +47,13 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
 
             //val tempLevel = currentLevel + levels.currentLevel
-            val tempLevel = currentConditionals + minOf(currentBracketPackages.size, levels.newBracketPackages.size)
+            val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
             //val tempLevel = currentConditionals + levels.newBracketPackages.size
             val pad = DotlinTools.getSpaces(tempLevel * spacesPerLevel)
             result += pad + line
             //currentLevel += levels.nextLevel
             currentConditionals += levels.newConditionals
-            currentLevel = currentConditionals + levels.newBracketPackages.size
+            //currentLevel = currentConditionals + levels.newBracketPackages.size
             //DotlinLogger.log("    currentLevel: $currentLevel")
             currentBracketPackages = levels.newBracketPackages
         }
