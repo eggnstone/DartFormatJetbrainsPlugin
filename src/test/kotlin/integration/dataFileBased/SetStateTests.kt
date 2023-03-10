@@ -2,7 +2,6 @@ package integration.dataFileBased
 
 import integration.IntegrationConstants
 import integration.IntegrationTools
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
@@ -38,7 +37,6 @@ class SetStateTests
     }
 
     @Test
-    @Ignore
     fun setStateWithArrow_multipleLines()
     {
         val inputText = File(IntegrationConstants.dataFilesPath + "setStateWithArrow_multipleLines.input.dart").readText()
