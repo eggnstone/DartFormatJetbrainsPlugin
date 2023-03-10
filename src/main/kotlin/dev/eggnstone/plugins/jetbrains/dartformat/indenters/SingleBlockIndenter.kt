@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -51,15 +52,46 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         var result = headerLines[0]
 
         var startIndex = 1
+        var isInMultiLineComment = false
 
-        // Fix annotations
+        // Fix annotations and leading comments
         while (startIndex < headerLines.size)
         {
-            if (DotlinTools.startsWith(headerLines[startIndex - 1], "@")
-                || DotlinTools.startsWith(headerLines[startIndex - 1], "//")
-            )
+            val previousLine = headerLines[startIndex - 1]
+            val currentLine = headerLines[startIndex]
+
+            if (isInMultiLineComment)
             {
-                result += headerLines[startIndex]
+                result += currentLine
+                startIndex++
+
+                if (DotlinTools.containsString(previousLine, "*/"))
+                    isInMultiLineComment = false
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(previousLine, "/*"))
+            {
+                result += currentLine
+                startIndex++
+
+                if (!DotlinTools.containsString(previousLine, "*/"))
+                    isInMultiLineComment = true
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(previousLine, "//"))
+            {
+                result += currentLine
+                startIndex++
+                continue
+            }
+
+            if (DotlinTools.startsWith(previousLine, "@"))
+            {
+                result += currentLine
                 startIndex++
                 continue
             }
@@ -72,22 +104,48 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
-            //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+            DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+
+            if (isInMultiLineComment)
+            {
+                result += headerLine
+
+                if (DotlinTools.containsString(headerLine, "*/"))
+                    isInMultiLineComment = false
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(headerLine, "/*"))
+            {
+                // no padding for multi line comments
+                result += headerLine
+
+                if (!DotlinTools.containsString(headerLine, "*/"))
+                    isInMultiLineComment = true
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(headerLine, "//"))
+            {
+                // no padding for end of line comments
+                result += headerLine
+                continue
+            }
+
+            if ((DotlinTools.startsWith(headerLine, "async ") || DotlinTools.trim(headerLine) == "async"))
+            {
+                // no padding for "async..."
+                result += headerLine
+                continue
+            }
 
             var pad = ""
-            if (DotlinTools.startsWith(headerLine, "//")
-                || (DotlinTools.startsWith(headerLine, "async ") || DotlinTools.trim(headerLine) == "async")
-            )
-            {
-                // no padding for "async...", "//..."
-            }
+            if (DotlinTools.isBlank(headerLine))
+                TODO("untested")
             else
-            {
-                if (DotlinTools.isBlank(headerLine))
-                    TODO("untested")
-                else
-                    pad = DotlinTools.getSpaces(spacesPerLevel)
-            }
+                pad = DotlinTools.getSpaces(spacesPerLevel)
 
             result += pad + headerLine
         }
