@@ -219,5 +219,25 @@ class DotlinTools
         {
             return list[list.size - 1]
         }
+
+        // String.indexOf
+        fun indexOf(s: String, searchText: String): Int
+        {
+            //DotlinLogger.log("DotlinTools.indexOf(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
+
+            @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
+            if (searchText.length == 0)
+                return 0
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls")
+            for (i in 0 until s.length - searchText.length + 1)
+            {
+                //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
+                if (substring(s, i, i + searchText.length) == searchText)
+                    return i
+            }
+
+            return -1
+        }
     }
 }

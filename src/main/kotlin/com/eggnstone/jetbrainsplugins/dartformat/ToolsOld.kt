@@ -51,7 +51,7 @@ class ToolsOld
             if (s.length < maxLength)
                 return s
 
-            return DotlinTools.substring(s,0, maxLength)
+            return DotlinTools.substring(s, 0, maxLength)
         }
 
         private fun blocksToDisplayString1(blocks: List<IBlock>): String = toDisplayString1(blocks.joinToString(separator = "") { it.toString() })

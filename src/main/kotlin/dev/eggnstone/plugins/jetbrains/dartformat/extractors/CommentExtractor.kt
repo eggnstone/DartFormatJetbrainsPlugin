@@ -12,7 +12,7 @@ class CommentExtractor
             if (DotlinTools.isEmpty(s))
                 return ExtractionResult("", "")
 
-            if (DotlinTools.startsWith(s,"//"))
+            if (DotlinTools.startsWith(s, "//"))
             {
                 var comment = "//"
 
@@ -22,7 +22,7 @@ class CommentExtractor
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin
                     val c = s.get(i).toString() // workaround for dotlin
                     if (c == "\n" || c == "\r")
-                        return ExtractionResult(comment, DotlinTools.substring(s,i))
+                        return ExtractionResult(comment, DotlinTools.substring(s, i))
 
                     comment += c
                 }
@@ -30,7 +30,7 @@ class CommentExtractor
                 return ExtractionResult(comment, "")
             }
 
-            if (DotlinTools.startsWith(s,"/*"))
+            if (DotlinTools.startsWith(s, "/*"))
             {
                 var comment = "/*"
 
@@ -41,7 +41,7 @@ class CommentExtractor
                     {
                         val sub = DotlinTools.substring(s, i, i + 2)
                         if (sub == "*/")
-                            return ExtractionResult(comment + sub,DotlinTools.substring(s,i + 2))
+                            return ExtractionResult(comment + sub, DotlinTools.substring(s, i + 2))
                     }
 
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin

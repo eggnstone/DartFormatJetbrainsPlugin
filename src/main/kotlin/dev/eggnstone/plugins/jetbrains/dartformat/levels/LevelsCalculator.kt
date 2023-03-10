@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
 
@@ -10,7 +9,7 @@ class LevelsCalculator
 {
     fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
-        DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
+        //DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
         if (DotlinTools.isEmpty(line))
             return Levels(0, listOf())
@@ -57,7 +56,7 @@ class LevelsCalculator
                     //currentLineIndex = tempBracketPackage.lineIndex
                 }
 
-                val lastItem = DotlinTools.last(currentBrackets);
+                val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
                     throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")

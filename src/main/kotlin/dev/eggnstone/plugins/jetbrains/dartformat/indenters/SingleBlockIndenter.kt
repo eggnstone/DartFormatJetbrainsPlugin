@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -40,7 +39,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         if (DotlinTools.isEmpty(header))
             throw DartFormatException("Unexpected empty header.")
 
-        if (!DotlinTools.endsWith(header,"{"))
+        if (!DotlinTools.endsWith(header, "{"))
             throw DartFormatException("Unexpected header end: " + Tools.toDisplayString(DotlinTools.substring(header, header.length - 1)))
 
         val shortenedHeader = DotlinTools.substring(header, 0, header.length - 1)
@@ -56,8 +55,8 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         // Fix annotations
         while (startIndex < headerLines.size)
         {
-            if (DotlinTools.startsWith(headerLines[startIndex - 1],"@")
-                || DotlinTools.startsWith(headerLines[startIndex - 1],"//")
+            if (DotlinTools.startsWith(headerLines[startIndex - 1], "@")
+                || DotlinTools.startsWith(headerLines[startIndex - 1], "//")
             )
             {
                 result += headerLines[startIndex]
@@ -73,11 +72,11 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
-            DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+            //DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
 
             var pad = ""
-            if ( DotlinTools.startsWith(headerLine,"//")
-                || ( DotlinTools.startsWith(headerLine,"async ") || DotlinTools.trim(headerLine) == "async")
+            if (DotlinTools.startsWith(headerLine, "//")
+                || (DotlinTools.startsWith(headerLine, "async ") || DotlinTools.trim(headerLine) == "async")
             )
             {
                 // no padding for "async...", "//..."

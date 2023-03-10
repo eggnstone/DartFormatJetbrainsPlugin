@@ -16,7 +16,6 @@ import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
 
 typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
@@ -176,7 +175,7 @@ class PluginFormat : AnAction()
         val config = getConfig()
 
         val splitResult = masterSplitter.split(inputText)
-        PartTools.printParts(splitResult.parts)
+        //PartTools.printParts(splitResult.parts)
 
         val masterIndenter = MasterIndenter(config.indentationSpacesPerLevel)
 

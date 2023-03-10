@@ -1,8 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.BracketPackage
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
@@ -39,12 +37,12 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(lineIndex) // workaround for dotlin
-            DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
+            //DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
 
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
-            DotlinLogger.log("    currentConditionals: $currentConditionals")
-            DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
-            DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
+            //DotlinLogger.log("    currentConditionals: $currentConditionals")
+            //DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
+            //DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
 
             //val tempLevel = currentLevel + levels.currentLevel
             val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)

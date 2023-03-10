@@ -1,22 +1,23 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 class LineSplitter
 {
     fun split(s: String, trim: Boolean): List<String>
     {
-        DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
+        //DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
 
         if (DotlinTools.isEmpty(s))
             return listOf()
 
-        if (DotlinTools.containsString(s, "\n\r"))
+        val nrPos = DotlinTools.indexOf(s, "\n\r")
+        val rnPos = DotlinTools.indexOf(s, "\r\n")
+
+        if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
             return split(s, "\n\r", trim)
 
-        if (DotlinTools.containsString(s, "\r\n"))
+        if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
             return split(s, "\r\n", trim)
 
         if (DotlinTools.containsChar(s, "\n"))
@@ -30,7 +31,7 @@ class LineSplitter
 
     private fun split(s: String, delimiter: String, trim: Boolean): List<String>
     {
-        DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
+        //DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
 
         if (s == delimiter)
             return listOf(delimiter)

@@ -1,7 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
@@ -17,10 +15,10 @@ class BlockIndenter(spacesPerLevel: Int)
 
     fun indentParts(parts: List<IPart>, spacesPerLevel: Int): String
     {
-        DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
+        //DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
 
         val body = masterIndenter.indentParts(parts)
-        DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
+        //DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
         val lines = lineSplitter.split(body, trim = false)
 
         //DotlinLogger.log("  Lines :${lines.size}")
@@ -31,11 +29,12 @@ class BlockIndenter(spacesPerLevel: Int)
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
             //DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
+            //val pad = if (DotlinTools.isBlank(line)) "" else "A"+DotlinTools.getSpaces(spacesPerLevel) +"X"
             val pad = if (DotlinTools.isBlank(line)) "" else DotlinTools.getSpaces(spacesPerLevel)
             indentedBody += pad + line
         }
 
-        DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
+        //DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
         return indentedBody
     }
 }

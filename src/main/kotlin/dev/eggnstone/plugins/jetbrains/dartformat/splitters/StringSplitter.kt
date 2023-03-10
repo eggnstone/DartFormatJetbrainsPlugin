@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 class StringSplitter
@@ -11,10 +10,7 @@ class StringSplitter
     {
         fun split(s: String, delimiter: String, trim: Boolean): List<String>
         {
-            /*if (s.contains("    abc"))
-                TODO()*/
-
-            DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
+            //DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (delimiter.length == 0)
