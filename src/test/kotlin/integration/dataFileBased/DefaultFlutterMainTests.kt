@@ -8,32 +8,60 @@ import java.io.File
 
 class DefaultFlutterMainTests
 {
-    @Test
-    fun defaultFlutterMain()
+    companion object
     {
-        val inputText = File(IntegrationConstants.dataFilesPath + "default_flutter_main.input.dart").readText()
-        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "default_flutter_main.expected_output.dart").readText()
-
-        IntegrationTools.test(inputText, expectedOutputText)
+        const val inputIndentationRemoved = IntegrationConstants.dataFilesPath + "default_flutter_main_indentation_removed.input.dart"
+        const val inputIndentationRemovedSpacesRemoved = IntegrationConstants.dataFilesPath + "default_flutter_main_indentation_removed_spaces_removed.input.dart"
+        const val outputIndentationRestored = IntegrationConstants.dataFilesPath + "default_flutter_main_indentation_restored.expected_output.dart"
+        const val outputIndentationRestoredCommasRemoved = IntegrationConstants.dataFilesPath + "default_flutter_main_indentation_restored_commas_removed.expected_output.dart"
+        const val outputIndentationRestoredLineBreaksAdded = IntegrationConstants.dataFilesPath + "default_flutter_main_indentation_restored_linebreaks_added.expected_output.dart"
     }
 
     @Test
-    fun defaultFlutterMainSimplifiedLineBreaks()
+    fun defaultFlutterMain_IndentationRemoved_IndentationRestored()
     {
-        val inputTextRaw = File(IntegrationConstants.dataFilesPath + "default_flutter_main.input.dart").readText()
-        val inputText = inputTextRaw.replace("\r\n", "\n")
-        val expectedOutputTextRaw = File(IntegrationConstants.dataFilesPath + "default_flutter_main.expected_output.dart").readText()
-        val expectedOutputText = expectedOutputTextRaw.replace("\r\n", "\n")
+        val inputText = File(inputIndentationRemoved).readText()
+        val expectedOutputText = File(outputIndentationRestored).readText()
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
 
     @Test
     @Ignore
-    fun defaultFlutterMain2()
+    fun defaultFlutterMain_IndentationRemoved_IndentationRestoredCommasRemoved()
     {
-        val inputText = File(IntegrationConstants.dataFilesPath + "default_flutter_main.input.dart").readText()
-        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "default_flutter_main2.expected_output.dart").readText()
+        val inputText = File(inputIndentationRemoved).readText()
+        val expectedOutputText = File(outputIndentationRestoredCommasRemoved).readText()
+
+        IntegrationTools.test(inputText, expectedOutputText)
+    }
+
+    @Test
+    @Ignore
+    fun defaultFlutterMain_IndentationRemoved_IndentationRestoredLineBreaksAdded()
+    {
+        val inputText = File(inputIndentationRemoved).readText()
+        val expectedOutputText = File(outputIndentationRestoredLineBreaksAdded).readText()
+
+        IntegrationTools.test(inputText, expectedOutputText)
+    }
+
+    @Test
+    @Ignore
+    fun defaultFlutterMain_IndentationRemovedSpacesRemoved_IndentationRestored()
+    {
+        val inputText = File(inputIndentationRemovedSpacesRemoved).readText()
+        val expectedOutputText = File(outputIndentationRestored).readText()
+
+        IntegrationTools.test(inputText, expectedOutputText)
+    }
+
+    @Test
+    @Ignore
+    fun defaultFlutterMain_IndentationRemovedSpacesRemoved_IndentationRestoredLineBreaksAdded()
+    {
+        val inputText = File(inputIndentationRemovedSpacesRemoved).readText()
+        val expectedOutputText = File(outputIndentationRestoredLineBreaksAdded).readText()
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
