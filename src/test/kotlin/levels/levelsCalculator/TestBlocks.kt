@@ -1,10 +1,12 @@
 package levels.levelsCalculator
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.BracketPackage
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 
 class TestBlocks
 {
@@ -36,6 +38,15 @@ class TestBlocks
 
         MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
         MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
+    fun unexpectedBlockEnd_Throws()
+    {
+        val inputText = "}"
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        assertThrows<DartFormatException> { LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages) }
     }
 
     @Test

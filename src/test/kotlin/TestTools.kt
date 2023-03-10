@@ -23,13 +23,13 @@ class TestTools
 
         fun assertStringsAreEqual(actual: List<String>, expected: List<String>)
         {
-            assertAreEqualInternal(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 2) // stackPos doesn't seem to work
+            assertAreEqualInternal(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 3)
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
         fun assertPartsAreEqual(actual: List<IPart>, expected: List<IPart>)
         {
-            assertAreEqualInternal(Tools.toDisplayStringForParts(actual), Tools.toDisplayStringForParts(expected), 2) // stackPos doesn't seem to work
+            assertAreEqualInternal(Tools.toDisplayStringForParts(actual), Tools.toDisplayStringForParts(expected), 3)
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
@@ -41,7 +41,7 @@ class TestTools
             assertAreEqualInternal(actualSimple, expectedSimple, 3)
         }
 
-        private fun assertAreEqualInternal(actual: String, expected: String, stackPos: Int = 1)
+        private fun assertAreEqualInternal(actual: String, expected: String, stackPos: Int)
         {
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))

@@ -116,8 +116,26 @@ class TextSplitter : ISplitter
                 currentText += currentChar
                 remainingText = DotlinTools.substring(remainingText, 1)
 
-                if (DotlinTools.startsWith(DotlinTools.trim(remainingText), "else"))
+                val trimmedRemainingText = DotlinTools.trim(remainingText)
+                if (DotlinTools.startsWith(DotlinTools.trim(trimmedRemainingText), "else"))
                 {
+                    val remainingTextAfterElse = DotlinTools.substring(trimmedRemainingText, "else".length)
+                    val trimmedRemainingTextAfterElse = DotlinTools.trim(remainingTextAfterElse)
+                    DotlinLogger.log("remainingText: $remainingText")
+                    DotlinLogger.log("trimmedRemainingText: $trimmedRemainingText")
+                    DotlinLogger.log("remainingTextAfterElse: $remainingTextAfterElse")
+                    DotlinLogger.log("trimmedRemainingTextAfterElse: $trimmedRemainingTextAfterElse")
+
+                    if (DotlinTools.isEmpty(trimmedRemainingTextAfterElse))
+                        throw DartFormatException("DotlinTools.isEmpty(trimmedRemainingTextAfterElse)")
+
+                    @Suppress("ReplaceGetOrSet") // dotlin
+                    val c = remainingTextAfterElse.get(0).toString()
+                    if (c != "{" && !Tools.isWhitespace(c))
+                        throw DartFormatException("c != \"{\" && !Tools.isWhitespace(c)")
+
+                    DotlinLogger.log("Expecting 'else' branch.")
+
                     if (DotlinTools.startsWith(DotlinTools.trim(remainingText), "else "))
                     {
                         //DotlinLogger.log("Expecting 'else' branch.")
@@ -126,16 +144,11 @@ class TextSplitter : ISplitter
                         continue
                     }
 
-                    TODO("whitespace after else")
+                    continue
                 }
 
                 return SplitResult(remainingText, listOf(Statement(currentText)))
             }
-
-            /*if (isInAssignment&&  currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
-            {
-
-            }*/
 
             if (!isInAssignment && currentChar == "{" && DotlinTools.isEmpty(currentBrackets))
             {
@@ -176,37 +189,34 @@ class TextSplitter : ISplitter
                     return SplitResult("", listOf(SingleBlock(currentText, "}", result.parts)))
                 }
 
-                if (DotlinTools.startsWith(DotlinTools.trim(DotlinTools.substring(remainingText, 1)), "else"))
-                {
-                    if (DotlinTools.startsWith(DotlinTools.trim(DotlinTools.substring(remainingText, 1)), "else "))
-                    {
-                        //DotlinLogger.log("Expecting 'else' branch.")
-                        //DotlinLogger.log("c:               ${Tools.toDisplayString(c)}")
-                        //DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
-                        //DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
-                        //DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
-                        //DotlinLogger.log("result.parts:    ${Tools.toDisplayStringForParts(result.parts)}")
-                        isDoubleBlock = true
-                        header = currentText
-                        parts1 = result.parts
-                        currentText = "}"
-                        remainingText = DotlinTools.substring(remainingText, 1)
-                        continue
-                    }
+                remainingText = DotlinTools.substring(remainingText, 1)
 
-                    TODO("whitespace after else")
+                val trimmedRemainingText = DotlinTools.trim(remainingText)
+                if (DotlinTools.startsWith(trimmedRemainingText, "else"))
+                {
+                    val remainingTextAfterElse = DotlinTools.substring(trimmedRemainingText, "else".length)
+                    val trimmedRemainingTextAfterElse = DotlinTools.trim(remainingTextAfterElse)
+                    DotlinLogger.log("remainingText: $remainingText")
+                    DotlinLogger.log("trimmedRemainingText: $trimmedRemainingText")
+                    DotlinLogger.log("remainingTextAfterElse: $remainingTextAfterElse")
+                    DotlinLogger.log("trimmedRemainingTextAfterElse: $trimmedRemainingTextAfterElse")
+
+                    if (DotlinTools.isEmpty(trimmedRemainingTextAfterElse))
+                        throw DartFormatException("DotlinTools.isEmpty(trimmedRemainingTextAfterElse)")
+
+                    @Suppress("ReplaceGetOrSet") // dotlin
+                    val c = remainingTextAfterElse.get(0).toString()
+                    if (c != "{" && !Tools.isWhitespace(c))
+                        throw DartFormatException("c != \"{\" && !Tools.isWhitespace(c)")
+
+                    isDoubleBlock = true
+                    header = currentText
+                    parts1 = result.parts
+                    currentText = "}"
+                    continue
                 }
 
-                /*
-                DotlinLogger.log("---4")
-                DotlinLogger.log("currentChar:     ${Tools.toDisplayStringSimple(currentChar)}")
-                DotlinLogger.log("currentBrackets: ${Tools.toDisplayStringForStrings(currentBrackets)}")
-                DotlinLogger.log("currentText:     ${Tools.toDisplayString(currentText)}")
-                DotlinLogger.log("header:          ${Tools.toDisplayString(header)}")
-                DotlinLogger.log("remainingText:   ${Tools.toDisplayString(remainingText)}")
-                DotlinLogger.log("- Returning SingleBlock (no else)")
-                */
-                return SplitResult(DotlinTools.substring(remainingText, 1), listOf(SingleBlock(currentText, "}", result.parts)))
+                return SplitResult(remainingText, listOf(SingleBlock(currentText, "}", result.parts)))
             }
 
             if (Tools.isOpeningBracket(currentChar))
