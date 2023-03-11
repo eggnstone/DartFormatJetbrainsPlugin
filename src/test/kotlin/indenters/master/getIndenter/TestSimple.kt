@@ -1,6 +1,6 @@
 package indenters.master.getIndenter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.*
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.*
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement

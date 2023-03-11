@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.splitters
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
@@ -6,88 +6,8 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-
-private data class HandleResult(val state: TextSplitterState, val splitResult: SplitResult?)
-
-private class TextSplitterState(val inputText: String)
-{
-    var currentText = ""
-    var remainingText = inputText
-
-    var currentBrackets = mutableListOf<String>()
-
-    var isDoubleBlock = false
-    var isFirstBlockWithBrackets = false
-    var isSecondBlockWithBrackets = false
-
-    var isInApostrophes = false
-    var isInAssignment = false
-    var isInNormalQuotes = false
-
-    var header = ""
-    var middle = ""
-    var footer = ""
-
-    var parts1: List<IPart> = listOf() // ok
-    /*//var parts: List<X> = listOf() // ok
-    var parts = listOf<X>() // error
-    parts = mutableListOf<X>()*/
-
-    fun log(s: String)
-    {
-        DotlinLogger.log("--- $s ---")
-
-        DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
-        DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
-
-        DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
-
-        DotlinLogger.log("isDoubleBlock:             $isDoubleBlock")
-        DotlinLogger.log("isFirstBlockWithBrackets:  $isFirstBlockWithBrackets")
-        DotlinLogger.log("isSecondBlockWithBrackets: $isSecondBlockWithBrackets")
-
-        DotlinLogger.log("isInApostrophes:           $isInApostrophes")
-        DotlinLogger.log("isInAssignment:            $isInAssignment")
-        DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
-
-        DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
-        DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
-        DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
-
-        DotlinLogger.log("parts1:                    ${Tools.toDisplayStringForParts(parts1)}")
-
-        DotlinLogger.log("")
-    }
-
-    fun clone(): TextSplitterState
-    {
-        val newState = TextSplitterState(inputText)
-
-        newState.currentText = currentText
-        newState.remainingText = remainingText
-
-        newState.currentBrackets = DotlinTools.clone(currentBrackets)
-
-        newState.isDoubleBlock = isDoubleBlock
-        newState.isFirstBlockWithBrackets = isFirstBlockWithBrackets
-        newState.isSecondBlockWithBrackets = isSecondBlockWithBrackets
-
-        newState.isInApostrophes = isInApostrophes
-        newState.isInAssignment = isInAssignment
-        newState.isInNormalQuotes = isInNormalQuotes
-
-        newState.header = header
-        newState.middle = middle
-        newState.footer = footer
-
-        newState.parts1 = DotlinTools.clone(parts1)
-
-        return newState
-    }
-}
 
 class TextSplitter : ISplitter
 {
@@ -301,7 +221,7 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleOpeningCurlyBracket(currentChar: String, oldState: TextSplitterState): HandleResult
+        private fun handleOpeningCurlyBracket(currentChar: String, oldState: TextSplitterState): TextSplitterHandleResult
         {
             val state = oldState.clone()
 
@@ -320,7 +240,7 @@ class TextSplitter : ISplitter
             if (state.isDoubleBlock)
             {
                 if (state.remainingText == "}")
-                    return HandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.currentText, "}", state.parts1, result.parts))))
+                    return TextSplitterHandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.currentText, "}", state.parts1, result.parts))))
 
                 state.log("5")
                 TODO("is double block")
@@ -329,7 +249,7 @@ class TextSplitter : ISplitter
             if (state.remainingText == "}")
             {
                 //DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
-                return HandleResult(state, SplitResult("", listOf(SingleBlock(state.currentText, "}", result.parts))))
+                return TextSplitterHandleResult(state, SplitResult("", listOf(SingleBlock(state.currentText, "}", result.parts))))
             }
 
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
@@ -338,7 +258,7 @@ class TextSplitter : ISplitter
             DotlinLogger.log("elseEndPos:                             $elseEndPos")
 
             if (elseEndPos == -1)
-                return HandleResult(state, SplitResult(state.remainingText, listOf(SingleBlock(state.currentText, "}", result.parts))))
+                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(SingleBlock(state.currentText, "}", result.parts))))
 
             DotlinLogger.log("remainingText:                          ${Tools.toDisplayString(state.remainingText)}")
             DotlinLogger.log("remainingText.substring(0, elseEndPos): ${Tools.toDisplayString(DotlinTools.substring(state.remainingText, 0, elseEndPos))}")
@@ -354,36 +274,33 @@ class TextSplitter : ISplitter
             state.parts1 = result.parts
             state.currentText = "}"
 
-            return HandleResult(state, null)
+            return TextSplitterHandleResult(state, null)
         }
 
-        private fun handleSemicolon(currentChar: String, oldState: TextSplitterState): HandleResult
+        fun handleSemicolon(currentChar: String, oldState: TextSplitterState): TextSplitterHandleResult
         {
+            oldState.log("handleSemicolon")
+
             val state = oldState.clone()
 
             state.currentText += currentChar
             state.remainingText = DotlinTools.substring(state.remainingText, 1) // removing the ";"
-            state.log("1")
 
-            if (!state.isDoubleBlock)
+            if (!state.isDoubleBlock && !DotlinTools.startsWith(state.remainingText, "}"))
             {
-                if (!DotlinTools.startsWith(state.remainingText, "}"))
-                {
-                    val elseEndPos = Tools.getElseEndPos(state.remainingText)
-                    DotlinLogger.log("elseEndPos:                             $elseEndPos")
+                val elseEndPos = Tools.getElseEndPos(state.remainingText)
+                DotlinLogger.log("elseEndPos:                $elseEndPos")
 
-                    if (elseEndPos == -1)
-                        return HandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
+                if (elseEndPos == -1)
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
 
-
-                    state.isDoubleBlock = true
-                    state.isFirstBlockWithBrackets = false
-                    state.middle = DotlinTools.substring(state.remainingText, 0, elseEndPos)
-                    state.remainingText = DotlinTools.substring(state.remainingText, elseEndPos) // removing the ";"
-                    DotlinLogger.log("remainingText:                          ${Tools.toDisplayString(state.remainingText)}")
-                    state.isSecondBlockWithBrackets = DotlinTools.startsWith(state.remainingText, "{")
-                    return HandleResult(state, null)
-                }
+                state.isDoubleBlock = true
+                state.isFirstBlockWithBrackets = false
+                state.middle = DotlinTools.substring(state.remainingText, 0, elseEndPos)
+                state.remainingText = DotlinTools.substring(state.remainingText, elseEndPos) // removing the ";"
+                DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+                state.isSecondBlockWithBrackets = DotlinTools.startsWith(state.remainingText, "{")
+                return TextSplitterHandleResult(state, null)
             }
 
             state.footer = ""
@@ -401,15 +318,11 @@ class TextSplitter : ISplitter
                     TODO()
             }
 
-            state.log("2")
-
             val elseEndPos = Tools.getElseEndPos(state.currentText)
-            DotlinLogger.log("elseEndPos:                $elseEndPos")
+            DotlinLogger.log("elseEndPos:    $elseEndPos")
 
             if (elseEndPos == -1)
                 TODO("elseEndPos == -1")
-
-            state.log("3")
 
             state.middle += DotlinTools.substring(state.currentText, 0, elseEndPos)
             DotlinLogger.log("middle:                               ${Tools.toDisplayString(state.middle)}")
@@ -419,7 +332,7 @@ class TextSplitter : ISplitter
 
             val parts2 = listOf(Statement(statement))
 
-            return HandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.middle, "", state.parts1, parts2))))
+            return TextSplitterHandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.middle, "", state.parts1, parts2))))
         }
     }
 }

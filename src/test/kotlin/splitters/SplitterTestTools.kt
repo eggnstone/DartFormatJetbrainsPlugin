@@ -3,7 +3,7 @@ package splitters
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.ISplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.ISplitter
 
 class SplitterTestTools
 {

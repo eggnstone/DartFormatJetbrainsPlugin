@@ -1,8 +1,8 @@
 package splitters.master.getSplitter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.WhitespaceSplitter
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

@@ -3,7 +3,7 @@ package splitters.master.split
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
 import org.junit.Test
 import splitters.SplitterTestTools
 

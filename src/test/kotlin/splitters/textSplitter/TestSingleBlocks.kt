@@ -1,10 +1,10 @@
-package splitters.text
+package splitters.textSplitter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import splitters.SplitterTestTools

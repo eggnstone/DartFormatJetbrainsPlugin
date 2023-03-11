@@ -10,8 +10,8 @@ class TypeSplitter
         val types = listOf(
             //SplitType("Bracket", Tools.Companion::isBracket, false), dotlin
             //SplitType("Whitespace", Tools.Companion::isWhitespace, true), dotlin
-            SplitType("Bracket", { c: String -> Tools.isBracket(c) }, false),
-            SplitType("Whitespace", { c: String -> Tools.isWhitespace(c) }, true),
+            TypeSplitterType("Bracket", { c: String -> Tools.isBracket(c) }, false),
+            TypeSplitterType("Whitespace", { c: String -> Tools.isWhitespace(c) }, true),
         )
     }
 
@@ -20,7 +20,7 @@ class TypeSplitter
         val items = mutableListOf<String>()
 
         var currentText = ""
-        var currentType: SplitType? = null
+        var currentType: TypeSplitterType? = null
 
         @Suppress("ReplaceManualRangeWithIndicesCalls")
         for (i in 0 until s.length)
@@ -32,7 +32,7 @@ class TypeSplitter
             {
                 if (currentType.function(c))
                 {
-                    if (currentType.combineSame)
+                    if (currentType.combineSimilar)
                     {
                         currentText += c
                         continue

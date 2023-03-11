@@ -1,6 +1,7 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.indenters
+package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.BlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 

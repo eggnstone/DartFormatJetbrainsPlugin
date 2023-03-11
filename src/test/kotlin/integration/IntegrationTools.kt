@@ -1,8 +1,8 @@
 package integration
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
 
 class IntegrationTools
 {

@@ -3,7 +3,7 @@ package splitters.whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.WhitespaceSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.WhitespaceSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import splitters.SplitterTestTools

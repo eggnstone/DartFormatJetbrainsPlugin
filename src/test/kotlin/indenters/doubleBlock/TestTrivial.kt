@@ -2,7 +2,7 @@ package indenters.doubleBlock
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.DoubleBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.DoubleBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test

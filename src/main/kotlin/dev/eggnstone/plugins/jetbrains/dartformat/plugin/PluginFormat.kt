@@ -15,8 +15,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
 
 typealias FormatHandler = (virtualFile: VirtualFile, project: Project) -> Boolean
 

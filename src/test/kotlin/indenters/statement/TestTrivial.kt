@@ -2,7 +2,7 @@ package indenters.statement
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.StatementIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.StatementIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test

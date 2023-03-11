@@ -1,7 +1,7 @@
 package indenters.master.indentPart
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test
 

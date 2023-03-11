@@ -1,7 +1,7 @@
-package splitters.text
+package splitters.textSplitter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 

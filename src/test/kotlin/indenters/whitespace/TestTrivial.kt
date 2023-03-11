@@ -2,7 +2,7 @@ package indenters.whitespace
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.WhitespaceIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.WhitespaceIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test

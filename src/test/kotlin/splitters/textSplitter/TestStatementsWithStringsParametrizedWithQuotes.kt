@@ -1,17 +1,28 @@
-package splitters.text
+package splitters.textSplitter
 
+import TestParams
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TextSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import splitters.SplitterTestTools
 
-class TestStatementsWithAssignments
+@RunWith(value = Parameterized::class)
+class TestStatementsWithStringsParametrizedWithQuotes(private val quote: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
-    @Test
-    fun assignmentInt()
+    companion object
     {
-        val inputText = "final int i = 0;"
+        @JvmStatic
+        @Parameterized.Parameters(name = "{1}")
+        fun data() = TestParams.quotes
+    }
+
+    @Test
+    fun simpleStrings()
+    {
+        val inputText = "final String s = ${quote}Some text and then the end.$quote;"
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)
@@ -21,9 +32,9 @@ class TestStatementsWithAssignments
     }
 
     @Test
-    fun assignmentString()
+    fun stringWithStatement()
     {
-        val inputText = "final String s = \"abc\";"
+        val inputText = "final String s = ${quote}Some text abc(); and then the end.$quote;"
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)
@@ -33,21 +44,9 @@ class TestStatementsWithAssignments
     }
 
     @Test
-    fun pseudoAssignmentWithForLoop()
+    fun stringWithCurlyBrackets()
     {
-        val inputText = "for (int i = 0; i < 10; i++) abc(i);"
-
-        val expectedRemainingText = ""
-        val expectedPart = Statement(inputText)
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
-
-    @Test
-    fun assignmentWithCurlyBrackets()
-    {
-        val inputText = "final List<String> = <String>{\"a\",\"b\"};"
+        val inputText = "final String s = ${quote}Some text { brackets } and then the end.$quote;"
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)

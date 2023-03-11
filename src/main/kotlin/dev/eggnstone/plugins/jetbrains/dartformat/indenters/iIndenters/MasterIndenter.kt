@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.indenters
+package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*

@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.splitters
+package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
