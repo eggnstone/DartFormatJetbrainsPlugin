@@ -4,7 +4,6 @@ import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
-import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -20,7 +19,7 @@ class TestHandleSemicolon
         inputState.remainingText = "; else statement2;"
 
         val expectedState = TextSplitterState("")
-        expectedState.currentText ="if (true) statement1; else "
+        expectedState.currentText = "if (true) statement1; else "
         expectedState.remainingText = "statement2;"
 
         val actualHandleResult = TextSplitter.handleSemicolon(inputState)
@@ -33,20 +32,15 @@ class TestHandleSemicolon
     fun ifAndElsePart2()
     {
         val inputState = TextSplitterState("")
-        inputState.currentText = "if (true) statement1"
-        inputState.remainingText = "; else statement2;"
-        inputState.isDoubleBlock = true
+        inputState.currentText = "if (true) statement1; else statement2"
+        inputState.remainingText = ";"
 
-        val expectedParts1 = listOf(Statement("statement1;"))
-        val expectedParts2 = listOf(Statement("statement2;"))
+        val expectedParts = listOf(Statement("if (true) statement1; else statement2;"))
 
         val actualHandleResult = TextSplitter.handleSemicolon(inputState)
 
-        //TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
-        assertNotNull(actualHandleResult.splitResult)
-
         val splitResult = actualHandleResult.splitResult!!
         MatcherAssert.assertThat(splitResult.remainingText, CoreMatchers.equalTo(""))
-        MatcherAssert.assertThat(splitResult.parts, CoreMatchers.equalTo(expectedParts1))
+        MatcherAssert.assertThat(splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
 }

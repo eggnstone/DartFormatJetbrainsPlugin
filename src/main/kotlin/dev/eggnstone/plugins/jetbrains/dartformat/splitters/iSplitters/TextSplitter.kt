@@ -13,7 +13,7 @@ class TextSplitter : ISplitter
 {
     override fun split(inputText: String): SplitResult
     {
-        //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -390,15 +390,19 @@ class TextSplitter : ISplitter
             DotlinLogger.log("elseEndPos:                $elseEndPos")
 
             if (elseEndPos == -1)
+            {
+                oldState.log("handleSemicolonIsNotDoubleBlockWithoutOpeningCurlyBracket exit-1")
                 return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
+            }
 
-            state.currentText +=  DotlinTools.substring(state.remainingText, 0, elseEndPos)
+            state.currentText += DotlinTools.substring(state.remainingText, 0, elseEndPos)
             DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = DotlinTools.substring(state.remainingText, elseEndPos)
             DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             //state.isSecondBlockWithBrackets = DotlinTools.startsWith(state.remainingText, "{")
 
+            oldState.log("handleSemicolonIsNotDoubleBlockWithoutOpeningCurlyBracket exit-2")
             return TextSplitterHandleResult(state, null)
         }
     }
