@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class GetNonWhitespacePosAfterStartsWithTestsParametrizedWithWhitespaces(private val whitespace: String, @Suppress("UNUSED_PARAMETER") unused: String)
+class GetElseEndPosTestsParametrizedWithWhitespaces(private val whitespace: String, @Suppress("UNUSED_PARAMETER") unused: String)
 {
     companion object
     {

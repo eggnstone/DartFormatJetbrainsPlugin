@@ -25,7 +25,7 @@ class TestX
         val expectedPart = DoubleBlock("if (true) ", " else ", "", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        val actualHandleResult = TextSplitter.handleSemicolon(";", inputState)
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
 
         assertNotNull(actualHandleResult.splitResult)
         val actualState = actualHandleResult.state

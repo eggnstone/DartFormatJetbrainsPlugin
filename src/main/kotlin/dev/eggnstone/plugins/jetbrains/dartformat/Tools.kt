@@ -174,10 +174,9 @@ class Tools
             return endText
         }
 
-        // TODO: better name
         fun getElseEndPos(s: String): Int
         {
-            DotlinLogger.log("getElseEndPos: s: ${toDisplayString(s)}")
+            DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
 
             val searchText = "else"
 

@@ -11,17 +11,14 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
 class TextSplitter : ISplitter
 {
-    private var state = TextSplitterState("")
-
     override fun split(inputText: String): SplitResult
     {
         //DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
-        state = TextSplitterState(inputText)
-
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
 
+        var state = TextSplitterState(inputText)
         while (DotlinTools.isNotEmpty(state.remainingText))
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
@@ -41,13 +38,13 @@ class TextSplitter : ISplitter
 
             if (currentChar == "\"")
             {
-                state = handleNormalQuotes(currentChar, state)
+                state = handleNormalQuotes(state)
                 continue
             }
 
             if (currentChar == "'")
             {
-                state = handleApostrophe(currentChar, state)
+                state = handleApostrophe(state)
                 continue
             }
 
@@ -59,13 +56,13 @@ class TextSplitter : ISplitter
 
             if (currentChar == "=" && DotlinTools.isEmpty(state.currentBrackets))
             {
-                state = handleEqualSign(currentChar, state)
+                state = handleEqualSign(state)
                 continue
             }
 
             if (currentChar == ";" && DotlinTools.isEmpty(state.currentBrackets))
             {
-                val handleResult = handleSemicolon(currentChar, state)
+                val handleResult = handleSemicolon(state)
                 if (handleResult.splitResult != null)
                     return handleResult.splitResult
 
@@ -75,7 +72,7 @@ class TextSplitter : ISplitter
 
             if (currentChar == "{" && !state.isInAssignment && DotlinTools.isEmpty(state.currentBrackets))
             {
-                val handleResult = handleOpeningCurlyBracket(currentChar, state)
+                val handleResult = handleOpeningCurlyBracket(state)
                 if (handleResult.splitResult != null)
                     return handleResult.splitResult
 
@@ -145,12 +142,12 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleApostrophe(currentChar: String, oldState: TextSplitterState): TextSplitterState
+        private fun handleApostrophe(oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
 
             state.isInApostrophes = true
-            state.currentText += currentChar
+            state.currentText += "'"
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
             return state
@@ -188,23 +185,23 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleEqualSign(currentChar: String, oldState: TextSplitterState): TextSplitterState
+        private fun handleEqualSign(oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
 
             state.isInAssignment = true
-            state.currentText += currentChar
+            state.currentText += "="
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
             return state
         }
 
-        private fun handleNormalQuotes(currentChar: String, oldState: TextSplitterState): TextSplitterState
+        private fun handleNormalQuotes(oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
 
             state.isInNormalQuotes = true
-            state.currentText += currentChar
+            state.currentText += "\""
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
             return state
@@ -221,11 +218,11 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleOpeningCurlyBracket(currentChar: String, oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleOpeningCurlyBracket(oldState: TextSplitterState): TextSplitterHandleResult
         {
             val state = oldState.clone()
 
-            state.currentText += currentChar
+            state.currentText += "{"
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
             val result = MasterSplitter().split(state.remainingText)
@@ -277,13 +274,13 @@ class TextSplitter : ISplitter
             return TextSplitterHandleResult(state, null)
         }
 
-        fun handleSemicolon(currentChar: String, oldState: TextSplitterState): TextSplitterHandleResult
+        fun handleSemicolon(oldState: TextSplitterState): TextSplitterHandleResult
         {
             oldState.log("handleSemicolon")
 
             val state = oldState.clone()
 
-            state.currentText += currentChar
+            state.currentText += ";"
             state.remainingText = DotlinTools.substring(state.remainingText, 1) // removing the ";"
 
             if (!state.isDoubleBlock && !DotlinTools.startsWith(state.remainingText, "}"))
