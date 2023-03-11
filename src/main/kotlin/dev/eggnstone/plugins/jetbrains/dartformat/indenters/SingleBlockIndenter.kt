@@ -134,19 +134,24 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 continue
             }
 
-            if ((DotlinTools.startsWith(headerLine, "async ") || DotlinTools.trim(headerLine) == "async"))
+            // TODO: find a better solution
+            //if (DotlinTools.startsWith(headerLine, "async ") || headerLine == "async")//DotlinTools.trimEnd(headerLine) == "async"))
+            if (DotlinTools.startsWith(headerLine, "async ")
+                || DotlinTools.startsWith(headerLine, "async\t")
+                || DotlinTools.startsWith(headerLine, "async\n")
+                || DotlinTools.startsWith(headerLine, "async\r")
+                || headerLine == "async"
+            )
             {
                 // no padding for "async..."
                 result += headerLine
                 continue
             }
 
-            var pad = ""
             if (DotlinTools.isBlank(headerLine))
                 TODO("untested")
-            else
-                pad = DotlinTools.getSpaces(spacesPerLevel)
 
+            val pad = DotlinTools.getSpaces(spacesPerLevel)
             result += pad + headerLine
         }
 

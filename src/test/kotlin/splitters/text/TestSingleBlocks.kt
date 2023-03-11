@@ -46,9 +46,10 @@ class TestSingleBlocks
     @Test
     fun TODO_NAME()
     {
-        val inputText = "class C\n" +
-        "{\n" +
-        "}"
+        val inputText =
+            "class C\n" +
+            "{\n" +
+            "}"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n"))

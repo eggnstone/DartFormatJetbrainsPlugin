@@ -13,8 +13,9 @@ class TestSimple
     {
         val inputPart = SingleBlock("class C\n{", "}")
 
-        val expectedText = "class C\n" +
-        "{}"
+        val expectedText =
+            "class C\n" +
+            "{}"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 
@@ -26,9 +27,10 @@ class TestSimple
     {
         val inputPart = SingleBlock("class C\n{", "}", listOf(Whitespace("\n")))
 
-        val expectedText = "class C\n" +
-        "{\n" +
-        "}"
+        val expectedText =
+            "class C\n" +
+            "{\n" +
+            "}"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 
@@ -40,9 +42,10 @@ class TestSimple
     {
         val inputPart = SingleBlock("class C\nwith X\n{", "}")
 
-        val expectedText = "class C\n" +
-        "    with X\n" +
-        "{}"
+        val expectedText =
+            "class C\n" +
+            "    with X\n" +
+            "{}"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 

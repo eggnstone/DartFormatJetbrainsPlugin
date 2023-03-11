@@ -23,12 +23,14 @@ class TestEndOfLineComments
     @Test
     fun endOfLineCommentWithLineBreak()
     {
-        val inputText = "// end of line comment\n" +
-        "abc();"
+        val inputText =
+            "// end of line comment\n" +
+            "abc();"
 
         val expectedComment = "// end of line comment"
-        val expectedRemainingText = "\n" +
-        "abc();"
+        val expectedRemainingText =
+            "\n" +
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText)
 

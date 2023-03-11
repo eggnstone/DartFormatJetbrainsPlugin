@@ -20,10 +20,11 @@ class TestComplex
                 listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n"))
             )
 
-        val expectedText = "if (true)\n" +
-        "{\n" +
-        "    abc();\n" +
-        "}"
+        val expectedText =
+            "if (true)\n" +
+            "{\n" +
+            "    abc();\n" +
+            "}"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 

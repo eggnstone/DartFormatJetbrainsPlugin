@@ -1,5 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
@@ -171,6 +172,48 @@ class Tools
             }
 
             return endText
+        }
+
+        // TODO: better name
+        fun getElseEndPos(s: String): Int
+        {
+            DotlinLogger.log("getElseEndPos: s: ${toDisplayString(s)}")
+
+            val searchText = "else"
+
+            if (s == searchText)
+                return s.length
+
+            val pos = DotlinTools.indexOf(s, searchText)
+            if (pos == -1)
+                return -1
+
+            val leadingText = DotlinTools.substring(s, 0, pos)
+            if (!DotlinTools.isBlank(leadingText))
+                return -1
+
+            val trailingText = DotlinTools.substring(s, pos + searchText.length)
+            if (DotlinTools.isEmpty(trailingText))
+                return s.length
+
+            if (DotlinTools.isBlank(trailingText))
+                return s.length
+
+            @Suppress("ReplaceGetOrSet") // dotlin
+            val cFirst = trailingText.get(0).toString()
+            if (!isWhitespace(cFirst) && cFirst != "{")
+                return -1
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until trailingText.length)
+            {
+                @Suppress("ReplaceGetOrSet") // dotlin
+                val c = trailingText.get(i).toString()
+                if (!isWhitespace(c))
+                    return pos + searchText.length + i
+            }
+
+            TODO("cannot be reached") // return -1
         }
     }
 }

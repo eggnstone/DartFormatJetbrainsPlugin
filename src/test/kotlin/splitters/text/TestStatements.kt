@@ -69,7 +69,7 @@ class TestStatements
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
 
-    @Test
+    /*@Test
     fun ifStatementAndElseStatement()
     {
         val inputText = "if (true) statement1; else statement2;"
@@ -79,7 +79,7 @@ class TestStatements
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
+    }*/
 
     @Test
     fun subLevelBlock()

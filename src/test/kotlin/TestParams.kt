@@ -57,6 +57,15 @@ class TestParams
             Constants.SEMICOLON
         )
 
+        val whitespaces = arrayOf(
+            arrayOf(" ", "Space"),
+            arrayOf("\t", "Tab"),
+            arrayOf("\n", "\\n"),
+            arrayOf("\n\r", "\\n\\r"),
+            arrayOf("\r", "\\r"),
+            arrayOf("\r\n", "\\r\\n")
+        )
+
         private fun join(array1: Array<Array<String>>, array2: Array<Array<String>>): Array<Array<String>>
         {
             var result = arrayOf<Array<String>>()

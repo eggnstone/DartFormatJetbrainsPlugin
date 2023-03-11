@@ -8,10 +8,13 @@ class MultiLineCommentTests
     @Test
     fun multiLineCommentInStatement()
     {
-        val inputText = "if (true) /*multi line comment*/\nabc();"
+        val inputText =
+            "if (true) /*multi line comment*/\n" +
+            "abc();"
 
-        val expectedOutputText = "if (true) /*multi line comment*/\n" +
-        "    abc();"
+        val expectedOutputText =
+            "if (true) /*multi line comment*/\n" +
+            "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -19,10 +22,13 @@ class MultiLineCommentTests
     @Test
     fun multiLineCommentInStatementWithMisleadingStatement()
     {
-        val inputText = "if (true) /*multi line def(); comment*/\nabc();"
+        val inputText =
+            "if (true) /*multi line def(); comment*/\n" +
+            "abc();"
 
-        val expectedOutputText = "if (true) /*multi line def(); comment*/\n" +
-        "    abc();"
+        val expectedOutputText =
+            "if (true) /*multi line def(); comment*/\n" +
+            "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }

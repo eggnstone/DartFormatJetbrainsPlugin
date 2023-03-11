@@ -23,12 +23,14 @@ class TestMultiLineComments
     @Test
     fun multiLineCommentWithLineBreak()
     {
-        val inputText = "/* multi line comment */\n" +
-        "abc();"
+        val inputText =
+            "/* multi line comment */\n" +
+            "abc();"
 
         val expectedComment = "/* multi line comment */"
-        val expectedRemainingText = "\n" +
-        "abc();"
+        val expectedRemainingText =
+            "\n" +
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText)
 
@@ -39,14 +41,17 @@ class TestMultiLineComments
     @Test
     fun multiLineCommentWithLineBreak2()
     {
-        val inputText = "/* multi line\n" +
-        "comment */\n" +
-        "abc();"
+        val inputText =
+            "/* multi line\n" +
+            "comment */\n" +
+            "abc();"
 
-        val expectedComment = "/* multi line\n" +
-        "comment */"
-        val expectedRemainingText = "\n" +
-        "abc();"
+        val expectedComment =
+            "/* multi line\n" +
+            "comment */"
+        val expectedRemainingText =
+            "\n" +
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText)
 

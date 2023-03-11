@@ -15,11 +15,11 @@ class SplitterTestTools
             //DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
             //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
 
-            TestTools.assertAreEqual(Tools.toDisplayStringSimple(actualResult.remainingText), Tools.toDisplayStringSimple(expectedRemainingText))
-            //TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
-
             TestTools.assertPartsAreEqual(actualResult.parts, expectedParts)
             //MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
+
+            TestTools.assertAreEqual(Tools.toDisplayStringSimple(actualResult.remainingText), Tools.toDisplayStringSimple(expectedRemainingText))
+            //TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
         }
     }
 }

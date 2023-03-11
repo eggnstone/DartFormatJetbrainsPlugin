@@ -20,10 +20,11 @@ class TestSimple
                 "{", "}"
             )
 
-        val expectedText = "if (true)\n" +
-        "{}\n" +
-        "else\n" +
-        "{}"
+        val expectedText =
+            "if (true)\n" +
+            "{}\n" +
+            "else\n" +
+            "{}"
 
         val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 
@@ -43,12 +44,13 @@ class TestSimple
                 listOf<IPart>(Whitespace("\n"))
             )
 
-        val expectedText = "if (true)\n" +
-        "{\n" +
-        "}\n" +
-        "else\n" +
-        "{\n" +
-        "}"
+        val expectedText =
+            "if (true)\n" +
+            "{\n" +
+            "}\n" +
+            "else\n" +
+            "{\n" +
+            "}"
 
         val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 

@@ -170,32 +170,36 @@ class DotlinTools
         // String.trim
         fun trim(s: String): String
         {
-            var startIndex = 0
-            var endIndex = s.length - 1
+            return trimStart(trimEnd(s))
+        }
 
+        fun trimStart(s: String): String
+        {
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
             {
                 @Suppress("ReplaceGetOrSet")
                 val c = s.get(i).toString()
                 if (!Tools.isWhitespace(c))
-                    break
-
-                startIndex++
+                    return substring(s, i)
             }
 
+            return ""
+        }
+
+        fun trimEnd(s: String): String
+        {
             @Suppress("ReplaceManualRangeWithIndicesCalls")
-            for (i in s.length - 1 downTo startIndex + 1)
+            for (i in s.length - 1 downTo 0)
             {
                 @Suppress("ReplaceGetOrSet")
                 val c = s.get(i).toString()
                 if (!Tools.isWhitespace(c))
-                    break
-
-                endIndex--
+                    return substring(s, 0, i + 1)
             }
 
-            return substring(s, startIndex, endIndex + 1)
+
+            return ""
         }
 
         fun toMutableListOfString(s: String): MutableList<String>
@@ -238,6 +242,13 @@ class DotlinTools
             }
 
             return -1
+        }
+
+        fun <T> clone(inputList: List<T>): MutableList<T>
+        {
+            val outputList = mutableListOf<T>()
+            outputList.addAll(inputList)
+            return outputList
         }
     }
 }

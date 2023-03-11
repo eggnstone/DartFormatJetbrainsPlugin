@@ -12,8 +12,9 @@ class TestSimple
     {
         val inputPart = Statement("if\nabc();")
 
-        val expectedText = "if\n" +
-        "    abc();"
+        val expectedText =
+            "if\n" +
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -25,8 +26,9 @@ class TestSimple
     {
         val inputPart = Statement("if \nabc();")
 
-        val expectedText = "if\n" +
-        "    abc();"
+        val expectedText =
+            "if\n" +
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -38,8 +40,9 @@ class TestSimple
     {
         val inputPart = Statement("if()\nabc();")
 
-        val expectedText = "if()\n" +
-        "    abc();"
+        val expectedText =
+            "if()\n" +
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -51,8 +54,9 @@ class TestSimple
     {
         val inputPart = Statement("if ()\nabc();")
 
-        val expectedText = "if ()\n" +
-        "    abc();"
+        val expectedText =
+            "if ()\n" +
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

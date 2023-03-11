@@ -11,7 +11,9 @@ class TestStatementsWithComments
     @Test
     fun ifStatement()
     {
-        val inputText = "if (true) // falseStatement();\nstatement;"
+        val inputText =
+            "if (true) // falseStatement();\n" +
+            "statement;"
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)

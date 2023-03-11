@@ -12,9 +12,10 @@ class TestComplex
     {
         val inputPart = Statement("if (true)\nif (true)\nabc();")
 
-        val expectedText = "if (true)\n" +
-        "    if (true)\n" +
-        "        abc();"
+        val expectedText =
+            "if (true)\n" +
+            "    if (true)\n" +
+            "        abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -26,8 +27,9 @@ class TestComplex
     {
         val inputPart = Statement("if (true) if (true)\nabc();")
 
-        val expectedText = "if (true) if (true)\n" +
-        "        abc();"
+        val expectedText =
+            "if (true) if (true)\n" +
+            "        abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -39,10 +41,11 @@ class TestComplex
     {
         val inputPart = Statement("if (true)\nif (true)\nif (true)\nabc();")
 
-        val expectedText = "if (true)\n" +
-        "    if (true)\n" +
-        "        if (true)\n" +
-        "            abc();"
+        val expectedText =
+            "if (true)\n" +
+            "    if (true)\n" +
+            "        if (true)\n" +
+            "            abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -54,8 +57,9 @@ class TestComplex
     {
         val inputPart = Statement("if (true) if (true) if (true)\nabc();")
 
-        val expectedText = "if (true) if (true) if (true)\n" +
-        "            abc();"
+        val expectedText =
+            "if (true) if (true) if (true)\n" +
+            "            abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
