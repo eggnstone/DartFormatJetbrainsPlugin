@@ -56,7 +56,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "}  \n  else  \n  ", parts)
+        val expectedPart = SingleBlock("if (true) {", "}  \n  else  \n  statement2;", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -90,7 +90,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = " elseX"
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "} else statement2;", parts)
+        val expectedPart = SingleBlock("if (true) {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)

@@ -12,9 +12,7 @@ class TextSplitterState(val inputText: String)
 
     var currentBrackets = mutableListOf<String>()
 
-    var isDoubleBlock = false
-    //var isFirstBlockWithBrackets = false
-    //var isSecondBlockWithBrackets = false
+    var hasBlock = false
 
     var isInApostrophes = false
     var isInAssignment = false
@@ -24,23 +22,21 @@ class TextSplitterState(val inputText: String)
     var middle = ""
     var footer = ""
 
-    var parts1: List<IPart> = listOf() // ok
+    var blockParts: List<IPart> = listOf() // ok
     /*//var parts: List<X> = listOf() // ok
     var parts = listOf<X>() // error
     parts = mutableListOf<X>()*/
 
     fun log(s: String)
     {
-        DotlinLogger.log("--- $s ---")
+        DotlinLogger.log("---------- $s ----------")
 
         DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
         DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
 
         DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-        DotlinLogger.log("isDoubleBlock:             $isDoubleBlock")
-        //DotlinLogger.log("isFirstBlockWithBrackets:  $isFirstBlockWithBrackets")
-        //DotlinLogger.log("isSecondBlockWithBrackets: $isSecondBlockWithBrackets")
+        DotlinLogger.log("hasBlock:                  $hasBlock")
 
         DotlinLogger.log("isInApostrophes:           $isInApostrophes")
         DotlinLogger.log("isInAssignment:            $isInAssignment")
@@ -50,9 +46,9 @@ class TextSplitterState(val inputText: String)
         DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
         DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
 
-        DotlinLogger.log("parts1:                    ${Tools.toDisplayStringForParts(parts1)}")
+        DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 
-        DotlinLogger.log("---")
+        DotlinLogger.log("----------")
     }
 
     fun clone(): TextSplitterState
@@ -64,7 +60,7 @@ class TextSplitterState(val inputText: String)
 
         newState.currentBrackets = DotlinTools.clone(currentBrackets)
 
-        newState.isDoubleBlock = isDoubleBlock
+        newState.hasBlock = hasBlock
         //newState.isFirstBlockWithBrackets = isFirstBlockWithBrackets
         //newState.isSecondBlockWithBrackets = isSecondBlockWithBrackets
 
@@ -76,7 +72,7 @@ class TextSplitterState(val inputText: String)
         newState.middle = middle
         newState.footer = footer
 
-        newState.parts1 = DotlinTools.clone(parts1)
+        newState.blockParts = DotlinTools.clone(blockParts)
 
         return newState
     }

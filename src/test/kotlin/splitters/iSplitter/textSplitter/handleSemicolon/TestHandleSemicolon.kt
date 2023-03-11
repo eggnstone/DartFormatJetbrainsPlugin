@@ -12,7 +12,7 @@ import org.junit.Test
 class TestHandleSemicolon
 {
     @Test
-    fun ifAndElsePart1()
+    fun ifStatementAndElseStatementPart1()
     {
         val inputState = TextSplitterState("")
         inputState.currentText = "if (true) statement1"
@@ -29,18 +29,48 @@ class TestHandleSemicolon
     }
 
     @Test
-    fun ifAndElsePart2()
+    fun ifStatementAndElseStatementPart2()
     {
         val inputState = TextSplitterState("")
         inputState.currentText = "if (true) statement1; else statement2"
         inputState.remainingText = ";"
 
+        val expectedRemainingText = ""
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "if (true) statement1; else statement2;"
+        expectedState.remainingText = expectedRemainingText
+
         val expectedParts = listOf(Statement("if (true) statement1; else statement2;"))
 
         val actualHandleResult = TextSplitter.handleSemicolon(inputState)
 
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
         val splitResult = actualHandleResult.splitResult!!
-        MatcherAssert.assertThat(splitResult.remainingText, CoreMatchers.equalTo(""))
-        MatcherAssert.assertThat(splitResult.parts, CoreMatchers.equalTo(expectedParts))
+        TestTools.assertAreEqual("remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun ifBlockAndMissingElse()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "if (true) statement1"
+        inputState.remainingText = "; elseX"
+
+        val expectedRemainingText = " elseX"
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "if (true) statement1;"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("if (true) statement1;"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
 }
