@@ -1,8 +1,7 @@
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.StringDescription
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
+import org.hamcrest.*
 
 class TestTools
 {
@@ -21,27 +20,36 @@ class TestTools
             throw ShortAssertError(description.toString(), if (reason.isEmpty()) "" else "Reason: $reason", stackPos)
         }
 
-        fun assertStringsAreEqual(actual: List<String>, expected: List<String>)
+        fun assertStringsAreEqual(actual: List<String>, expected: List<String>) = assertStringsAreEqual("", actual, expected)
+
+        fun assertStringsAreEqual(reason: String, actual: List<String>, expected: List<String>)
         {
-            assertAreEqualInternal(Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 3)
+            assertAreEqualInternal(reason, Tools.toDisplayStringForStrings(actual), Tools.toDisplayStringForStrings(expected), 3)
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
-        fun assertPartsAreEqual(actual: List<IPart>, expected: List<IPart>)
+        fun assertPartsAreEqual(actual: List<IPart>, expected: List<IPart>) = assertPartsAreEqual("", actual, expected)
+
+        fun assertPartsAreEqual(reason: String, actual: List<IPart>, expected: List<IPart>)
         {
-            assertAreEqualInternal(Tools.toDisplayStringForParts(actual), Tools.toDisplayStringForParts(expected), 3)
+            assertAreEqualInternal(reason, Tools.toDisplayStringForParts(actual), Tools.toDisplayStringForParts(expected), 3)
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
         fun assertAreEqual(actual: String, expected: String)
         {
+            assertAreEqual("", actual, expected, 4)
+        }
+
+        fun assertAreEqual(reason: String, actual: String, expected: String, stackPos: Int = 3)
+        {
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)
 
-            assertAreEqualInternal(actualSimple, expectedSimple, 3)
+            assertAreEqualInternal(reason, actualSimple, expectedSimple, stackPos)
         }
 
-        private fun assertAreEqualInternal(actual: String, expected: String, stackPos: Int)
+        private fun assertAreEqualInternal(reason: String, actual: String, expected: String, stackPos: Int)
         {
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
@@ -49,14 +57,14 @@ class TestTools
                 if (actual.length > expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is longer than expected.",
+                        "Actual is longer than expected. ($reason)",
                         stackPos
                     )
 
                 if (actual.length < expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is shorter than expected.",
+                        "Actual is shorter than expected. ($reason)",
                         stackPos
                     )
 
@@ -70,12 +78,26 @@ class TestTools
 
                 throw ShortAssertError(
                     "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                    "Difference at position $i.",
+                    "Difference at position $i. ($reason)",
                     stackPos
                 )
             }
 
             throw Exception("???")
+        }
+
+        fun assertStatesAreEqual(actualState: TextSplitterState, expectedState: TextSplitterState)
+        {
+            assertAreEqual("currentText", actualState.currentText, expectedState.currentText)
+            assertAreEqual("remainingText", actualState.remainingText, expectedState.remainingText)
+            MatcherAssert.assertThat("currentBrackets", actualState.currentBrackets, CoreMatchers.equalTo(expectedState.currentBrackets))
+            MatcherAssert.assertThat("isDoubleBlock", actualState.isDoubleBlock, CoreMatchers.equalTo(expectedState.isDoubleBlock))
+            //MatcherAssert.assertThat("isFirstBlockWithBrackets", actualState.isFirstBlockWithBrackets, CoreMatchers.equalTo(expectedState.isFirstBlockWithBrackets))
+            //MatcherAssert.assertThat("isSecondBlockWithBrackets", actualState.isSecondBlockWithBrackets, CoreMatchers.equalTo(expectedState.isSecondBlockWithBrackets))
+            assertAreEqual("header", actualState.header, expectedState.header)
+            assertAreEqual("middle", actualState.middle, expectedState.middle)
+            assertAreEqual("footer", actualState.footer, expectedState.footer)
+            MatcherAssert.assertThat("parts1", actualState.parts1, CoreMatchers.equalTo(expectedState.parts1))
         }
     }
 }

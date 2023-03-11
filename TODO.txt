@@ -14,3 +14,15 @@ TODOs
 
 - Strings in comments
 - Comments in strings
+
+Type                                Header                      Middle          Footer
+Statements:
+if (true) s1; else s2;              -                           -               -
+
+SingleBlocks:
+if (true) { s1; } else s2;          if (true) {                 -               } else s2;
+if (true) s1; else { s2; }          if (true) s1; else {        -               }
+class C {}
+
+DoubleBlocks:
+if (true) { s1; } else { s2; }      if (true) {                 } else {        }
