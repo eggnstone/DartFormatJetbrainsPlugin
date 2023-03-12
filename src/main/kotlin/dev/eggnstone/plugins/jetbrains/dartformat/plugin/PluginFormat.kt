@@ -209,26 +209,26 @@ class PluginFormat : AnAction()
 
     private fun format(inputText: String): String
     {
-        val config = getConfig()
+        DotlinLogger.isEnabled = false
 
-        val splitResult = masterSplitter.split(inputText)
-        //PartTools.printParts(splitResult.parts)
+        try
+        {
+            val config = getConfig()
 
-        val masterIndenter = MasterIndenter(config.indentationSpacesPerLevel)
+            val splitResult = masterSplitter.split(inputText)
+            //PartTools.printParts(splitResult.parts)
 
-        @Suppress("UnnecessaryVariable")
-        val indentResult = masterIndenter.indentParts(splitResult.parts)
+            val masterIndenter = MasterIndenter(config.indentationSpacesPerLevel)
 
-        return indentResult
+            @Suppress("UnnecessaryVariable")
+            val indentResult = masterIndenter.indentParts(splitResult.parts)
 
-        /*val inputTokens = Tokenizer().tokenize(inputText)
-
-        val outputTokens = FormatterWithConfig(config).format(inputTokens)
-
-        @Suppress("UnnecessaryVariable")
-        val outputText = IndenterWithConfig(config).indent(outputTokens)
-
-        return outputText*/
+            return indentResult
+        }
+        finally
+        {
+            DotlinLogger.isEnabled = true
+        }
     }
 
     private fun getConfig(): DartFormatConfig

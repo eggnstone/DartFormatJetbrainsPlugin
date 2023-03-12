@@ -25,6 +25,48 @@ class TestDoubleBlocks
     }
 
     @Test
+    fun ifBlockAndElseBlockWithLineBreaks()
+    {
+        val inputText = "if (true)\n" +
+        "{\n" +
+        "  statement1;\n" +
+        "}\n" +
+        "else\n" +
+        "{\n" +
+        "  statement2;\n" +
+        "}"
+
+        val expectedRemainingText = ""
+        val parts1 = listOf(Whitespace("\n  "), Statement("statement1;"), Whitespace("\n"))
+        val parts2 = listOf(Whitespace("\n  "), Statement("statement2;"), Whitespace("\n"))
+        val expectedPart = DoubleBlock("if (true)\n{", "}\nelse\n{", "}", parts1, parts2)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun ifBlockAndElseBlockWithLineBreaksAlsoAtTheEnd()
+    {
+        val inputText = "if (true)\n" +
+        "{\n" +
+        "  statement1;\n" +
+        "}\n" +
+        "else\n" +
+        "{\n" +
+        "  statement2;\n" +
+        "}\n"
+
+        val expectedRemainingText = "\n"
+        val parts1 = listOf(Whitespace("\n  "), Statement("statement1;"), Whitespace("\n"))
+        val parts2 = listOf(Whitespace("\n  "), Statement("statement2;"), Whitespace("\n"))
+        val expectedPart = DoubleBlock("if (true)\n{", "}\nelse\n{", "}", parts1, parts2)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
     fun ifBlockAndElseBlockAndNoWhitespaceAfterElse()
     {
         val inputText = "if (true) { statement1; } else{ statement2; }"

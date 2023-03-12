@@ -5,9 +5,12 @@ TODOs
     - before end of line comments
     - [] brackets: LoadingWidget
 
-TODO("TextSplitter.handleOpeningBrace: is double block")
+TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")  WordPressTools.kt
+
 
 DONE
+TODO("TextSplitter.handleOpeningBrace: is double block")    Cache.kt
+
 - Do not indent double
     - setState(() {
 

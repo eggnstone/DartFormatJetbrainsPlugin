@@ -4,9 +4,12 @@ class DotlinLogger
 {
     companion object
     {
+        var isEnabled: Boolean = true
+
         fun log(s: String)
         {
-            println(s)
+            if (isEnabled)
+                println(s)
         }
     }
 }

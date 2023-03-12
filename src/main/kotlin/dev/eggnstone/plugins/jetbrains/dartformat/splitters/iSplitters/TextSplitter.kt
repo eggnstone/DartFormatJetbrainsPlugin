@@ -288,16 +288,22 @@ class TextSplitter : ISplitter
             {
                 if (state.remainingText == "}")
                 {
-                    state.log("handleOpeningBrace exit-1-DoubleBlock")
-
+                    state.remainingText = ""
                     state.middle += "{"
                     state.footer = "}"
 
-                    return TextSplitterHandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.middle, state.footer, state.blockParts, result.parts))))
+                    state.log("handleOpeningBrace exit-1-DoubleBlock")
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(DoubleBlock(state.header, state.middle, state.footer, state.blockParts, result.parts))))
                 }
 
-                state.log("5")
-                TODO("handleOpeningBrace: is double block")
+                // starts with "}" but has more
+
+                state.remainingText = DotlinTools.substring(state.remainingText, 1) // removing the "}"
+                state.middle += "{"
+                state.footer = "}"
+
+                state.log("handleOpeningBrace exit-2-DoubleBlock")
+                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(DoubleBlock(state.header, state.middle, state.footer, state.blockParts, result.parts))))
             }
 
             if (state.remainingText == "}")
