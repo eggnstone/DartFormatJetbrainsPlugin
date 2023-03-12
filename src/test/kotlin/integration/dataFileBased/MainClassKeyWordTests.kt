@@ -17,10 +17,10 @@ class MainClassKeyWordTests
     }
 
     @Test
-    fun normalClassWithOpeningCurlyBracketAtSameLine()
+    fun normalClassWithOpeningBraceAtSameLine()
     {
-        val inputText = File(IntegrationConstants.dataFilesPath + "NormalClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "NormalClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.dataFilesPath + "NormalClassWithOpeningBraceAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "NormalClassWithOpeningBraceAtSameLine.expected_output.dart").readText()
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -44,10 +44,10 @@ class MainClassKeyWordTests
     }
 
     @Test
-    fun abstractClassWithOpeningCurlyBracketAtSameLine()
+    fun abstractClassWithOpeningBraceAtSameLine()
     {
-        val inputText = File(IntegrationConstants.dataFilesPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.input.dart").readText()
-        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "AbstractClassWithOpeningCurlyBracketAtSameLine.expected_output.dart").readText()
+        val inputText = File(IntegrationConstants.dataFilesPath + "AbstractClassWithOpeningBraceAtSameLine.input.dart").readText()
+        val expectedOutputText = File(IntegrationConstants.dataFilesPath + "AbstractClassWithOpeningBraceAtSameLine.expected_output.dart").readText()
 
         IntegrationTools.test(inputText, expectedOutputText)
     }

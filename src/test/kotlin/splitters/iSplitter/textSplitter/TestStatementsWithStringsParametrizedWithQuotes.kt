@@ -44,7 +44,7 @@ class TestStatementsWithStringsParametrizedWithQuotes(private val quote: String,
     }
 
     @Test
-    fun stringWithCurlyBrackets()
+    fun stringWithBraces()
     {
         val inputText = "final String s = ${quote}Some text { brackets } and then the end.$quote;"
 

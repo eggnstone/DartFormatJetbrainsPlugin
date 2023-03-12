@@ -36,7 +36,7 @@ class BlockifierOld
                 {
                     AreaType.ClassBody -> handleInClassBody(c, state)
                     AreaType.ClassHeader -> handleInClassHeader(c, state)
-                    AreaType.CurlyBracket -> handleInCurlyBrackets(c, state)
+                    AreaType.Brace -> handleInBraces(c, state)
                     AreaType.Whitespace -> handleInWhitespace(c, state)
                     else -> throw DartFormatException("Unhandled BlockType: ${state.currentType}")
                 }
@@ -72,7 +72,7 @@ class BlockifierOld
                 @Suppress("ReplaceSizeZeroCheckWithIsEmpty") // dotlin
                 if (state.currentText.length == 0)
                 {
-                    state.currentType = AreaType.CurlyBracket
+                    state.currentType = AreaType.Brace
                     if (debug)
                         DotlinLogger.log("  -> ${state.currentType}")
 
@@ -93,8 +93,8 @@ class BlockifierOld
 
         if (state.currentText.isNotEmpty())
         {
-            if (state.currentType == AreaType.CurlyBracket)
-                state.blocks.add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText)))) // dotlin
+            if (state.currentType == AreaType.Brace)
+                state.blocks.add(BraceBlock(mutableListOf(UnknownBlock(state.currentText)))) // dotlin
             else if (state.currentType == AreaType.Unknown)
                 state.blocks.add(UnknownBlock(state.currentText)) // dotlin
             else if (state.currentType == AreaType.Whitespace)
@@ -142,10 +142,10 @@ class BlockifierOld
         return state
     }
 
-    private fun handleInCurlyBrackets(c: Char, state: BlockifierStateOld): BlockifierStateOld
+    private fun handleInBraces(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
         if (debug)
-            DotlinLogger.log("  handleInCurlyBrackets: ${ToolsOld.toDisplayString2(c)} ${ToolsOld.toDisplayString2(state.currentText)}")
+            DotlinLogger.log("  handleInBraces: ${ToolsOld.toDisplayString2(c)} ${ToolsOld.toDisplayString2(state.currentText)}")
 
         if (c != '}')
         {
@@ -157,7 +157,7 @@ class BlockifierOld
         if (debug)
             DotlinLogger.log("  -> ${state.currentType}")
 
-        state.blocks.add(CurlyBracketBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
+        state.blocks.add(BraceBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
         state.currentText = ""
         return state
     }

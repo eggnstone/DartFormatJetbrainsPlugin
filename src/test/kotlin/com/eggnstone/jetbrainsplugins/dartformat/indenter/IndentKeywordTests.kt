@@ -113,7 +113,7 @@ class IndentKeywordTests
     }
 
     @Test
-    fun keywordWithOpeningAndClosingCurlyBracketInSameLine()
+    fun keywordWithOpeningAndClosingBraceInSameLine()
     {
         val inputTokens = mutableListOf(
             KeywordToken("if"), WhiteSpaceToken(" "),

@@ -45,7 +45,7 @@ class TestStatementsWithAssignments
     }
 
     @Test
-    fun assignmentWithCurlyBrackets()
+    fun assignmentWithBraces()
     {
         val inputText = "final List<String> = <String>{\"a\",\"b\"};"
 

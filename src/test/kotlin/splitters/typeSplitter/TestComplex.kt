@@ -19,7 +19,7 @@ class TestComplex
     }
 
     @Test
-    fun multipleCurlyBrackets()
+    fun multipleBraces()
     {
         val inputText = "if{{true}}"
 

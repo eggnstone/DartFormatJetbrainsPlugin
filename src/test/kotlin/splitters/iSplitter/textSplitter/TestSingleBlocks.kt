@@ -13,7 +13,7 @@ import splitters.SplitterTestTools
 class TestSingleBlocks
 {
     @Test
-    fun unexpectedClosingCurlyBracket()
+    fun unexpectedClosingBrace()
     {
         val inputText = "}"
 

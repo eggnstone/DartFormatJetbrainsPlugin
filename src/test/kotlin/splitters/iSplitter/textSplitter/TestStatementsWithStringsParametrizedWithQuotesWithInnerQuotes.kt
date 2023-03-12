@@ -44,7 +44,7 @@ class TestStatementsWithStringsParametrizedWithQuotesWithInnerQuotes(private val
     }
 
     @Test
-    fun stringWithCurlyBrackets()
+    fun stringWithBraces()
     {
         val inputText = "final String s = ${quote}Some text { brackets } and then ${innerQuote}some inner Text { brackets }$innerQuote and then the end.$quote;"
 

@@ -10,7 +10,7 @@ import splitters.SplitterTestTools
 class TestEndOfBlock
 {
     @Test
-    fun closingCurlyBracket()
+    fun closingBrace()
     {
         val inputText = "}abc();"
 

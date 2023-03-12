@@ -73,12 +73,12 @@ class BlockifyTests
     }
 
     @Test
-    fun simpleCurlyBracketBlock()
+    fun simpleBraceBlock()
     {
         val inputText = "{}"
 
-        val curlyBracketBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
-        val expectedBlocks = mutableListOf(curlyBracketBlock)
+        val braceBlock = BraceBlock(mutableListOf(UnknownBlock("")))
+        val expectedBlocks = mutableListOf(braceBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -89,13 +89,13 @@ class BlockifyTests
     }
 
     @Test
-    fun simpleCurlyBracketBlockWithLineBreakAtTextEnd()
+    fun simpleBraceBlockWithLineBreakAtTextEnd()
     {
         val inputText = "{}\n"
 
-        val curlyBracketBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
+        val braceBlock = BraceBlock(mutableListOf(UnknownBlock("")))
         val whitespaceBlock = WhitespaceBlock("\n")
-        val expectedBlocks = mutableListOf(curlyBracketBlock, whitespaceBlock)
+        val expectedBlocks = mutableListOf(braceBlock, whitespaceBlock)
 
         val blockifier = BlockifierOld()
         val actualBlocks = blockifier.blockify(inputText)
@@ -106,12 +106,12 @@ class BlockifyTests
     }
 
     /*@Test
-    fun twoNestedCurlyBracketBlocks()
+    fun twoNestedBraceBlocks()
     {
         val inputText = "{{}}"
 
-        val innerBlock = CurlyBracketBlock("")
-        val outerBlock = CurlyBracketBlock(arrayOf(innerBlock))
+        val innerBlock = BraceBlock("")
+        val outerBlock = BraceBlock(arrayOf(innerBlock))
         val expectedBlocks = arrayOf(outerBlock)
 
         val blockifier = Blockifier()
@@ -159,11 +159,11 @@ class BlockifyTests
 
     @Test
     @Ignore
-    fun simpleClassWithCurlyBracketBlock()
+    fun simpleClassWithBraceBlock()
     {
         val inputText = "class C\n{{}}"
 
-        val innerBlock = CurlyBracketBlock(mutableListOf(UnknownBlock("")))
+        val innerBlock = BraceBlock(mutableListOf(UnknownBlock("")))
         val innerBlocks = mutableListOf(innerBlock)
         val classBlock = ClassBlock("class C\n", innerBlocks)
         val expectedBlocks = mutableListOf(classBlock)

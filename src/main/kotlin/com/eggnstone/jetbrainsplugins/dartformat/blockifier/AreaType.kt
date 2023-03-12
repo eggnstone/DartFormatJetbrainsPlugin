@@ -4,7 +4,7 @@ enum class AreaType
 {
     ClassBody,
     ClassHeader,
-    CurlyBracket,
+    Brace,
     Unknown,
     Whitespace
 }

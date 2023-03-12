@@ -30,7 +30,7 @@ class TestSimple
     }
 
     @Test
-    fun closingCurlyBracket()
+    fun closingBrace()
     {
         val inputText = "}"
 
