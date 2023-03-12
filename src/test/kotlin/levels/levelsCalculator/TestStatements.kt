@@ -54,6 +54,66 @@ class TestStatements
     }
 
     @Test
+    fun falseIf()
+    {
+        val inputText = "ifX"
+
+        val expectedBracketPackagesSize = 0
+        val expectedConditionals = 0
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
+
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
+    fun simpleFor()
+    {
+        val inputText = "for"
+
+        val expectedBracketPackagesSize = 0
+        val expectedConditionals = 1
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
+
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
+    fun simpleWhile()
+    {
+        val inputText = "while"
+
+        val expectedBracketPackagesSize = 0
+        val expectedConditionals = 1
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
+
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
+    fun simpleDo()
+    {
+        val inputText = "do"
+
+        val expectedBracketPackagesSize = 0
+        val expectedConditionals = 1
+
+        val currentBracketPackages = listOf<BracketPackage>()
+        val actualLevels = LevelsCalculator().calcLevels(inputText, 100, currentBracketPackages)
+
+        MatcherAssert.assertThat(actualLevels.newBracketPackages.size, equalTo(expectedBracketPackagesSize))
+        MatcherAssert.assertThat(actualLevels.newConditionals, equalTo(expectedConditionals))
+    }
+
+    @Test
     fun ifWithConditionWithSpace()
     {
         val inputText = "if (true)"

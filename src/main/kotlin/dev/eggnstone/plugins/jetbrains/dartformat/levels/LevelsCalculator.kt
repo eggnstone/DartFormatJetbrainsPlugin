@@ -30,7 +30,7 @@ class LevelsCalculator
             if (item == "//")
                 break
 
-            if (item == "if")
+            if (item == "do" || item == "for" || item == "if" || item == "while")
             {
                 conditionals++
                 continue
