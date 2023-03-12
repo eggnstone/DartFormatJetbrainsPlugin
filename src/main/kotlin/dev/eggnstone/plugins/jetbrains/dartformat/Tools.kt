@@ -214,5 +214,29 @@ class Tools
 
             TODO("cannot be reached") // return -1
         }
+
+        fun getNextLinePos(s: String): Int
+        {
+            DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
+
+            val nrPos = DotlinTools.indexOf(s, "\n\r")
+            val rnPos = DotlinTools.indexOf(s, "\r\n")
+
+            if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
+                return nrPos + 2
+
+            if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
+                return rnPos + 2
+
+            val nPos = DotlinTools.indexOf(s, "\n")
+            if (nPos >= 0)
+                return nPos + 1
+
+            val rPos = DotlinTools.indexOf(s, "\r")
+            if (rPos >= 0)
+                return rPos + 1
+
+            return -1
+        }
     }
 }

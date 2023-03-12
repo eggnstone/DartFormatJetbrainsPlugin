@@ -11,6 +11,8 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 
 class TextSplitter : ISplitter
 {
+    override val name = "Text"
+
     override fun split(inputText: String): SplitResult
     {
         DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
@@ -48,9 +50,21 @@ class TextSplitter : ISplitter
                 continue
             }
 
-            if (DotlinTools.startsWith(state.remainingText, "//") || DotlinTools.startsWith(state.remainingText, "/*"))
+            if (DotlinTools.startsWith(state.remainingText, "//"))
             {
-                state = handleComment(state)
+                state = handleEndOfLineComment(state)
+                continue
+                /*val handleResult = handleEndOfLineComment(state)
+                if (handleResult.splitResult != null)
+                    return handleResult.splitResult
+
+                state = handleResult.state
+                continue*/
+            }
+
+            if (DotlinTools.startsWith(state.remainingText, "/*"))
+            {
+                state = handleMultiLineComment(state)
                 continue
             }
 
@@ -64,12 +78,7 @@ class TextSplitter : ISplitter
             {
                 val handleResult = handleSemicolon(state)
                 if (handleResult.splitResult != null)
-                {
-                    handleResult.state.log("XXXXXXXXXXXX")
-                    DotlinLogger.log("  xxx parts:                   ${Tools.toDisplayStringForParts(handleResult.splitResult.parts)}")
-                    DotlinLogger.log("  xxx remainingText:                   ${Tools.toDisplayString(handleResult.splitResult.remainingText)}")
                     return handleResult.splitResult
-                }
 
                 state = handleResult.state
                 continue
@@ -101,7 +110,7 @@ class TextSplitter : ISplitter
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
         }
 
-        state.log("7")
+        state.log("TextSplitter.split error")
         throw DartFormatException("Unexpected end of block or statement.")
     }
 
@@ -161,10 +170,10 @@ class TextSplitter : ISplitter
         private fun handleClosingBracket(currentChar: String, oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
+            state.log("handleClosingBracket")
 
             if (DotlinTools.isEmpty(state.currentBrackets))
             {
-                state.log("6")
                 throw DartFormatException("Unexpected closing bracket: currentChar=${Tools.toDisplayString(currentChar)} remainingText=${Tools.toDisplayString(state.remainingText)}")
             }
 
@@ -179,7 +188,33 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleComment(oldState: TextSplitterState): TextSplitterState
+        private fun handleEndOfLineComment(oldState: TextSplitterState): TextSplitterState//TextSplitterHandleResult
+        {
+            val state = oldState.clone()
+            state.log("handleEndOfLineComment")
+
+            val extractionResult = CommentExtractor.extract(state.remainingText)
+            state.currentText += extractionResult.comment
+            state.remainingText = extractionResult.remainingText
+
+            return state
+
+            /*if (DotlinTools.isNotEmpty(state.currentText))
+                TODO()
+
+            val nextLinePos = Tools.getNextLinePos(state.remainingText)
+            DotlinLogger.log("nextLinePos: $nextLinePos")
+
+            if (nextLinePos == -1)
+                TODO()
+
+            val comment = DotlinTools.substring(state.remainingText, 0, nextLinePos)
+            state.remainingText = DotlinTools.substring(state.remainingText, nextLinePos)
+
+            return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(EndOfLineComment(comment))))*/
+        }
+
+        private fun handleMultiLineComment(oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
 
@@ -262,7 +297,7 @@ class TextSplitter : ISplitter
                 }
 
                 state.log("5")
-                TODO("is double block")
+                TODO("handleOpeningBrace: is double block")
             }
 
             if (state.remainingText == "}")
@@ -398,7 +433,25 @@ class TextSplitter : ISplitter
 
             if (elseEndPos == -1)
             {
-                state.log("handleSemicolonHasNoBlockWithoutOpeningBrace exit-1-Statement")
+                if (DotlinTools.startsWith(DotlinTools.trim(state.remainingText), "//"))
+                {
+                    val nextLinePos = Tools.getNextLinePos(state.remainingText)
+                    DotlinLogger.log("nextLinePos:               $nextLinePos")
+                    if (nextLinePos == -1)
+                    {
+                        state.currentText += state.remainingText
+                        state.remainingText = ""
+                    }
+                    else
+                    {
+                        state.currentText += DotlinTools.substring(state.remainingText, 0, nextLinePos)
+                        state.remainingText = DotlinTools.substring(state.remainingText, nextLinePos)
+                    }
+
+                    state.log("handleSemicolonHasNoBlockWithoutOpeningBrace exit-1-Statement")
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
+                }
+
                 return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
             }
 

@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentIterator
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
@@ -52,6 +53,15 @@ class PluginFormat : AnAction()
                     VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
                 }
             }
+        }
+        catch (err: DartFormatException)
+        {
+            throw DartFormatException("While formatting: ${err.message}")
+            /*
+            DotlinLogger.log("While formatting: $e:")
+            DotlinLogger.log("$err")
+            return false
+            */
         }
         catch (err: AssertionError)
         {
@@ -97,6 +107,15 @@ class PluginFormat : AnAction()
 
             return formatDartFileByFileEditor(fileEditor)
         }
+        catch (err: DartFormatException)
+        {
+            throw DartFormatException("$virtualFile: ${err.message}")
+            /*
+            DotlinLogger.log("While formatting: $virtualFile:")
+            DotlinLogger.log("$err")
+            return false
+            */
+        }
         catch (err: AssertionError)
         {
             DotlinLogger.log("While formatting: $virtualFile:")
@@ -128,6 +147,15 @@ class PluginFormat : AnAction()
             }
 
             return true
+        }
+        catch (err: DartFormatException)
+        {
+            throw DartFormatException("$virtualFile: ${err.message}")
+            /*
+            DotlinLogger.log("While formatting: $virtualFile:")
+            DotlinLogger.log("$err")
+            return false
+            */
         }
         catch (err: AssertionError)
         {
@@ -161,6 +189,15 @@ class PluginFormat : AnAction()
             }
 
             return true
+        }
+        catch (err: DartFormatException)
+        {
+            throw DartFormatException("$fileEditor: ${err.message}")
+            /*
+            DotlinLogger.log("While formatting: $virtualFile:")
+            DotlinLogger.log("$err")
+            return false
+            */
         }
         catch (err: AssertionError)
         {

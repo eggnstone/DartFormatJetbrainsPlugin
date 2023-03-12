@@ -1,4 +1,6 @@
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
 import org.hamcrest.*
@@ -36,6 +38,7 @@ class TestTools
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
+        // TODO: remove this so a reason must always be given.
         fun assertAreEqual(actual: String, expected: String)
         {
             assertAreEqual("", actual, expected, 4)
@@ -51,6 +54,12 @@ class TestTools
 
         private fun assertAreEqualInternal(reason: String, actual: String, expected: String, stackPos: Int)
         {
+            if (DotlinTools.isEmpty(reason))
+            {
+                DotlinLogger.log("REASON IS MISSING!")
+                //throw AssertionError("REASON IS MISSING!")
+            }
+
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
             {

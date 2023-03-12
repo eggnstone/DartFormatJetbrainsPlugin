@@ -29,7 +29,7 @@ class TextSplitterState(val inputText: String)
 
     fun log(s: String)
     {
-        DotlinLogger.log("---------- $s ----------")
+        DotlinLogger.log("-------------------- $s --------------------")
 
         DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
         DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
@@ -48,7 +48,7 @@ class TextSplitterState(val inputText: String)
 
         DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 
-        DotlinLogger.log("----------")
+        DotlinLogger.log("----------------------------------------")
     }
 
     fun clone(): TextSplitterState

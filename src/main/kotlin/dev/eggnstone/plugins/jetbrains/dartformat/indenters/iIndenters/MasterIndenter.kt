@@ -50,6 +50,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         @Suppress("LiftReturnOrAssignment")
         when (inputPart)
         {
+            //is EndOfLineComment -> return StatementIndenter(spacesPerLevel) // TODO: OK? Then rename StatementIndenter maybe?
             is DoubleBlock -> return DoubleBlockIndenter(spacesPerLevel)
             is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)

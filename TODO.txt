@@ -1,5 +1,13 @@
 TODOs
+- Indent:
+    - start-of-line-colon (:)
+    - switch-case and switch-default
+    - before end of line comments
+    - [] brackets: LoadingWidget
 
+TODO("TextSplitter.handleOpeningBrace: is double block")
+
+DONE
 - Do not indent double
     - setState(() {
 

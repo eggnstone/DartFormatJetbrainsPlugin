@@ -8,6 +8,8 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class MasterSplitter : ISplitter
 {
+    override val name = "Master"
+
     fun splitAll(inputText: String): List<IPart>
     {
         val splitResult = split(inputText)
@@ -24,7 +26,7 @@ class MasterSplitter : ISplitter
 
     override fun split(inputText: String): SplitResult
     {
-        DotlinLogger.log("MasterSplitter.split: ${Tools.shorten(inputText, 100, true)}")
+        DotlinLogger.log("MasterSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         val parts = mutableListOf<IPart>()
 
@@ -36,9 +38,10 @@ class MasterSplitter : ISplitter
             if (splitter == null)
                 return SplitResult(remainingText, parts)
 
+            DotlinLogger.log("Calling '${splitter.name}' splitter ..")
             val splitResult = splitter.split(remainingText)
             ///*
-            DotlinLogger.log("Result from splitter:")
+            DotlinLogger.log("Result from '${splitter.name}' splitter:")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
             DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
             //*/

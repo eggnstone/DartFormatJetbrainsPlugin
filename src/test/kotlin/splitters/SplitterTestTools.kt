@@ -14,7 +14,7 @@ class SplitterTestTools
             //DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
             //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
 
-            TestTools.assertPartsAreEqual(actualResult.parts, expectedParts)
+            TestTools.assertPartsAreEqual("parts", actualResult.parts, expectedParts)
             //MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
 
             TestTools.assertAreEqual("remainingText", actualResult.remainingText, expectedRemainingText)

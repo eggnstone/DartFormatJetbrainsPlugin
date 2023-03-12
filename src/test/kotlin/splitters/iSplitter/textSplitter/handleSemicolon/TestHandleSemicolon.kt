@@ -73,4 +73,142 @@ class TestHandleSemicolon
         TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
         MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
+
+    @Test
+    fun simpleStatement()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = ";"
+
+        val expectedRemainingText = ""
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc();"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc();"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun simpleStatementWithEndOfLineComment()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = "; // end of line comment"
+
+        val expectedRemainingText = ""
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc(); // end of line comment"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc(); // end of line comment"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun simpleStatementWithEndOfLineCommentAndLineBreak()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = "; // end of line comment\n"
+
+        val expectedRemainingText = ""
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc(); // end of line comment\n"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc(); // end of line comment\n"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun simpleStatementWithEndOfLineCommentAndLineBreakTODO1()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = "; // end of line comment\n}"
+
+        val expectedRemainingText = "}"
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc(); // end of line comment\n"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc(); // end of line comment\n"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun simpleStatementWithEndOfLineCommentAndLineBreakTODO2()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = "; // end of line comment\n}a"
+
+        val expectedRemainingText = "}a"
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc(); // end of line comment\n"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc(); // end of line comment\n"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
+
+    @Test
+    fun simpleStatementWithEndOfLineCommentAndLineBreakTODO3()
+    {
+        val inputState = TextSplitterState("")
+        inputState.currentText = "abc()"
+        inputState.remainingText = "; // end of line comment\n}\n"
+
+        val expectedRemainingText = "}\n"
+        val expectedState = TextSplitterState("")
+        expectedState.currentText = "abc(); // end of line comment\n"
+        expectedState.remainingText = expectedRemainingText
+
+        val expectedParts = listOf(Statement("abc(); // end of line comment\n"))
+
+        val actualHandleResult = TextSplitter.handleSemicolon(inputState)
+
+        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
+
+        val splitResult = actualHandleResult.splitResult!!
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
+    }
 }

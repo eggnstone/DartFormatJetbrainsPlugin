@@ -166,7 +166,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
     fun indentFooter(footer: String): String
     {
-        if (!footer.startsWith("}"))
+        if (!DotlinTools.startsWith(footer, "}"))
             throw DartFormatException("Footer must start with closing brace: ${Tools.toDisplayString(footer)}")
 
         val footerLines = lineSplitter.split(footer, true)

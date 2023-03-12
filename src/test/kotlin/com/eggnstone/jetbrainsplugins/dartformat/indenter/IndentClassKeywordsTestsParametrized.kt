@@ -30,7 +30,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("Indented text", actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -47,7 +47,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("Indented text", actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -66,7 +66,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("Indented text", actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -85,7 +85,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("Indented text", actualOutputText, expectedOutputText)
     }
 
     @Test
@@ -106,6 +106,6 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("Indented text", actualOutputText, expectedOutputText)
     }
 }

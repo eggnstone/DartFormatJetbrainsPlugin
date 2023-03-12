@@ -7,6 +7,8 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
 class WhitespaceSplitter : ISplitter
 {
+    override val name = "Whitespace"
+
     override fun split(inputText: String): SplitResult
     {
         //DotlinLogger.log("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
