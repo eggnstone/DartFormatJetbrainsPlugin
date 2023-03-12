@@ -28,7 +28,7 @@ class TestSingleBlockEnums
         val inputText = "enum E { A }"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("A"))
+        val parts = listOf(Whitespace(" "), Statement("A "))
         val expectedPart = SingleBlock("enum E {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
@@ -41,7 +41,7 @@ class TestSingleBlockEnums
         val inputText = "enum E { A, B }"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("A"))
+        val parts = listOf(Whitespace(" "), Statement("A, B "))
         val expectedPart = SingleBlock("enum E {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
@@ -74,7 +74,7 @@ class TestSingleBlockEnums
             "}"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("A"))
+        val parts = listOf(Whitespace("\n  "), Statement("A\n"))
         val expectedPart = SingleBlock("enum E\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
@@ -92,7 +92,7 @@ class TestSingleBlockEnums
             "}"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("A,\n  B\n"))
+        val parts = listOf(Whitespace("\n  "), Statement("A,\n  B\n"))
         val expectedPart = SingleBlock("enum E\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 

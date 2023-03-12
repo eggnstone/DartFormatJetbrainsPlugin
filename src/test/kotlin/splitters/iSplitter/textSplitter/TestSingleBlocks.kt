@@ -5,6 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.SplitParams
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,8 +17,34 @@ class TestSingleBlocks
     fun unexpectedClosingBrace()
     {
         val inputText = "}"
+        val inputParams = SplitParams(expectClosingBrace = false)
 
-        assertThrows<DartFormatException> { TextSplitter().split(inputText) }
+        assertThrows<DartFormatException> { TextSplitter().split(inputText, inputParams) }
+    }
+
+    @Test
+    fun expectedClosingBrace()
+    {
+        val inputText = "}"
+        val inputParams = SplitParams(expectClosingBrace = true)
+
+        val expectedRemainingText = "}"
+        val expectedParts = listOf<IPart>()
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
+    }
+
+    @Test
+    fun spaceAndExpectedClosingBrace()
+    {
+        val inputText = " }"
+        val inputParams = SplitParams(expectClosingBrace = true)
+
+        val expectedRemainingText = "}"
+        val expectedPart = Statement(" ")
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
     }
 
     @Test

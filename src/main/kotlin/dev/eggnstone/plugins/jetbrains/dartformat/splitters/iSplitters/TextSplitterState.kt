@@ -28,9 +28,15 @@ class TextSplitterState(val inputText: String)
     var parts = listOf<X>() // error
     parts = mutableListOf<X>()*/
 
-    fun log(s: String)
+    fun log(s: String, params: SplitParams? = null)
     {
-        DotlinLogger.log("-------------------- $s --------------------")
+        DotlinLogger.log("\n-----$s ---------------------------------------- $s")
+
+        if (params != null)
+        {
+            DotlinLogger.log("params.expectClosingBrace: ${params.expectClosingBrace}")
+            DotlinLogger.log("params.isEnum:             ${params.isEnum}")
+        }
 
         DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
         DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
@@ -38,7 +44,6 @@ class TextSplitterState(val inputText: String)
         DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
         DotlinLogger.log("hasBlock:                  $hasBlock")
-        //DotlinLogger.log("isEnum:                    $isEnum")
 
         DotlinLogger.log("isInApostrophes:           $isInApostrophes")
         DotlinLogger.log("isInAssignment:            $isInAssignment")
@@ -50,7 +55,7 @@ class TextSplitterState(val inputText: String)
 
         DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 
-        DotlinLogger.log("----------------------------------------")
+        DotlinLogger.log("----- $s ---------------------------------------- $s\n")
     }
 
     fun clone(): TextSplitterState

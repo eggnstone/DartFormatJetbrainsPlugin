@@ -1,51 +1,50 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 class CommentExtractor
 {
     companion object
     {
-        fun extract(s: String): ExtractionResult
+        fun extract(inputText: String): ExtractionResult
         {
-            if (DotlinTools.isEmpty(s))
+            if (DotlinTools.isEmpty(inputText))
                 return ExtractionResult("", "")
 
-            if (DotlinTools.startsWith(s, "//"))
+            if (DotlinTools.startsWith(inputText, "//"))
             {
-                var comment = "//"
+                //DotlinLogger.log("CommentExtractor.extract(${Tools.toDisplayString(inputText)})")
 
-                @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-                for (i in 2 until s.length) // workaround for dotlin
-                {
-                    @Suppress("ReplaceGetOrSet") // workaround for dotlin
-                    val c = s.get(i).toString() // workaround for dotlin
-                    if (c == "\n" || c == "\r")
-                        return ExtractionResult(comment, DotlinTools.substring(s, i))
+                val nextLinePos = Tools.getNextLinePos(inputText)
+                //DotlinLogger.log("nextLinePos: $nextLinePos")
 
-                    comment += c
-                }
+                if (nextLinePos == -1)
+                    return ExtractionResult(inputText, "")
 
-                return ExtractionResult(comment, "")
+                val comment = DotlinTools.substring(inputText, 0, nextLinePos)
+                val remainingText = DotlinTools.substring(inputText, nextLinePos)
+
+                return ExtractionResult(comment, remainingText)
             }
 
-            if (DotlinTools.startsWith(s, "/*"))
+            if (DotlinTools.startsWith(inputText, "/*"))
             {
                 var comment = "/*"
 
                 @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-                for (i in 2 until s.length) // workaround for dotlin
+                for (i in 2 until inputText.length) // workaround for dotlin
                 {
-                    if (i + 1 < s.length)
+                    if (i + 1 < inputText.length)
                     {
-                        val sub = DotlinTools.substring(s, i, i + 2)
+                        val sub = DotlinTools.substring(inputText, i, i + 2)
                         if (sub == "*/")
-                            return ExtractionResult(comment + sub, DotlinTools.substring(s, i + 2))
+                            return ExtractionResult(comment + sub, DotlinTools.substring(inputText, i + 2))
                     }
 
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin
-                    val c = s.get(i).toString() // workaround for dotlin
+                    val c = inputText.get(i).toString() // workaround for dotlin
                     comment += c
                 }
 

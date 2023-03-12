@@ -40,7 +40,7 @@ class Tools
                 "{" -> return "}"
                 "(" -> return ")"
                 "[" -> return "]"
-                else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
+                else -> throw DartFormatException("Tools.getClosingBracket: Unexpected closing bracket: $closingBracket")
             }
         }
 

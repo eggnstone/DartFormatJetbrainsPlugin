@@ -18,6 +18,14 @@ class WhitespaceSplitter : ISplitter
 
         var whitespace = ""
 
+        /*val nextLinePos = Tools.getNextLinePos(inputText)
+        DotlinLogger.log("nextLinePos: $nextLinePos")
+
+        if (nextLinePos == -1)
+            TODO()
+
+        TODO()*/
+
         @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
         for (i in 0 until inputText.length) // workaround for dotlin for: for (c in text)
         {

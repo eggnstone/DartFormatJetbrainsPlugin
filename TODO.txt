@@ -16,6 +16,7 @@ TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")  WordPressTools.kt
 
 DONE
 TODO("TextSplitter.handleOpeningBrace: is double block")    Cache.kt
+Unexpected closing bracket: currentChar="}" remainingText="}\r\n"
 
 - Do not indent double
     - setState(() {

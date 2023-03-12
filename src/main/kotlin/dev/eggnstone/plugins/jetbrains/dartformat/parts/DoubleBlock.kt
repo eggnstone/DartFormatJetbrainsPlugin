@@ -16,12 +16,13 @@ data class DoubleBlock(val header: String, val middle: String, val footer: Strin
 
     override fun recreate(): String = header + recreateParts(parts1) + middle + recreateParts(parts2) + footer
 
-    override fun toString(): String = "DoubleBlock(${Tools.toDisplayString(header)}" +
-    ", ${Tools.toDisplayString(middle)}" +
-    ", ${Tools.toDisplayString(footer)}" +
-    ", parts1: ${Tools.toDisplayStringForParts(parts1)})" +
-    ", ${Tools.toDisplayString(footer)}" +
-    ", parts2: ${Tools.toDisplayStringForParts(parts2)})"
+    override fun toString(): String =
+        "DoubleBlock(${Tools.toDisplayString(header)}" +
+        ", ${Tools.toDisplayString(middle)}" +
+        ", ${Tools.toDisplayString(footer)}" +
+        ", parts1: ${Tools.toDisplayStringForParts(parts1)})" +
+        ", ${Tools.toDisplayString(footer)}" +
+        ", parts2: ${Tools.toDisplayStringForParts(parts2)})"
 
     private fun recreateParts(parts: List<IPart>): String
     {
