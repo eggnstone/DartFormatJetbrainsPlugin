@@ -47,7 +47,7 @@ class TestHandleSemicolon
         TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
 
         val splitResult = actualHandleResult.splitResult!!
-        TestTools.assertAreEqual("remainingText", splitResult.remainingText, expectedRemainingText)
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
         MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
 
@@ -70,7 +70,7 @@ class TestHandleSemicolon
         TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
 
         val splitResult = actualHandleResult.splitResult!!
-        TestTools.assertAreEqual("remainingText", splitResult.remainingText, expectedRemainingText)
+        TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
         MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
 }

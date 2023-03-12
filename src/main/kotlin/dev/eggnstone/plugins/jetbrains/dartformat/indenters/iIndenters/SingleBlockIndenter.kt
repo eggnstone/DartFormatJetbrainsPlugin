@@ -24,6 +24,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         val singleBlock: SingleBlock = part
 
         val header = indentHeader(singleBlock.header)
+        val footer = indentFooter(singleBlock.footer)
 
         //DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
 
@@ -31,7 +32,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         val indentedBody = blockIndenter.indentParts(singleBlock.parts, spacesPerLevel)
 
         @Suppress("UnnecessaryVariable")
-        val result = header + indentedBody + singleBlock.footer
+        val result = header + indentedBody + footer
 
         return result
     }
@@ -156,11 +157,130 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             result += pad + headerLine
         }
 
-        //result += "{"
-
         // TODO: find a better solution
         val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(DotlinTools.substring(result, result.length - 1))
         result += if (endsWithWhitespace) "{" else " {"
+
+        return result
+    }
+
+    fun indentFooter(footer: String): String
+    {
+        if (!footer.startsWith("}"))
+            throw DartFormatException("Footer must start with closing brace: ${Tools.toDisplayString(footer)}")
+
+        val footerLines = lineSplitter.split(footer, true)
+        var result = footerLines[0]
+        var startIndex = 1
+        var isInMultiLineComment = false
+
+        // Fix leading comments and "else"
+        while (startIndex < footerLines.size)
+        {
+            val currentLine = footerLines[startIndex]
+            DotlinLogger.log("currentLine:  ${Tools.toDisplayString(currentLine)}")
+
+            if (isInMultiLineComment)
+            {
+                TODO("untested")
+                result += currentLine
+                startIndex++
+
+                if (DotlinTools.containsString(currentLine, "*/"))
+                    isInMultiLineComment = false
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(currentLine, "/*"))
+            {
+                TODO("untested")
+                result += currentLine
+                startIndex++
+
+                if (!DotlinTools.containsString(currentLine, "*/"))
+                    isInMultiLineComment = true
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(currentLine, "//"))
+            {
+                TODO("untested")
+                result += currentLine
+                startIndex++
+                continue
+            }
+
+            if (DotlinTools.trim(currentLine) == "}")
+            {
+                result += currentLine
+                startIndex++
+                continue
+            }
+
+            val pos = Tools.getElseEndPos(currentLine)
+            DotlinLogger.log("pos: $pos")
+            if (pos >= 0)
+            {
+                result += currentLine
+                startIndex++
+                continue
+            }
+
+            break
+        }
+
+        DotlinLogger.log("startIndex: $startIndex")
+        DotlinLogger.log("footerLines.size: ${footerLines.size}")
+        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+        for (i in startIndex until footerLines.size) // workaround for dotlin
+        {
+            @Suppress("ReplaceGetOrSet") // workaround for dotlin
+            val footerLine = footerLines.get(i) // workaround for dotlin
+            DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(footerLine)}")
+
+            if (isInMultiLineComment)
+            {
+                TODO("untested")
+                result += footerLine
+
+                if (DotlinTools.containsString(footerLine, "*/"))
+                    isInMultiLineComment = false
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(footerLine, "/*"))
+            {
+                TODO("untested")
+                // no padding for multi line comments
+                result += footerLine
+
+                if (!DotlinTools.containsString(footerLine, "*/"))
+                    isInMultiLineComment = true
+
+                continue
+            }
+
+            if (DotlinTools.startsWith(footerLine, "//"))
+            {
+                TODO("untested")
+                // no padding for end of line comments
+                result += footerLine
+                continue
+            }
+
+            if (DotlinTools.isBlank(footerLine))
+                TODO("untested")
+
+            val pad = DotlinTools.getSpaces(spacesPerLevel)
+            result += pad + footerLine
+        }
+
+        /*// TODO: find a better solution
+        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(DotlinTools.substring(result, result.length - 1))
+        result += if (endsWithWhitespace) "{" else " {"*/
 
         return result
     }

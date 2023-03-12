@@ -18,6 +18,18 @@ class TestSimple
         TestTools.assertAreEqual(actualText, expectedText)
     }
 
+    /*@Test
+    fun oneLineWithLeadingSpace()
+    {
+        val inputText = " class C {"
+
+        val expectedText = "class C {"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }*/
+
     @Test
     fun twoLines()
     {

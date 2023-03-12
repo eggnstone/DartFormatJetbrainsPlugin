@@ -10,7 +10,7 @@ import org.junit.Test
 class TestComplex
 {
     @Test
-    fun singleBlockWithLineBreaks()
+    fun ifBlockWithLineBreaks()
     {
         val inputPart =
             SingleBlock(
@@ -25,6 +25,32 @@ class TestComplex
             "{\n" +
             "    abc();\n" +
             "}"
+
+        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun ifBlockAndElseStatement()
+    {
+        val inputPart =
+            SingleBlock(
+                "if (true)\n" +
+                "{",
+                "}\n" +
+                "else\n" +
+                "def();",
+                listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n"))
+            )
+
+        val expectedText =
+            "if (true)\n" +
+            "{\n" +
+            "    abc();\n" +
+            "}\n" +
+            "else\n" +
+            "    def();"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 

@@ -24,7 +24,7 @@ class MasterSplitter : ISplitter
 
     override fun split(inputText: String): SplitResult
     {
-        //DotlinLogger.log("MasterSplitter.split: ${Tools.shorten(inputText, 100)}")
+        DotlinLogger.log("MasterSplitter.split: ${Tools.shorten(inputText, 100, true)}")
 
         val parts = mutableListOf<IPart>()
 
@@ -37,11 +37,11 @@ class MasterSplitter : ISplitter
                 return SplitResult(remainingText, parts)
 
             val splitResult = splitter.split(remainingText)
-            /*
+            ///*
             DotlinLogger.log("Result from splitter:")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
             DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
-            */
+            //*/
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
             parts.addAll(splitResult.parts)
