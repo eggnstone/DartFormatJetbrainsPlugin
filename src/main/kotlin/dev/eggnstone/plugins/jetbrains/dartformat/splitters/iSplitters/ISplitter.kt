@@ -4,5 +4,5 @@ interface ISplitter
 {
     val name: String
 
-    fun split(inputText: String): SplitResult
+    fun split(inputText: String, params: SplitParams = SplitParams()): SplitResult
 }

@@ -109,7 +109,7 @@ class PluginFormat : AnAction()
         }
         catch (err: DartFormatException)
         {
-            throw DartFormatException("$virtualFile: ${err.message}")
+            throw DartFormatException("1 $virtualFile: ${err.message}")
             /*
             DotlinLogger.log("While formatting: $virtualFile:")
             DotlinLogger.log("$err")
@@ -150,7 +150,7 @@ class PluginFormat : AnAction()
         }
         catch (err: DartFormatException)
         {
-            throw DartFormatException("$virtualFile: ${err.message}")
+            throw DartFormatException("2 $virtualFile: ${err.message}")
             /*
             DotlinLogger.log("While formatting: $virtualFile:")
             DotlinLogger.log("$err")

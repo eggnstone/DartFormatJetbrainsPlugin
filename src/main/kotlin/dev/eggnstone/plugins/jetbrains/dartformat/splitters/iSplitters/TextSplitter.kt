@@ -13,9 +13,9 @@ class TextSplitter : ISplitter
 {
     override val name = "Text"
 
-    override fun split(inputText: String): SplitResult
+    override fun split(inputText: String, params: SplitParams): SplitResult
     {
-        DotlinLogger.log("TextSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        DotlinLogger.log("TextSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -102,7 +102,11 @@ class TextSplitter : ISplitter
 
             if (Tools.isClosingBracket(currentChar))
             {
-                state = handleClosingBracket(currentChar, state)
+                val handleResult = handleClosingBracket(currentChar, state, params.isEnum)
+                if (handleResult.splitResult != null)
+                    return handleResult.splitResult
+
+                state = handleResult.state
                 continue
             }
 
@@ -167,13 +171,16 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleClosingBracket(currentChar: String, oldState: TextSplitterState): TextSplitterState
+        private fun handleClosingBracket(currentChar: String, oldState: TextSplitterState, isEnum: Boolean): TextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleClosingBracket")
 
             if (DotlinTools.isEmpty(state.currentBrackets))
             {
+                if (isEnum)
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
+
                 throw DartFormatException("Unexpected closing bracket: currentChar=${Tools.toDisplayString(currentChar)} remainingText=${Tools.toDisplayString(state.remainingText)}")
             }
 
@@ -185,7 +192,7 @@ class TextSplitter : ISplitter
             state.currentText += currentChar
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
-            return state
+            return TextSplitterHandleResult(state, null)
         }
 
         private fun handleEndOfLineComment(oldState: TextSplitterState): TextSplitterState//TextSplitterHandleResult
@@ -268,8 +275,11 @@ class TextSplitter : ISplitter
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
             DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
+            val params = SplitParams(isEnum = DotlinTools.startsWith(state.currentText, "enum "))
+            DotlinLogger.log("params.isEnum:             ${params.isEnum}")
+
             DotlinLogger.log("-> MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
-            val result = MasterSplitter().split(state.remainingText)
+            val result = MasterSplitter().split(state.remainingText, params)
             DotlinLogger.log("<- MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
             DotlinLogger.log("  remainingText:           ${Tools.toDisplayString(result.remainingText)}")
             DotlinLogger.log("  parts:                   ${Tools.toDisplayStringForParts(result.parts)}")
@@ -384,6 +394,8 @@ class TextSplitter : ISplitter
 
         fun handleSemicolonHasNoBlockWithOpeningBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
         {
+            TODO("handleSemicolonHasNoBlockWithOpeningBraceNext")
+
             val state = oldState.clone()
             state.log("handleSemicolonHasNoBlockWithOpeningBrace")
 

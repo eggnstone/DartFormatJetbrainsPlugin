@@ -9,7 +9,7 @@ class WhitespaceSplitter : ISplitter
 {
     override val name = "Whitespace"
 
-    override fun split(inputText: String): SplitResult
+    override fun split(inputText: String, params: SplitParams): SplitResult
     {
         //DotlinLogger.log("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
 

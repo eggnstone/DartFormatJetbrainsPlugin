@@ -5,7 +5,13 @@ TODOs
     - before end of line comments
     - [] brackets: LoadingWidget
 
+_getCount().then((int count)
+    {
+        state = AsyncData<CacheInfo>(CacheInfo(count: count));
+});
+
 TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")  WordPressTools.kt
+
 
 
 DONE
@@ -22,6 +28,7 @@ TODO("TextSplitter.handleOpeningBrace: is double block")    Cache.kt
     - start-of-line-implements
     - start-of-line-for
     - start-of-line-if
+    - enums
 
 - Strings in comments
 - Comments in strings

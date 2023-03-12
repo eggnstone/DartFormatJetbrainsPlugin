@@ -24,9 +24,9 @@ class MasterSplitter : ISplitter
         return splitResult.parts
     }
 
-    override fun split(inputText: String): SplitResult
+    override fun split(inputText: String, params: SplitParams): SplitResult
     {
-        DotlinLogger.log("MasterSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        DotlinLogger.log("MasterSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         val parts = mutableListOf<IPart>()
 
@@ -39,7 +39,7 @@ class MasterSplitter : ISplitter
                 return SplitResult(remainingText, parts)
 
             DotlinLogger.log("Calling '${splitter.name}' splitter ..")
-            val splitResult = splitter.split(remainingText)
+            val splitResult = splitter.split(remainingText, params)
             ///*
             DotlinLogger.log("Result from '${splitter.name}' splitter:")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
