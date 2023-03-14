@@ -18,18 +18,6 @@ class TestSimple
         TestTools.assertAreEqual(actualText, expectedText)
     }
 
-    /*@Test
-    fun oneLineWithLeadingSpace()
-    {
-        val inputText = " class C {"
-
-        val expectedText = "class C {"
-
-        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
-
-        TestTools.assertAreEqual(actualText, expectedText)
-    }*/
-
     @Test
     fun twoLines()
     {
@@ -324,6 +312,24 @@ class TestSimple
             "comment2\n" +
             "comment3*/\n" +
             "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignments()
+    {
+        val inputText =
+            "C()\n" +
+            ": a = b,\n" +
+            "a = b;"
+
+        val expectedText =
+            "C()\n" +
+            "    : a = b,\n" +
+            "    a = b;"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 

@@ -76,6 +76,12 @@ class TextSplitter : ISplitter
                 continue
             }
 
+            if (currentChar == ":")
+            {
+                state = handleColon(state)
+                continue
+            }
+
             if (currentChar == ";" && DotlinTools.isEmpty(state.currentBrackets))
             {
                 val handleResult = handleSemicolon(state)
@@ -238,8 +244,13 @@ class TextSplitter : ISplitter
         private fun handleEqualSign(oldState: TextSplitterState): TextSplitterState
         {
             val state = oldState.clone()
+            state.log("handleEqualSign")
 
-            state.isInAssignment = true
+            if (state.hasColon)
+                DotlinLogger.log("Ignoring '='")
+            else
+                state.isInAssignment = true
+
             state.currentText += "="
             state.remainingText = DotlinTools.substring(state.remainingText, 1)
 
@@ -355,6 +366,24 @@ class TextSplitter : ISplitter
 
             state.log("handleOpeningBrace exit-4")
             return TextSplitterHandleResult(state, null)
+        }
+
+        fun handleColon(oldState: TextSplitterState): TextSplitterState
+        {
+            val state = oldState.clone()
+            state.log("handleColon")
+
+            /*if (state.hasColon)
+                TODO()*/
+
+            state.hasColon = true
+
+            state.currentText += ":"
+            DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            state.remainingText = DotlinTools.substring(state.remainingText, 1) // removing the ";"
+            DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+
+            return state
         }
 
         fun handleSemicolon(oldState: TextSplitterState): TextSplitterHandleResult

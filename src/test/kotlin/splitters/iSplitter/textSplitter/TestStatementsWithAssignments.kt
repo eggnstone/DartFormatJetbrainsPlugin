@@ -1,6 +1,7 @@
 package splitters.iSplitter.textSplitter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
@@ -39,6 +40,30 @@ class TestStatementsWithAssignments
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun assignmentInConstructorHeader()
+    {
+        val inputText = "C() : a = b;"
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement("C() : a = b;")
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun assignmentInConstructorHeaderWithBlock()
+    {
+        val inputText = "C() : a = b {}"
+
+        val expectedRemainingText = ""
+        val expectedPart = SingleBlock("C() : a = b {", "}", listOf())
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)

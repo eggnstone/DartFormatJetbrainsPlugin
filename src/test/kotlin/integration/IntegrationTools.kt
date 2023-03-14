@@ -15,7 +15,7 @@ class IntegrationTools
 
             val actualOutputText = MasterIndenter(4).indentParts(parts)
 
-            TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+            TestTools.assertAreEqual("Text", actualOutputText, expectedOutputText)
         }
     }
 }

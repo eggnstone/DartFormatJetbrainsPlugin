@@ -62,4 +62,40 @@ class TestSimple
 
         TestTools.assertAreEqual(actualText, expectedText)
     }
+
+    @Test
+    fun constructorWithAssignment()
+    {
+        val inputText =
+            "C()\n" +
+            ": a = b;"
+        val inputPart = Statement(inputText)
+
+        val expectedText =
+            "C()\n" +
+            "    : a = b;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignments()
+    {
+        val inputText =
+            "C()\n" +
+            ": a = b,\n" +
+            "a = b;"
+        val inputPart = Statement(inputText)
+
+        val expectedText =
+            "C()\n" +
+            "    : a = b,\n" +
+            "      a = b;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
 }

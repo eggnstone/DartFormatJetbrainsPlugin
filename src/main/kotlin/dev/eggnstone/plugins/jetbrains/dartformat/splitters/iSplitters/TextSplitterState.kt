@@ -13,7 +13,7 @@ class TextSplitterState(val inputText: String)
     var currentBrackets = mutableListOf<String>()
 
     var hasBlock = false
-    //var isEnum = false
+    var hasColon = false
 
     var isInApostrophes = false
     var isInAssignment = false
@@ -44,6 +44,7 @@ class TextSplitterState(val inputText: String)
         DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
         DotlinLogger.log("hasBlock:                  $hasBlock")
+        DotlinLogger.log("hasColon:                  $hasColon")
 
         DotlinLogger.log("isInApostrophes:           $isInApostrophes")
         DotlinLogger.log("isInAssignment:            $isInAssignment")
@@ -68,7 +69,7 @@ class TextSplitterState(val inputText: String)
         newState.currentBrackets = DotlinTools.clone(currentBrackets)
 
         newState.hasBlock = hasBlock
-        //newState.isEnum = isEnum
+        newState.hasColon = hasColon
 
         newState.isInApostrophes = isInApostrophes
         newState.isInAssignment = isInAssignment
