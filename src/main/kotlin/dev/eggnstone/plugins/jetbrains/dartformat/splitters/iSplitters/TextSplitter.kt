@@ -419,7 +419,7 @@ class TextSplitter : ISplitter
         {
             val tempRemainingText = DotlinTools.substring(oldState.remainingText, 1) // removing the ";"
             if (DotlinTools.startsWith(tempRemainingText, "}"))
-                return handleSemicolonHasNoBlockWithOpeningBraceNext(oldState)
+                TODO("untested") // return handleSemicolonHasNoBlockWithOpeningBraceNext(oldState)
 
             return handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState)
         }

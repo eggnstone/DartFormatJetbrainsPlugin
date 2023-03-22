@@ -49,7 +49,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val headerLines = lineSplitter.split(shortenedHeader, true)
         if (headerLines.isEmpty())
-            return "{"
+            TODO("untested") // return "{"
 
         var result = headerLines[0]
 
@@ -214,6 +214,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (DotlinTools.trim(currentLine) == "}")
             {
+                TODO("untested")
                 result += currentLine
                 startIndex++
                 continue

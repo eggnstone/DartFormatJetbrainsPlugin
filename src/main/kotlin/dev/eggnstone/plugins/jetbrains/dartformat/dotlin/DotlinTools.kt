@@ -34,7 +34,7 @@ class DotlinTools
             //DotlinLogger.log("DotlinTools.containsChar(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchChar)})")
 
             if (searchChar.length != 1)
-                throw DartFormatException("Use containsString() instead!")
+                TODO("untested") // throw DartFormatException("Use containsString() instead!")
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length)
@@ -132,7 +132,7 @@ class DotlinTools
         fun endsWith(s: String, searchText: String): Boolean
         {
             if (s.length < searchText.length)
-                return false
+                TODO("untested") // return false
 
             return substring(s, s.length - searchText.length) == searchText
         }
@@ -202,7 +202,7 @@ class DotlinTools
             return ""
         }
 
-        fun toMutableListOfString(s: String): MutableList<String>
+        /*fun toMutableListOfString(s: String): MutableList<String>
         {
             val result = mutableListOf<String>()
             //val result :MutableList<String> = mutableListOf<String>()
@@ -217,7 +217,7 @@ class DotlinTools
             }
 
             return result
-        }
+        }*/
 
         fun last(list: List<String>): String
         {
@@ -231,7 +231,7 @@ class DotlinTools
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (searchText.length == 0)
-                return 0
+                TODO("untested") // return 0
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length - searchText.length + 1)

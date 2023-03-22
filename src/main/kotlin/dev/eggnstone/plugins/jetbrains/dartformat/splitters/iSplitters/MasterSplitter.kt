@@ -15,6 +15,7 @@ class MasterSplitter : ISplitter
         val splitResult = split(inputText)
         if (DotlinTools.isNotEmpty(splitResult.remainingText))
         {
+            TODO("untested")
             DotlinLogger.log("MasterSplitter.splitAll")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
             DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")

@@ -57,7 +57,7 @@ class Tools
             if (addEllipsis)
                 return DotlinTools.substring(s, 0, maxLength - 4) + " ..."// dotlin
 
-            return DotlinTools.substring(s, 0, maxLength) // dotlin
+            TODO("untested") // return DotlinTools.substring(s, 0, maxLength) // dotlin
             //return s.substring(0, maxLength)
         }
 
@@ -136,6 +136,7 @@ class Tools
                 val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
                 if (c == "\n" || c == "\r")
                 {
+                    TODO("untested")
                     startText += c
                     continue
                 }
@@ -161,6 +162,7 @@ class Tools
                 val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
                 if (c == "\n" || c == "\r")
                 {
+                    TODO("untested")
                     endText = c + endText
                     continue
                 }

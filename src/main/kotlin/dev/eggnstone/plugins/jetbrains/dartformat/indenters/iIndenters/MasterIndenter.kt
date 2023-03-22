@@ -55,7 +55,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)
             is Whitespace -> return WhitespaceIndenter(spacesPerLevel)
-            else -> TODO()
+            else -> TODO("???")
         }
     }
 }
