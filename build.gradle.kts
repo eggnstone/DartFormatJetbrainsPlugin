@@ -10,6 +10,7 @@ version = "1.3.1"
 repositories {
     mavenCentral()
 }
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
@@ -47,4 +48,8 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+}
+
+tasks.withType<Test> {
+    exclude("**/*jetbrainsplugins*")
 }
