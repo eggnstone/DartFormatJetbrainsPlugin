@@ -16,9 +16,9 @@ class MasterSplitter : ISplitter
         if (StringWrapper.isNotEmpty(splitResult.remainingText))
         {
             TODO("untested")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.splitAll")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            DotlinLogger.log("MasterSplitter.splitAll")
+            DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+            DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
             throw DartFormatException("splitResult.remainingText.isNotEmpty()")
         }
 
@@ -41,11 +41,16 @@ class MasterSplitter : ISplitter
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling '${splitter.name}' splitter ..")
             val splitResult = splitter.split(remainingText, params)
+
             ///*
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Result from '${splitter.name}' splitter:")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("Result from '${splitter.name}' splitter:")
+                DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+                DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            }
             //*/
+
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
             parts.addAll(splitResult.parts)

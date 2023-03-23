@@ -30,33 +30,36 @@ class TextSplitterState(val inputText: String)
 
     fun log(s: String, params: SplitParams? = null)
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("\n-----$s ---------------------------------------- $s")
+        if (!DotlinLogger.isEnabled)
+            return
+
+        DotlinLogger.log("\n-----$s ---------------------------------------- $s")
 
         if (params != null)
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("params.expectClosingBrace: ${params.expectClosingBrace}")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("params.isEnum:             ${params.isEnum}")
+            DotlinLogger.log("params.expectClosingBrace: ${params.expectClosingBrace}")
+            DotlinLogger.log("params.isEnum:             ${params.isEnum}")
         }
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
+        DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
+        DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
+        DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("hasBlock:                  $hasBlock")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("hasColon:                  $hasColon")
+        DotlinLogger.log("hasBlock:                  $hasBlock")
+        DotlinLogger.log("hasColon:                  $hasColon")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("isInApostrophes:           $isInApostrophes")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("isInAssignment:            $isInAssignment")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
+        DotlinLogger.log("isInApostrophes:           $isInApostrophes")
+        DotlinLogger.log("isInAssignment:            $isInAssignment")
+        DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
+        DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
+        DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
+        DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
+        DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("----- $s ---------------------------------------- $s\n")
+        DotlinLogger.log("----- $s ---------------------------------------- $s\n")
     }
 
     fun clone(): TextSplitterState

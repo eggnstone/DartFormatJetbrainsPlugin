@@ -245,8 +245,12 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             break
         }
 
-        if (DotlinLogger.isEnabled) DotlinLogger.log("startIndex: $startIndex")
-        if (DotlinLogger.isEnabled) DotlinLogger.log("footerLines.size: ${footerLines.size}")
+        if (DotlinLogger.isEnabled)
+        {
+            DotlinLogger.log("startIndex: $startIndex")
+            DotlinLogger.log("footerLines.size: ${footerLines.size}")
+        }
+
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in startIndex until footerLines.size) // workaround for dotlin
         {

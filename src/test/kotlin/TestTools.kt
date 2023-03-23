@@ -56,7 +56,7 @@ class TestTools
         {
             if (StringWrapper.isEmpty(reason))
             {
-                if (DotlinLogger.isEnabled) DotlinLogger.log("REASON IS MISSING!")
+                DotlinLogger.log("REASON IS MISSING!")
                 //throw AssertionError("REASON IS MISSING!")
             }
 

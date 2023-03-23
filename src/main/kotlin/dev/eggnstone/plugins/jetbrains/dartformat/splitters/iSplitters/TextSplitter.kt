@@ -219,9 +219,12 @@ class TextSplitter : ISplitter
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
             val extractionResult = CommentExtractor.extract(state.remainingText)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Result from CommentExtractor:")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  comment        ${Tools.toDisplayString(extractionResult.comment)}")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("Result from CommentExtractor:")
+                DotlinLogger.log("  comment        ${Tools.toDisplayString(extractionResult.comment)}")
+                DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
+            }
 
             state.currentText += extractionResult.comment
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
@@ -297,17 +300,21 @@ class TextSplitter : ISplitter
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("-> MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
             val result = MasterSplitter().split(state.remainingText, params)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("<- MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText:           ${Tools.toDisplayString(result.remainingText)}")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:                   ${Tools.toDisplayStringForParts(result.parts)}")
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("<- MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
+                DotlinLogger.log("  remainingText:           ${Tools.toDisplayString(result.remainingText)}")
+                DotlinLogger.log("  parts:                   ${Tools.toDisplayStringForParts(result.parts)}")
+            }
+
             state.remainingText = result.remainingText
 
             if (!StringWrapper.startsWith(state.remainingText, "}"))
             {
                 oldState.log("handleOpeningBrace - Missing closing brace (old)")
                 state.log("handleOpeningBrace - Missing closing brace (new)")
-                if (DotlinLogger.isEnabled) DotlinLogger.log("result.remainingText: ${Tools.toDisplayString(result.remainingText)}")
-                if (DotlinLogger.isEnabled) DotlinLogger.log("result.parts: ${Tools.toDisplayStringForParts(result.parts)}")
+                DotlinLogger.log("result.remainingText: ${Tools.toDisplayString(result.remainingText)}")
+                DotlinLogger.log("result.parts: ${Tools.toDisplayStringForParts(result.parts)}")
                 throw DartFormatException("Missing closing brace: ${Tools.toDisplayString(state.remainingText)}")
             }
 
