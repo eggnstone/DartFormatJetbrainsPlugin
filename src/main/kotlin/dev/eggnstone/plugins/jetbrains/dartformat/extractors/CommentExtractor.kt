@@ -3,6 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class CommentExtractor
 {
@@ -23,8 +24,8 @@ class CommentExtractor
                 if (nextLinePos == -1)
                     return ExtractionResult(inputText, "")
 
-                val comment = DotlinTools.substring(inputText, 0, nextLinePos)
-                val remainingText = DotlinTools.substring(inputText, nextLinePos)
+                val comment = StringWrapper.substring(inputText, 0, nextLinePos)
+                val remainingText = StringWrapper.substring(inputText, nextLinePos)
 
                 return ExtractionResult(comment, remainingText)
             }
@@ -38,9 +39,9 @@ class CommentExtractor
                 {
                     if (i + 1 < inputText.length)
                     {
-                        val sub = DotlinTools.substring(inputText, i, i + 2)
+                        val sub = StringWrapper.substring(inputText, i, i + 2)
                         if (sub == "*/")
-                            return ExtractionResult(comment + sub, DotlinTools.substring(inputText, i + 2))
+                            return ExtractionResult(comment + sub, StringWrapper.substring(inputText, i + 2))
                     }
 
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin

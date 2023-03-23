@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.BlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
@@ -43,9 +44,9 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             throw DartFormatException("Unexpected empty header.")
 
         if (!DotlinTools.endsWith(header, "{"))
-            throw DartFormatException("Unexpected header end: " + Tools.toDisplayString(DotlinTools.substring(header, header.length - 1)))
+            throw DartFormatException("Unexpected header end: " + Tools.toDisplayString(StringWrapper.substring(header, header.length - 1)))
 
-        val shortenedHeader = DotlinTools.substring(header, 0, header.length - 1)
+        val shortenedHeader = StringWrapper.substring(header, 0, header.length - 1)
 
         val headerLines = lineSplitter.split(shortenedHeader, true)
         if (headerLines.isEmpty())
@@ -67,7 +68,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 result += currentLine
                 startIndex++
 
-                if (DotlinTools.containsString(previousLine, "*/"))
+                if (StringWrapper.containsString(previousLine, "*/"))
                     isInMultiLineComment = false
 
                 continue
@@ -78,7 +79,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 result += currentLine
                 startIndex++
 
-                if (!DotlinTools.containsString(previousLine, "*/"))
+                if (!StringWrapper.containsString(previousLine, "*/"))
                     isInMultiLineComment = true
 
                 continue
@@ -112,7 +113,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             {
                 result += headerLine
 
-                if (DotlinTools.containsString(headerLine, "*/"))
+                if (StringWrapper.containsString(headerLine, "*/"))
                     isInMultiLineComment = false
 
                 continue
@@ -123,7 +124,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 // no padding for multi line comments
                 result += headerLine
 
-                if (!DotlinTools.containsString(headerLine, "*/"))
+                if (!StringWrapper.containsString(headerLine, "*/"))
                     isInMultiLineComment = true
 
                 continue
@@ -158,7 +159,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         }
 
         // TODO: find a better solution
-        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(DotlinTools.substring(result, result.length - 1))
+        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(StringWrapper.substring(result, result.length - 1))
         result += if (endsWithWhitespace) "{" else " {"
 
         return result
@@ -186,7 +187,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 result += currentLine
                 startIndex++
 
-                if (DotlinTools.containsString(currentLine, "*/"))
+                if (StringWrapper.containsString(currentLine, "*/"))
                     isInMultiLineComment = false
 
                 continue
@@ -198,7 +199,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 result += currentLine
                 startIndex++
 
-                if (!DotlinTools.containsString(currentLine, "*/"))
+                if (!StringWrapper.containsString(currentLine, "*/"))
                     isInMultiLineComment = true
 
                 continue
@@ -246,7 +247,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 TODO("untested")
                 result += footerLine
 
-                if (DotlinTools.containsString(footerLine, "*/"))
+                if (StringWrapper.containsString(footerLine, "*/"))
                     isInMultiLineComment = false
 
                 continue
@@ -258,7 +259,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 // no padding for multi line comments
                 result += footerLine
 
-                if (!DotlinTools.containsString(footerLine, "*/"))
+                if (!StringWrapper.containsString(footerLine, "*/"))
                     isInMultiLineComment = true
 
                 continue
@@ -280,7 +281,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         }
 
         /*// TODO: find a better solution
-        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(DotlinTools.substring(result, result.length - 1))
+        val endsWithWhitespace = DotlinTools.isNotEmpty(result) && Tools.isWhitespace(StringWrapper.substring(result, result.length - 1))
         result += if (endsWithWhitespace) "{" else " {"*/
 
         return result

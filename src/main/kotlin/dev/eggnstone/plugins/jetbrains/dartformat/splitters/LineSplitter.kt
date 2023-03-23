@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class LineSplitter
 {
@@ -20,10 +21,10 @@ class LineSplitter
         if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
             return split(s, "\r\n", trim)
 
-        if (DotlinTools.containsChar(s, "\n"))
+        if (StringWrapper.containsChar(s, "\n"))
             return split(s, "\n", trim)
 
-        if (DotlinTools.containsChar(s, "\r"))
+        if (StringWrapper.containsChar(s, "\r"))
             return split(s, "\r", trim)
 
         return listOf(s)

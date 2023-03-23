@@ -1,6 +1,7 @@
 package dotlin.dotlinTools
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -15,7 +16,7 @@ class TestContainsString
 
         val expectedResult = true
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -28,7 +29,7 @@ class TestContainsString
 
         val expectedResult = true
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -41,7 +42,7 @@ class TestContainsString
 
         val expectedResult = true
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -54,7 +55,7 @@ class TestContainsString
 
         val expectedResult = false
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -67,7 +68,7 @@ class TestContainsString
 
         val expectedResult = false
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -80,7 +81,7 @@ class TestContainsString
 
         val expectedResult = true
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }
@@ -93,7 +94,7 @@ class TestContainsString
 
         val expectedResult = true
 
-        val actualResult = DotlinTools.containsString(inputText, inputSearchText)
+        val actualResult = StringWrapper.containsString(inputText, inputSearchText)
 
         assertThat(actualResult, CoreMatchers.equalTo(expectedResult))
     }

@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class StringSplitter
 {
@@ -30,7 +31,7 @@ class StringSplitter
             while (i < s.length - delimiter.length + 1)
             {
                 @Suppress("ReplaceGetOrSet")
-                val candidate = DotlinTools.substring(s, i, i + delimiter.length)
+                val candidate = StringWrapper.substring(s, i, i + delimiter.length)
 
                 if (candidate == delimiter)
                 {
@@ -64,7 +65,7 @@ class StringSplitter
             //DotlinLogger.log("    currentText: ${Tools.toDisplayString(currentText)}")
             //DotlinLogger.log("    loop rest:   ${Tools.toDisplayString(s.substring(i))}")
 
-            val rest = currentText + DotlinTools.substring(s, i)
+            val rest = currentText + StringWrapper.substring(s, i)
             //DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
 
             if (DotlinTools.isNotEmpty(rest))

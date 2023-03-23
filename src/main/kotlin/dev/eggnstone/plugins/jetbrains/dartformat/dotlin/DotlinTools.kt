@@ -1,26 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.dotlin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 
-/*class A
-{
-    companion object
-    {
-        fun a()
-        {
-        }
-    }
-}
-
-class B
-{
-    fun b()
-    {
-        val f = A.Companion::a
-        f()
-    }
-}*/
 
 class DotlinTools
 {
@@ -28,8 +9,8 @@ class DotlinTools
 
     companion object
     {
-        // String.contains
-        fun containsChar(s: String, searchChar: String): Boolean
+        /*// String.contains
+        fun containsCharOld(s: String, searchChar: String): Boolean
         {
             //DotlinLogger.log("DotlinTools.containsChar(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchChar)})")
 
@@ -49,7 +30,7 @@ class DotlinTools
         }
 
         // String.contains
-        fun containsString(s: String, searchText: String): Boolean
+        fun containsStringOls(s: String, searchText: String): Boolean
         {
             //DotlinLogger.log("DotlinTools.containsString(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
 
@@ -61,12 +42,12 @@ class DotlinTools
             for (i in 0 until s.length - searchText.length + 1)
             {
                 //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
-                if (substring(s, i, i + searchText.length) == searchText)
+                if (StringWrapper.substring(s, i, i + searchText.length) == searchText)
                     return true
             }
 
             return false
-        }
+        }*/
 
         // String.repeat
         fun getSpaces(count: Int): String
@@ -125,7 +106,7 @@ class DotlinTools
             if (s.length < searchText.length)
                 return false
 
-            return substring(s, 0, searchText.length) == searchText
+            return StringWrapper.substring(s, 0, searchText.length) == searchText
         }
 
         // String.endsWith
@@ -134,12 +115,13 @@ class DotlinTools
             if (s.length < searchText.length)
                 TODO("untested") // return false
 
-            return substring(s, s.length - searchText.length) == searchText
+            return StringWrapper.substring(s, s.length - searchText.length) == searchText
         }
 
-        // String.substring
+        /*// String.substring
         fun substring(s: String, startIndex: Int, endIndex: Int = -1): String
         {
+            return s.substring(startIndex,endIndex)
             if (startIndex < 0)
                 throw DartFormatException("startIndex < 0")
 
@@ -165,7 +147,7 @@ class DotlinTools
 
             //DotlinLogger.log("  result:     ${Tools.toDisplayString2(result)}")
             return result
-        }
+        }*/
 
         // String.trim
         fun trim(s: String): String
@@ -181,7 +163,7 @@ class DotlinTools
                 @Suppress("ReplaceGetOrSet")
                 val c = s.get(i).toString()
                 if (!Tools.isWhitespace(c))
-                    return substring(s, i)
+                    return StringWrapper.substring(s, i)
             }
 
             return ""
@@ -195,7 +177,7 @@ class DotlinTools
                 @Suppress("ReplaceGetOrSet")
                 val c = s.get(i).toString()
                 if (!Tools.isWhitespace(c))
-                    return substring(s, 0, i + 1)
+                    return StringWrapper.substring(s, 0, i + 1)
             }
 
 
@@ -237,7 +219,7 @@ class DotlinTools
             for (i in 0 until s.length - searchText.length + 1)
             {
                 //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
-                if (substring(s, i, i + searchText.length) == searchText)
+                if (StringWrapper.substring(s, i, i + searchText.length) == searchText)
                     return i
             }
 

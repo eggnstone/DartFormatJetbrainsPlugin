@@ -4,6 +4,8 @@ class Constants
 {
     companion object
     {
+        const val DEBUG = false
+
         const val OPENING_CURLY_BRACKET = "{"
         const val CLOSING_CURLY_BRACKET = "}"
 

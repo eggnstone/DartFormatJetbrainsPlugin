@@ -1,115 +1,121 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-void main() {
-runApp(const MyApp());
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class MyApp extends StatelessWidget {
-const MyApp({super.key});
+class _MainScreenState extends State<MainScreen> {
+  String title = 'Kais Golf Guide';
+  String title1 = 'Kais';
+  String title2 = 'Golf';
+  String title3 = 'Guide';
+  String claim = 'verrückt nach Golf';
+  String claim1 = 'verrückt';
+  String claim2 = 'nach';
+  String claim3 = 'Golf';
 
-// This widget is the root of your application.
-@override
-Widget build(BuildContext context) {
-return MaterialApp(
-title: 'Flutter Demo',
-theme: ThemeData(
-// This is the theme of your application.
-//
-// Try running your application with "flutter run". You'll see the
-// application has a blue toolbar. Then, without quitting the app, try
-// changing the primarySwatch below to Colors.green and then invoke
-// "hot reload" (press "r" in the console where you ran "flutter run",
-// or simply save your changes to "hot reload" in a Flutter IDE).
-// Notice that the counter didn't reset back to zero; the application
-// is not restarted.
-primarySwatch: Colors.blue,
-),
-home: const MyHomePage(title: 'Flutter Demo Home Page'),
-);
-}
-}
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: SingleChildScrollView(
+            child: Center(
+                child: Column(children: [
+      SizedBox(height: 16),
+      Text('320 x 50 (mobile leaderboard).'),
+      Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner320x50(center: true)),
+      SizedBox(height: 16),
+      Text('468 x 60 (banner)'),
+      Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner468x60(center: true)),
+      //Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner468x60(center: false)),
+      SizedBox(height: 16),
+      Text('728 x 90 (leaderboard banner)'),
+      Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner728x90(center: true)),
+      //Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner728x90(center: false)),
+      SizedBox(height: 16),
+      Text('250 x 250 (square)'),
+      Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner250x250(center: true)),
+      SizedBox(height: 16),
+      Text('120 x 600 (skyscraper)'),
+      Container(decoration: BoxDecoration(border: Border.all()), child: _createBanner120x600(center: true)),
+      SizedBox(height: 16)
+    ]))));
+  }
 
-class MyHomePage extends StatefulWidget {
-const MyHomePage({super.key, required this.title});
+  Widget _createBanner468x60({required bool center}) {
+    TextStyle titleStyle = TextStyle(fontFamily: 'Lato', fontSize: 24);
+    double subtitleFactor = 0.75;
+    return Container(
+        width: 468,
+        height: 60,
+        padding: const EdgeInsets.all(4),
+        child: Row(children: [
+          FittedBox(fit: BoxFit.contain, child: SvgPicture.asset('assets/images/logo_full_head.svg')),
+          Expanded(child: Center(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.end, children: [Text(title, style: titleStyle), SizedBox(width: 16), Text('-', style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(width: 16), Text(claim, style: titleStyle, textScaleFactor: subtitleFactor)])))
+        ]));
+  }
 
-// This widget is the home page of your application. It is stateful, meaning
-// that it has a State object (defined below) that contains fields that affect
-// how it looks.
+  Widget _createBanner728x90({required bool center}) {
+    TextStyle titleStyle = TextStyle(fontFamily: 'Lato', fontSize: 40);
 
-// This class is the configuration for the state. It holds the values (in this
-// case the title) provided by the parent (in this case the App widget) and
-// used by the build method of the State. Fields in a Widget subclass are
-// always marked "final".
+    double subtitleFactor = 0.75;
 
-final String title;
+    return Container(
+        width: 728,
+        height: 90,
+        padding: const EdgeInsets.all(8),
+        child: Row(children: [
+          FittedBox(fit: BoxFit.contain, child: SvgPicture.asset('assets/images/logo_full_head.svg')),
+          Expanded(child: Center(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.end, children: [Text(title, style: titleStyle), SizedBox(width: 16), Text('-', style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(width: 16), Text(claim, style: titleStyle, textScaleFactor: subtitleFactor)])))
+        ]));
+  }
 
-@override
-State<MyHomePage> createState() => _MyHomePageState();
-}
+  Widget _createBanner250x250({required bool center}) {
+    TextStyle titleStyle = TextStyle(fontFamily: 'Lato', fontSize: 20);
 
-class _MyHomePageState extends State<MyHomePage> {
-int _counter = 0;
+    double subtitleFactor = 0.75;
 
-void _incrementCounter() {
-setState(() {
-// This call to setState tells the Flutter framework that something has
-// changed in this State, which causes it to rerun the build method below
-// so that the display can reflect the updated values. If we changed
-// _counter without calling setState(), then the build method would not be
-// called again, and so nothing would appear to happen.
-_counter++;
-});
-}
+    return Container(
+        width: 250,
+        height: 250,
+        padding: const EdgeInsets.all(8),
+        child: Row(children: [
+          Expanded(flex: 5, child: FittedBox(fit: BoxFit.contain, child: SvgPicture.asset('assets/images/logo_full_head.svg'))),
+          Expanded(flex: 4, child: Center(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.end, children: [Text(title1, style: titleStyle), SizedBox(height: 8), Text(title2, style: titleStyle), SizedBox(height: 8), Text(title3, style: titleStyle), SizedBox(height: 8), Text('-', style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 8), Text(claim1, style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 8), Text(claim2, style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 8), Text(claim3, style: titleStyle, textScaleFactor: subtitleFactor)])))
+        ]));
+  }
 
-@override
-Widget build(BuildContext context) {
-// This method is rerun every time setState is called, for instance as done
-// by the _incrementCounter method above.
-//
-// The Flutter framework has been optimized to make rerunning build methods
-// fast, so that you can just rebuild anything that needs updating rather
-// than having to individually change instances of widgets.
-return Scaffold(
-appBar: AppBar(
-// Here we take the value from the MyHomePage object that was created by
-// the App.build method, and use it to set our appbar title.
-title: Text(widget.title),
-),
-body: Center(
-// Center is a layout widget. It takes a single child and positions it
-// in the middle of the parent.
-child: Column(
-// Column is also a layout widget. It takes a list of children and
-// arranges them vertically. By default, it sizes itself to fit its
-// children horizontally, and tries to be as tall as its parent.
-//
-// Invoke "debug painting" (press "p" in the console, choose the
-// "Toggle Debug Paint" action from the Flutter Inspector in Android
-// Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-// to see the wireframe for each widget.
-//
-// Column has various properties to control how it sizes itself and
-// how it positions its children. Here we use mainAxisAlignment to
-// center the children vertically; the main axis here is the vertical
-// axis because Columns are vertical (the cross axis would be
-// horizontal).
-mainAxisAlignment: MainAxisAlignment.center,
-children: <Widget>[
-const Text(
-'You have pushed the button this many times:',
-),
-Text(
-'$_counter',
-style: Theme.of(context).textTheme.headlineMedium,
-),
-],
-),
-),
-floatingActionButton: FloatingActionButton(
-onPressed: _incrementCounter,
-tooltip: 'Increment',
-child: const Icon(Icons.add),
-), // This trailing comma makes auto-formatting nicer for build methods.
-);
-}
+  Widget _createBanner120x600({required bool center}) {
+    TextStyle titleStyle = TextStyle(fontFamily: 'Lato', fontSize: 24);
+
+    double subtitleFactor = 0.75;
+
+    return Container(
+        width: 120,
+        height: 600,
+        padding: const EdgeInsets.all(8),
+        child: Column(children: [
+          FittedBox(fit: BoxFit.contain, child: SvgPicture.asset('assets/images/logo_full_head.svg')),
+          Expanded(child: Center(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.end, children: [Text(title1, style: titleStyle), SizedBox(height: 16), Text(title2, style: titleStyle), SizedBox(height: 16), Text(title3, style: titleStyle), SizedBox(height: 16), Text('-', style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 16), Text(claim1, style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 16), Text(claim2, style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(height: 16), Text(claim3, style: titleStyle, textScaleFactor: subtitleFactor)])))
+        ]));
+  }
+
+  Widget _createBanner320x50({required bool center}) {
+    TextStyle titleStyle = TextStyle(fontFamily: 'Lato', fontSize: 16);
+
+    double subtitleFactor = 0.75;
+    double spacer = 8;
+
+    return Container(
+        width: 320,
+        height: 50,
+        padding: const EdgeInsets.all(8),
+        child: Row(children: [
+          FittedBox(fit: BoxFit.contain, child: SvgPicture.asset('assets/images/logo_full_head.svg')),
+          Expanded(child: Center(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.end, children: [Text(title, style: titleStyle), SizedBox(width: spacer), Text('-', style: titleStyle, textScaleFactor: subtitleFactor), SizedBox(width: spacer), Text(claim, style: titleStyle, textScaleFactor: subtitleFactor)])))
+        ]));
+  }
 }

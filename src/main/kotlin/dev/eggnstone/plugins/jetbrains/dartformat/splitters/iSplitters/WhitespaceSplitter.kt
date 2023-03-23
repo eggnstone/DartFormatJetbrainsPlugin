@@ -3,6 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
 class WhitespaceSplitter : ISplitter
@@ -41,7 +42,7 @@ class WhitespaceSplitter : ISplitter
             if (i == 0)
                 throw DartFormatException("Unexpected non-whitespace at beginning of text.")
 
-            val remainingText = DotlinTools.substring(inputText, i)
+            val remainingText = StringWrapper.substring(inputText, i)
             return SplitResult(remainingText, listOf(Whitespace(whitespace)))
         }
 

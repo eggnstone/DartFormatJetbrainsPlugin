@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class Tools
@@ -44,10 +45,10 @@ class Tools
             }
         }
 
-        fun isClosingBracket(c: String): Boolean = DotlinTools.containsChar(closingBrackets, c)
-        fun isOpeningBracket(c: String): Boolean = DotlinTools.containsChar(openingBrackets, c)
-        fun isBracket(c: String): Boolean = DotlinTools.containsChar(openingBrackets + closingBrackets, c)
-        fun isWhitespace(c: String): Boolean = DotlinTools.containsChar("\n\r\t ", c)
+        fun isClosingBracket(c: String): Boolean = StringWrapper.containsChar(closingBrackets, c)
+        fun isOpeningBracket(c: String): Boolean = StringWrapper.containsChar(openingBrackets, c)
+        fun isBracket(c: String): Boolean = StringWrapper.containsChar(openingBrackets + closingBrackets, c)
+        fun isWhitespace(c: String): Boolean = StringWrapper.containsChar("\n\r\t ", c)
 
         fun shorten(s: String, maxLength: Int, addEllipsis: Boolean): String
         {
@@ -55,9 +56,9 @@ class Tools
                 return s
 
             if (addEllipsis)
-                return DotlinTools.substring(s, 0, maxLength - 4) + " ..."// dotlin
+                return StringWrapper.substring(s, 0, maxLength - 4) + " ..."// dotlin
 
-            TODO("untested") // return DotlinTools.substring(s, 0, maxLength) // dotlin
+            TODO("untested") // return StringWrapper.substring(s, 0, maxLength) // dotlin
             //return s.substring(0, maxLength)
         }
 
@@ -144,7 +145,7 @@ class Tools
                 if (c == "\t" || c == " ")
                     continue
 
-                return startText + DotlinTools.substring(s, i)
+                return startText + StringWrapper.substring(s, i)
             }
 
             return startText
@@ -170,7 +171,7 @@ class Tools
                 if (c == "\t" || c == " ")
                     continue
 
-                return DotlinTools.substring(s, 0, i + 1) + endText
+                return StringWrapper.substring(s, 0, i + 1) + endText
             }
 
             return endText
@@ -178,7 +179,7 @@ class Tools
 
         fun getElseEndPos(s: String): Int
         {
-            DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
+            if (Constants.DEBUG) DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
 
             val searchText = "else"
 
@@ -189,11 +190,11 @@ class Tools
             if (pos == -1)
                 return -1
 
-            val leadingText = DotlinTools.substring(s, 0, pos)
+            val leadingText = StringWrapper.substring(s, 0, pos)
             if (!DotlinTools.isBlank(leadingText))
                 return -1
 
-            val trailingText = DotlinTools.substring(s, pos + searchText.length)
+            val trailingText = StringWrapper.substring(s, pos + searchText.length)
             if (DotlinTools.isEmpty(trailingText))
                 return s.length
 
