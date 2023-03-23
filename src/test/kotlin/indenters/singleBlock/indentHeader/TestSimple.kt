@@ -15,7 +15,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -31,7 +31,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -49,7 +49,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -67,7 +67,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -85,7 +85,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -105,7 +105,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -123,7 +123,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -143,7 +143,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -161,7 +161,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -179,7 +179,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -195,7 +195,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -215,7 +215,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -237,7 +237,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -255,7 +255,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -273,7 +273,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -293,7 +293,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -315,7 +315,7 @@ class TestSimple
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -324,18 +324,16 @@ class TestSimple
         val inputText =
             "C()\n" +
                 ": a = b\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val expectedText =
             "C()\n" +
                 "    : a = b\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -345,19 +343,17 @@ class TestSimple
             "C()\n" +
                 ":\n" +
                 "a = b\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val expectedText =
             "C()\n" +
                 "    :\n" +
                 "      a = b\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -367,19 +363,17 @@ class TestSimple
             "C()\n" +
                 ": a = b,\n" +
                 "c = d\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val expectedText =
             "C()\n" +
                 "    : a = b,\n" +
                 "      c = d\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 
     @Test
@@ -390,19 +384,17 @@ class TestSimple
                 ":\n" +
                 "a = b,\n" +
                 "c = d\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val expectedText =
             "C()\n" +
                 "    :\n" +
                 "      a = b,\n" +
                 "      c = d\n" +
-                "{\n" +
-                "}"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualText, expectedText)
     }
 }

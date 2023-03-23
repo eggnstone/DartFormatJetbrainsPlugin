@@ -165,12 +165,8 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             var pad = DotlinTools.getSpaces(spacesPerLevel)
 
-            if (usesColon)
-            {
-                pad = DotlinTools.getSpaces(spacesPerLevel) + pad
-                if (!startsWithColon)
-                    pad = "  $pad"
-            }
+            if (usesColon && !startsWithColon)
+                pad = "$pad  "
 
             result += pad + headerLine
         }
