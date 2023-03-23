@@ -7,6 +7,32 @@ import org.junit.Test
 class TestSimpleWithoutTrim
 {
     @Test
+    fun space()
+    {
+        val inputText = " "
+        val inputDelimiter = ","
+
+        val expectedResult = listOf(" ")
+
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
+    }
+
+    @Test
+    fun lineBreakAndSpaceAndLineBreak()
+    {
+        val inputText = "\n \n"
+        val inputDelimiter = "\n"
+
+        val expectedResult = listOf("", " ", "")
+
+        val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
+
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
+    }
+
+    @Test
     fun delimiterNotInText()
     {
         val inputText = "a"
@@ -16,7 +42,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -29,7 +55,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -42,7 +68,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -55,7 +81,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -68,7 +94,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -81,7 +107,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -94,7 +120,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -107,7 +133,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -120,7 +146,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -133,7 +159,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -146,7 +172,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -159,7 +185,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -172,7 +198,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -185,7 +211,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -198,7 +224,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -211,7 +237,7 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 
     @Test
@@ -224,6 +250,6 @@ class TestSimpleWithoutTrim
 
         val actualResult = StringSplitter.split(inputText, inputDelimiter, trim = false)
 
-        TestTools.assertStringsAreEqual(actualResult, expectedResult)
+        TestTools.assertStringsAreEqual("Text", actualResult, expectedResult)
     }
 }

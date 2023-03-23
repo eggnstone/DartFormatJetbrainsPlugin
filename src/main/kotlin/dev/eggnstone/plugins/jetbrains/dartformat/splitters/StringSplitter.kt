@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class StringSplitter
@@ -11,7 +10,7 @@ class StringSplitter
     {
         fun split(s: String, delimiter: String, trim: Boolean): List<String>
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (delimiter.length == 0)
@@ -29,7 +28,6 @@ class StringSplitter
             var i = 0
             while (i < s.length - delimiter.length + 1)
             {
-                @Suppress("ReplaceGetOrSet")
                 val candidate = StringWrapper.substring(s, i, i + delimiter.length)
 
                 if (candidate == delimiter)
@@ -39,10 +37,8 @@ class StringSplitter
                         if (trim)
                         {
                             val trimmedCurrentText = Tools.trimSimple(currentText)
-                            if (StringWrapper.isEmpty(trimmedCurrentText))
-                                TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")
-
-                            result.add(trimmedCurrentText)
+                            if (StringWrapper.isNotEmpty(trimmedCurrentText))
+                                result.add(trimmedCurrentText)
                         }
                         else
                             result.add(currentText)

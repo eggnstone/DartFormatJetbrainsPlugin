@@ -82,7 +82,7 @@ class PluginFormat : AnAction()
             }
 
             val endTime = Date()
-            val diffTime = endTime.time - startTime.time + 1000
+            val diffTime = endTime.time - startTime.time
             val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
 
             var filesText = "${virtualFiles.size} file"
@@ -92,14 +92,15 @@ class PluginFormat : AnAction()
             lines.add(0, "Formatting $filesText took $diffTimeText.")
             notify("DartFormat", null, project, editor, lines)
         }
-        catch (err: DartFormatException)
+        catch (err: Exception)
         {
             val errMessage = err.message ?: "Unknown error."
             notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", errMessage))
         }
-        catch (err: AssertionError)
+        catch (err: Error)
         {
-            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", err.toString()))
+            val errMessage = err.message ?: "Unknown error."
+            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", errMessage))
         }
     }
 
