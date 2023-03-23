@@ -31,7 +31,7 @@ import javax.swing.BoxLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-typealias FormatHandler = (virtualFile: VirtualFile, project: Project, logs: MutableList<String>) -> Boolean
+typealias FormatHandler = (virtualFile: VirtualFile, project: Project, lines: MutableList<String>) -> Boolean
 
 class PluginFormat : AnAction()
 {
@@ -40,26 +40,40 @@ class PluginFormat : AnAction()
         private val masterSplitter = MasterSplitter()
     }
 
-    private class FormatIterator(private val format: FormatHandler, private val project: Project, private val logs: MutableList<String>) : ContentIterator
+    private class FormatIterator(private val format: FormatHandler, private val project: Project, private val lines: MutableList<String>) : ContentIterator
     {
         override fun processFile(virtualFile: VirtualFile): Boolean
         {
             //if (Constants.DEBUG) DotlinLogger.log("FormatIterator.processFile: $virtualFile")
-            return format(virtualFile, project, logs)
+            return format(virtualFile, project, lines)
         }
     }
 
     override fun actionPerformed(e: AnActionEvent)
     {
+        val project = e.getRequiredData(CommonDataKeys.PROJECT)
+
+        val config = getConfig()
+        if (!config.isEnabled)
+        {
+            val title = "DartFormat"
+            val subtitle = "No formatting option enabled"
+            val messages = listOf(
+                "Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat"
+            )
+
+            notifyWarning(title, subtitle, messages, project, null)
+            return
+        }
+
         val startTime = Date()
 
-        val project = e.getRequiredData(CommonDataKeys.PROJECT)
         val editor = e.getData(CommonDataKeys.EDITOR_EVEN_IF_INACTIVE)
 
         try
         {
-            val logs = mutableListOf<String>()
-            val formatIterator = FormatIterator(this::formatDartFile, project, logs)
+            val lines = mutableListOf<String>()
+            val formatIterator = FormatIterator(this::formatDartFile, project, lines)
             val virtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
             CommandProcessor.getInstance().runUndoTransparentAction {
@@ -73,52 +87,59 @@ class PluginFormat : AnAction()
 
             val endTime = Date()
             val diffTime = endTime.time - startTime.time
-            logs.add(0, "Formatting ${virtualFiles.size} file${if (virtualFiles.size == 1) "" else "s"} took $diffTime ms.")
+            var filesText = "file"
+            if (virtualFiles.size != 1)
+                filesText += "s"
 
-            notify(project, editor, logs)
+            lines.add(0, "Formatting ${virtualFiles.size} $filesText took $diffTime ms.")
+            notify("DartFormat", null, project, editor, lines)
         }
         catch (err: DartFormatException)
         {
-            val errMessage = if (err.message == null) "?" else err.message!!
-            notify(project, editor, listOf("While formatting:", e.toString(), errMessage))
-            val message = "While formatting: $e\n${err.message}"
-            throw DartFormatException(message)
-            /*
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $e:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
-            return false
-            */
+            val errMessage = err.message ?: "Unknown error."
+            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", errMessage))
         }
         catch (err: AssertionError)
         {
-            notify(project, editor, listOf("While formatting:", e.toString(), err.toString()))
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $e:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", err.toString()))
         }
     }
 
-    private fun notify(project: Project, editor: Editor?, logs: List<String>)
+    private fun notify(title: String, subtitle: String?, project: Project, editor: Editor?, lines: List<String>)
     {
-        notifyByToolWindowBalloon(project, logs)
-        notifyByEditorPopup(editor, logs)
+        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.INFORMATION, project)
+        //notifyByEditorPopup(editor, lines)
     }
 
-    private fun notifyByToolWindowBalloon(project: Project, logs: List<String>)
+    private fun notifyWarning(title: String, subtitle: String?, lines: List<String>, project: Project, editor: Editor?)
     {
-        val combinedLogs = logs.joinToString("\n")
+        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.WARNING, project)
+        //notifyByEditorPopup(editor, lines)
+    }
+
+    private fun notifyError(title: String, subtitle: String?, project: Project, editor: Editor?, lines: List<String>)
+    {
+        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.ERROR, project)
+        //notifyByEditorPopup(editor, lines)
+    }
+
+    private fun notifyByToolWindowBalloon(title: String, subtitle: String?, lines: List<String>, type: NotificationType, project: Project)
+    {
+        val combinedLines = lines.joinToString("<br/>")
 
         val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat Balloon Notifications")
-        val notification = notificationGroup.createNotification("DartFormat", combinedLogs, NotificationType.INFORMATION)
+        val notification = notificationGroup.createNotification(title, combinedLines, type)
+        notification.subtitle = subtitle
         notification.notify(project)
     }
 
-    private fun notifyByEditorPopup(editor: Editor?, logs: List<String>)
+    private fun notifyByEditorPopup(editor: Editor?, lines: List<String>)
     {
         if (editor == null)
         {
             if (Constants.DEBUG) DotlinLogger.log("editor == null")
-            //val combinedLogs = logs.joinToString("\n")
-            //if (Constants.DEBUG) DotlinLogger.log(combinedLogs)
+            //val combinedLines = lines.joinToString("\n")
+            //if (Constants.DEBUG) DotlinLogger.log(combinedLines)
             return
         }
 
@@ -133,8 +154,8 @@ class PluginFormat : AnAction()
         title.border = JBUI.Borders.emptyBottom(4)
         panel.add(title)
 
-        for (log in logs)
-            panel.add(JLabel(log))
+        for (line in lines)
+            panel.add(JLabel(line))
 
         val balloonBuilder = factory.createBalloonBuilder(panel)
         val balloon = balloonBuilder.createBalloon()
@@ -165,7 +186,7 @@ class PluginFormat : AnAction()
         return true
     }
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project, logs: MutableList<String>): Boolean
+    private fun formatDartFile(virtualFile: VirtualFile, project: Project, lines: MutableList<String>): Boolean
     {
         if (!isDartFile(virtualFile))
         {
@@ -181,7 +202,7 @@ class PluginFormat : AnAction()
             if (fileEditor == null)
                 return formatDartFileByBinaryContent(virtualFile)
 
-            return formatDartFileByFileEditor(fileEditor, logs)
+            return formatDartFileByFileEditor(fileEditor, lines)
         }
         catch (err: DartFormatException)
         {
@@ -241,7 +262,7 @@ class PluginFormat : AnAction()
         }
     }
 
-    private fun formatDartFileByFileEditor(fileEditor: FileEditor, logs: MutableList<String>): Boolean
+    private fun formatDartFileByFileEditor(fileEditor: FileEditor, lines: MutableList<String>): Boolean
     {
         if (fileEditor !is TextEditor)
         {
@@ -259,7 +280,7 @@ class PluginFormat : AnAction()
             val outputText = format(inputText)
             if (outputText == inputText)
             {
-                logs += "Nothing changed."
+                lines += "Nothing changed."
                 return true
             }
 
@@ -267,7 +288,7 @@ class PluginFormat : AnAction()
                 document.setText(outputText)
             }
 
-            logs += "Something changed."
+            lines += "Something changed."
             return true
         }
         catch (err: DartFormatException)
