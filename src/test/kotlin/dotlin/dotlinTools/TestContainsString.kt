@@ -1,6 +1,5 @@
 package dotlin.dotlinTools
 
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat

@@ -12,7 +12,7 @@ class TestComments
     {
         val inputText =
             "// end of line comment\n" +
-            "abc();"
+                "abc();"
 
         //val expectedRemainingText = "abc();"
         val expectedRemainingText = ""

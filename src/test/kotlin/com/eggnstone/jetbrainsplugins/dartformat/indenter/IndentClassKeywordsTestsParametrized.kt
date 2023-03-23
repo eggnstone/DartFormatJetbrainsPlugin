@@ -25,7 +25,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         )
         val expectedOutputText =
             "$mainClassKeyword C {}\n" +
-            "abc;"
+                "abc;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -42,7 +42,7 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         )
         val expectedOutputText =
             "$mainClassKeyword C\n" +
-            "{"
+                "{"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -60,8 +60,8 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         )
         val expectedOutputText =
             "$mainClassKeyword C\n" +
-            "    with _\$C\n" +
-            "{"
+                "    with _\$C\n" +
+                "{"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -79,8 +79,8 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         )
         val expectedOutputText =
             "$mainClassKeyword C\n" +
-            "    CK2 C2\n" +
-            "{"
+                "    CK2 C2\n" +
+                "{"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -99,9 +99,9 @@ class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
         )
         val expectedOutputText =
             "$mainClassKeyword C\n" +
-            "    CK2 C2\n" +
-            "    CK3 C3\n" +
-            "{"
+                "    CK2 C2\n" +
+                "    CK3 C3\n" +
+                "{"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

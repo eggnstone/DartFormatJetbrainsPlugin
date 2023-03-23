@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.dotlin
 
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 
-
 class DotlinTools
 {
     // .add() should be replaced with +=

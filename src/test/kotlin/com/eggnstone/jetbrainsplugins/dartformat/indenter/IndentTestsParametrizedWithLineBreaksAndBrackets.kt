@@ -33,9 +33,9 @@ class IndentTestsParametrizedWithLineBreaksAndBrackets(private val lineBreak: St
             UnknownToken("END")
         )
         val expectedOutputText = "$openingBracket$lineBreak" +
-        "    Text$lineBreak" +
-        "$closingBracket$lineBreak" +
-        "END"
+            "    Text$lineBreak" +
+            "$closingBracket$lineBreak" +
+            "END"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

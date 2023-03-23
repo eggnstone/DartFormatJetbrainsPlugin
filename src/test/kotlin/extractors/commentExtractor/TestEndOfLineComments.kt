@@ -25,7 +25,7 @@ class TestEndOfLineComments
     {
         val inputText =
             "// end of line comment\n" +
-            "abc();"
+                "abc();"
 
         val expectedComment = "// end of line comment\n"
         val expectedRemainingText = "abc();"

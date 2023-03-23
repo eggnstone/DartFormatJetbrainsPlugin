@@ -15,7 +15,7 @@ class TestComplex
         val inputPart =
             DoubleBlock(
                 "if (true)\n" +
-                "{", "}\n" +
+                    "{", "}\n" +
                 "else\n" +
                 "{",
                 "}",
@@ -25,13 +25,13 @@ class TestComplex
 
         val expectedText =
             "if (true)\n" +
-            "{\n" +
-            "    abc();\n" +
-            "}\n" +
-            "else\n" +
-            "{\n" +
-            "    def();\n" +
-            "}"
+                "{\n" +
+                "    abc();\n" +
+                "}\n" +
+                "else\n" +
+                "{\n" +
+                "    def();\n" +
+                "}"
 
         val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 

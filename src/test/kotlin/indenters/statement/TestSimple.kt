@@ -14,7 +14,7 @@ class TestSimple
 
         val expectedText =
             "if\n" +
-            "    abc();"
+                "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -28,7 +28,7 @@ class TestSimple
 
         val expectedText =
             "if\n" +
-            "    abc();"
+                "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -42,7 +42,7 @@ class TestSimple
 
         val expectedText =
             "if()\n" +
-            "    abc();"
+                "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -56,7 +56,7 @@ class TestSimple
 
         val expectedText =
             "if ()\n" +
-            "    abc();"
+                "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -68,12 +68,12 @@ class TestSimple
     {
         val inputText =
             "C()\n" +
-            ": a = b;"
+                ": a = b;"
         val inputPart = Statement(inputText)
 
         val expectedText =
             "C()\n" +
-            "    : a = b;"
+                "    : a = b;"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -85,14 +85,14 @@ class TestSimple
     {
         val inputText =
             "C()\n" +
-            ": a = b,\n" +
-            "a = b;"
+                ": a = b,\n" +
+                "a = b;"
         val inputPart = Statement(inputText)
 
         val expectedText =
             "C()\n" +
-            "    : a = b,\n" +
-            "      a = b;"
+                "    : a = b,\n" +
+                "      a = b;"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

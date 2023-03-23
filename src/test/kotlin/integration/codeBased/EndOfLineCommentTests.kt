@@ -10,11 +10,11 @@ class EndOfLineCommentTests
     {
         val inputText =
             "if (true) //this is an end of line comment\n" +
-            "abc();"
+                "abc();"
 
         val expectedOutputText =
             "if (true) //this is an end of line comment\n" +
-            "    abc();"
+                "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -24,11 +24,11 @@ class EndOfLineCommentTests
     {
         val inputText =
             "if (true) //this is an end of line comment xyz();\n" +
-            "abc();"
+                "abc();"
 
         val expectedOutputText =
             "if (true) //this is an end of line comment xyz();\n" +
-            "    abc();"
+                "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }

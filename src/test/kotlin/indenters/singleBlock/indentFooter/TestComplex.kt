@@ -23,11 +23,11 @@ class TestComplex
     {
         val inputText =
             "} else\n" +
-            "abc();"
+                "abc();"
 
         val expectedText =
             "} else\n" +
-            "    abc();"
+                "    abc();"
 
         val actualText = SingleBlockIndenter(4).indentFooter(inputText)
 
@@ -39,13 +39,13 @@ class TestComplex
     {
         val inputText =
             "}\n" +
-            "else\n" +
-            "abc();"
+                "else\n" +
+                "abc();"
 
         val expectedText =
             "}\n" +
-            "else\n" +
-            "    abc();"
+                "else\n" +
+                "    abc();"
 
         val actualText = SingleBlockIndenter(4).indentFooter(inputText)
 

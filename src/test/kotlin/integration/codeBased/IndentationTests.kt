@@ -10,13 +10,13 @@ class IndentationTests
     {
         val inputText =
             "abc({\n" +
-            "def;\n" +
-            "});"
+                "def;\n" +
+                "});"
 
         val expectedOutputText =
             "abc({\n" +
-            "    def;\n" +
-            "});"
+                "    def;\n" +
+                "});"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -26,11 +26,11 @@ class IndentationTests
     {
         val inputText =
             "if()\n" +
-            "abc;"
+                "abc;"
 
         val expectedOutputText =
             "if()\n" +
-            "    abc;"
+                "    abc;"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -40,11 +40,11 @@ class IndentationTests
     {
         val inputText =
             "if()\n" +
-            "abc();"
+                "abc();"
 
         val expectedOutputText =
             "if()\n" +
-            "    abc();"
+                "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -55,21 +55,21 @@ class IndentationTests
     {
         val inputText =
             "void main()\n" +
-            "{\n" +
-            "if (true)\n" +
-            "{\n" +
-            "abc();\n" +
-            "}\n" +
-            "}\n"
+                "{\n" +
+                "if (true)\n" +
+                "{\n" +
+                "abc();\n" +
+                "}\n" +
+                "}\n"
 
         val expectedText =
             "void main()\n" +
-            "{\n" +
-            "    if (true)\n" +
-            "    {\n" +
-            "        abc();\n" +
-            "    }\n" +
-            "}\n"
+                "{\n" +
+                "    if (true)\n" +
+                "    {\n" +
+                "        abc();\n" +
+                "    }\n" +
+                "}\n"
 
         IntegrationTools.test(inputText, expectedText)
     }

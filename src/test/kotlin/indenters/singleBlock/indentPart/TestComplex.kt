@@ -15,16 +15,16 @@ class TestComplex
         val inputPart =
             SingleBlock(
                 "if (true)\n" +
-                "{",
+                    "{",
                 "}",
                 listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n"))
             )
 
         val expectedText =
             "if (true)\n" +
-            "{\n" +
-            "    abc();\n" +
-            "}"
+                "{\n" +
+                "    abc();\n" +
+                "}"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 
@@ -37,20 +37,20 @@ class TestComplex
         val inputPart =
             SingleBlock(
                 "if (true)\n" +
-                "{",
+                    "{",
                 "}\n" +
-                "else\n" +
-                "def();",
+                    "else\n" +
+                    "def();",
                 listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n"))
             )
 
         val expectedText =
             "if (true)\n" +
-            "{\n" +
-            "    abc();\n" +
-            "}\n" +
-            "else\n" +
-            "    def();"
+                "{\n" +
+                "    abc();\n" +
+                "}\n" +
+                "else\n" +
+                "    def();"
 
         val actualText = SingleBlockIndenter(4).indentPart(inputPart)
 

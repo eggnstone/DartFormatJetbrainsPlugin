@@ -4,7 +4,6 @@ import com.eggnstone.jetbrainsplugins.dartformat.blocks.IBlock
 import com.eggnstone.jetbrainsplugins.dartformat.indenter.IIndent
 import com.eggnstone.jetbrainsplugins.dartformat.tokens.IToken
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import java.util.*
 

@@ -23,11 +23,11 @@ class TestSimple
     {
         val inputText =
             "class C\n" +
-            "{"
+                "{"
 
         val expectedText =
             "class C\n" +
-            "{"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -39,13 +39,13 @@ class TestSimple
     {
         val inputText =
             "class C\n" +
-            "with X\n" +
-            "{"
+                "with X\n" +
+                "{"
 
         val expectedText =
             "class C\n" +
-            "    with X\n" +
-            "{"
+                "    with X\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -57,13 +57,13 @@ class TestSimple
     {
         val inputText =
             "void main()\n" +
-            "async\n" +
-            "{"
+                "async\n" +
+                "{"
 
         val expectedText =
             "void main()\n" +
-            "async\n" +
-            "{"
+                "async\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -75,13 +75,13 @@ class TestSimple
     {
         val inputText =
             "@annotation\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "@annotation\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -93,15 +93,15 @@ class TestSimple
     {
         val inputText =
             "@annotation1\n" +
-            "@annotation2\n" +
-            "void main()\n" +
-            "{"
+                "@annotation2\n" +
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "@annotation1\n" +
-            "@annotation2\n" +
-            "void main()\n" +
-            "{"
+                "@annotation2\n" +
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -113,13 +113,13 @@ class TestSimple
     {
         val inputText =
             "//comment\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "//comment\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -131,15 +131,15 @@ class TestSimple
     {
         val inputText =
             "//\"comment1\"\n" +
-            "//    \"comment2\"    \n" +
-            "void main()\n" +
-            "{"
+                "//    \"comment2\"    \n" +
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "//\"comment1\"\n" +
-            "//    \"comment2\"\n" +
-            "void main()\n" +
-            "{"
+                "//    \"comment2\"\n" +
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -151,13 +151,13 @@ class TestSimple
     {
         val inputText =
             "void main()\n" +
-            "//comment\n" +
-            "{"
+                "//comment\n" +
+                "{"
 
         val expectedText =
             "void main()\n" +
-            "//comment\n" +
-            "{"
+                "//comment\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -169,13 +169,13 @@ class TestSimple
     {
         val inputText =
             "/*comment*/\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "/*comment*/\n" +
-            "void main()\n" +
-            "{"
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -187,11 +187,11 @@ class TestSimple
     {
         val inputText =
             "/*comment*/void main()\n" +
-            "{"
+                "{"
 
         val expectedText =
             "/*comment*/void main()\n" +
-            "{"
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -203,15 +203,15 @@ class TestSimple
     {
         val inputText =
             "/*comment1\n" +
-            "comment2*/\n" +
-            "void main()\n" +
-            "{"
+                "comment2*/\n" +
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "/*comment1\n" +
-            "comment2*/\n" +
-            "void main()\n" +
-            "{"
+                "comment2*/\n" +
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -223,17 +223,17 @@ class TestSimple
     {
         val inputText =
             "/*comment1\n" +
-            "comment2\n" +
-            "comment3*/\n" +
-            "void main()\n" +
-            "{"
+                "comment2\n" +
+                "comment3*/\n" +
+                "void main()\n" +
+                "{"
 
         val expectedText =
             "/*comment1\n" +
-            "comment2\n" +
-            "comment3*/\n" +
-            "void main()\n" +
-            "{"
+                "comment2\n" +
+                "comment3*/\n" +
+                "void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -245,13 +245,13 @@ class TestSimple
     {
         val inputText =
             "/*comment1\n" +
-            "comment2*/void main()\n" +
-            "{"
+                "comment2*/void main()\n" +
+                "{"
 
         val expectedText =
             "/*comment1\n" +
-            "comment2*/void main()\n" +
-            "{"
+                "comment2*/void main()\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -263,13 +263,13 @@ class TestSimple
     {
         val inputText =
             "void main()\n" +
-            "/*comment*/\n" +
-            "{"
+                "/*comment*/\n" +
+                "{"
 
         val expectedText =
             "void main()\n" +
-            "/*comment*/\n" +
-            "{"
+                "/*comment*/\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -281,15 +281,15 @@ class TestSimple
     {
         val inputText =
             "void main()\n" +
-            "/*comment1\n" +
-            "comment2*/\n" +
-            "{"
+                "/*comment1\n" +
+                "comment2*/\n" +
+                "{"
 
         val expectedText =
             "void main()\n" +
-            "/*comment1\n" +
-            "comment2*/\n" +
-            "{"
+                "/*comment1\n" +
+                "comment2*/\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -301,17 +301,17 @@ class TestSimple
     {
         val inputText =
             "void main()\n" +
-            "/*comment1\n" +
-            "comment2\n" +
-            "comment3*/\n" +
-            "{"
+                "/*comment1\n" +
+                "comment2\n" +
+                "comment3*/\n" +
+                "{"
 
         val expectedText =
             "void main()\n" +
-            "/*comment1\n" +
-            "comment2\n" +
-            "comment3*/\n" +
-            "{"
+                "/*comment1\n" +
+                "comment2\n" +
+                "comment3*/\n" +
+                "{"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 
@@ -323,13 +323,13 @@ class TestSimple
     {
         val inputText =
             "C()\n" +
-            ": a = b,\n" +
-            "a = b;"
+                ": a = b,\n" +
+                "a = b;"
 
         val expectedText =
             "C()\n" +
-            "    : a = b,\n" +
-            "    a = b;"
+                "    : a = b,\n" +
+                "    a = b;"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 

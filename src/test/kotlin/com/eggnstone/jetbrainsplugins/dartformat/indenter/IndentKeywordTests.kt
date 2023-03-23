@@ -15,7 +15,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b)\n" +
-            "    abc;"
+                "    abc;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -32,7 +32,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b)\n" +
-            "    abc();"
+                "    abc();"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -50,8 +50,8 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b)\n" +
-            "    abc;\n" +
-            "def;"
+                "    abc;\n" +
+                "def;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -68,7 +68,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b) abc;\n" +
-            "def;"
+                "def;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -86,8 +86,8 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b)\n" +
-            "    abc();\n" +
-            "def;"
+                "    abc();\n" +
+                "def;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -104,7 +104,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b) abc();\n" +
-            "def;"
+                "def;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -123,7 +123,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if (a == b) {}\n" +
-            "abc;"
+                "abc;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -140,7 +140,7 @@ class IndentKeywordTests
         )
         val expectedOutputText =
             "if ()\n" +
-            "    abc(\n"
+                "    abc(\n"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

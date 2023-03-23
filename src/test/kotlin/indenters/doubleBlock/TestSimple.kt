@@ -15,16 +15,16 @@ class TestSimple
         val inputPart =
             DoubleBlock(
                 "if (true)\n" +
-                "{", "}\n" +
+                    "{", "}\n" +
                 "else\n" +
                 "{", "}"
             )
 
         val expectedText =
             "if (true)\n" +
-            "{}\n" +
-            "else\n" +
-            "{}"
+                "{}\n" +
+                "else\n" +
+                "{}"
 
         val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 
@@ -37,7 +37,7 @@ class TestSimple
         val inputPart =
             DoubleBlock(
                 "if (true)\n" +
-                "{", "}\n" +
+                    "{", "}\n" +
                 "else\n" +
                 "{", "}",
                 listOf<IPart>(Whitespace("\n")),
@@ -46,11 +46,11 @@ class TestSimple
 
         val expectedText =
             "if (true)\n" +
-            "{\n" +
-            "}\n" +
-            "else\n" +
-            "{\n" +
-            "}"
+                "{\n" +
+                "}\n" +
+                "else\n" +
+                "{\n" +
+                "}"
 
         val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
 

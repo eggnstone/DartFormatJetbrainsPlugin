@@ -13,7 +13,7 @@ class TestStatementsWithComments
     {
         val inputText =
             "if (true) // falseStatement();\n" +
-            "statement;"
+                "statement;"
 
         val expectedRemainingText = ""
         val expectedPart = Statement(inputText)

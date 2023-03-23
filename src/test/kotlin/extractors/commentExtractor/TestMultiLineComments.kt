@@ -25,12 +25,12 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line comment */\n" +
-            "abc();"
+                "abc();"
 
         val expectedComment = "/* multi line comment */"
         val expectedRemainingText =
             "\n" +
-            "abc();"
+                "abc();"
 
         val actualResult = CommentExtractor.extract(inputText)
 
@@ -43,15 +43,15 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line\n" +
-            "comment */\n" +
-            "abc();"
+                "comment */\n" +
+                "abc();"
 
         val expectedComment =
             "/* multi line\n" +
-            "comment */"
+                "comment */"
         val expectedRemainingText =
             "\n" +
-            "abc();"
+                "abc();"
 
         val actualResult = CommentExtractor.extract(inputText)
 

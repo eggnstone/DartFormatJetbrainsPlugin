@@ -53,8 +53,8 @@ class TestSingleBlockEnums
     {
         val inputText =
             "enum E\n" +
-            "{\n" +
-            "}"
+                "{\n" +
+                "}"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n"))
@@ -69,9 +69,9 @@ class TestSingleBlockEnums
     {
         val inputText =
             "enum E\n" +
-            "{\n" +
-            "  A\n" +
-            "}"
+                "{\n" +
+                "  A\n" +
+                "}"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n  "), Statement("A\n"))
@@ -86,10 +86,10 @@ class TestSingleBlockEnums
     {
         val inputText =
             "enum E\n" +
-            "{\n" +
-            "  A,\n" +
-            "  B\n" +
-            "}"
+                "{\n" +
+                "  A,\n" +
+                "  B\n" +
+                "}"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n  "), Statement("A,\n  B\n"))

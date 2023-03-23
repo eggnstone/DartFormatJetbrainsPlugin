@@ -28,13 +28,13 @@ class TestDoubleBlocks
     fun ifBlockAndElseBlockWithLineBreaks()
     {
         val inputText = "if (true)\n" +
-        "{\n" +
-        "  statement1;\n" +
-        "}\n" +
-        "else\n" +
-        "{\n" +
-        "  statement2;\n" +
-        "}"
+            "{\n" +
+            "  statement1;\n" +
+            "}\n" +
+            "else\n" +
+            "{\n" +
+            "  statement2;\n" +
+            "}"
 
         val expectedRemainingText = ""
         val parts1 = listOf(Whitespace("\n  "), Statement("statement1;"), Whitespace("\n"))
@@ -49,13 +49,13 @@ class TestDoubleBlocks
     fun ifBlockAndElseBlockWithLineBreaksAlsoAtTheEnd()
     {
         val inputText = "if (true)\n" +
-        "{\n" +
-        "  statement1;\n" +
-        "}\n" +
-        "else\n" +
-        "{\n" +
-        "  statement2;\n" +
-        "}\n"
+            "{\n" +
+            "  statement1;\n" +
+            "}\n" +
+            "else\n" +
+            "{\n" +
+            "  statement2;\n" +
+            "}\n"
 
         val expectedRemainingText = "\n"
         val parts1 = listOf(Whitespace("\n  "), Statement("statement1;"), Whitespace("\n"))

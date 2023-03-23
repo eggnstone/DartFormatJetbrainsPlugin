@@ -33,8 +33,8 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
             SpecialToken(";")
         )
         val expectedOutputText = "$keyword\n" +
-        "    $keyword\n" +
-        "        text;"
+            "    $keyword\n" +
+            "        text;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -63,9 +63,9 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
             SpecialToken("}")
         )
         val expectedOutputText = "void main()\n" +
-        "{\n" +
-        "    runApp(const MyApp());\n" +
-        "}"
+            "{\n" +
+            "    runApp(const MyApp());\n" +
+            "}"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -85,10 +85,10 @@ class IndentTestsParametrizedWithKeywords(private val keyword: String)
         )
         val expectedOutputText =
             "Text0\n" +
-            "{\n" +
-            "    Text1\n" +
-            "\n" +
-            "    Text2\n"
+                "{\n" +
+                "    Text1\n" +
+                "\n" +
+                "    Text2\n"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
