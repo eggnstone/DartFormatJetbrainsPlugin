@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
@@ -10,7 +9,7 @@ class PartTools
     {
         fun printParts(parts: List<IPart>, label: String = "")
         {
-            if (!Constants.DEBUG)
+            if (!DotlinLogger.isEnabled)
                 return
 
             val prefix = if (DotlinTools.isEmpty(label)) "" else "$label - "

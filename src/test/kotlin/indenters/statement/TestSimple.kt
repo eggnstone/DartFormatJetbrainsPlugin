@@ -81,18 +81,58 @@ class TestSimple
     }
 
     @Test
-    fun constructorWithAssignments()
+    fun constructorWithAssignmentSplit()
     {
         val inputText =
             "C()\n" +
-                ": a = b,\n" +
+                ":\n" +
                 "a = b;"
         val inputPart = Statement(inputText)
 
         val expectedText =
             "C()\n" +
-                "    : a = b,\n" +
+                "    :\n" +
                 "      a = b;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignments()
+    {
+        val inputText =
+            "C()\n" +
+                ": a = b,\n" +
+                "c = d;"
+        val inputPart = Statement(inputText)
+
+        val expectedText =
+            "C()\n" +
+                "    : a = b,\n" +
+                "      c = d;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignmentsSplit()
+    {
+        val inputText =
+            "C()\n" +
+                ":\n" +
+                "a = b,\n" +
+                "c = d;"
+        val inputPart = Statement(inputText)
+
+        val expectedText =
+            "C()\n" +
+                "    :\n" +
+                "      a = b,\n" +
+                "      c = d;"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

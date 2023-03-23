@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
@@ -28,7 +27,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         val header = indentHeader(singleBlock.header)
         val footer = indentFooter(singleBlock.footer)
 
-        //if (Constants.DEBUG) DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("parts: ${Tools.toDisplayStringForParts(singleBlock.parts)}")
 
         val blockIndenter = BlockIndenter(spacesPerLevel)
         val indentedBody = blockIndenter.indentParts(singleBlock.parts, spacesPerLevel)
@@ -108,7 +107,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val headerLine = headerLines.get(i) // workaround for dotlin
-            if (Constants.DEBUG) DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(headerLine)}")
 
             if (isInMultiLineComment)
             {
@@ -180,7 +179,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         while (startIndex < footerLines.size)
         {
             val currentLine = footerLines[startIndex]
-            if (Constants.DEBUG) DotlinLogger.log("currentLine:  ${Tools.toDisplayString(currentLine)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentLine:  ${Tools.toDisplayString(currentLine)}")
 
             if (isInMultiLineComment)
             {
@@ -223,7 +222,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             }
 
             val pos = Tools.getElseEndPos(currentLine)
-            if (Constants.DEBUG) DotlinLogger.log("pos: $pos")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("pos: $pos")
             if (pos >= 0)
             {
                 result += currentLine
@@ -234,14 +233,14 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             break
         }
 
-        if (Constants.DEBUG) DotlinLogger.log("startIndex: $startIndex")
-        if (Constants.DEBUG) DotlinLogger.log("footerLines.size: ${footerLines.size}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("startIndex: $startIndex")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("footerLines.size: ${footerLines.size}")
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in startIndex until footerLines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val footerLine = footerLines.get(i) // workaround for dotlin
-            if (Constants.DEBUG) DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(footerLine)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("headerLine #$i: ${Tools.toDisplayString(footerLine)}")
 
             if (isInMultiLineComment)
             {

@@ -18,7 +18,6 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.BalloonImpl
 import com.intellij.util.ui.JBUI
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
@@ -44,7 +43,7 @@ class PluginFormat : AnAction()
     {
         override fun processFile(virtualFile: VirtualFile): Boolean
         {
-            //if (Constants.DEBUG) DotlinLogger.log("FormatIterator.processFile: $virtualFile")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("FormatIterator.processFile: $virtualFile")
             return format(virtualFile, project, lines)
         }
     }
@@ -58,10 +57,7 @@ class PluginFormat : AnAction()
         {
             val title = "DartFormat"
             val subtitle = "No formatting option enabled"
-            val messages = listOf(
-                "Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat"
-            )
-
+            val messages = listOf("Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat")
             notifyWarning(title, subtitle, messages, project, null)
             return
         }
@@ -80,7 +76,7 @@ class PluginFormat : AnAction()
                 for (virtualFile in virtualFiles)
                 {
                     // TODO: filter out already visited files!
-                    //if (Constants.DEBUG) DotlinLogger.log("\n  $virtualFile")
+                    //if (DotlinLogger.isEnabled) DotlinLogger.log("\n  $virtualFile")
                     VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
                 }
             }
@@ -137,9 +133,9 @@ class PluginFormat : AnAction()
     {
         if (editor == null)
         {
-            if (Constants.DEBUG) DotlinLogger.log("editor == null")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("editor == null")
             //val combinedLines = lines.joinToString("\n")
-            //if (Constants.DEBUG) DotlinLogger.log(combinedLines)
+            //if (DotlinLogger.isEnabled) DotlinLogger.log(combinedLines)
             return
         }
 
@@ -190,8 +186,8 @@ class PluginFormat : AnAction()
     {
         if (!isDartFile(virtualFile))
         {
-            //if (Constants.DEBUG) DotlinLogger.log("formatDartFile: $virtualFile")
-            //if (Constants.DEBUG) DotlinLogger.log("  Not a dart file!")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("formatDartFile: $virtualFile")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("  Not a dart file!")
             return true
         }
 
@@ -208,15 +204,15 @@ class PluginFormat : AnAction()
         {
             throw DartFormatException("1 $virtualFile: ${err.message}")
             /*
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $virtualFile:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $virtualFile:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
             */
         }
         catch (err: AssertionError)
         {
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $virtualFile:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $virtualFile:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
         }
     }
@@ -227,8 +223,8 @@ class PluginFormat : AnAction()
         {
             if (!virtualFile.isWritable)
             {
-                if (Constants.DEBUG) DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
-                if (Constants.DEBUG) DotlinLogger.log("  !virtualFile.isWritable")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("  !virtualFile.isWritable")
                 return false
             }
 
@@ -249,15 +245,15 @@ class PluginFormat : AnAction()
         {
             throw DartFormatException("2 $virtualFile: ${err.message}")
             /*
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $virtualFile:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $virtualFile:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
             */
         }
         catch (err: AssertionError)
         {
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $virtualFile:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $virtualFile:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
         }
     }
@@ -266,8 +262,8 @@ class PluginFormat : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            if (Constants.DEBUG) DotlinLogger.log("formatDartFileByFileEditor: $fileEditor")
-            if (Constants.DEBUG) DotlinLogger.log("  fileEditor !is TextEditor")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("formatDartFileByFileEditor: $fileEditor")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  fileEditor !is TextEditor")
             return false
         }
 
@@ -295,15 +291,15 @@ class PluginFormat : AnAction()
         {
             throw DartFormatException("$fileEditor: ${err.message}")
             /*
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $virtualFile:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $virtualFile:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
             */
         }
         catch (err: AssertionError)
         {
-            if (Constants.DEBUG) DotlinLogger.log("While formatting: $fileEditor:")
-            if (Constants.DEBUG) DotlinLogger.log("$err")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("While formatting: $fileEditor:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("$err")
             return false
         }
     }

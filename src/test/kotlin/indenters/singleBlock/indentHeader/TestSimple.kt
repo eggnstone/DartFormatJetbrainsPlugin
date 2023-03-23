@@ -319,17 +319,87 @@ class TestSimple
     }
 
     @Test
+    fun constructorWithAssignment()
+    {
+        val inputText =
+            "C()\n" +
+                ": a = b\n" +
+                "{\n" +
+                "}"
+
+        val expectedText =
+            "C()\n" +
+                "    : a = b\n" +
+                "{\n" +
+                "}"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignmentSplit()
+    {
+        val inputText =
+            "C()\n" +
+                ":\n" +
+                "a = b\n" +
+                "{\n" +
+                "}"
+
+        val expectedText =
+            "C()\n" +
+                "    :\n" +
+                "      a = b\n" +
+                "{\n" +
+                "}"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
     fun constructorWithAssignments()
     {
         val inputText =
             "C()\n" +
                 ": a = b,\n" +
-                "a = b;"
+                "c = d\n" +
+                "{\n" +
+                "}"
 
         val expectedText =
             "C()\n" +
                 "    : a = b,\n" +
-                "    a = b;"
+                "      c = d\n" +
+                "{\n" +
+                "}"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual(actualText, expectedText)
+    }
+
+    @Test
+    fun constructorWithAssignmentsSplit()
+    {
+        val inputText =
+            "C()\n" +
+                ":\n" +
+                "a = b,\n" +
+                "c = d\n" +
+                "{\n" +
+                "}"
+
+        val expectedText =
+            "C()\n" +
+                "    :\n" +
+                "      a = b,\n" +
+                "      c = d\n" +
+                "{\n" +
+                "}"
 
         val actualText = SingleBlockIndenter(4).indentHeader(inputText)
 

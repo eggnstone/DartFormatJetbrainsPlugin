@@ -30,7 +30,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentTokens(inputTokens: List<IToken>): IndentResult
     {
-        if (Constants.DEBUG) DotlinLogger.log("indentTokens: ${ToolsOld.tokensToDisplayString2(inputTokens)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("indentTokens: ${ToolsOld.tokensToDisplayString2(inputTokens)}")
 
         val lines = mutableListOf<String>()
         val remainingTokens = inputTokens.toMutableList()
@@ -42,7 +42,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
         for (token in inputTokens)
         {
-            //if (Constants.DEBUG) DotlinLogger.log("  token: $token")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("  token: $token")
             remainingTokens.removeAt(0)
 
             val wasCurrentLineEmpty = currentLine.isEmpty()
@@ -52,7 +52,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
             {
                 if (wasCurrentLineEmpty)
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is white space & line is empty => ignore")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is white space & line is empty => ignore")
                     printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                     continue
                 }
@@ -64,7 +64,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
             {
                 if (token.isMainClassKeyword && wasCurrentLineEmpty)
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is main class keyword => push class keyword indent to new stack")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is main class keyword => push class keyword indent to new stack")
                     newStack.push(ClassKeywordIndent(token.text, -1))
                 }
 
@@ -76,7 +76,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
             {
                 if (wasCurrentLineEmpty)
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is keyword => push keyword indent to new stack")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is keyword => push keyword indent to new stack")
                     newStack.push(KeywordIndent(token.text, -1))
                 }
 
@@ -111,41 +111,41 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
                 if (token.text == openingBracket)
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is $openingBracket")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is $openingBracket")
 
                     if (currentStack.isEmpty())
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current stack is empty => push $openingBracket indent to new stack")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current stack is empty => push $openingBracket indent to new stack")
                         newStack.push(BracketIndent(openingBracket, -1))
                     }
                     else
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current stack is not empty")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current stack is not empty")
                         val currentStackTop = currentStack.lastOrNull()
                         if (currentStackTop is ClassKeywordIndent)
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("      Current stack ends with class keyword => replace with $openingBracket")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack ends with class keyword => replace with $openingBracket")
                             currentStack.pop()
                             newStack.push(BracketIndent(openingBracket, -1))
                         }
                         else if (currentStackTop is KeywordIndent)
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("      Current stack ends with keyword")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack ends with keyword")
                             if (wasCurrentLineEmpty)
                             {
-                                if (Constants.DEBUG) DotlinLogger.log("        Current line was empty => replace with $openingBracket")
+                                if (DotlinLogger.isEnabled) DotlinLogger.log("        Current line was empty => replace with $openingBracket")
                                 currentStack.pop()
                                 newStack.push(BracketIndent(openingBracket, -1))
                             }
                             else
                             {
-                                if (Constants.DEBUG) DotlinLogger.log("        Current line was not empty => push $openingBracket indent to new stack")
+                                if (DotlinLogger.isEnabled) DotlinLogger.log("        Current line was not empty => push $openingBracket indent to new stack")
                                 newStack.push(BracketIndent(openingBracket, -1))
                             }
                         }
                         else
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("      Current stack does not end with keyword => push $openingBracket indent to new stack")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack does not end with keyword => push $openingBracket indent to new stack")
                             newStack.push(BracketIndent(openingBracket, -1))
                         }
                     }
@@ -156,25 +156,25 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
                 if (token.text == closingBracket)
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is $closingBracket")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is $closingBracket")
                     if (wasCurrentLineEmpty)
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current line is empty")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current line is empty")
                         val currentStackTop = currentStack.lastOrNull()
                         if (currentStackTop is BracketIndent && currentStackTop.text == openingBracket)
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("      Current stack ends with $openingBracket => remove $openingBracket")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack ends with $openingBracket => remove $openingBracket")
                             currentStack.pop()
                         }
                     }
                     else
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current line is not empty")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current line is not empty")
 
                         val newStackTop = newStack.lastOrNull()
                         if (newStackTop is BracketIndent && newStackTop.text == openingBracket)
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("        New stack ends with $openingBracket => remove $openingBracket")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("        New stack ends with $openingBracket => remove $openingBracket")
                             newStack.pop()
 
                             if (openingBracket == Constants.OPENING_CURLY_BRACKET
@@ -182,26 +182,26 @@ class Indenter(private val spacesPerLevel: Int = 4)
                                 && (newStack.lastOrNull() is ClassKeywordIndent || newStack.lastOrNull() is KeywordIndent)
                             )
                             {
-                                if (Constants.DEBUG) DotlinLogger.log("        => remove (class) keyword, too")
+                                if (DotlinLogger.isEnabled) DotlinLogger.log("        => remove (class) keyword, too")
                                 newStack.pop()
                             }
                         }
                         else
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("        New stack does not end with $openingBracket")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("        New stack does not end with $openingBracket")
 
                             val currentStackTop = currentStack.lastOrNull()
                             if (currentStackTop is BracketIndent && currentStackTop.text == openingBracket)
                             {
-                                if (Constants.DEBUG) DotlinLogger.log("      Current stack ends with $openingBracket => remove $openingBracket")
+                                if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack ends with $openingBracket => remove $openingBracket")
                                 currentStack.pop()
                             }
                             else
                             {
-                                if (Constants.DEBUG) DotlinLogger.log(ToolsOld.tokensToDisplayString2(inputTokens))
+                                if (DotlinLogger.isEnabled) DotlinLogger.log(ToolsOld.tokensToDisplayString2(inputTokens))
                                 printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                                 TODO("Not covered by any test at all (1) " + ToolsOld.shorten(ToolsOld.tokensToDisplayString2(inputTokens), 1000))
-                                if (Constants.DEBUG) DotlinLogger.log("      Current stack does not end with $openingBracket")
+                                if (DotlinLogger.isEnabled) DotlinLogger.log("      Current stack does not end with $openingBracket")
                             }
                         }
                     }
@@ -212,12 +212,12 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
                 if (token.text == ";")
                 {
-                    if (Constants.DEBUG) DotlinLogger.log("  Token is ;")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is ;")
                     printInfo("    ", currentLevel, currentLine, currentStack, newStack)
                     val currentStackTop = currentStack.lastOrNull()
                     if (currentStackTop is KeywordIndent)
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current stack ends with $currentStackTop => push removal indent to new stack")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current stack ends with $currentStackTop => push removal indent to new stack")
                         newStack.push(RemovalIndent(1))
                     }
                     else
@@ -225,7 +225,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
                         val newStackTop = newStack.lastOrNull()
                         if (newStackTop is KeywordIndent)
                         {
-                            if (Constants.DEBUG) DotlinLogger.log("    New stack ends with $newStackTop => remove $newStackTop")
+                            if (DotlinLogger.isEnabled) DotlinLogger.log("    New stack ends with $newStackTop => remove $newStackTop")
                             newStack.pop()
                         }
                     }
@@ -236,13 +236,13 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
             if (token is LineBreakToken)
             {
-                if (Constants.DEBUG) DotlinLogger.log("  Token is line break")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is line break")
                 printInfo("    ", currentLevel, currentLine, currentStack, newStack)
 
                 val currentStackTop = currentStack.lastOrNull()
                 val currentLevel2 = currentStackTop?.level ?: 0
                 val line = indentText(currentLine, currentLevel2)
-                if (Constants.DEBUG) DotlinLogger.log("    -> ${ToolsOld.toDisplayString2(line)}")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("    -> ${ToolsOld.toDisplayString2(line)}")
                 lines += line
 
                 currentLine = ""
@@ -253,17 +253,17 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 {
                     if (newStack.size >= 2 && (newStackBottom is ClassKeywordIndent || newStackBottom is KeywordIndent))
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    New stack starts with (class) keyword and has more entries => remove (class) keyword")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    New stack starts with (class) keyword and has more entries => remove (class) keyword")
                         newStack.removeAt(0)
                     }
                     else if (currentStackTop is KeywordIndent && newStackBottom is BracketIndent)
                     {
-                        if (Constants.DEBUG) DotlinLogger.log("    Current stack ends with keyword and new stack starts with bracket => remove keyword")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    Current stack ends with keyword and new stack starts with bracket => remove keyword")
                         currentStack.removeLast()
                         currentStackLevelModifier--
                     }
                     else
-                        if (Constants.DEBUG) DotlinLogger.log("    No stack modification")
+                        if (DotlinLogger.isEnabled) DotlinLogger.log("    No stack modification")
 
                     for (item in newStack)
                         when (item)
@@ -281,13 +281,13 @@ class Indenter(private val spacesPerLevel: Int = 4)
                 val currentStackTop2 = currentStack.lastOrNull()
                 currentLevel = (currentStackTop2?.level ?: 0) + currentStackLevelModifier
 
-                if (Constants.DEBUG) DotlinLogger.log("")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("")
                 printInfo("    ", currentLevel, currentLine, currentStack, newStack)
-                if (Constants.DEBUG) DotlinLogger.log("")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("")
                 continue
             }
 
-            if (Constants.DEBUG) DotlinLogger.log("  Token is other: ${token::class.simpleName}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  Token is other: ${token::class.simpleName}")
         }
 
         if (currentLine.isNotEmpty())
@@ -298,10 +298,10 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun printInfo(spacer: String, currentLevel: Int, currentLine: String, currentStack: Stack<IIndent>, newStack: Stack<IIndent>)
     {
-        if (Constants.DEBUG) DotlinLogger.log("${spacer}Current level: $currentLevel")
-        if (Constants.DEBUG) DotlinLogger.log("${spacer}Current line:  " + ToolsOld.toDisplayString2(currentLine))
-        if (Constants.DEBUG) DotlinLogger.log("${spacer}Current stack: " + ToolsOld.indentsToDisplayString2(currentStack))
-        if (Constants.DEBUG) DotlinLogger.log("${spacer}New stack:     " + ToolsOld.indentsToDisplayString2(newStack))
+        if (DotlinLogger.isEnabled) DotlinLogger.log("${spacer}Current level: $currentLevel")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("${spacer}Current line:  " + ToolsOld.toDisplayString2(currentLine))
+        if (DotlinLogger.isEnabled) DotlinLogger.log("${spacer}Current stack: " + ToolsOld.indentsToDisplayString2(currentStack))
+        if (DotlinLogger.isEnabled) DotlinLogger.log("${spacer}New stack:     " + ToolsOld.indentsToDisplayString2(newStack))
     }
 
     fun recreate(tokens: MutableList<IToken>): String
@@ -316,11 +316,11 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
     private fun indentText(text: String, level: Int): String
     {
-        //if (Constants.DEBUG) DotlinLogger.log("indentText: ${Tools.toDisplayString2(text)}, level: $level")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("indentText: ${Tools.toDisplayString2(text)}, level: $level")
 
         if (DotlinTools.isBlank(text))
         {
-            if (Constants.DEBUG) DotlinLogger.log("indentText: ${ToolsOld.toDisplayString2(text)}, level: $level is BLANK")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("indentText: ${ToolsOld.toDisplayString2(text)}, level: $level is BLANK")
             return text
         }
 
@@ -329,12 +329,12 @@ class Indenter(private val spacesPerLevel: Int = 4)
 
         val pad = " ".repeat(level * spacesPerLevel)
 
-        //if (Constants.DEBUG) DotlinLogger.log("pad:    $pad<")
-        //if (Constants.DEBUG) DotlinLogger.log("text:   ${Tools.toDisplayString(text)}<")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("pad:    $pad<")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("text:   ${Tools.toDisplayString(text)}<")
 
         @Suppress("UnnecessaryVariable")
         val result = pad + text
-        //if (Constants.DEBUG) DotlinLogger.log("result: ${Tools.toDisplayString(result)}<")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("result: ${Tools.toDisplayString(result)}<")
 
         return result
     }

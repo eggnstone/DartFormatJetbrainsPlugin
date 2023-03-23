@@ -5,7 +5,6 @@ class DotlinLogger
     companion object
     {
         var isEnabled: Boolean = true
-        //var isEnabled: Boolean = false
 
         fun log(s: String)
         {

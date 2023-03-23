@@ -7,7 +7,7 @@ class LineSplitter
 {
     fun split(s: String, trim: Boolean): List<String>
     {
-        //if (Constants.DEBUG) DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("LineSplitter.split(${Tools.toDisplayString(s)})")
 
         if (DotlinTools.isEmpty(s))
             return listOf()
@@ -32,7 +32,7 @@ class LineSplitter
 
     private fun split(s: String, delimiter: String, trim: Boolean): List<String>
     {
-        //if (Constants.DEBUG) DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayString(s)},${Tools.toDisplayString(delimiter)})")
 
         if (s == delimiter)
             return listOf(delimiter)
@@ -60,9 +60,9 @@ class LineSplitter
         if (DotlinTools.isNotEmpty(currentText))
             outputLines.add(currentText)
 
-        //if (Constants.DEBUG) DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")
-        //if (Constants.DEBUG) DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(lines))
-        //if (Constants.DEBUG) DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(outputLines))
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("    Split ${Tools.toDisplayString(s)} by ${Tools.toDisplayString(delimiter)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(lines))
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("      -> " + Tools.toDisplayStringForStrings(outputLines))
 
         return outputLines
     }

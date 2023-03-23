@@ -2,7 +2,6 @@ package com.eggnstone.jetbrainsplugins.dartformat.blockifier
 
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import com.eggnstone.jetbrainsplugins.dartformat.blocks.*
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 
@@ -12,8 +11,8 @@ class BlockifierOld
     {
         for (block in blocks)
         {
-            if (Constants.DEBUG) DotlinLogger.log("Block: ${block::class.simpleName}")
-            if (Constants.DEBUG) DotlinLogger.log("  $block")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Block: ${block::class.simpleName}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  $block")
         }
     }
 
@@ -23,7 +22,7 @@ class BlockifierOld
 
         for (c in text)
         {
-            if (Constants.DEBUG) DotlinLogger.log("${ToolsOld.toDisplayString2(c)} ${state.currentType} ${ToolsOld.toDisplayString2(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("${ToolsOld.toDisplayString2(c)} ${state.currentType} ${ToolsOld.toDisplayString2(state.currentText)}")
 
             if (state.currentType != AreaType.Unknown)
             {
@@ -44,7 +43,7 @@ class BlockifierOld
                 if (state.currentText.length == 0)
                 {
                     state.currentType = AreaType.Whitespace
-                    if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
                     state.currentText += c
                     continue
@@ -53,7 +52,7 @@ class BlockifierOld
                 if (state.currentText == "class" || state.currentText == "abstract class")
                 {
                     state.currentType = AreaType.ClassHeader
-                    if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
                 }
 
                 state.currentText += c
@@ -66,7 +65,7 @@ class BlockifierOld
                 if (state.currentText.length == 0)
                 {
                     state.currentType = AreaType.Brace
-                    if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
                     state.currentText += c
                     continue
@@ -103,7 +102,7 @@ class BlockifierOld
         if (c == '}')
         {
             state.currentType = AreaType.Unknown
-            if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
             val innerText = state.currentText.substring(1)
             val innerBlocks = blockify(innerText)
@@ -122,7 +121,7 @@ class BlockifierOld
         if (c == '{')
         {
             state.currentType = AreaType.ClassBody
-            if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
             state.currentClassHeader = state.currentText
             state.currentText = ""
@@ -134,7 +133,7 @@ class BlockifierOld
 
     private fun handleInBraces(c: Char, state: BlockifierStateOld): BlockifierStateOld
     {
-        if (Constants.DEBUG) DotlinLogger.log("  handleInBraces: ${ToolsOld.toDisplayString2(c)} ${ToolsOld.toDisplayString2(state.currentText)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  handleInBraces: ${ToolsOld.toDisplayString2(c)} ${ToolsOld.toDisplayString2(state.currentText)}")
 
         if (c != '}')
         {
@@ -143,7 +142,7 @@ class BlockifierOld
         }
 
         state.currentType = AreaType.Unknown
-        if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
         state.blocks.add(BraceBlock(mutableListOf(UnknownBlock(state.currentText.substring(1))))) // dotlin
         state.currentText = ""
@@ -159,7 +158,7 @@ class BlockifierOld
         }
 
         state.currentType = AreaType.Unknown
-        if (Constants.DEBUG) DotlinLogger.log("  -> ${state.currentType}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  -> ${state.currentType}")
 
         if (state.currentText.isNotEmpty())
             state.blocks.add(WhitespaceBlock(state.currentText)) // dotlin

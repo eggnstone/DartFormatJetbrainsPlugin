@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
@@ -17,7 +16,7 @@ class TextSplitter : ISplitter
 
     override fun split(inputText: String, params: SplitParams): SplitResult
     {
-        if (Constants.DEBUG) DotlinLogger.log("TextSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("TextSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -218,16 +217,16 @@ class TextSplitter : ISplitter
             val state = oldState.clone()
             state.log("handleEndOfLineComment")
 
-            if (Constants.DEBUG) DotlinLogger.log("Calling CommentExtractor ..")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
             val extractionResult = CommentExtractor.extract(state.remainingText)
-            if (Constants.DEBUG) DotlinLogger.log("Result from CommentExtractor:")
-            if (Constants.DEBUG) DotlinLogger.log("  comment        ${Tools.toDisplayString(extractionResult.comment)}")
-            if (Constants.DEBUG) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Result from CommentExtractor:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  comment        ${Tools.toDisplayString(extractionResult.comment)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
 
             state.currentText += extractionResult.comment
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = extractionResult.remainingText
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             return state
         }
@@ -250,7 +249,7 @@ class TextSplitter : ISplitter
 
             if (state.hasColon)
             {
-                if (Constants.DEBUG) DotlinLogger.log("Ignoring '='")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("Ignoring '='")
             }
             else
                 state.isInAssignment = true
@@ -289,26 +288,26 @@ class TextSplitter : ISplitter
             state.log("handleOpeningBrace")
 
             state.currentText += "{"
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, 1)
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             val params = SplitParams(isEnum = DotlinTools.startsWith(state.currentText, "enum "), expectClosingBrace = true)
-            if (Constants.DEBUG) DotlinLogger.log("params.isEnum:             ${params.isEnum}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("params.isEnum:             ${params.isEnum}")
 
-            if (Constants.DEBUG) DotlinLogger.log("-> MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("-> MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
             val result = MasterSplitter().split(state.remainingText, params)
-            if (Constants.DEBUG) DotlinLogger.log("<- MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
-            if (Constants.DEBUG) DotlinLogger.log("  remainingText:           ${Tools.toDisplayString(result.remainingText)}")
-            if (Constants.DEBUG) DotlinLogger.log("  parts:                   ${Tools.toDisplayStringForParts(result.parts)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("<- MasterSplitter.split(   ${Tools.toDisplayString(state.remainingText)})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText:           ${Tools.toDisplayString(result.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:                   ${Tools.toDisplayStringForParts(result.parts)}")
             state.remainingText = result.remainingText
 
             if (!DotlinTools.startsWith(state.remainingText, "}"))
             {
                 oldState.log("handleOpeningBrace - Missing closing brace (old)")
                 state.log("handleOpeningBrace - Missing closing brace (new)")
-                if (Constants.DEBUG) DotlinLogger.log("result.remainingText: ${Tools.toDisplayString(result.remainingText)}")
-                if (Constants.DEBUG) DotlinLogger.log("result.parts: ${Tools.toDisplayStringForParts(result.parts)}")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("result.remainingText: ${Tools.toDisplayString(result.remainingText)}")
+                if (DotlinLogger.isEnabled) DotlinLogger.log("result.parts: ${Tools.toDisplayStringForParts(result.parts)}")
                 throw DartFormatException("Missing closing brace: ${Tools.toDisplayString(state.remainingText)}")
             }
 
@@ -336,16 +335,16 @@ class TextSplitter : ISplitter
 
             if (state.remainingText == "}")
             {
-                //if (Constants.DEBUG) DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
+                //if (DotlinLogger.isEnabled) DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
                 state.log("handleOpeningBrace exit-2-SingleBlock")
                 return TextSplitterHandleResult(state, SplitResult("", listOf(SingleBlock(state.currentText, "}", result.parts))))
             }
 
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the "}"
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             val elseEndPos = Tools.getElseEndPos(state.remainingText)
-            if (Constants.DEBUG) DotlinLogger.log("elseEndPos:                $elseEndPos")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos:                $elseEndPos")
 
             if (elseEndPos == -1)
             {
@@ -355,10 +354,10 @@ class TextSplitter : ISplitter
             }
 
             state.middle = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("middle:                    ${Tools.toDisplayString(state.middle)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayString(state.middle)}")
 
             state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             if (DotlinTools.isEmpty(state.remainingText))
                 throw DartFormatException("TODO")
@@ -383,9 +382,9 @@ class TextSplitter : ISplitter
             state.hasColon = true
 
             state.currentText += ":"
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             return state
         }
@@ -404,16 +403,16 @@ class TextSplitter : ISplitter
             state.log("handleSemicolonHasBlock")
 
             state.currentText += ";"
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             state.footer = state.middle + state.currentText
-            if (Constants.DEBUG) DotlinLogger.log("footer:                   ${Tools.toDisplayString(state.footer)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("footer:                   ${Tools.toDisplayString(state.footer)}")
             state.middle = ""
-            if (Constants.DEBUG) DotlinLogger.log("middle:                   ${Tools.toDisplayString(state.middle)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                   ${Tools.toDisplayString(state.middle)}")
             state.currentText = ""
-            if (Constants.DEBUG) DotlinLogger.log("currentText:              ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:              ${Tools.toDisplayString(state.currentText)}")
 
             state.log("handleSemicolonHasBlock exit")
             return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(SingleBlock(state.header, state.footer, state.blockParts))))
@@ -436,9 +435,9 @@ class TextSplitter : ISplitter
             state.log("handleSemicolonHasNoBlockWithOpeningBrace")
 
             state.currentText += ";"
-            if (Constants.DEBUG) DotlinLogger.log("currentText:              ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:              ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:            ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:            ${Tools.toDisplayString(state.remainingText)}")
 
             //state.footer = ""
             if (DotlinTools.startsWith(state.currentText, "}"))
@@ -456,16 +455,16 @@ class TextSplitter : ISplitter
             }
 
             val elseEndPos = Tools.getElseEndPos(state.currentText)
-            if (Constants.DEBUG) DotlinLogger.log("elseEndPos:                $elseEndPos")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos:                $elseEndPos")
 
             if (elseEndPos == -1)
                 TODO("elseEndPos == -1")
 
             state.middle += StringWrapper.substring(state.currentText, 0, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("middle:                    ${Tools.toDisplayString(state.middle)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayString(state.middle)}")
 
             val statement = StringWrapper.substring(state.currentText, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("statement:                 ${Tools.toDisplayString(statement)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("statement:                 ${Tools.toDisplayString(statement)}")
 
             val parts2 = listOf(Statement(statement))
 
@@ -478,19 +477,19 @@ class TextSplitter : ISplitter
             state.log("handleSemicolonHasNoBlockWithoutOpeningBrace")
 
             state.currentText += ";"
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             val elseEndPos = Tools.getElseEndPos(state.remainingText)
-            if (Constants.DEBUG) DotlinLogger.log("elseEndPos:                $elseEndPos")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos:                $elseEndPos")
 
             if (elseEndPos == -1)
             {
                 if (DotlinTools.startsWith(DotlinTools.trim(state.remainingText), "//"))
                 {
                     val nextLinePos = Tools.getNextLinePos(state.remainingText)
-                    if (Constants.DEBUG) DotlinLogger.log("nextLinePos:               $nextLinePos")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("nextLinePos:               $nextLinePos")
                     if (nextLinePos == -1)
                     {
                         state.currentText += state.remainingText
@@ -510,9 +509,9 @@ class TextSplitter : ISplitter
             }
 
             state.currentText += StringWrapper.substring(state.remainingText, 0, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
             state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
-            if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
             //state.isSecondBlockWithBrackets = DotlinTools.startsWith(state.remainingText, "{")
 

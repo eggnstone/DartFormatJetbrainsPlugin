@@ -14,8 +14,8 @@ class DoubleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val doubleBlock: DoubleBlock = part
 
-        //if (Constants.DEBUG) DotlinLogger.log("parts1: ${Tools.toDisplayStringForParts(doubleBlock.parts1)}")
-        //if (Constants.DEBUG) DotlinLogger.log("parts2: ${Tools.toDisplayStringForParts(doubleBlock.parts2)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("parts1: ${Tools.toDisplayStringForParts(doubleBlock.parts1)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("parts2: ${Tools.toDisplayStringForParts(doubleBlock.parts2)}")
 
         val blockIndenter = BlockIndenter(spacesPerLevel)
         val indentedBody1 = blockIndenter.indentParts(doubleBlock.parts1, spacesPerLevel)

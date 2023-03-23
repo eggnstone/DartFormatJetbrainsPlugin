@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
@@ -20,7 +19,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
 
     override fun indentPart(part: IPart): String
     {
-        if (Constants.DEBUG) DotlinLogger.log("StatementIndenter.indentPart: $part")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("StatementIndenter.indentPart: $part")
 
         if (part !is Statement)
             throw DartFormatException("Unexpected non-Statement type.")
@@ -40,12 +39,12 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(lineIndex) // workaround for dotlin
-            if (Constants.DEBUG) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
 
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
-            //if (Constants.DEBUG) DotlinLogger.log("    currentConditionals: $currentConditionals")
-            //if (Constants.DEBUG) DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
-            //if (Constants.DEBUG) DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentConditionals: $currentConditionals")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
 
             //val tempLevel = currentLevel + levels.currentLevel
             val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
@@ -55,7 +54,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             //currentLevel += levels.nextLevel
             currentConditionals += levels.newConditionals
             //currentLevel = currentConditionals + levels.newBracketPackages.size
-            //if (Constants.DEBUG) DotlinLogger.log("    currentLevel: $currentLevel")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentLevel: $currentLevel")
             currentBracketPackages = levels.newBracketPackages
         }
 

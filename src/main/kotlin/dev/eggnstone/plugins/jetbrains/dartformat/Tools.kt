@@ -119,8 +119,8 @@ class Tools
             if (t == s)
                 return s
 
-            if (Constants.DEBUG) DotlinLogger.log("s: $s")
-            if (Constants.DEBUG) DotlinLogger.log("t: $t")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("s: $s")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("t: $t")
             TODO()
             return "1${s}2"*/
         }
@@ -179,7 +179,7 @@ class Tools
 
         fun getElseEndPos(s: String): Int
         {
-            if (Constants.DEBUG) DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
 
             val searchText = "else"
 
@@ -220,7 +220,7 @@ class Tools
 
         fun getNextLinePos(s: String): Int
         {
-            if (Constants.DEBUG) DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
 
             val nrPos = DotlinTools.indexOf(s, "\n\r")
             val rnPos = DotlinTools.indexOf(s, "\r\n")

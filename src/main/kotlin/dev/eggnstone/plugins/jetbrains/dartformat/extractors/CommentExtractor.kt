@@ -16,10 +16,10 @@ class CommentExtractor
 
             if (DotlinTools.startsWith(inputText, "//"))
             {
-                //if (Constants.DEBUG) DotlinLogger.log("CommentExtractor.extract(${Tools.toDisplayString(inputText)})")
+                //if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(${Tools.toDisplayString(inputText)})")
 
                 val nextLinePos = Tools.getNextLinePos(inputText)
-                //if (Constants.DEBUG) DotlinLogger.log("nextLinePos: $nextLinePos")
+                //if (DotlinLogger.isEnabled) DotlinLogger.log("nextLinePos: $nextLinePos")
 
                 if (nextLinePos == -1)
                     return ExtractionResult(inputText, "")

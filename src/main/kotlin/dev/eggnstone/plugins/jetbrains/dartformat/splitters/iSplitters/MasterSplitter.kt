@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
@@ -17,9 +16,9 @@ class MasterSplitter : ISplitter
         if (DotlinTools.isNotEmpty(splitResult.remainingText))
         {
             TODO("untested")
-            if (Constants.DEBUG) DotlinLogger.log("MasterSplitter.splitAll")
-            if (Constants.DEBUG) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
-            if (Constants.DEBUG) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.splitAll")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
             throw DartFormatException("splitResult.remainingText.isNotEmpty()")
         }
 
@@ -28,7 +27,7 @@ class MasterSplitter : ISplitter
 
     override fun split(inputText: String, params: SplitParams): SplitResult
     {
-        if (Constants.DEBUG) DotlinLogger.log("MasterSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         val parts = mutableListOf<IPart>()
 
@@ -40,12 +39,12 @@ class MasterSplitter : ISplitter
             if (splitter == null)
                 return SplitResult(remainingText, parts)
 
-            if (Constants.DEBUG) DotlinLogger.log("Calling '${splitter.name}' splitter ..")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Calling '${splitter.name}' splitter ..")
             val splitResult = splitter.split(remainingText, params)
             ///*
-            if (Constants.DEBUG) DotlinLogger.log("Result from '${splitter.name}' splitter:")
-            if (Constants.DEBUG) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
-            if (Constants.DEBUG) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Result from '${splitter.name}' splitter:")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
             //*/
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
