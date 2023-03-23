@@ -3,10 +3,7 @@
         <action
                 class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.PluginFormat"
                 id="dev.eggnstone.plugins.jetbrains.dartformat.Format">
-            <keyboard-shortcut
-                    first-keystroke="control alt COMMA"
-                    keymap="$default"/>
-            <!-- ö <keyboard-shortcut first-keystroke="ctrl alt #10000d6" /> -->
+            <keyboard-shortcut first-keystroke="control alt COMMA" keymap="$default"/>
         </action>
     </actions>
     <change-notes>
@@ -73,8 +70,8 @@
                 id="dev.eggnstone.plugins.jetbrains.dartformat.DartFormatSettings"
                 instance="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable">
         </applicationConfigurable>
-        <applicationService
-                serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
+        <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
+        <notificationGroup id="DartFormat Balloon Notifications" displayType="BALLOON"/>
     </extensions>
     <!--
     Cannot change package anymore:
@@ -83,9 +80,7 @@
     -->
     <id>com.eggnstone.jetbrainsplugins.DartFormat</id>
     <name>DartFormat</name>
-    <vendor
-            email="DartFormat@eggnstone.dev"
-            url="https://blog.eggnstone.dev/">
+    <vendor email="DartFormat@eggnstone.dev" url="https://blog.eggnstone.dev/">
         egg 'n stone
     </vendor>
 </idea-plugin>
