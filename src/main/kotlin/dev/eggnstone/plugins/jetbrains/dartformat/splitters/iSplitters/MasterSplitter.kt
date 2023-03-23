@@ -42,14 +42,12 @@ class MasterSplitter : ISplitter
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling '${splitter.name}' splitter ..")
             val splitResult = splitter.split(remainingText, params)
 
-            ///*
             if (DotlinLogger.isEnabled)
             {
                 DotlinLogger.log("Result from '${splitter.name}' splitter:")
                 DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
                 DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
             }
-            //*/
 
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin

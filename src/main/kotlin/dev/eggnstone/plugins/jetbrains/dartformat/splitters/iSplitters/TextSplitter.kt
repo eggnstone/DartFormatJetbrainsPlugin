@@ -21,7 +21,6 @@ class TextSplitter : ISplitter
         if (StringWrapper.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
 
-        //var expectClosingBrace = false
         var state = TextSplitterState(inputText)
 
         while (StringWrapper.isNotEmpty(state.remainingText))
@@ -55,19 +54,13 @@ class TextSplitter : ISplitter
 
             if (StringWrapper.startsWith(state.remainingText, "//"))
             {
-                state = handleEndOfLineComment(state)
+                state = handleComment(state)
                 continue
-                /*val handleResult = handleEndOfLineComment(state)
-                if (handleResult.splitResult != null)
-                    return handleResult.splitResult
-
-                state = handleResult.state
-                continue*/
             }
 
             if (StringWrapper.startsWith(state.remainingText, "/*"))
             {
-                state = handleMultiLineComment(state)
+                state = handleComment(state)
                 continue
             }
 
@@ -99,7 +92,6 @@ class TextSplitter : ISplitter
                 if (handleResult.splitResult != null)
                     return handleResult.splitResult
 
-                //expectClosingBrace = true
                 state = handleResult.state
                 continue
             }
@@ -124,7 +116,16 @@ class TextSplitter : ISplitter
             state.remainingText = StringWrapper.substring(state.remainingText, 1)
         }
 
-        state.log("TextSplitter.split error")
+        // Not returned yet and remaining text is empty => Empty block or only comments.
+        if (state.currentText.isEmpty())
+            TODO("untested: state.currentText.isEmpty()")
+
+        if (state.commentOnlyHashCode != null && state.currentText.hashCode() == state.commentOnlyHashCode)
+        {
+            val statement = Statement(state.currentText);
+            return SplitResult("", listOf(statement))
+        }
+
         throw DartFormatException("Unexpected end of block or statement.")
     }
 
@@ -212,13 +213,14 @@ class TextSplitter : ISplitter
             return TextSplitterHandleResult(state, null)
         }
 
-        private fun handleEndOfLineComment(oldState: TextSplitterState): TextSplitterState//TextSplitterHandleResult
+        private fun handleComment(oldState: TextSplitterState): TextSplitterState //TextSplitterHandleResult
         {
             val state = oldState.clone()
-            state.log("handleEndOfLineComment")
+            state.log("handleComment")
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
             val extractionResult = CommentExtractor.extract(state.remainingText)
+
             if (DotlinLogger.isEnabled)
             {
                 DotlinLogger.log("Result from CommentExtractor:")
@@ -226,21 +228,26 @@ class TextSplitter : ISplitter
                 DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
             }
 
+            if (DotlinLogger.isEnabled) DotlinLogger.log("commentOnlyHashCode:       ${state.commentOnlyHashCode}")
+            if (state.commentOnlyHashCode == null)
+            {
+                if (state.currentText.isEmpty())
+                    state.commentOnlyHashCode = extractionResult.comment.hashCode()
+            }
+            else
+            {
+                if (state.currentText.hashCode() == state.commentOnlyHashCode)
+                    state.commentOnlyHashCode = (state.currentText + extractionResult.comment).hashCode()
+                else
+                    state.commentOnlyHashCode = null
+            }
+            if (DotlinLogger.isEnabled) DotlinLogger.log("commentOnlyHashCode:       ${state.commentOnlyHashCode}")
+
             state.currentText += extractionResult.comment
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+
             state.remainingText = extractionResult.remainingText
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
-
-            return state
-        }
-
-        private fun handleMultiLineComment(oldState: TextSplitterState): TextSplitterState
-        {
-            val state = oldState.clone()
-
-            val extractionResult = CommentExtractor.extract(state.remainingText)
-            state.currentText += extractionResult.comment
-            state.remainingText = extractionResult.remainingText
 
             return state
         }

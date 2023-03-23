@@ -10,6 +10,7 @@ class TextSplitterState(val inputText: String)
     var currentText = ""
     var remainingText = inputText
 
+    var commentOnlyHashCode: Int? = null
     var currentBrackets = mutableListOf<String>()
 
     var hasBlock = false
