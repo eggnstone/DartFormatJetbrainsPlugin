@@ -52,6 +52,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         if (headerLines.isEmpty())
             TODO("untested") // return "{"
 
+        var usesColon = false
         var result = headerLines[0]
 
         var startIndex = 1
@@ -137,6 +138,14 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 continue
             }
 
+            var startsWithColon = false
+            if (!usesColon)
+            {
+                startsWithColon = DotlinTools.startsWith(headerLine, ":")
+                if (startsWithColon)
+                    usesColon = true
+            }
+
             // TODO: find a better solution
             //if (DotlinTools.startsWith(headerLine, "async ") || headerLine == "async")//DotlinTools.trimEnd(headerLine) == "async"))
             if (DotlinTools.startsWith(headerLine, "async ")
@@ -154,7 +163,15 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (DotlinTools.isBlank(headerLine))
                 TODO("untested")
 
-            val pad = DotlinTools.getSpaces(spacesPerLevel)
+            var pad = DotlinTools.getSpaces(spacesPerLevel)
+
+            if (usesColon)
+            {
+                pad = DotlinTools.getSpaces(spacesPerLevel) + pad
+                if (!startsWithColon)
+                    pad = "  $pad"
+            }
+
             result += pad + headerLine
         }
 

@@ -82,12 +82,14 @@ class PluginFormat : AnAction()
             }
 
             val endTime = Date()
-            val diffTime = endTime.time - startTime.time
-            var filesText = "file"
+            val diffTime = endTime.time - startTime.time + 1000
+            val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
+
+            var filesText = "${virtualFiles.size} file"
             if (virtualFiles.size != 1)
                 filesText += "s"
 
-            lines.add(0, "Formatting ${virtualFiles.size} $filesText took $diffTime ms.")
+            lines.add(0, "Formatting $filesText took $diffTimeText.")
             notify("DartFormat", null, project, editor, lines)
         }
         catch (err: DartFormatException)

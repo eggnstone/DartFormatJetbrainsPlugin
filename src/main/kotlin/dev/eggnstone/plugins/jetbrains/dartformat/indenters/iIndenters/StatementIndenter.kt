@@ -28,7 +28,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         val lines = LineSplitter().split(recreatedPart, true)
 
         var currentConditionals = 0
-        //var currentLevel = 0
+        var usesColon = false
         var result = ""
 
         var currentBracketPackages: List<BracketPackage> = listOf() // ok
@@ -41,6 +41,14 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             val line = lines.get(lineIndex) // workaround for dotlin
             if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
 
+            var startsWithColon = false
+            if (!usesColon)
+            {
+                startsWithColon = DotlinTools.startsWith(line, ":")
+                if (startsWithColon)
+                    usesColon = true
+            }
+
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
             //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentConditionals: $currentConditionals")
             //if (DotlinLogger.isEnabled) DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
@@ -49,7 +57,15 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             //val tempLevel = currentLevel + levels.currentLevel
             val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
             //val tempLevel = currentConditionals + levels.newBracketPackages.size
-            val pad = DotlinTools.getSpaces(tempLevel * spacesPerLevel)
+            var pad = DotlinTools.getSpaces(tempLevel * spacesPerLevel)
+
+            if (usesColon)
+            {
+                pad = DotlinTools.getSpaces(spacesPerLevel) + pad
+                if (!startsWithColon)
+                    pad = "  $pad"
+            }
+
             result += pad + line
             //currentLevel += levels.nextLevel
             currentConditionals += levels.newConditionals
