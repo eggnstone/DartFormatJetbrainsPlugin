@@ -12,7 +12,7 @@ class WhitespaceSplitter : ISplitter
 
     override fun split(inputText: String, params: SplitParams): SplitResult
     {
-        //DotlinLogger.log("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
+        //if (Constants.DEBUG) DotlinLogger.log("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
 
         if (DotlinTools.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
@@ -20,7 +20,7 @@ class WhitespaceSplitter : ISplitter
         var whitespace = ""
 
         /*val nextLinePos = Tools.getNextLinePos(inputText)
-        DotlinLogger.log("nextLinePos: $nextLinePos")
+        if (Constants.DEBUG) DotlinLogger.log("nextLinePos: $nextLinePos")
 
         if (nextLinePos == -1)
             TODO()

@@ -1,5 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
@@ -30,33 +31,33 @@ class TextSplitterState(val inputText: String)
 
     fun log(s: String, params: SplitParams? = null)
     {
-        DotlinLogger.log("\n-----$s ---------------------------------------- $s")
+        if (Constants.DEBUG) DotlinLogger.log("\n-----$s ---------------------------------------- $s")
 
         if (params != null)
         {
-            DotlinLogger.log("params.expectClosingBrace: ${params.expectClosingBrace}")
-            DotlinLogger.log("params.isEnum:             ${params.isEnum}")
+            if (Constants.DEBUG) DotlinLogger.log("params.expectClosingBrace: ${params.expectClosingBrace}")
+            if (Constants.DEBUG) DotlinLogger.log("params.isEnum:             ${params.isEnum}")
         }
 
-        DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
-        DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
+        if (Constants.DEBUG) DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
+        if (Constants.DEBUG) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
 
-        DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
+        if (Constants.DEBUG) DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-        DotlinLogger.log("hasBlock:                  $hasBlock")
-        DotlinLogger.log("hasColon:                  $hasColon")
+        if (Constants.DEBUG) DotlinLogger.log("hasBlock:                  $hasBlock")
+        if (Constants.DEBUG) DotlinLogger.log("hasColon:                  $hasColon")
 
-        DotlinLogger.log("isInApostrophes:           $isInApostrophes")
-        DotlinLogger.log("isInAssignment:            $isInAssignment")
-        DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
+        if (Constants.DEBUG) DotlinLogger.log("isInApostrophes:           $isInApostrophes")
+        if (Constants.DEBUG) DotlinLogger.log("isInAssignment:            $isInAssignment")
+        if (Constants.DEBUG) DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
 
-        DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
-        DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
-        DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
+        if (Constants.DEBUG) DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
+        if (Constants.DEBUG) DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
+        if (Constants.DEBUG) DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
 
-        DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
+        if (Constants.DEBUG) DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 
-        DotlinLogger.log("----- $s ---------------------------------------- $s\n")
+        if (Constants.DEBUG) DotlinLogger.log("----- $s ---------------------------------------- $s\n")
     }
 
     fun clone(): TextSplitterState

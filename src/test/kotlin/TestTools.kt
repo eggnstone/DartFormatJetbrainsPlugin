@@ -1,3 +1,4 @@
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
@@ -56,7 +57,7 @@ class TestTools
         {
             if (DotlinTools.isEmpty(reason))
             {
-                DotlinLogger.log("REASON IS MISSING!")
+                if (Constants.DEBUG) DotlinLogger.log("REASON IS MISSING!")
                 //throw AssertionError("REASON IS MISSING!")
             }
 

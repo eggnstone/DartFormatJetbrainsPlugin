@@ -119,8 +119,8 @@ class Tools
             if (t == s)
                 return s
 
-            DotlinLogger.log("s: $s")
-            DotlinLogger.log("t: $t")
+            if (Constants.DEBUG) DotlinLogger.log("s: $s")
+            if (Constants.DEBUG) DotlinLogger.log("t: $t")
             TODO()
             return "1${s}2"*/
         }
@@ -220,7 +220,7 @@ class Tools
 
         fun getNextLinePos(s: String): Int
         {
-            DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
+            if (Constants.DEBUG) DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
 
             val nrPos = DotlinTools.indexOf(s, "\n\r")
             val rnPos = DotlinTools.indexOf(s, "\r\n")

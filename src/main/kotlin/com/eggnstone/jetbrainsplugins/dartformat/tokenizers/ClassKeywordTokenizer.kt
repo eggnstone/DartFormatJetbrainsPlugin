@@ -11,7 +11,7 @@ class ClassKeywordTokenizer
     {
         val outputTokens = mutableListOf<IToken>()
 
-        //DotlinLogger.log("ClassKeywordTokenizer: $input")
+        //if (Constants.DEBUG) DotlinLogger.log("ClassKeywordTokenizer: $input")
 
         var currentText = ""
         for (currentChar in input)

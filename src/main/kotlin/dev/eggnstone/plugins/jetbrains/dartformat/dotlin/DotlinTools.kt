@@ -12,7 +12,7 @@ class DotlinTools
         /*// String.contains
         fun containsCharOld(s: String, searchChar: String): Boolean
         {
-            //DotlinLogger.log("DotlinTools.containsChar(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchChar)})")
+            //if (Constants.DEBUG) DotlinLogger.log("DotlinTools.containsChar(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchChar)})")
 
             if (searchChar.length != 1)
                 TODO("untested") // throw DartFormatException("Use containsString() instead!")
@@ -32,7 +32,7 @@ class DotlinTools
         // String.contains
         fun containsStringOls(s: String, searchText: String): Boolean
         {
-            //DotlinLogger.log("DotlinTools.containsString(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
+            //if (Constants.DEBUG) DotlinLogger.log("DotlinTools.containsString(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (searchText.length == 0)
@@ -41,7 +41,7 @@ class DotlinTools
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length - searchText.length + 1)
             {
-                //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
+                //if (Constants.DEBUG) DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
                 if (StringWrapper.substring(s, i, i + searchText.length) == searchText)
                     return true
             }
@@ -131,11 +131,11 @@ class DotlinTools
             var result = ""
 
             val maxIndex = if (endIndex == -1) s.length else minOf(s.length, endIndex)
-            //DotlinLogger.log("s:            ${Tools.toDisplayString2(s)}")
-            //DotlinLogger.log("  startIndex: $startIndex")
-            //DotlinLogger.log("  endIndex:   $endIndex")
-            //DotlinLogger.log("  s.length:   ${s.length}")
-            //DotlinLogger.log("  maxIndex:   $maxIndex")
+            //if (Constants.DEBUG) DotlinLogger.log("s:            ${Tools.toDisplayString2(s)}")
+            //if (Constants.DEBUG) DotlinLogger.log("  startIndex: $startIndex")
+            //if (Constants.DEBUG) DotlinLogger.log("  endIndex:   $endIndex")
+            //if (Constants.DEBUG) DotlinLogger.log("  s.length:   ${s.length}")
+            //if (Constants.DEBUG) DotlinLogger.log("  maxIndex:   $maxIndex")
 
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in startIndex until maxIndex)
@@ -145,7 +145,7 @@ class DotlinTools
                 result += c
             }
 
-            //DotlinLogger.log("  result:     ${Tools.toDisplayString2(result)}")
+            //if (Constants.DEBUG) DotlinLogger.log("  result:     ${Tools.toDisplayString2(result)}")
             return result
         }*/
 
@@ -209,7 +209,7 @@ class DotlinTools
         // String.indexOf
         fun indexOf(s: String, searchText: String): Int
         {
-            //DotlinLogger.log("DotlinTools.indexOf(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
+            //if (Constants.DEBUG) DotlinLogger.log("DotlinTools.indexOf(${Tools.toDisplayString(s)}, ${Tools.toDisplayString(searchText)})")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (searchText.length == 0)
@@ -218,7 +218,7 @@ class DotlinTools
             @Suppress("ReplaceManualRangeWithIndicesCalls")
             for (i in 0 until s.length - searchText.length + 1)
             {
-                //DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
+                //if (Constants.DEBUG) DotlinLogger.log("  in: ${Tools.toDisplayString2(substring(s, i, searchText.length))}")
                 if (StringWrapper.substring(s, i, i + searchText.length) == searchText)
                     return i
             }

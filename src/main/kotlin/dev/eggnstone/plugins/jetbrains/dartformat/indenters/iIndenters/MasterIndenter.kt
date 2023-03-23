@@ -7,7 +7,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     override fun indentPart(part: IPart): String
     {
-        //DotlinLogger.log("MasterIndenter.indentPart: $part")
+        //if (Constants.DEBUG) DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
         return indenter.indentPart(part)
@@ -15,7 +15,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 
     fun indentParts(parts: List<IPart>): String
     {
-        //DotlinLogger.log("MasterIndenter.indentParts: $${Tools.toDisplayStringForParts(parts)}")
+        //if (Constants.DEBUG) DotlinLogger.log("MasterIndenter.indentParts: $${Tools.toDisplayStringForParts(parts)}")
 
         if (DotlinTools.isEmpty(parts))
             return ""
@@ -23,13 +23,13 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         var result = ""
 
         /*
-        DotlinLogger.log("  ${parts.size} Parts:")
+        if (Constants.DEBUG) DotlinLogger.log("  ${parts.size} Parts:")
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until parts.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val part = parts.get(i) // workaround for dotlin
-            //DotlinLogger.log("    Part #$i: ${Tools.toDisplayString(part.toString())}")
+            //if (Constants.DEBUG) DotlinLogger.log("    Part #$i: ${Tools.toDisplayString(part.toString())}")
         }
         */
 

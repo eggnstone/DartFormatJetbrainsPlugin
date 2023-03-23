@@ -16,26 +16,26 @@ class BlockIndenter(spacesPerLevel: Int)
 
     fun indentParts(parts: List<IPart>, spacesPerLevel: Int): String
     {
-        //DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
+        //if (Constants.DEBUG) DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
 
         val body = masterIndenter.indentParts(parts)
-        //DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
+        //if (Constants.DEBUG) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
         val lines = lineSplitter.split(body, trim = false)
 
-        //DotlinLogger.log("  Lines :${lines.size}")
+        //if (Constants.DEBUG) DotlinLogger.log("  Lines :${lines.size}")
         var indentedBody = ""
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            //DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
+            //if (Constants.DEBUG) DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
             //val pad = if (DotlinTools.isBlank(line)) "" else "A"+DotlinTools.getSpaces(spacesPerLevel) +"X"
             val pad = if (DotlinTools.isBlank(line)) "" else DotlinTools.getSpaces(spacesPerLevel)
             indentedBody += pad + line
         }
 
-        //DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
+        //if (Constants.DEBUG) DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
         return indentedBody
     }
 }

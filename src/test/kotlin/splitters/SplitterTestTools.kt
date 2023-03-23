@@ -12,11 +12,11 @@ class SplitterTestTools
         fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>, params: SplitParams = SplitParams())
         {
             val actualResult = splitter.split(inputText, params)
-            //DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
-            //DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
+            //if (Constants.DEBUG) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
+            //if (Constants.DEBUG) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
 
-            //DotlinLogger.log(      "XXX "+      Tools.toDisplayStringForParts(actualResult.parts))
-            //DotlinLogger.log(      "YYY "+      Tools.toDisplayStringForParts(expectedParts))
+            //if (Constants.DEBUG) DotlinLogger.log(      "XXX "+      Tools.toDisplayStringForParts(actualResult.parts))
+            //if (Constants.DEBUG) DotlinLogger.log(      "YYY "+      Tools.toDisplayStringForParts(expectedParts))
             TestTools.assertPartsAreEqual("parts", actualResult.parts, expectedParts)
             //MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
 
