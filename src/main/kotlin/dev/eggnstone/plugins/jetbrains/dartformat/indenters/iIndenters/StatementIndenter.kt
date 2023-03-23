@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.BracketPackage
 import dev.eggnstone.plugins.jetbrains.dartformat.levels.LevelsCalculator
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
@@ -44,7 +45,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             var startsWithColon = false
             if (!usesColon)
             {
-                startsWithColon = DotlinTools.startsWith(line, ":")
+                startsWithColon = StringWrapper.startsWith(line, ":")
                 if (startsWithColon)
                     usesColon = true
             }
@@ -57,11 +58,11 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             //val tempLevel = currentLevel + levels.currentLevel
             val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
             //val tempLevel = currentConditionals + levels.newBracketPackages.size
-            var pad = DotlinTools.getSpaces(tempLevel * spacesPerLevel)
+            var pad = StringWrapper.getSpaces(tempLevel * spacesPerLevel)
 
             if (usesColon)
             {
-                pad = DotlinTools.getSpaces(spacesPerLevel) + pad
+                pad = StringWrapper.getSpaces(spacesPerLevel) + pad
                 if (!startsWithColon)
                     pad = "  $pad"
             }

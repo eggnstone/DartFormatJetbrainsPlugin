@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
 
 class LevelsCalculator
@@ -12,7 +13,7 @@ class LevelsCalculator
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
-        if (DotlinTools.isEmpty(line))
+        if (StringWrapper.isEmpty(line))
             return Levels(0, listOf())
 
         var brackets = 0

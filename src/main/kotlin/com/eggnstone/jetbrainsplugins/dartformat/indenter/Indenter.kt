@@ -5,7 +5,7 @@ import com.eggnstone.jetbrainsplugins.dartformat.tokens.*
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import java.util.*
 
 class Indenter(private val spacesPerLevel: Int = 4)
@@ -318,7 +318,7 @@ class Indenter(private val spacesPerLevel: Int = 4)
     {
         //if (DotlinLogger.isEnabled) DotlinLogger.log("indentText: ${Tools.toDisplayString2(text)}, level: $level")
 
-        if (DotlinTools.isBlank(text))
+        if (StringWrapper.isBlank(text))
         {
             if (DotlinLogger.isEnabled) DotlinLogger.log("indentText: ${ToolsOld.toDisplayString2(text)}, level: $level is BLANK")
             return text

@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class PartTools
 {
@@ -12,7 +13,7 @@ class PartTools
             if (!DotlinLogger.isEnabled)
                 return
 
-            val prefix = if (DotlinTools.isEmpty(label)) "" else "$label - "
+            val prefix = if (StringWrapper.isEmpty(label)) "" else "$label - "
 
             if (DotlinTools.isEmpty(parts))
                 DotlinLogger.log("${prefix}No parts.")

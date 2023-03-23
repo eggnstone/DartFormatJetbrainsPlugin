@@ -1,7 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class TypeSplitter
 {
@@ -38,7 +38,7 @@ class TypeSplitter
                         continue
                     }
 
-                    if (DotlinTools.isNotEmpty(currentText))
+                    if (StringWrapper.isNotEmpty(currentText))
                         items.add(currentText)
 
                     currentText = c
@@ -47,7 +47,7 @@ class TypeSplitter
 
                 currentType = null
 
-                if (DotlinTools.isNotEmpty(currentText))
+                if (StringWrapper.isNotEmpty(currentText))
                     items.add(currentText)
 
                 currentText = ""
@@ -59,7 +59,7 @@ class TypeSplitter
                 {
                     currentType = type
 
-                    if (DotlinTools.isNotEmpty(currentText))
+                    if (StringWrapper.isNotEmpty(currentText))
                         items.add(currentText)
 
                     currentText = ""
@@ -71,7 +71,7 @@ class TypeSplitter
             currentText += c
         }
 
-        if (DotlinTools.isNotEmpty(currentText))
+        if (StringWrapper.isNotEmpty(currentText))
             items.add(currentText)
 
         //if (DotlinLogger.isEnabled) DotlinLogger.log("TypeSplitter(${Tools.toDisplayString(s)}) -> ${Tools.toDisplayStringForStrings(items)}")

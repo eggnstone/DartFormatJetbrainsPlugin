@@ -1,7 +1,7 @@
 package dotlin.dotlinTools
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import org.junit.Test
 
 class TestTrim
@@ -13,7 +13,7 @@ class TestTrim
 
         val expectedText = "abc  "
 
-        val actualText = DotlinTools.trimStart(inputText)
+        val actualText = StringWrapper.trimStart(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -25,7 +25,7 @@ class TestTrim
 
         val expectedText = ""
 
-        val actualText = DotlinTools.trimStart(inputText)
+        val actualText = StringWrapper.trimStart(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -37,7 +37,7 @@ class TestTrim
 
         val expectedText = "abc  "
 
-        val actualText = DotlinTools.trimStart(inputText)
+        val actualText = StringWrapper.trimStart(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -49,7 +49,7 @@ class TestTrim
 
         val expectedText = "  abc"
 
-        val actualText = DotlinTools.trimEnd(inputText)
+        val actualText = StringWrapper.trimEnd(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -61,7 +61,7 @@ class TestTrim
 
         val expectedText = ""
 
-        val actualText = DotlinTools.trimEnd(inputText)
+        val actualText = StringWrapper.trimEnd(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -73,7 +73,7 @@ class TestTrim
 
         val expectedText = "  abc"
 
-        val actualText = DotlinTools.trimEnd(inputText)
+        val actualText = StringWrapper.trimEnd(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -85,7 +85,7 @@ class TestTrim
 
         val expectedText = "abc"
 
-        val actualText = DotlinTools.trim(inputText)
+        val actualText = StringWrapper.trim(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }
@@ -97,7 +97,7 @@ class TestTrim
 
         val expectedText = "abc"
 
-        val actualText = DotlinTools.trim(inputText)
+        val actualText = StringWrapper.trim(inputText)
 
         TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
     }

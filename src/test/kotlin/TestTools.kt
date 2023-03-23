@@ -1,6 +1,6 @@
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
 import org.hamcrest.*
@@ -54,7 +54,7 @@ class TestTools
 
         private fun assertAreEqualInternal(reason: String, actual: String, expected: String, stackPos: Int)
         {
-            if (DotlinTools.isEmpty(reason))
+            if (StringWrapper.isEmpty(reason))
             {
                 if (DotlinLogger.isEnabled) DotlinLogger.log("REASON IS MISSING!")
                 //throw AssertionError("REASON IS MISSING!")

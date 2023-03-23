@@ -3,7 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class MasterSplitter : ISplitter
@@ -13,7 +13,7 @@ class MasterSplitter : ISplitter
     fun splitAll(inputText: String): List<IPart>
     {
         val splitResult = split(inputText)
-        if (DotlinTools.isNotEmpty(splitResult.remainingText))
+        if (StringWrapper.isNotEmpty(splitResult.remainingText))
         {
             TODO("untested")
             if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.splitAll")
@@ -32,7 +32,7 @@ class MasterSplitter : ISplitter
         val parts = mutableListOf<IPart>()
 
         var remainingText = inputText
-        while (DotlinTools.isNotEmpty(remainingText))
+        while (StringWrapper.isNotEmpty(remainingText))
         {
             val splitter = getSplitter(remainingText)
             @Suppress("FoldInitializerAndIfToElvis")
@@ -56,7 +56,7 @@ class MasterSplitter : ISplitter
 
     fun getSplitter(inputText: String): ISplitter?
     {
-        if (DotlinTools.isEmpty(inputText))
+        if (StringWrapper.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
 
         @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)

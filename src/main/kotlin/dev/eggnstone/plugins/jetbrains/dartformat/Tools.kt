@@ -1,7 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
@@ -63,7 +62,7 @@ class Tools
         }
 
         fun toDisplayString(s: String): String = "\"" + toDisplayStringSimple(s) + "\""
-        fun toDisplayStringSimple(s: String): String = DotlinTools.replace(DotlinTools.replace(s, "\r", "\\r"), "\n", "\\n")
+        fun toDisplayStringSimple(s: String): String = StringWrapper.replace(StringWrapper.replace(s, "\r", "\\r"), "\n", "\\n")
 
         fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
         fun toDisplayStringForStrings(strings: List<String>): String = "[" + toDisplayStringForStringsInternal(strings) + "]"
@@ -77,7 +76,7 @@ class Tools
             {
                 @Suppress("ReplaceGetOrSet") // workaround for dotlin
                 val part = parts.get(i) // workaround for dotlin
-                if (DotlinTools.isNotEmpty(result))
+                if (StringWrapper.isNotEmpty(result))
                     result += ","
 
                 result += toDisplayStringSimple(part.toString())
@@ -186,19 +185,19 @@ class Tools
             if (s == searchText)
                 return s.length
 
-            val pos = DotlinTools.indexOf(s, searchText)
+            val pos = StringWrapper.indexOf(s, searchText)
             if (pos == -1)
                 return -1
 
             val leadingText = StringWrapper.substring(s, 0, pos)
-            if (!DotlinTools.isBlank(leadingText))
+            if (!StringWrapper.isBlank(leadingText))
                 return -1
 
             val trailingText = StringWrapper.substring(s, pos + searchText.length)
-            if (DotlinTools.isEmpty(trailingText))
+            if (StringWrapper.isEmpty(trailingText))
                 return s.length
 
-            if (DotlinTools.isBlank(trailingText))
+            if (StringWrapper.isBlank(trailingText))
                 return s.length
 
             @Suppress("ReplaceGetOrSet") // dotlin
@@ -222,8 +221,8 @@ class Tools
         {
             if (DotlinLogger.isEnabled) DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
 
-            val nrPos = DotlinTools.indexOf(s, "\n\r")
-            val rnPos = DotlinTools.indexOf(s, "\r\n")
+            val nrPos = StringWrapper.indexOf(s, "\n\r")
+            val rnPos = StringWrapper.indexOf(s, "\r\n")
 
             if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
                 return nrPos + 2
@@ -231,11 +230,11 @@ class Tools
             if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
                 return rnPos + 2
 
-            val nPos = DotlinTools.indexOf(s, "\n")
+            val nPos = StringWrapper.indexOf(s, "\n")
             if (nPos >= 0)
                 return nPos + 1
 
-            val rPos = DotlinTools.indexOf(s, "\r")
+            val rPos = StringWrapper.indexOf(s, "\r")
             if (rPos >= 0)
                 return rPos + 1
 

@@ -3,7 +3,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class StringSplitter
@@ -35,12 +34,12 @@ class StringSplitter
 
                 if (candidate == delimiter)
                 {
-                    if (DotlinTools.isNotEmpty(currentText))
+                    if (StringWrapper.isNotEmpty(currentText))
                     {
                         if (trim)
                         {
                             val trimmedCurrentText = Tools.trimSimple(currentText)
-                            if (DotlinTools.isEmpty(trimmedCurrentText))
+                            if (StringWrapper.isEmpty(trimmedCurrentText))
                                 TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")
 
                             result.add(trimmedCurrentText)
@@ -68,12 +67,12 @@ class StringSplitter
             val rest = currentText + StringWrapper.substring(s, i)
             //if (DotlinLogger.isEnabled) DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
 
-            if (DotlinTools.isNotEmpty(rest))
+            if (StringWrapper.isNotEmpty(rest))
             {
                 if (trim)
                 {
                     val trimmedRest = Tools.trimSimple(rest)
-                    if (DotlinTools.isEmpty(trimmedRest))
+                    if (StringWrapper.isEmpty(trimmedRest))
                     {
                         //TODO("DotlinTools.isEmpty(trimmedRest)")
 

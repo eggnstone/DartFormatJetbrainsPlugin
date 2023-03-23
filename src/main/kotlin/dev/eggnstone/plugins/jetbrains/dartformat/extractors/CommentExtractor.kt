@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class CommentExtractor
@@ -11,10 +10,10 @@ class CommentExtractor
     {
         fun extract(inputText: String): ExtractionResult
         {
-            if (DotlinTools.isEmpty(inputText))
+            if (StringWrapper.isEmpty(inputText))
                 return ExtractionResult("", "")
 
-            if (DotlinTools.startsWith(inputText, "//"))
+            if (StringWrapper.startsWith(inputText, "//"))
             {
                 //if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(${Tools.toDisplayString(inputText)})")
 
@@ -30,7 +29,7 @@ class CommentExtractor
                 return ExtractionResult(comment, remainingText)
             }
 
-            if (DotlinTools.startsWith(inputText, "/*"))
+            if (StringWrapper.startsWith(inputText, "/*"))
             {
                 var comment = "/*"
 
