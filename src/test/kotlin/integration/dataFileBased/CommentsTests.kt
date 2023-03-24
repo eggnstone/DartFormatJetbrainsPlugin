@@ -24,12 +24,12 @@ class CommentsTests
     }
 
     @Test
-    fun comments2()
+    fun commentsTwice()
     {
         val inputText = File(inputFilePath).readText()
         val expectedOutputText = File(outputFilePath).readText()
 
-        IntegrationTools.test2(inputText, expectedOutputText)
+        IntegrationTools.testTwice(inputText, expectedOutputText)
     }
 
     @Test
@@ -42,11 +42,11 @@ class CommentsTests
     }
 
     @Test
-    fun commentsPerfect2()
+    fun commentsPerfectTwice()
     {
         val inputText = File(inputFilePath).readText()
         val expectedOutputText = File(outputFilePath2).readText()
 
-        IntegrationTools.test2(inputText, expectedOutputText)
+        IntegrationTools.testTwice(inputText, expectedOutputText)
     }
 }

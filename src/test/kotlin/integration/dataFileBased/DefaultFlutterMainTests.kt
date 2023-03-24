@@ -27,12 +27,12 @@ class DefaultFlutterMainTests
     }
 
     @Test
-    fun defaultFlutterMain_IndentationRemoved_IndentationRestored2()
+    fun defaultFlutterMain_IndentationRemoved_IndentationRestored_Twice()
     {
         val inputText = File(inputIndentationRemoved).readText()
         val expectedOutputText = File(outputIndentationRestored).readText()
 
-        IntegrationTools.test2(inputText, expectedOutputText)
+        IntegrationTools.testTwice(inputText, expectedOutputText)
     }
 
     @Test
