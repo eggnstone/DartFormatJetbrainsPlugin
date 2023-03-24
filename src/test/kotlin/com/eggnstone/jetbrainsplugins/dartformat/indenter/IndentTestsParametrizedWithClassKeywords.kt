@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class IndentClassKeywordsTestsParametrized(private val mainClassKeyword: String)
+class IndentTestsParametrizedWithClassKeywords(private val mainClassKeyword: String)
 {
     companion object
     {

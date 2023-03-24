@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
@@ -10,31 +11,69 @@ class LevelsCalculator
 {
     fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
         if (StringWrapper.isEmpty(line))
             return Levels(0, listOf())
 
         var brackets = 0
         var conditionals = 0
-
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
-        //var currentLineIndex = lineIndex
+        var isInSingleQuoteString = false
+        var isInDoubleQuoteString = false
 
         val items = TypeSplitter().split(line)
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("  items: (${Tools.toDisplayStringForStrings(items)})")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  items: ${Tools.toDisplayStringForStrings(items)}")
 
         for (item in items)
         {
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("    item: ${Tools.toDisplayString(item)}")
+                DotlinLogger.log("    isInSingleQuoteString: $isInSingleQuoteString")
+                DotlinLogger.log("    isInDoubleQuoteString: $isInDoubleQuoteString")
+            }
+
+            if (isInSingleQuoteString)
+            {
+                if (item == "'")
+                    isInSingleQuoteString = false
+
+                continue
+            }
+
+            if (isInDoubleQuoteString)
+            {
+                if (item == "\"")
+                    isInDoubleQuoteString = false
+
+                continue
+            }
+
             if (item == "//")
                 break
+
+            if (item == "'")
+            {
+                isInSingleQuoteString = true
+                continue
+            }
+
+            if (item == "\"")
+            {
+                isInDoubleQuoteString = true
+                continue
+            }
 
             if (item == "do" || item == "for" || item == "if" || item == "while")
             {
                 conditionals++
                 continue
             }
+
+            if (DotlinLogger.isEnabled) DotlinLogger.log("      ?")
+
 
             if (item.length == 1 && Tools.isOpeningBracket(item))
             {
@@ -60,7 +99,7 @@ class LevelsCalculator
                 val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
-                    TODO("LevelsCalculator.calcLevels: item != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
+                    TODO("LevelsCalculator.calcLevels: item (${Tools.toDisplayString(item)}) != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
 
                 brackets--
                 currentBrackets.removeLast()

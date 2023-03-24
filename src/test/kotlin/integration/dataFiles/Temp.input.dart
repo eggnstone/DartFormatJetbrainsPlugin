@@ -1,2 +1,4 @@
-abc(); /*
-  def(); */
+class C
+{
+    final int i = abc('{');
+}
