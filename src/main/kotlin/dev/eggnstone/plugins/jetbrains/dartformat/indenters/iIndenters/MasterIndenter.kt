@@ -3,7 +3,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
 class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
@@ -35,31 +34,11 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             val indentedPart = indentPart(part, currentLevel)
             result += indentedPart
 
-            if (StringWrapper.isEmpty(indentedPart))
-            {
-                currentLevel = 0
-            }
-            else
-            {
-                val last = StringWrapper.last(indentedPart)
-                if (last == "\n" || last == "\r")
-                {
-                    currentLevel = 0
-                }
-                else
-                {
-                    val lastN = indentedPart.lastIndexOf("\n")
-                    val lastR = indentedPart.lastIndexOf("\r")
-                    val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
-                    val lastLine = if (lastLineBreakPos == -1) indentedPart else StringWrapper.substring(indentedPart, lastLineBreakPos + 1)
-                    currentLevel = lastLine.length - StringWrapper.trimStart(lastLine).length
+            val indentOfLastLine = Tools.getIndentOfLastLine(indentedPart)
+            if (indentOfLastLine % spacesPerLevel != 0)
+                throw DartFormatException("indentOfLastLine % spacesPerLevel != 0 (indentOfLastLine: $indentOfLastLine)")
 
-                    if (currentLevel % spacesPerLevel != 0)
-                        throw DartFormatException("currentLevel % spacesPerLevel != 0 ($currentLevel: ${Tools.toDisplayString(lastLine)})")
-
-                    currentLevel /= spacesPerLevel
-                }
-            }
+            currentLevel = indentOfLastLine / spacesPerLevel
         }
 
         return result

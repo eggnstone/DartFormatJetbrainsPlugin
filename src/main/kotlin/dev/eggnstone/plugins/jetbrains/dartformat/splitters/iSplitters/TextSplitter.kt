@@ -217,8 +217,11 @@ class TextSplitter : ISplitter
             val state = oldState.clone()
             state.log("handleComment")
 
+            val indentOfLastLine = Tools.getIndentOfLastLine(state.currentText)
+            DotlinLogger.log("indentOfLastLine: $indentOfLastLine")
+
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
-            val extractionResult = CommentExtractor.extract(state.remainingText, 0)
+            val extractionResult = CommentExtractor.extract(state.remainingText, indentOfLastLine)
 
             if (DotlinLogger.isEnabled)
             {
@@ -235,7 +238,7 @@ class TextSplitter : ISplitter
                     state.remainingText = extractionResult.remainingText
                     if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
                     // remove? state.commentOnlyHashCode = extractionResult.comment.hashCode()
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Comment(extractionResult.comment))))
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Comment(extractionResult.comment, 0))))
                 }
             }
             else

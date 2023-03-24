@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
@@ -201,6 +202,37 @@ class Tools
                 return rPos + 1
 
             return -1
+        }
+
+        fun getIndentOfLastLine(s: String): Int
+        {
+            if (StringWrapper.isEmpty(s))
+                return 0
+
+            val last = StringWrapper.last(s)
+            if (last == "\n" || last == "\r")
+                return 0
+
+            val lastN = s.lastIndexOf("\n")
+            val lastR = s.lastIndexOf("\r")
+            val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
+            val lastLine = if (lastLineBreakPos == -1) s else StringWrapper.substring(s, lastLineBreakPos + 1)
+
+            return countLeadingSpaces(lastLine)
+        }
+
+        private fun countLeadingSpaces(s: String): Int
+        {
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until s.length)
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
+                if (c != " ")
+                    return i
+            }
+
+            return s.length
         }
     }
 }

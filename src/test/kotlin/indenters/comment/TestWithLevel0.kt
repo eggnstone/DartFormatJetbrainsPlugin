@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.CommentIn
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Comment
 import org.junit.Test
 
-class TestSimple
+class TestWithLevel0
 {
     @Test
     fun endOfLineComment()
@@ -38,14 +38,17 @@ class TestSimple
     @Test
     fun multiLineCommentKeepsFormatting()
     {
-        val inputText = "" +
+        val inputText =
             "/*\n" +
-            "   comment\n" +
-            "       */"
+                "   comment\n" +
+                "       */"
         val inputPart = Comment(inputText)
 
         @Suppress("UnnecessaryVariable")
-        val expectedText = inputText
+        val expectedText =
+            "/*\n" +
+                "   comment\n" +
+                "       */"
 
         val actualText = CommentIndenter(4).indentPart(inputPart)
 

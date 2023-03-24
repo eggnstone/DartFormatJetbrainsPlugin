@@ -9,10 +9,24 @@ import splitters.SplitterTestTools
 class TestStatementsWithComments
 {
     @Test
-    fun ifStatement()
+    fun ifStatementWithEndOfLineComment()
     {
         val inputText =
             "if (true) // falseStatement();\n" +
+                "statement;"
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement(inputText)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun ifStatementWithMultiLineComment()
+    {
+        val inputText =
+            "if (true) /* falseStatement(); */\n" +
                 "statement;"
 
         val expectedRemainingText = ""
