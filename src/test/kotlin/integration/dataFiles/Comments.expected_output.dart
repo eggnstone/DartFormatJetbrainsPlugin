@@ -1,21 +1,21 @@
 a();
 /*
-    logDebug('');
-        logDebug(results[0]['yoast_head_json'].toString());
-    logDebug(JsonTools.encode(results[0]['yoast_head_json']));
-logDebug(results[0]['yoast_head_json']['description'].toString());
-logDebug('');
+    a1();
+        a2();
+    a3();
+a4();
+a5();
 */
 
 1
 
 b();
 /*
-    logDebug('');
-        logDebug(results[0]['yoast_head_json'].toString());
-    logDebug(JsonTools.encode(results[0]['yoast_head_json']));
-logDebug(results[0]['yoast_head_json']['description'].toString());
-logDebug('');
+    b1();
+        b2();
+    b3();
+b4();
+b5();
 */
 
 2
@@ -23,11 +23,11 @@ logDebug('');
 {
     c();
     /*
-        logDebug('');
-            logDebug(results[0]['yoast_head_json'].toString());
-        logDebug(JsonTools.encode(results[0]['yoast_head_json']));
-    logDebug(results[0]['yoast_head_json']['description'].toString());
-    logDebug('');
+        c1();
+            c2();
+        c3();
+    c4();
+    c5();
     */
 }
 
@@ -36,11 +36,11 @@ logDebug('');
 {
     d();
     /*
-        logDebug('');
-            logDebug(results[0]['yoast_head_json'].toString());
-        logDebug(JsonTools.encode(results[0]['yoast_head_json']));
-    logDebug(results[0]['yoast_head_json']['description'].toString());
-    logDebug('');
+        d1();
+            d2();
+        d3();
+    d4();
+    d5();
     */
 }
 
@@ -50,12 +50,12 @@ logDebug('');
     {
         e();
         /*
-            logDebug('');
-                logDebug(results[0]['yoast_head_json'].toString());
-            logDebug(JsonTools.encode(results[0]['yoast_head_json']));
-        logDebug(results[0]['yoast_head_json']['description'].toString());
-        logDebug('');
-        logDebug('X');
+            e1();
+                e2();
+            e3();
+        e4();
+        e5();
+        e6();
         */
     }
 }

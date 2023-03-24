@@ -20,7 +20,7 @@ class CommentsTests
         val inputText = File(inputFilePath).readText()
         val expectedOutputText = File(outputFilePath).readText()
 
-        IntegrationTools.test(inputText, expectedOutputText)
+        IntegrationTools.test(inputText, expectedOutputText, true)
     }
 
     @Test
