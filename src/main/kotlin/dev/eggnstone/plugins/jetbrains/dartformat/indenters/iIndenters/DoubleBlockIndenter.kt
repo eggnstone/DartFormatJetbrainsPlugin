@@ -7,7 +7,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class DoubleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 {
-    override fun indentPart(part: IPart): String
+    override fun indentPart(part: IPart, currentLevel: Int): String
     {
         if (part !is DoubleBlock)
             throw DartFormatException("Unexpected non-DoubleBlock type.")

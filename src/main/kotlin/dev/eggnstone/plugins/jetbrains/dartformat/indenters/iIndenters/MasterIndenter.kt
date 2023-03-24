@@ -1,16 +1,19 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
 class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {
-    override fun indentPart(part: IPart): String
+    override fun indentPart(part: IPart, currentLevel: Int): String
     {
         //if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
-        return indenter.indentPart(part)
+        return indenter.indentPart(part, currentLevel)
     }
 
     fun indentParts(parts: List<IPart>): String
@@ -20,26 +23,43 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         if (DotlinTools.isEmpty(parts))
             return ""
 
+        var currentLevel = 0
         var result = ""
 
-        /*
-        if (DotlinLogger.isEnabled) DotlinLogger.log("  ${parts.size} Parts:")
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until parts.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val part = parts.get(i) // workaround for dotlin
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    Part #$i: ${Tools.toDisplayString(part.toString())}")
-        }
-        */
 
-        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-        for (i in 0 until parts.size) // workaround for dotlin
-        {
-            @Suppress("ReplaceGetOrSet") // workaround for dotlin
-            val part = parts.get(i) // workaround for dotlin
-            //result +=  "${parts.hashCode()} ${i + 1}/${parts.size}: " + indentPart(part)
-            result += indentPart(part)
+            val indentedPart = indentPart(part, currentLevel)
+            result += indentedPart
+
+            if (StringWrapper.isEmpty(indentedPart))
+            {
+                currentLevel = 0
+            }
+            else
+            {
+                val last = StringWrapper.last(indentedPart)
+                if (last == "\n" || last == "\r")
+                {
+                    currentLevel = 0
+                }
+                else
+                {
+                    val lastN = indentedPart.lastIndexOf("\n")
+                    val lastR = indentedPart.lastIndexOf("\r")
+                    val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
+                    val lastLine = if (lastLineBreakPos == -1) indentedPart else StringWrapper.substring(indentedPart, lastLineBreakPos + 1)
+                    currentLevel = lastLine.length - StringWrapper.trimStart(lastLine).length
+
+                    if (currentLevel % spacesPerLevel != 0)
+                        throw DartFormatException("currentLevel % spacesPerLevel != 0 ($currentLevel: ${Tools.toDisplayString(lastLine)})")
+
+                    currentLevel /= spacesPerLevel
+                }
+            }
         }
 
         return result

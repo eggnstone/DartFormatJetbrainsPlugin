@@ -8,10 +8,10 @@ class CommentExtractor
 {
     companion object
     {
-        fun extract(inputText: String): ExtractionResult
+        fun extract(inputText: String, startPos: Int): ExtractionResult
         {
             if (StringWrapper.isEmpty(inputText))
-                return ExtractionResult("", "")
+                return ExtractionResult("", startPos, "")
 
             if (StringWrapper.startsWith(inputText, "//"))
             {
@@ -21,12 +21,12 @@ class CommentExtractor
                 //if (DotlinLogger.isEnabled) DotlinLogger.log("nextLinePos: $nextLinePos")
 
                 if (nextLinePos == -1)
-                    return ExtractionResult(inputText, "")
+                    return ExtractionResult(inputText, startPos, "")
 
                 val comment = StringWrapper.substring(inputText, 0, nextLinePos)
                 val remainingText = StringWrapper.substring(inputText, nextLinePos)
 
-                return ExtractionResult(comment, remainingText)
+                return ExtractionResult(comment, startPos, remainingText)
             }
 
             if (StringWrapper.startsWith(inputText, "/*"))
@@ -40,7 +40,7 @@ class CommentExtractor
                     {
                         val sub = StringWrapper.substring(inputText, i, i + 2)
                         if (sub == "*/")
-                            return ExtractionResult(comment + sub, StringWrapper.substring(inputText, i + 2))
+                            return ExtractionResult(comment + sub, startPos, StringWrapper.substring(inputText, i + 2))
                     }
 
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin

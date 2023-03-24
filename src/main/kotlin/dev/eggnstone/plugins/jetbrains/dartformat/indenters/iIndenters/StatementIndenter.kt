@@ -18,7 +18,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         private val levelsCalculator = LevelsCalculator()
     }
 
-    override fun indentPart(part: IPart): String
+    override fun indentPart(part: IPart, currentLevel: Int): String
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("StatementIndenter.indentPart: $part")
 

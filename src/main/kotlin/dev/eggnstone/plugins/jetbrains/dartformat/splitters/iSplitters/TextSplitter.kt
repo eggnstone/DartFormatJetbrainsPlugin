@@ -218,7 +218,7 @@ class TextSplitter : ISplitter
             state.log("handleComment")
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
-            val extractionResult = CommentExtractor.extract(state.remainingText)
+            val extractionResult = CommentExtractor.extract(state.remainingText, 0)
 
             if (DotlinLogger.isEnabled)
             {

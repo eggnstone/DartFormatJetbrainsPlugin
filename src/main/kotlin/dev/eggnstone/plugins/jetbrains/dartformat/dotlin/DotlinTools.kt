@@ -23,6 +23,10 @@ class DotlinTools
 
         fun last(list: List<String>): String = list[list.size - 1]
 
+        // kotlin maxOf
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun maxOf(a: Int, b: Int): Int = if (a > b) a else b
+
         // kotlin minOf
         @Suppress("MemberVisibilityCanBePrivate")
         fun minOf(a: Int, b: Int): Int = if (a < b) a else b

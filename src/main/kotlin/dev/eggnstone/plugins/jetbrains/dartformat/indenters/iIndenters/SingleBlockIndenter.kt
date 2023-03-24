@@ -16,7 +16,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         private val lineSplitter = LineSplitter()
     }
 
-    override fun indentPart(part: IPart): String
+    override fun indentPart(part: IPart, currentLevel: Int): String
     {
         if (part !is SingleBlock)
             throw DartFormatException("Unexpected non-SingleBlock type.")

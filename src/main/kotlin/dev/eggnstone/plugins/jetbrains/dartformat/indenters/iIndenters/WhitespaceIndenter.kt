@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
 class WhitespaceIndenter(private val spacesPerLevel: Int) : IIndenter
 {
-    override fun indentPart(part: IPart): String
+    override fun indentPart(part: IPart, currentLevel: Int): String
     {
         if (part !is Whitespace)
             throw DartFormatException("Unexpected non-Whitespace type.")
