@@ -21,4 +21,13 @@ class TempTests
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
+
+    @Test
+    fun tempTwice()
+    {
+        val inputText = File(inputFilePath).readText()
+        val expectedOutputText = File(outputFilePath).readText()
+
+        IntegrationTools.testTwice(inputText, expectedOutputText)
+    }
 }

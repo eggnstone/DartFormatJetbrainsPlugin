@@ -95,12 +95,14 @@ class PluginFormat : AnAction()
         catch (err: Exception)
         {
             val errMessage = err.message ?: "Unknown error."
-            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", errMessage))
+            val errMessages = errMessage.split("\n")
+            notifyError("DartFormat", null, project, editor, errMessages)
         }
         catch (err: Error)
         {
             val errMessage = err.message ?: "Unknown error."
-            notifyError("DartFormat", null, project, editor, listOf("Error while formatting:", errMessage))
+            val errMessages = errMessage.split("\n")
+            notifyError("DartFormat", null, project, editor, errMessages)
         }
     }
 
@@ -126,7 +128,7 @@ class PluginFormat : AnAction()
     {
         val combinedLines = lines.joinToString("<br/>")
 
-        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat Balloon Notifications")
+        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
         val notification = notificationGroup.createNotification(title, combinedLines, type)
         notification.subtitle = subtitle
         notification.notify(project)
@@ -203,20 +205,13 @@ class PluginFormat : AnAction()
 
             return formatDartFileByFileEditor(fileEditor, lines)
         }
-        catch (err: DartFormatException)
+        catch (err: Exception)
         {
-            throw DartFormatException("1 $virtualFile: ${err.message}")
-            /*
-            DotlinLogger.log("While formatting: $virtualFile:")
-            DotlinLogger.log("$err")
-            return false
-            */
+            throw DartFormatException("$virtualFile\n${err.message}")
         }
-        catch (err: AssertionError)
+        catch (err: Error)
         {
-            DotlinLogger.log("While formatting: $virtualFile:")
-            DotlinLogger.log("$err")
-            return false
+            throw DartFormatException("$virtualFile\n${err.message}")
         }
     }
 

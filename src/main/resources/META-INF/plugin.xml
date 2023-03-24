@@ -71,7 +71,7 @@
                 instance="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable">
         </applicationConfigurable>
         <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
-        <notificationGroup id="DartFormat Balloon Notifications" displayType="BALLOON"/>
+        <notificationGroup id="DartFormat" displayType="BALLOON"/>
     </extensions>
     <!--
     Cannot change package anymore:

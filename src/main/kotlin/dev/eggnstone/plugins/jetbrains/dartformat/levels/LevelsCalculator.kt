@@ -60,7 +60,7 @@ class LevelsCalculator
                 val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
-                    TODO("LevelsCalculator.calcLevels") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
+                    TODO("LevelsCalculator.calcLevels: item != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
 
                 brackets--
                 currentBrackets.removeLast()
