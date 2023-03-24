@@ -12,7 +12,7 @@ class TestMultiLineComments
     fun multiLineCommentWithoutLineBreak()
     {
         val inputText = "/* multi line comment */"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "/* multi line comment */"
 
@@ -33,7 +33,7 @@ class TestMultiLineComments
         val inputText =
             "/* multi line comment */\n" +
                 "abc();"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "/* multi line comment */"
 
@@ -57,7 +57,7 @@ class TestMultiLineComments
             "/* multi line\n" +
                 "comment */\n" +
                 "abc();"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment =
             "/* multi line\n" +
@@ -83,7 +83,7 @@ class TestMultiLineComments
             "/* multi line\n" +
                 "comment */\n" +
                 "abc();"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment =
             "/* multi line\n" +

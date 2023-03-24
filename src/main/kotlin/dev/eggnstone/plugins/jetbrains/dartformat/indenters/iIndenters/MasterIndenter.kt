@@ -1,28 +1,28 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 
 class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {
-    override fun indentPart(part: IPart, currentLevel: Int): String
+    override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
         //if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
-        return indenter.indentPart(part, currentLevel)
+        return indenter.indentPart(part, startIndent, indentLevel)
     }
 
     fun indentParts(parts: List<IPart>): String
     {
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentParts: $${Tools.toDisplayStringForParts(parts)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentParts: ${Tools.toDisplayStringForParts(parts)}")
 
         if (DotlinTools.isEmpty(parts))
             return ""
 
-        var currentLevel = 0
+        var currentStartIndent = 0
         var result = ""
 
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
@@ -31,14 +31,17 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val part = parts.get(i) // workaround for dotlin
 
-            val indentedPart = indentPart(part, currentLevel)
+            val indentedPart = indentPart(part, currentStartIndent)
             result += indentedPart
 
-            val indentOfLastLine = Tools.getIndentOfLastLine(indentedPart)
-            if (indentOfLastLine % spacesPerLevel != 0)
-                throw DartFormatException("indentOfLastLine % spacesPerLevel != 0 (indentOfLastLine: $indentOfLastLine)")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentParts: Result of part #$i: $part")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedPart:     ${Tools.toDisplayString(Tools.shorten(indentedPart, 100, true))}")
+            val lastLine = Tools.getLastLine(indentedPart)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLine:         ${Tools.toDisplayString(lastLine)}")
+            val lastLineLength = lastLine.length
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLineLength:   $lastLineLength")
 
-            currentLevel = indentOfLastLine / spacesPerLevel
+            currentStartIndent = lastLineLength
         }
 
         return result
@@ -53,7 +56,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             is DoubleBlock -> return DoubleBlockIndenter(spacesPerLevel)
             is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)
-            is Whitespace -> return WhitespaceIndenter(spacesPerLevel)
+            is Whitespace -> return WhitespaceIndenter()
             else -> TODO("IPart not implemented yet: ${inputPart::class.simpleName}")
         }
     }

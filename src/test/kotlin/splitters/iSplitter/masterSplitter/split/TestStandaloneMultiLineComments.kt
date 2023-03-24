@@ -24,7 +24,7 @@ class TestStandaloneMultiLineComments
         val expectedRemainingText = ""
         val statementPart = Statement(statement)
         val whitespacePart = Whitespace(whitespace)
-        val commentPart = Comment(comment, 99)
+        val commentPart = Comment(comment, 7)
         val expectedParts = listOf(statementPart, whitespacePart, commentPart)
 
         SplitterTestTools.testSplit(MasterSplitter(), inputText, expectedRemainingText, expectedParts)

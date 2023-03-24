@@ -2,20 +2,23 @@ package integration
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
 
 class IntegrationTools
 {
     companion object
     {
-        fun test(inputText: String, expectedOutputText: String)
+        fun test(inputText: String, expectedOutputText: String, printParts: Boolean = false)
         {
             val parts = MasterSplitter().splitAll(inputText)
-            //PartTools.printParts(parts)
+
+            if (printParts)
+                PartTools.printParts(parts)
 
             val actualOutputText = MasterIndenter(4).indentParts(parts)
 
-            TestTools.assertAreEqual("Text", actualOutputText, expectedOutputText)
+            TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
         }
 
         fun test2(inputText: String, expectedOutputText: String)
@@ -26,7 +29,7 @@ class IntegrationTools
             val parts2 = MasterSplitter().splitAll(tempText)
             val actualOutputText = MasterIndenter(4).indentParts(parts2)
 
-            TestTools.assertAreEqual("Text", actualOutputText, expectedOutputText)
+            TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
         }
     }
 }

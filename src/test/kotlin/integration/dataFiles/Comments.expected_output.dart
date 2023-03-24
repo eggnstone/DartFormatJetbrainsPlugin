@@ -1,4 +1,4 @@
-abc();
+a();
 /*
     logDebug('');
         logDebug(results[0]['yoast_head_json'].toString());
@@ -9,7 +9,7 @@ logDebug('');
 
 1
 
-results.addAll(JsonTools.decode<List<dynamic>>(response.body));
+b();
 /*
     logDebug('');
         logDebug(results[0]['yoast_head_json'].toString());
@@ -21,7 +21,7 @@ logDebug('');
 2
 
 {
-    results.addAll(JsonTools.decode<List<dynamic>>(response.body));
+    c();
     /*
         logDebug('');
             logDebug(results[0]['yoast_head_json'].toString());
@@ -34,7 +34,7 @@ logDebug('');
 3
 
 {
-    results.addAll(JsonTools.decode<List<dynamic>>(response.body));
+    d();
     /*
         logDebug('');
             logDebug(results[0]['yoast_head_json'].toString());
@@ -48,7 +48,7 @@ logDebug('');
 
 {
     {
-        results.addAll(JsonTools.decode<List<dynamic>>(response.body));
+        e();
         /*
             logDebug('');
                 logDebug(results[0]['yoast_head_json'].toString());
@@ -60,16 +60,16 @@ logDebug('');
     }
 }
 
-abc(); /*
-1
-    2
-        3
+f(); /*
+a1
+    a2
+        a3
 */
 
 {
-    abc(); /*
-    1
-        2
-            3
+    g(); /*
+    b1
+        b2
+            b3
     */
 }

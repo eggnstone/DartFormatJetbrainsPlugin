@@ -12,7 +12,7 @@ class TestEndOfLineComments
     fun endOfLineCommentWithoutLineBreak()
     {
         val inputText = "// end of line comment"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "// end of line comment"
 
@@ -33,7 +33,7 @@ class TestEndOfLineComments
         val inputText =
             "// end of line comment\n" +
                 "abc();"
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "// end of line comment\n"
 

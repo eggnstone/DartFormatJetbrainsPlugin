@@ -2,31 +2,32 @@ package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class CommentExtractor
 {
     companion object
     {
-        fun extract(inputText: String, startPos: Int): ExtractionResult
+        fun extract(inputText: String, currentIndent: Int): ExtractionResult
         {
+            if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(currentIndent=$currentIndent, ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))})")
+
             if (StringWrapper.isEmpty(inputText))
-                return ExtractionResult("", startPos, "")
+                return ExtractionResult("", currentIndent, "")
 
             if (StringWrapper.startsWith(inputText, "//"))
             {
-                //if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(${Tools.toDisplayString(inputText)})")
-
                 val nextLinePos = Tools.getNextLinePos(inputText)
                 //if (DotlinLogger.isEnabled) DotlinLogger.log("nextLinePos: $nextLinePos")
 
                 if (nextLinePos == -1)
-                    return ExtractionResult(inputText, startPos, "")
+                    return ExtractionResult(inputText, currentIndent, "")
 
                 val comment = StringWrapper.substring(inputText, 0, nextLinePos)
                 val remainingText = StringWrapper.substring(inputText, nextLinePos)
 
-                return ExtractionResult(comment, startPos, remainingText)
+                return ExtractionResult(comment, currentIndent, remainingText)
             }
 
             if (StringWrapper.startsWith(inputText, "/*"))
@@ -40,7 +41,7 @@ class CommentExtractor
                     {
                         val sub = StringWrapper.substring(inputText, i, i + 2)
                         if (sub == "*/")
-                            return ExtractionResult(comment + sub, startPos, StringWrapper.substring(inputText, i + 2))
+                            return ExtractionResult(comment + sub, currentIndent, StringWrapper.substring(inputText, i + 2))
                     }
 
                     @Suppress("ReplaceGetOrSet") // workaround for dotlin

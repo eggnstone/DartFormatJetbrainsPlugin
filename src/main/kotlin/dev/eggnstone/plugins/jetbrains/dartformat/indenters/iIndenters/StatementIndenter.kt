@@ -18,14 +18,16 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         private val levelsCalculator = LevelsCalculator()
     }
 
-    override fun indentPart(part: IPart, currentLevel: Int): String
+    override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("StatementIndenter.indentPart: $part")
 
         if (part !is Statement)
             throw DartFormatException("Unexpected non-Statement type.")
 
-        val recreatedPart = part.recreate()
+        val statement: Statement = part
+
+        val recreatedPart = statement.recreate()
         val lines = LineSplitter().split(recreatedPart, true)
 
         var currentConditionals = 0

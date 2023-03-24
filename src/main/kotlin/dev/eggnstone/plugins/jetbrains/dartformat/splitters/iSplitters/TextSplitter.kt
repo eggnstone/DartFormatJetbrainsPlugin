@@ -15,14 +15,15 @@ class TextSplitter : ISplitter
 {
     override val name = "Text"
 
-    override fun split(inputText: String, params: SplitParams): SplitResult
+    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int): SplitResult
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("TextSplitter.split: isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("TextSplitter.split: inputCurrentIndent=$inputCurrentIndent isEnum=${params.isEnum} ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (StringWrapper.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
 
-        var state = TextSplitterState(inputText)
+        var currentIndent = inputCurrentIndent
+        var state = TextSplitterState(inputText) //, inputCurrentIndent)
 
         while (StringWrapper.isNotEmpty(state.remainingText))
         {
@@ -55,7 +56,7 @@ class TextSplitter : ISplitter
 
             if (StringWrapper.startsWith(state.remainingText, "//") || StringWrapper.startsWith(state.remainingText, "/*"))
             {
-                val handleResult = handleComment(state)
+                val handleResult = handleComment(state, currentIndent)
                 if (handleResult.splitResult != null)
                     return handleResult.splitResult
 
@@ -212,22 +213,23 @@ class TextSplitter : ISplitter
             return TextSplitterHandleResult(state, null)
         }
 
-        private fun handleComment(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleComment(oldState: TextSplitterState, currentIndent: Int): TextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleComment")
 
-            val indentOfLastLine = Tools.getIndentOfLastLine(state.currentText)
-            DotlinLogger.log("indentOfLastLine: $indentOfLastLine")
+            /*val indentOfLastLine = Tools.getIndentOfLastLine(state.currentText)
+            DotlinLogger.log("indentOfLastLine: $indentOfLastLine")*/
 
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ..")
-            val extractionResult = CommentExtractor.extract(state.remainingText, indentOfLastLine)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Calling CommentExtractor ...")
+            val extractionResult = CommentExtractor.extract(state.remainingText, currentIndent)
 
             if (DotlinLogger.isEnabled)
             {
                 DotlinLogger.log("Result from CommentExtractor:")
                 DotlinLogger.log("  comment        ${Tools.toDisplayString(extractionResult.comment)}")
                 DotlinLogger.log("  remainingText: ${Tools.toDisplayString(extractionResult.remainingText)}")
+                DotlinLogger.log("  startPos:      ${extractionResult.startPos}")
             }
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("commentOnlyHashCode:       ${state.commentOnlyHashCode}")
@@ -238,7 +240,7 @@ class TextSplitter : ISplitter
                     state.remainingText = extractionResult.remainingText
                     if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
                     // remove? state.commentOnlyHashCode = extractionResult.comment.hashCode()
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Comment(extractionResult.comment, 0))))
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Comment(extractionResult.comment, extractionResult.startPos))))
                 }
             }
             else

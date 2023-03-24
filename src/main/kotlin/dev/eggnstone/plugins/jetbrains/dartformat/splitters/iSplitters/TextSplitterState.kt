@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class TextSplitterState(val inputText: String)
+class TextSplitterState(val inputText: String/*, inputCurrentIndent: Int*/)
 {
     var currentText = ""
     var remainingText = inputText

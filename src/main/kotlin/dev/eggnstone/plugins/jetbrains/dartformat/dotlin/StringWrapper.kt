@@ -10,7 +10,7 @@ class StringWrapper
 
         fun endsWith(s: String, searchText: String): Boolean = s.endsWith(searchText)
 
-        fun getSpaces(count: Int): String = " ".repeat(count)
+        fun getSpaces(count: Int, c: String = " "): String = c.repeat(count)
 
         fun indexOf(s: String, searchText: String): Int = s.indexOf(searchText)
 

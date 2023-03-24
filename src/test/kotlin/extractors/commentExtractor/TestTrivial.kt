@@ -14,7 +14,7 @@ class TestTrivial
     fun emptyText()
     {
         val inputText = ""
-        val inputStartPos = (Math.random() * 1000).toInt()
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = ""
 

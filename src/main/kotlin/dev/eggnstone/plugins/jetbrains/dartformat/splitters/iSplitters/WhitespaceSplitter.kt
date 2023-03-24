@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 
@@ -9,9 +10,9 @@ class WhitespaceSplitter : ISplitter
 {
     override val name = "Whitespace"
 
-    override fun split(inputText: String, params: SplitParams): SplitResult
+    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int): SplitResult
     {
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("WhitespaceSplitter.split: ${Tools.shorten(inputText, 100)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("WhitespaceSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
 
         if (StringWrapper.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")

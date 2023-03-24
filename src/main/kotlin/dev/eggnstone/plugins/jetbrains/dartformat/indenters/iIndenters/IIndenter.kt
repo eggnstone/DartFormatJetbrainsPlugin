@@ -4,5 +4,5 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 interface IIndenter
 {
-    fun indentPart(part: IPart, currentLevel: Int = 0): String
+    fun indentPart(part: IPart, startIndent: Int = 0, indentLevel: Int = 0): String
 }

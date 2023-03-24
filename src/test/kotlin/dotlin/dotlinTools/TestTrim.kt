@@ -15,7 +15,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimStart(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -27,7 +27,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimStart(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -39,7 +39,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimStart(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -51,7 +51,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimEnd(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -63,7 +63,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimEnd(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -75,7 +75,7 @@ class TestTrim
 
         val actualText = StringWrapper.trimEnd(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -87,7 +87,7 @@ class TestTrim
 
         val actualText = StringWrapper.trim(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -99,6 +99,6 @@ class TestTrim
 
         val actualText = StringWrapper.trim(inputText)
 
-        TestTools.assertAreEqual("Trimmed text", actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

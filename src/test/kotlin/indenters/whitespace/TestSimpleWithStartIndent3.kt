@@ -5,11 +5,11 @@ import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.Whitespac
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test
 
-class TestSimple
+class TestSimpleWithStartIndent3
 {
     companion object
     {
-        const val START_INDENT = 0
+        const val START_INDENT = 3
     }
 
     @Test
@@ -17,7 +17,7 @@ class TestSimple
     {
         val inputPart = Whitespace(" ")
 
-        val expectedText = ""
+        val expectedText = " "
 
         val actualText = WhitespaceIndenter().indentPart(inputPart, START_INDENT)
 
@@ -29,7 +29,7 @@ class TestSimple
     {
         val inputPart = Whitespace("  ")
 
-        val expectedText = ""
+        val expectedText = " "
 
         val actualText = WhitespaceIndenter().indentPart(inputPart, START_INDENT)
 

@@ -204,24 +204,27 @@ class Tools
             return -1
         }
 
-        fun getIndentOfLastLine(s: String): Int
+        fun getIndentOfLastLine(s: String): Int = countLeadingSpaces(getLastLine(s))
+
+        fun getLastLine(s: String): String
         {
             if (StringWrapper.isEmpty(s))
-                return 0
+                return ""
 
             val last = StringWrapper.last(s)
             if (last == "\n" || last == "\r")
-                return 0
+                return ""
 
             val lastN = s.lastIndexOf("\n")
             val lastR = s.lastIndexOf("\r")
             val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
-            val lastLine = if (lastLineBreakPos == -1) s else StringWrapper.substring(s, lastLineBreakPos + 1)
+            if (lastLineBreakPos == -1)
+                return s
 
-            return countLeadingSpaces(lastLine)
+            return StringWrapper.substring(s, lastLineBreakPos + 1)
         }
 
-        private fun countLeadingSpaces(s: String): Int
+        fun countLeadingSpaces(s: String): Int
         {
             @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
             for (i in 0 until s.length)

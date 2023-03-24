@@ -41,10 +41,10 @@ class TestTools
         // TODO: remove this so a reason must always be given.
         fun assertAreEqual(actual: String, expected: String)
         {
-            assertAreEqual("", actual, expected, 4)
+            assertAreEqual(null, actual, expected, 4)
         }
 
-        fun assertAreEqual(reason: String, actual: String, expected: String, stackPos: Int = 3)
+        fun assertAreEqual(reason: String?, actual: String, expected: String, stackPos: Int = 3)
         {
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)
@@ -52,13 +52,12 @@ class TestTools
             assertAreEqualInternal(reason, actualSimple, expectedSimple, stackPos)
         }
 
-        private fun assertAreEqualInternal(reason: String, actual: String, expected: String, stackPos: Int)
+        private fun assertAreEqualInternal(reason: String?, actual: String, expected: String, stackPos: Int)
         {
-            if (StringWrapper.isEmpty(reason))
-            {
+            if (reason == null)
                 DotlinLogger.log("REASON IS MISSING!")
-                //throw AssertionError("REASON IS MISSING!")
-            }
+
+            val reasonText = if (reason == null || StringWrapper.isEmpty(reason)) "" else " ($reason)"
 
             val maxCommonLength = actual.length.coerceAtMost(expected.length)
             if (actual.substring(0, maxCommonLength) == expected.substring(0, maxCommonLength))
@@ -66,14 +65,14 @@ class TestTools
                 if (actual.length > expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is longer than expected. ($reason)",
+                        "Actual is longer than expected. ($reasonText)",
                         stackPos
                     )
 
                 if (actual.length < expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is shorter than expected. ($reason)",
+                        "Actual is shorter than expected. ($reasonText)",
                         stackPos
                     )
 
@@ -87,7 +86,7 @@ class TestTools
 
                 throw ShortAssertError(
                     "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                    "Difference at position $i. ($reason)",
+                    "Difference at position $i. ($reasonText)",
                     stackPos
                 )
             }
