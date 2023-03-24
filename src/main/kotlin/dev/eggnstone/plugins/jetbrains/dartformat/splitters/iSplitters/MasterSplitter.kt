@@ -47,13 +47,18 @@ class MasterSplitter : ISplitter
             val consumedText = StringWrapper.substring(remainingText, 0, remainingText.length - splitResult.remainingText.length)
             val lastConsumedLine = Tools.getLastLine(consumedText)
 
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Old currentIndent: $currentIndent")
+
             if (StringWrapper.isEmpty(lastConsumedLine))
             {
                 currentIndent = 0
             }
             else
             {
-                currentIndent += lastConsumedLine.length
+                if (consumedText.contains("\n") || consumedText.contains("\r"))
+                    currentIndent = lastConsumedLine.length
+                else
+                    currentIndent += lastConsumedLine.length
             }
 
             if (DotlinLogger.isEnabled)

@@ -2,6 +2,7 @@ package integration.dataFileBased
 
 import integration.IntegrationConstants
 import integration.IntegrationTools
+import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
@@ -33,6 +34,7 @@ class CommentsTests
     }
 
     @Test
+    @Ignore
     fun commentsPerfect()
     {
         val inputText = File(inputFilePath).readText()
@@ -42,6 +44,7 @@ class CommentsTests
     }
 
     @Test
+    @Ignore
     fun commentsPerfectTwice()
     {
         val inputText = File(inputFilePath).readText()

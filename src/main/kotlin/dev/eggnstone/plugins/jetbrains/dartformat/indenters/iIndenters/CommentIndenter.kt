@@ -17,7 +17,7 @@ class CommentIndenter(private val spacesPerLevel: Int) : IIndenter
 
     override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("CommentIndenter.indentPart: $part")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("CommentIndenter.indentPart(startIndent=$startIndent, indentLevel=$indentLevel, part=$part)")
 
         if (part !is Comment)
             throw DartFormatException("Unexpected non-Comment type.")
@@ -28,6 +28,9 @@ class CommentIndenter(private val spacesPerLevel: Int) : IIndenter
 
         if (comment.startPos == 0 && indentLevel == 0)
             return recreatedPart
+
+        val diff = startIndent - comment.startPos
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  diff=$diff")
 
         var result = ""
         val lines = lineSplitter.split(recreatedPart, trim = false)
@@ -40,7 +43,7 @@ class CommentIndenter(private val spacesPerLevel: Int) : IIndenter
 
             var spaces = indentLevel * spacesPerLevel
             if (i > 0)
-                spaces -= comment.startPos
+                spaces += diff
 
             result += if (spaces >= 0)
             {
@@ -52,7 +55,7 @@ class CommentIndenter(private val spacesPerLevel: Int) : IIndenter
                 spaces += leadingSpaces
                 if (spaces < 0)
                 {
-                    if (DotlinLogger.isEnabled) DotlinLogger.log("spaces < 0")
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("WARNING: spaces < 0")
                     //TODO("spaces < 0")
                     spaces = 0
                 }

@@ -35,13 +35,18 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             result += indentedPart
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentParts: Result of part #$i: $part")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedPart:     ${Tools.toDisplayString(Tools.shorten(indentedPart, 100, true))}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedPart:           ${Tools.toDisplayString(Tools.shorten(indentedPart, 100, true))}")
             val lastLine = Tools.getLastLine(indentedPart)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLine:         ${Tools.toDisplayString(lastLine)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLine:               ${Tools.toDisplayString(lastLine)}")
             val lastLineLength = lastLine.length
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLineLength:   $lastLineLength")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLineLength:         $lastLineLength")
 
-            currentStartIndent = lastLineLength
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  old currentStartIndent: $currentStartIndent")
+            if (indentedPart.contains("\n") || indentedPart.contains("\r"))
+                currentStartIndent = lastLineLength
+            else
+                currentStartIndent += lastLineLength
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  new currentStartIndent: $currentStartIndent")
         }
 
         return result

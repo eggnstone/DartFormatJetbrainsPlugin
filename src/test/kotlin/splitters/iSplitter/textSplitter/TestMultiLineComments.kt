@@ -2,7 +2,6 @@ package splitters.iSplitter.textSplitter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Comment
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.SplitParams
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import splitters.SplitterTestTools

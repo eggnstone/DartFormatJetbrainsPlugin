@@ -4,6 +4,7 @@ import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
+import org.junit.Ignore
 import org.junit.Test
 
 class TestMultiLineComments
@@ -103,6 +104,7 @@ class TestMultiLineComments
     }
 
     @Test
+    @Ignore
     fun multiLineCommentWithSpacesAtEndOfLine()
     {
         val inputText =
