@@ -9,19 +9,26 @@ class SplitterTestTools
 {
     companion object
     {
-        fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>, params: SplitParams = SplitParams())
+        fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>)
         {
-            val actualResult = splitter.split(inputText, params)
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(actualResult.parts)}")
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("  remainingText: ${Tools.toDisplayString(actualResult.remainingText)}")
+            testSplit(splitter, inputText, expectedRemainingText, expectedParts, SplitParams(), 0)
+        }
 
-            //if (DotlinLogger.isEnabled) DotlinLogger.log(      "XXX "+      Tools.toDisplayStringForParts(actualResult.parts))
-            //if (DotlinLogger.isEnabled) DotlinLogger.log(      "YYY "+      Tools.toDisplayStringForParts(expectedParts))
+        fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>, params: SplitParams)
+        {
+            testSplit(splitter, inputText, expectedRemainingText, expectedParts, params, 0)
+        }
+
+        fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>, currentIndent: Int)
+        {
+            testSplit(splitter, inputText, expectedRemainingText, expectedParts, SplitParams(), currentIndent)
+        }
+
+        fun testSplit(splitter: ISplitter, inputText: String, expectedRemainingText: String, expectedParts: List<IPart>, params: SplitParams, currentIndent: Int)
+        {
+            val actualResult = splitter.split(inputText, params, currentIndent)
             TestTools.assertPartsAreEqual("parts", actualResult.parts, expectedParts)
-            //MatcherAssert.assertThat(actualResult.parts, CoreMatchers.equalTo(expectedParts))
-
-            TestTools.assertAreEqual("remainingText", actualResult.remainingText, expectedRemainingText)
-            //TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
+            TestTools.assertAreEqual("remainingText", actualResult.remainingText, expectedRemainingText, 4)
         }
     }
 }

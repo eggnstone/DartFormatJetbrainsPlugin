@@ -65,14 +65,14 @@ class TestTools
                 if (actual.length > expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is longer than expected. ($reasonText)",
+                        "Actual is longer than expected.$reasonText",
                         stackPos
                     )
 
                 if (actual.length < expected.length)
                     throw ShortAssertError(
                         "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                        "Actual is shorter than expected. ($reasonText)",
+                        "Actual is shorter than expected.$reasonText",
                         stackPos
                     )
 
@@ -86,7 +86,7 @@ class TestTools
 
                 throw ShortAssertError(
                     "\nExpected: \"$expected\"\n     but: was \"$actual\"",
-                    "Difference at position $i. ($reasonText)",
+                    "Difference at position $i.$reasonText",
                     stackPos
                 )
             }
