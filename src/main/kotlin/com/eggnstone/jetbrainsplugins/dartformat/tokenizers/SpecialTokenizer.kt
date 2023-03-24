@@ -27,7 +27,7 @@ class SpecialTokenizer
             if (Constants.EQUAL.equals(previousChar.toString()) && Constants.GREATER_THAN.equals(currentChar.toString()))
             {
                 if (currentText.isNotEmpty())
-                    outputTokens += UnknownToken(currentText)//.substring(0, currentText.length - 1))
+                    outputTokens += UnknownToken(currentText) //.substring(0, currentText.length - 1))
 
                 currentText = ""
                 outputTokens += SpecialToken.ARROW

@@ -48,7 +48,7 @@ class CommentExtractor
                     comment += c
                 }
 
-                TODO("untested") // return ExtractionResult(comment, "")
+                TODO("CommentExtractor.extract") // return ExtractionResult(comment, "")
             }
 
             throw DartFormatException("Unexpected non-Comment text.")

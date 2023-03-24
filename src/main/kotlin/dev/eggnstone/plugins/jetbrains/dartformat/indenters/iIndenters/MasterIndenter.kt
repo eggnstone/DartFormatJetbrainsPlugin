@@ -50,12 +50,12 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         @Suppress("LiftReturnOrAssignment")
         when (inputPart)
         {
-            //is EndOfLineComment -> return StatementIndenter(spacesPerLevel) // TODO: OK? Then rename StatementIndenter maybe?
+            is Comment -> return CommentIndenter(spacesPerLevel)
             is DoubleBlock -> return DoubleBlockIndenter(spacesPerLevel)
             is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)
             is Whitespace -> return WhitespaceIndenter(spacesPerLevel)
-            else -> TODO("???")
+            else -> TODO("IPart not implemented yet: ${inputPart::class.simpleName}")
         }
     }
 }

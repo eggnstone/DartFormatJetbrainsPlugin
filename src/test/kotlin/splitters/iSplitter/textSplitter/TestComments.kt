@@ -7,7 +7,7 @@ import splitters.SplitterTestTools
 
 class TestComments
 {
-    @Test
+    /*@Test
     fun endOfLineCommentAndStatement()
     {
         val inputText =
@@ -20,7 +20,7 @@ class TestComments
         val expectedParts = listOf(Statement("// end of line comment\nabc();"))
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
+    }*/
 
     @Test
     fun statementAndEndOfLineComment()

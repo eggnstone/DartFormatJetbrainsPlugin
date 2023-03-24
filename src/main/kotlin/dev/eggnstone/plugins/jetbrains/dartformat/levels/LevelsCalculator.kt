@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
@@ -11,7 +10,7 @@ class LevelsCalculator
 {
     fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
         if (StringWrapper.isEmpty(line))
             return Levels(0, listOf())
@@ -24,7 +23,7 @@ class LevelsCalculator
         //var currentLineIndex = lineIndex
 
         val items = TypeSplitter().split(line)
-        if (DotlinLogger.isEnabled) DotlinLogger.log("  items: (${Tools.toDisplayStringForStrings(items)})")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("  items: (${Tools.toDisplayStringForStrings(items)})")
 
         for (item in items)
         {
@@ -61,7 +60,7 @@ class LevelsCalculator
                 val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
-                    TODO("untested") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
+                    TODO("LevelsCalculator.calcLevels") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
 
                 brackets--
                 currentBrackets.removeLast()

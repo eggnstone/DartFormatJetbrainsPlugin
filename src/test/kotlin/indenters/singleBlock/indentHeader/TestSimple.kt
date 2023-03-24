@@ -397,4 +397,40 @@ class TestSimple
 
         TestTools.assertAreEqual("Text", actualText, expectedText)
     }
+
+    @Test
+    fun emptyHeader()
+    {
+        val inputText = "{"
+
+        val expectedText = "{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
+
+    @Test
+    fun headerWithOneLineBreak()
+    {
+        val inputText = "\n{"
+
+        val expectedText = "\n{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
+
+    @Test
+    fun headerWithTwoLineBreaks()
+    {
+        val inputText = "\n\n{"
+
+        val expectedText = "\n\n{"
+
+        val actualText = SingleBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual("Text", actualText, expectedText)
+    }
 }

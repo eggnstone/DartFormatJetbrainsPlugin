@@ -49,7 +49,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val headerLines = lineSplitter.split(shortenedHeader, true)
         if (headerLines.isEmpty())
-            TODO("untested") // return "{"
+            return "{"
 
         var usesColon = false
         var result = headerLines[0]
@@ -160,7 +160,10 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             }
 
             if (StringWrapper.isBlank(headerLine))
-                TODO("untested")
+            {
+                result += Tools.trimSimple(headerLine)
+                continue
+            }
 
             var pad = StringWrapper.getSpaces(spacesPerLevel)
 
@@ -195,7 +198,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (isInMultiLineComment)
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 1")
                 result.append(currentLine)
                 startIndex++
 
@@ -207,7 +210,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(currentLine, "/*"))
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 2")
                 result.append(currentLine)
                 startIndex++
 
@@ -219,7 +222,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(currentLine, "//"))
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 3")
                 result.append(currentLine)
                 startIndex++
                 continue
@@ -227,7 +230,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.trim(currentLine) == "}")
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 4")
                 result.append(currentLine)
                 startIndex++
                 continue
@@ -260,7 +263,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (isInMultiLineComment)
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 5")
                 result.append(footerLine)
 
                 if (StringWrapper.containsString(footerLine, "*/"))
@@ -271,7 +274,7 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(footerLine, "/*"))
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 6")
                 // no padding for multi line comments
                 result.append(footerLine)
 
@@ -283,14 +286,14 @@ class SingleBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(footerLine, "//"))
             {
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 7")
                 // no padding for end of line comments
                 result.append(footerLine)
                 continue
             }
 
             if (StringWrapper.isBlank(footerLine))
-                TODO("untested")
+                TODO("SingleBlockIndenter.indentFooter 8")
 
             val pad = StringWrapper.getSpaces(spacesPerLevel)
             result.append(pad + footerLine)

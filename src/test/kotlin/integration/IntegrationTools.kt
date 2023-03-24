@@ -17,5 +17,16 @@ class IntegrationTools
 
             TestTools.assertAreEqual("Text", actualOutputText, expectedOutputText)
         }
+
+        fun test2(inputText: String, expectedOutputText: String)
+        {
+            val parts1 = MasterSplitter().splitAll(inputText)
+            val tempText = MasterIndenter(4).indentParts(parts1)
+
+            val parts2 = MasterSplitter().splitAll(tempText)
+            val actualOutputText = MasterIndenter(4).indentParts(parts2)
+
+            TestTools.assertAreEqual("Text", actualOutputText, expectedOutputText)
+        }
     }
 }

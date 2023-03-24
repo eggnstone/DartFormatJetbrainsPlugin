@@ -6,6 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Comment
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
@@ -52,15 +53,13 @@ class TextSplitter : ISplitter
                 continue
             }
 
-            if (StringWrapper.startsWith(state.remainingText, "//"))
+            if (StringWrapper.startsWith(state.remainingText, "//") || StringWrapper.startsWith(state.remainingText, "/*"))
             {
-                state = handleComment(state)
-                continue
-            }
+                val handleResult = handleComment(state)
+                if (handleResult.splitResult != null)
+                    return handleResult.splitResult
 
-            if (StringWrapper.startsWith(state.remainingText, "/*"))
-            {
-                state = handleComment(state)
+                state = handleResult.state
                 continue
             }
 
@@ -122,7 +121,7 @@ class TextSplitter : ISplitter
 
         if (state.commentOnlyHashCode != null && state.currentText.hashCode() == state.commentOnlyHashCode)
         {
-            val statement = Statement(state.currentText);
+            val statement = Statement(state.currentText)
             return SplitResult("", listOf(statement))
         }
 
@@ -213,7 +212,7 @@ class TextSplitter : ISplitter
             return TextSplitterHandleResult(state, null)
         }
 
-        private fun handleComment(oldState: TextSplitterState): TextSplitterState //TextSplitterHandleResult
+        private fun handleComment(oldState: TextSplitterState): TextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleComment")
@@ -232,7 +231,12 @@ class TextSplitter : ISplitter
             if (state.commentOnlyHashCode == null)
             {
                 if (state.currentText.isEmpty())
-                    state.commentOnlyHashCode = extractionResult.comment.hashCode()
+                {
+                    state.remainingText = extractionResult.remainingText
+                    if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+                    // remove? state.commentOnlyHashCode = extractionResult.comment.hashCode()
+                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Comment(extractionResult.comment))))
+                }
             }
             else
             {
@@ -249,7 +253,7 @@ class TextSplitter : ISplitter
             state.remainingText = extractionResult.remainingText
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
-            return state
+            return TextSplitterHandleResult(state, null)
         }
 
         private fun handleEqualSign(oldState: TextSplitterState): TextSplitterState
@@ -432,60 +436,16 @@ class TextSplitter : ISplitter
             return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(SingleBlock(state.header, state.footer, state.blockParts))))
         }
 
-        fun handleSemicolonHasNoBlock(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlock(oldState: TextSplitterState): TextSplitterHandleResult
         {
             val tempRemainingText = StringWrapper.substring(oldState.remainingText, 1) // removing the ";"
             if (StringWrapper.startsWith(tempRemainingText, "}"))
-                TODO("untested") // return handleSemicolonHasNoBlockWithOpeningBraceNext(oldState)
+                TODO("TextSplitter.handleSemicolonHasNoBlock") // return handleSemicolonHasNoBlockWithOpeningBraceNext(oldState)
 
             return handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState)
         }
 
-        fun handleSemicolonHasNoBlockWithOpeningBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
-        {
-            TODO("handleSemicolonHasNoBlockWithOpeningBraceNext")
-
-            val state = oldState.clone()
-            state.log("handleSemicolonHasNoBlockWithOpeningBrace")
-
-            state.currentText += ";"
-            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:              ${Tools.toDisplayString(state.currentText)}")
-            state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
-            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:            ${Tools.toDisplayString(state.remainingText)}")
-
-            //state.footer = ""
-            if (StringWrapper.startsWith(state.currentText, "}"))
-            {
-                /*if (!state.isSecondBlockWithBrackets)
-                    TODO()*/
-
-                state.footer = "}"
-                state.currentText = StringWrapper.substring(state.currentText, 1) // removing the "}"
-            }
-            else
-            {
-                /*if (state.isSecondBlockWithBrackets)
-                    TODO()*/
-            }
-
-            val elseEndPos = Tools.getElseEndPos(state.currentText)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos:                $elseEndPos")
-
-            if (elseEndPos == -1)
-                TODO("elseEndPos == -1")
-
-            state.middle += StringWrapper.substring(state.currentText, 0, elseEndPos)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayString(state.middle)}")
-
-            val statement = StringWrapper.substring(state.currentText, elseEndPos)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("statement:                 ${Tools.toDisplayString(statement)}")
-
-            val parts2 = listOf(Statement(statement))
-
-            return TextSplitterHandleResult(state, SplitResult("", listOf(DoubleBlock(state.header, state.middle, "", state.blockParts, parts2))))
-        }
-
-        fun handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleSemicolonHasNoBlockWithoutOpeningBrace")

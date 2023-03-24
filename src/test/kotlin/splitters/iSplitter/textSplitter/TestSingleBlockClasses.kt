@@ -1,9 +1,6 @@
 package splitters.iSplitter.textSplitter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import splitters.SplitterTestTools
@@ -48,7 +45,10 @@ class TestSingleBlockClasses
                 "}"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("// COMMENT\n"))
+        val parts = listOf(
+            Whitespace("\n"),
+            Comment("// COMMENT\n")
+        )
         val expectedPart = SingleBlock("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
@@ -67,7 +67,12 @@ class TestSingleBlockClasses
                 "}"
 
         val expectedRemainingText = ""
-        val parts = listOf(Whitespace("\n"), Statement("// COMMENT1\nabc();\n"), Statement("// COMMENT2\n"))
+        val parts = listOf(
+            Whitespace("\n"),
+            Comment("// COMMENT1\n"),
+            Statement("abc();\n"),
+            Comment("// COMMENT2\n")
+        )
         val expectedPart = SingleBlock("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 

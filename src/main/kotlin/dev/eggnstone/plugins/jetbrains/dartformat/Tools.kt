@@ -11,27 +11,6 @@ class Tools
         private const val closingBrackets = "])}"
         private const val openingBrackets = "{[("
 
-        fun getOpeningBracket(closingBracket: String): String
-        {
-            /* dotlin
-            return when (closingBracket.value)
-            {
-                "}" -> C("{")
-                ")" -> C("(")
-                "]" -> C("[")
-                else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
-            }
-            */
-            @Suppress("LiftReturnOrAssignment") // dotlin
-            when (closingBracket)
-            {
-                "}" -> return "{"
-                ")" -> return "("
-                "]" -> return "["
-                else -> throw DartFormatException("Unexpected closing bracket: $closingBracket")
-            }
-        }
-
         fun getClosingBracket(closingBracket: String): String
         {
             @Suppress("LiftReturnOrAssignment") // dotlin
@@ -55,9 +34,9 @@ class Tools
                 return s
 
             if (addEllipsis)
-                return StringWrapper.substring(s, 0, maxLength - 4) + " ..."// dotlin
+                return StringWrapper.substring(s, 0, maxLength - 4) + " ..." // dotlin
 
-            TODO("untested") // return StringWrapper.substring(s, 0, maxLength) // dotlin
+            TODO("Tools.shorten") // return StringWrapper.substring(s, 0, maxLength) // dotlin
             //return s.substring(0, maxLength)
         }
 
@@ -109,22 +88,8 @@ class Tools
             return result
         }
 
-        fun trimSimple(s: String): String
-        {
-            //return s
-            //return trimEndSimple(s)
-            return trimStartSimple(trimEndSimple(s))
-            /*val t = trimStartSimple(trimEndSimple(s))
-            if (t == s)
-                return s
+        fun trimSimple(s: String): String = trimStartSimple(trimEndSimple(s))
 
-            if (DotlinLogger.isEnabled) DotlinLogger.log("s: $s")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("t: $t")
-            TODO()
-            return "1${s}2"*/
-        }
-
-        @Suppress("MemberVisibilityCanBePrivate")
         fun trimStartSimple(s: String): String
         {
             var startText = ""
@@ -136,7 +101,6 @@ class Tools
                 val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
                 if (c == "\n" || c == "\r")
                 {
-                    TODO("untested")
                     startText += c
                     continue
                 }
@@ -150,7 +114,6 @@ class Tools
             return startText
         }
 
-        @Suppress("MemberVisibilityCanBePrivate")
         fun trimEndSimple(s: String): String
         {
             var endText = ""
@@ -162,7 +125,6 @@ class Tools
                 val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
                 if (c == "\n" || c == "\r")
                 {
-                    TODO("untested")
                     endText = c + endText
                     continue
                 }

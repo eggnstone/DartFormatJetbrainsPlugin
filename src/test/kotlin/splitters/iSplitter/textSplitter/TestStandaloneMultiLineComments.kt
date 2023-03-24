@@ -6,7 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplit
 import org.junit.Test
 import splitters.SplitterTestTools
 
-class TestMultiLineComments
+class TestStandaloneMultiLineComments
 {
     @Test
     fun onlyComment()
@@ -20,6 +20,24 @@ class TestMultiLineComments
         val expectedRemainingText = ""
         val expectedPart = Comment(inputText)
         val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+    }
+
+    @Test
+    fun commentAndStatement()
+    {
+        val comment =
+            "/*\n" +
+                "for ()\n" +
+                "  abc();\n" +
+                "*/"
+        val statement = "def();"
+        val inputText = comment + "\n" + statement
+
+        val expectedRemainingText = "\n" + statement
+        val expectedPart = Comment(comment)
+        val expectedParts = listOf(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
     }
