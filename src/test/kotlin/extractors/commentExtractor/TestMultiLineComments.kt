@@ -101,4 +101,27 @@ class TestMultiLineComments
         MatcherAssert.assertThat(actualResult.startPos, CoreMatchers.equalTo(expectedStartPos))
         TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
     }
+
+    @Test
+    fun multiLineCommentWithSpacesAtEndOfLine()
+    {
+        val inputText =
+            "/* multi line    \n" +
+                "comment */"
+        val inputStartPos = 1 + (Math.random() * 1000).toInt()
+
+        val expectedComment =
+            "/* multi line\n" +
+                "comment */"
+
+        @Suppress("UnnecessaryVariable")
+        val expectedStartPos = inputStartPos
+        val expectedRemainingText = ""
+
+        val actualResult = CommentExtractor.extract(inputText, inputStartPos)
+
+        TestTools.assertAreEqual("comment", actualResult.comment, expectedComment)
+        MatcherAssert.assertThat("startPos", actualResult.startPos, CoreMatchers.equalTo(expectedStartPos))
+        TestTools.assertAreEqual("remainingText", actualResult.remainingText, expectedRemainingText)
+    }
 }
