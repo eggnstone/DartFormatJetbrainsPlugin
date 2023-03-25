@@ -53,13 +53,19 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             }
 
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentConditionals: $currentConditionals")
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("    currentConditionals: $currentConditionals")
+                DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
+                DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
+                DotlinLogger.log("    isElse:              ${levels.isElse}")
+            }
 
-            //val tempLevel = currentLevel + levels.currentLevel
-            val tempLevel = currentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
-            //val tempLevel = currentConditionals + levels.newBracketPackages.size
+            if (levels.isElse && currentConditionals == 0)
+                throw DartFormatException("levels.isElse && currentConditionals == 0")
+
+            val adjustedCurrentConditionals = currentConditionals + (if (levels.isElse) -1 else 0)
+            val tempLevel = adjustedCurrentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
             var pad = StringWrapper.getSpaces(tempLevel * spacesPerLevel)
 
             if (usesColon)

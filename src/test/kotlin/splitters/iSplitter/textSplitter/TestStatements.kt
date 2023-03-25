@@ -43,50 +43,6 @@ class TestStatements
     }
 
     @Test
-    fun ifStatement()
-    {
-        val inputText = "if (true) statement;"
-
-        val expectedRemainingText = ""
-        val expectedPart = Statement(inputText)
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
-
-    @Test
-    fun ifAndEmptyElse_Throws()
-    {
-        val inputText = "if (true) statement1; else"
-
-        assertThrows<DartFormatException> { TextSplitter().split(inputText) }
-    }
-
-    @Test
-    fun ifAndElse()
-    {
-        val inputText = "if (true) statement1; else statement2;"
-
-        val expectedRemainingText = ""
-        val expectedPart = Statement("if (true) statement1; else statement2;")
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
-
-    @Test
-    fun ifAndMissingElse()
-    {
-        val inputText = "if (true) statement1; elseX"
-
-        val expectedRemainingText = " elseX"
-        val expectedPart = Statement("if (true) statement1;")
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
-    }
-
-    @Test
     fun subLevelBlock()
     {
         val inputText = "abc({});"

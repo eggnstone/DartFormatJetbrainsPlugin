@@ -16,6 +16,9 @@ class TempTests
     @Test
     fun temp()
     {
+        if (!File(inputFilePath).exists())
+            return
+
         val inputText = File(inputFilePath).readText()
         val expectedOutputText = File(outputFilePath).readText()
 
@@ -25,6 +28,9 @@ class TempTests
     @Test
     fun tempTwice()
     {
+        if (!File(inputFilePath).exists())
+            return
+
         val inputText = File(inputFilePath).readText()
         val expectedOutputText = File(outputFilePath).readText()
 

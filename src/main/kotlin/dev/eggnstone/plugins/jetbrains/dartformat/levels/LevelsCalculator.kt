@@ -14,12 +14,13 @@ class LevelsCalculator
         if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
         if (StringWrapper.isEmpty(line))
-            return Levels(0, listOf())
+            return Levels(0, listOf(), false)
 
         var brackets = 0
         var conditionals = 0
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
+        var isElse = false
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
 
@@ -28,12 +29,14 @@ class LevelsCalculator
 
         for (item in items)
         {
+            /*
             if (DotlinLogger.isEnabled)
             {
                 DotlinLogger.log("    item: ${Tools.toDisplayString(item)}")
                 DotlinLogger.log("    isInSingleQuoteString: $isInSingleQuoteString")
                 DotlinLogger.log("    isInDoubleQuoteString: $isInDoubleQuoteString")
             }
+            */
 
             if (isInSingleQuoteString)
             {
@@ -66,14 +69,24 @@ class LevelsCalculator
                 continue
             }
 
-            if (item == "do" || item == "for" || item == "if" || item == "while")
+            if (item == "do" || item == "for" || item == "while")
             {
                 conditionals++
                 continue
             }
 
-            if (DotlinLogger.isEnabled) DotlinLogger.log("      ?")
+            if (item == "if")
+            {
+                if (!isElse)
+                    conditionals++
+                continue
+            }
 
+            if (item == "else")
+            {
+                isElse = true
+                continue
+            }
 
             if (item.length == 1 && Tools.isOpeningBracket(item))
             {
@@ -119,6 +132,6 @@ class LevelsCalculator
             currentBracketPackages.add(BracketPackage(currentBrackets, lineIndex))
         }
 
-        return Levels(conditionals, currentBracketPackages)
+        return Levels(conditionals, currentBracketPackages, isElse)
     }
 }

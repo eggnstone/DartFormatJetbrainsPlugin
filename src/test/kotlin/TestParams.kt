@@ -15,6 +15,14 @@ class TestParams
 
         val brackets2 = join(brackets, brackets)
 
+        val booleans = arrayOf(
+            arrayOf("false", "false"),
+            arrayOf("true", "true")
+        )
+
+        val booleans2 = join(booleans, booleans)
+        val booleans3 = join(booleans2, booleans)
+
         val keywords = ToolsOld.keywords
 
         val lineBreaks = arrayOf(
