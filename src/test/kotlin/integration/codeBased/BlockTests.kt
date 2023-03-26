@@ -2,7 +2,6 @@ package integration.codeBased
 
 import TestParams
 import integration.IntegrationTools
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -18,8 +17,8 @@ class BlockTestsParametrized(
     companion object
     {
         @JvmStatic
-        @Parameterized.Parameters(name = "if {0} else if {1} else {2}")
-        fun data() = TestParams.booleans3
+        @Parameterized.Parameters(name = "{3}")
+        fun data() = TestParams.statementOrBlockBooleans3
     }
 
     private val useBlock0: Boolean = useBlockText0 == "true"
@@ -27,7 +26,6 @@ class BlockTestsParametrized(
     private val useBlock2: Boolean = useBlockText2 == "true"
 
     @Test
-    @Ignore
     fun ifElseIfElse()
     {
         val inputText =
@@ -46,6 +44,6 @@ class BlockTestsParametrized(
                 "else\n" +
                 (if (useBlock2) "{}" else "    c();")
 
-        IntegrationTools.test(inputText, expectedOutputText,true)
+        IntegrationTools.test(inputText, expectedOutputText, true)
     }
 }
