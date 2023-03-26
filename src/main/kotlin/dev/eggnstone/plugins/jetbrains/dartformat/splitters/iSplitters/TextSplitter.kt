@@ -22,8 +22,8 @@ class TextSplitter : ISplitter
         if (StringWrapper.isEmpty(inputText))
             throw DartFormatException("Unexpected empty text.")
 
-        var currentIndent = inputCurrentIndent
-        var state = TextSplitterState(inputText) //, inputCurrentIndent)
+        val currentIndent = inputCurrentIndent
+        var state = TextSplitterState(inputText)
 
         while (StringWrapper.isNotEmpty(state.remainingText))
         {

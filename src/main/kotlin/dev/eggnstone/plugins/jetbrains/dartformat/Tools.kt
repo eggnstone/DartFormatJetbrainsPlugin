@@ -45,6 +45,8 @@ class Tools
         fun toDisplayStringSimple(s: String): String = StringWrapper.replace(StringWrapper.replace(s, "\r", "\\r"), "\n", "\\n")
 
         fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
+        fun toDisplayStringForPartLists(partLists: List<List<IPart>>): String = "[" + toDisplayStringForPartListsInternal(partLists) + "]"
+
         fun toDisplayStringForStrings(strings: List<String>): String = "[" + toDisplayStringForStringsInternal(strings) + "]"
 
         private fun toDisplayStringForPartsInternal(parts: List<IPart>): String
@@ -60,6 +62,24 @@ class Tools
                     result += ","
 
                 result += toDisplayStringSimple(part.toString())
+            }
+
+            return result
+        }
+
+        private fun toDisplayStringForPartListsInternal(partLists: List<List<IPart>>): String
+        {
+            var result = ""
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+            for (i in 0 until partLists.size) // workaround for dotlin
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin
+                val parts = partLists.get(i) // workaround for dotlin
+                if (StringWrapper.isNotEmpty(result))
+                    result += ","
+
+                result += toDisplayStringForParts(parts)
             }
 
             return result

@@ -14,10 +14,8 @@ class TestComplex
     {
         val inputPart =
             DoubleBlock(
-                "if (true)\n" +
-                    "{", "}\n" +
-                "else\n" +
-                "{",
+                "if (true)\n{",
+                "}\nelse\n{",
                 "}",
                 listOf(Whitespace("\n"), Statement("abc();"), Whitespace("\n")),
                 listOf(Whitespace("\n"), Statement("def();"), Whitespace("\n"))

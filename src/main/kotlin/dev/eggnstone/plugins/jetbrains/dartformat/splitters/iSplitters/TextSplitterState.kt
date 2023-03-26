@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
-class TextSplitterState(val inputText: String/*, inputCurrentIndent: Int*/)
+class TextSplitterState(val inputText: String)
 {
     var currentText = ""
     var remainingText = inputText
@@ -20,14 +20,14 @@ class TextSplitterState(val inputText: String/*, inputCurrentIndent: Int*/)
     var isInAssignment = false
     var isInNormalQuotes = false
 
-    var header = ""
-    var middle = ""
+    var headers = mutableListOf<String>()
+    var parts = mutableListOf<List<IPart>>()
     var footer = ""
 
-    var blockParts: List<IPart> = listOf() // ok
-    /*//var parts: List<X> = listOf() // ok
-    var parts = listOf<X>() // error
-    parts = mutableListOf<X>()*/
+    var header = ""
+    var middle = ""
+
+    var blockParts: List<IPart> = listOf()
 
     fun log(s: String, params: SplitParams? = null)
     {
@@ -56,6 +56,9 @@ class TextSplitterState(val inputText: String/*, inputCurrentIndent: Int*/)
 
         DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
         DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
+
+        DotlinLogger.log("headers:                   ${Tools.toDisplayStringForStrings(headers)}")
+        DotlinLogger.log("parts:                     ${Tools.toDisplayStringForPartLists(parts)}")
         DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
 
         DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")

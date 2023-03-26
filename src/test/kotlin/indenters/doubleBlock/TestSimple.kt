@@ -14,10 +14,9 @@ class TestSimple
     {
         val inputPart =
             DoubleBlock(
-                "if (true)\n" +
-                    "{", "}\n" +
-                "else\n" +
-                "{", "}"
+                "if (true)\n{",
+                "}\nelse\n{",
+                "}"
             )
 
         val expectedText =
@@ -36,10 +35,9 @@ class TestSimple
     {
         val inputPart =
             DoubleBlock(
-                "if (true)\n" +
-                    "{", "}\n" +
-                "else\n" +
-                "{", "}",
+                "if (true)\n{",
+                "}\nelse\n{",
+                "}",
                 listOf<IPart>(Whitespace("\n")),
                 listOf<IPart>(Whitespace("\n"))
             )

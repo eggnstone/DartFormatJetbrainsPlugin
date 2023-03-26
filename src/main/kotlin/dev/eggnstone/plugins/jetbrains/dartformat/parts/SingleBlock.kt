@@ -7,9 +7,10 @@ data class SingleBlock(val header: String, val footer: String, val parts: List<I
     override fun recreate(): String = header + recreateParts() + footer
 
     override fun toString(): String =
-        "SingleBlock(${Tools.toDisplayString(header)}" +
-            ", ${Tools.toDisplayString(footer)}" +
-            ", parts: ${Tools.toDisplayStringForParts(parts)})"
+        "SingleBlock(" +
+            "header: ${Tools.toDisplayString(header)}, " +
+            "parts: ${Tools.toDisplayStringForParts(parts)}), "+
+            "footer: ${Tools.toDisplayString(footer)}"
 
     private fun recreateParts(): String
     {
