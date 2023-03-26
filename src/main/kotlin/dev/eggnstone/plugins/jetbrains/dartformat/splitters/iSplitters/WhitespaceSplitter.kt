@@ -1,10 +1,10 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class WhitespaceSplitter : ISplitter
 {

@@ -4,7 +4,9 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class LineSplitter
 {
-    fun split(s: String, trim: Boolean): List<String>
+    fun split(s: String, trim: Boolean): List<String> = split(s, trim, trim)
+
+    fun split(s: String, trimStart: Boolean, trimEnd: Boolean): List<String>
     {
         //if (DotlinLogger.isEnabled) DotlinLogger.log("LineSplitter.split(${Tools.toDisplayStringShort(s)})")
 
@@ -15,21 +17,21 @@ class LineSplitter
         val rnPos = StringWrapper.indexOf(s, "\r\n")
 
         if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
-            return split(s, "\n\r", trim)
+            return split(s, "\n\r", trimStart, trimEnd)
 
         if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
-            return split(s, "\r\n", trim)
+            return split(s, "\r\n", trimStart, trimEnd)
 
         if (StringWrapper.containsChar(s, "\n"))
-            return split(s, "\n", trim)
+            return split(s, "\n", trimStart, trimEnd)
 
         if (StringWrapper.containsChar(s, "\r"))
-            return split(s, "\r", trim)
+            return split(s, "\r", trimStart, trimEnd)
 
         return listOf(s)
     }
 
-    private fun split(s: String, delimiter: String, trim: Boolean): List<String>
+    private fun split(s: String, delimiter: String, trimStart: Boolean, trimEnd: Boolean): List<String>
     {
         //if (DotlinLogger.isEnabled) DotlinLogger.log("  LineSplitter.split(${Tools.toDisplayStringShort(s)},${Tools.toDisplayStringShort(delimiter)})")
 
@@ -39,7 +41,7 @@ class LineSplitter
         val outputLines = mutableListOf<String>()
 
         var currentText = ""
-        val lines = StringSplitter.split(s, delimiter, trim)
+        val lines = StringSplitter.split(s, delimiter, trimStart, trimEnd)
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in 0 until lines.size) // workaround for dotlin
         {

@@ -5,16 +5,16 @@ import integration.IntegrationTools
 import org.junit.Test
 import java.io.File
 
-class TempTests
+class Temp2Tests
 {
     companion object
     {
-        const val inputFilePath = IntegrationConstants.dataFilesPath + "Temp.input.dart"
-        const val outputFilePath = IntegrationConstants.dataFilesPath + "Temp.expected_output.dart"
+        const val inputFilePath = IntegrationConstants.dataFilesPath + "Temp2.input.dart"
+        const val outputFilePath = IntegrationConstants.dataFilesPath + "Temp2.expected_output.dart"
     }
 
     @Test
-    fun temp()
+    fun temp2()
     {
         if (!File(inputFilePath).exists())
             return
@@ -26,7 +26,7 @@ class TempTests
     }
 
     @Test
-    fun tempTwice()
+    fun temp2Twice()
     {
         if (!File(inputFilePath).exists())
             return

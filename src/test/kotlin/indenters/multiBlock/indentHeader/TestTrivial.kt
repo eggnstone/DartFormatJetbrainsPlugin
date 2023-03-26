@@ -1,4 +1,4 @@
-package indenters.singleBlock.indentHeader
+package indenters.multiBlock.indentHeader
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter

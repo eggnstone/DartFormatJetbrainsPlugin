@@ -1,14 +1,16 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class StringSplitter
 {
     companion object
     {
-        fun split(s: String, delimiter: String, trim: Boolean): List<String>
+        fun split(s: String, delimiter: String, trim: Boolean): List<String> = split(s, delimiter, trim, trim)
+
+        fun split(s: String, delimiter: String, trimStart: Boolean, trimEnd: Boolean): List<String>
         {
             //if (DotlinLogger.isEnabled) DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayStringShort(s)} delimiter=${Tools.toDisplayStringShort(delimiter)} trim=$trim")
 
@@ -34,14 +36,17 @@ class StringSplitter
                 {
                     if (StringWrapper.isNotEmpty(currentText))
                     {
-                        if (trim)
-                        {
-                            val trimmedCurrentText = Tools.trimSimple(currentText)
-                            if (StringWrapper.isNotEmpty(trimmedCurrentText))
-                                result.add(trimmedCurrentText)
-                        }
+                        val trimmedCurrentText: String = if (trimStart && trimEnd)
+                            Tools.trimSimple(currentText)
+                        else if (trimStart)
+                            Tools.trimStartSimple(currentText)
+                        else if (trimEnd)
+                            Tools.trimEndSimple(currentText)
                         else
-                            result.add(currentText)
+                            currentText
+
+                        if (StringWrapper.isNotEmpty(trimmedCurrentText))
+                            result.add(trimmedCurrentText)
 
                         currentText = ""
                     }
@@ -65,25 +70,17 @@ class StringSplitter
 
             if (StringWrapper.isNotEmpty(rest))
             {
-                if (trim)
-                {
-                    val trimmedRest = Tools.trimSimple(rest)
-                    if (StringWrapper.isEmpty(trimmedRest))
-                    {
-                        //TODO("DotlinTools.isEmpty(trimmedRest)")
-
-                        /*if (rest.contains("\n") || rest.contains("\r"))
-                            TODO("DotlinTools.isEmpty(trimmedRest)")*/
-
-                        //TODO("Rest is empty s=${Tools.toDisplayStringShort(s.replace("*", "_"))} delimiter=${Tools.toDisplayStringShort(delimiter)} rest=${Tools.toDisplayStringShort(rest)} trim=$trim")
-                        //result.add("/*rest is empty s=${Tools.toDisplayStringShort(s.replace("*", "_"))} delimiter=${Tools.toDisplayStringShort(delimiter)} rest=${Tools.toDisplayStringShort(rest)} trim=$trim*/")
-                        //result.add("_EMPTY2_")
-                    }
-                    else
-                        result.add(trimmedRest)
-                }
+                val trimmedRest: String = if (trimStart && trimEnd)
+                    Tools.trimSimple(rest)
+                else if (trimStart)
+                    Tools.trimStartSimple(rest)
+                else if (trimEnd)
+                    Tools.trimEndSimple(rest)
                 else
-                    result.add(rest)
+                    rest
+
+                if (StringWrapper.isNotEmpty(trimmedRest))
+                    result.add(trimmedRest)
             }
 
             return result

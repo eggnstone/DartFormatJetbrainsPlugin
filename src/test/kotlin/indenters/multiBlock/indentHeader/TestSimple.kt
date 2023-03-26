@@ -1,4 +1,4 @@
-package indenters.singleBlock.indentHeader
+package indenters.multiBlock.indentHeader
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
@@ -13,6 +13,31 @@ class TestSimple
         val inputText = "header{"
 
         val expectedText = "header{"
+
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun trimStart()
+    {
+        val inputText = "@annotation\n    header{"
+
+        val expectedText = "@annotation\nheader{"
+
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    @Ignore
+    fun trimEnd()
+    {
+        val inputText = "@annotation\nheader    \n{"
+
+        val expectedText = "@annotation\nheader\n{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 

@@ -20,7 +20,6 @@ class IntegrationTools
             val actualOutputText = MasterIndenter(4).indentParts(parts)
 
             TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
-
             SafetyTools.checkForUnexpectedChanges(inputText, actualOutputText)
         }
 
@@ -29,12 +28,13 @@ class IntegrationTools
             val parts1 = MasterSplitter().splitAll(inputText)
             val tempText = MasterIndenter(4).indentParts(parts1)
 
+            TestTools.assertAreEqual("", tempText, expectedOutputText)
+            SafetyTools.checkForUnexpectedChanges(inputText, tempText)
+
             val parts2 = MasterSplitter().splitAll(tempText)
             val actualOutputText = MasterIndenter(4).indentParts(parts2)
 
             TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
-
-            SafetyTools.checkForUnexpectedChanges(inputText, tempText)
             SafetyTools.checkForUnexpectedChanges(tempText, actualOutputText)
         }
     }

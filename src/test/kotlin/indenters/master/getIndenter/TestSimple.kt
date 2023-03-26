@@ -1,7 +1,12 @@
 package indenters.master.getIndenter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.*
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.StatementIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.WhitespaceIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test

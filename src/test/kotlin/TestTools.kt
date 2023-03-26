@@ -1,8 +1,8 @@
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import org.hamcrest.*
 
 class TestTools
@@ -38,7 +38,7 @@ class TestTools
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
-        fun assertAreEqual(reason: String , actual: String, expected: String, stackPos: Int = 3)
+        fun assertAreEqual(reason: String, actual: String, expected: String, stackPos: Int = 3)
         {
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)

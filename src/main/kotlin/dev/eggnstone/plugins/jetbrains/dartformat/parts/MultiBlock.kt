@@ -1,8 +1,8 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>>, val footer: String) : IPart
 {

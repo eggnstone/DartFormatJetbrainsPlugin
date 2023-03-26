@@ -27,7 +27,7 @@ class TestSimple
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual("",actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -52,6 +52,6 @@ class TestSimple
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual("",actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

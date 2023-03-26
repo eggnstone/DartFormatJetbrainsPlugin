@@ -1,9 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.extractors
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class CommentExtractor
 {

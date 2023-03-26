@@ -1,4 +1,4 @@
-package indenters.singleBlock.indentPart
+package indenters.singleBlock
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException

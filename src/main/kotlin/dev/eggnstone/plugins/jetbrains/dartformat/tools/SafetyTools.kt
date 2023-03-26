@@ -10,7 +10,7 @@ class SafetyTools
     {
         fun checkForUnexpectedChanges(oldText: String, newText: String)
         {
-            val reducedOldText = oldText.replace(Regex("[\n\r\t ]" ), "")
+            val reducedOldText = oldText.replace(Regex("[\n\r\t ]"), "")
             val reducedNewText = newText.replace(Regex("[\n\r\t ]"), "")
 
             val commaLessOldText = reducedOldText.replace(",)", ")")

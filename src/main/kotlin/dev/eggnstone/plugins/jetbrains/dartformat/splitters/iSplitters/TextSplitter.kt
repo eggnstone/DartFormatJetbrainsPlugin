@@ -1,7 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
@@ -9,6 +8,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Comment
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class TextSplitter : ISplitter
 {

@@ -1,9 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class TextSplitterState(val inputText: String)
 {

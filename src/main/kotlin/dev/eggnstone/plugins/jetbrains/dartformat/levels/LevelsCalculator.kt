@@ -1,11 +1,11 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.levels
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.TypeSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class LevelsCalculator
 {

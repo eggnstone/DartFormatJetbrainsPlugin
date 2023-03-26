@@ -10,7 +10,7 @@ import splitters.SplitterTestTools
 
 class TestStatementsWithIf
 {
-        @Test
+    @Test
     fun ifStatement()
     {
         val inputText = "if (true) statement;"

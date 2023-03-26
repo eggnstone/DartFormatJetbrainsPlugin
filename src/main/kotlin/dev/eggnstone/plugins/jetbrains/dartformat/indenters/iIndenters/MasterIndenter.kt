@@ -1,9 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {

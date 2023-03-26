@@ -1,13 +1,13 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.BlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 {
@@ -74,7 +74,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
     fun indentHeader(header: String, isFirst: Boolean = true): String
     {
         if (!isFirst)
-            return header;
+            return header
 
         return indentHeaderInternal(header)
     }
@@ -91,7 +91,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val shortenedHeader = StringWrapper.substring(header, 0, header.length - 1)
 
-        val headerLines = lineSplitter.split(shortenedHeader, false)//true)
+        val headerLines = lineSplitter.split(shortenedHeader, trimStart = true, trimEnd = false)
         if (headerLines.isEmpty())
             return "{"
 
@@ -239,7 +239,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         if (!StringWrapper.startsWith(footer, "}"))
             throw DartFormatException("Footer must start with closing brace: ${Tools.toDisplayStringShort(footer)}")
 
-        val footerLines = lineSplitter.split(footer, true)
+        val footerLines = lineSplitter.split(footer, trim = true)
         val result = StringBuffer(footerLines[0])
         var startIndex = 1
         var isInMultiLineComment = false
