@@ -7,23 +7,21 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class BlockTestsParametrized(
-    private val useBlockText0: String,
-    private val useBlockText1: String,
-    private val useBlockText2: String,
+class BlockTestsParametrizedWithStatementOrBlockBooleans2(
+    useBlockText0: String,
+    useBlockText1: String,
     @Suppress("UNUSED_PARAMETER") unused: String
 )
 {
     companion object
     {
         @JvmStatic
-        @Parameterized.Parameters(name = "{3}")
-        fun data() = TestParams.statementOrBlockBooleans3
+        @Parameterized.Parameters(name = "{2}")
+        fun data() = TestParams.statementOrBlockBooleans2
     }
 
     private val useBlock0: Boolean = useBlockText0 == "true"
     private val useBlock1: Boolean = useBlockText1 == "true"
-    private val useBlock2: Boolean = useBlockText2 == "true"
 
     @Test
     fun ifElseIfElse()
@@ -31,18 +29,14 @@ class BlockTestsParametrized(
         val inputText =
             "if (a)\n" +
                 (if (useBlock0) "{}" else "a();") + "\n" +
-                "else if (b)\n" +
-                (if (useBlock1) "{}" else "b();") + "\n" +
                 "else\n" +
-                (if (useBlock2) "{}" else "c();")
+                (if (useBlock1) "{}" else "b();")
 
         val expectedOutputText =
             "if (a)\n" +
                 (if (useBlock0) "{}" else "    a();") + "\n" +
-                "else if (b)\n" +
-                (if (useBlock1) "{}" else "    b();") + "\n" +
                 "else\n" +
-                (if (useBlock2) "{}" else "    c();")
+                (if (useBlock1) "{}" else "    b();")
 
         IntegrationTools.test(inputText, expectedOutputText, true)
     }

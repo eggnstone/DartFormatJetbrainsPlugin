@@ -93,13 +93,13 @@ class TestTools
             assertAreEqual("currentText", actualState.currentText, expectedState.currentText)
             assertAreEqual("remainingText", actualState.remainingText, expectedState.remainingText)
             MatcherAssert.assertThat("currentBrackets", actualState.currentBrackets, CoreMatchers.equalTo(expectedState.currentBrackets))
-            MatcherAssert.assertThat("hasBlock", actualState.hasBlock, CoreMatchers.equalTo(expectedState.hasBlock))
+            MatcherAssert.assertThat("hasBlock", actualState.hasBlockOLD, CoreMatchers.equalTo(expectedState.hasBlockOLD))
             //MatcherAssert.assertThat("isFirstBlockWithBrackets", actualState.isFirstBlockWithBrackets, CoreMatchers.equalTo(expectedState.isFirstBlockWithBrackets))
             //MatcherAssert.assertThat("isSecondBlockWithBrackets", actualState.isSecondBlockWithBrackets, CoreMatchers.equalTo(expectedState.isSecondBlockWithBrackets))
-            assertAreEqual("header", actualState.header, expectedState.header)
-            assertAreEqual("middle", actualState.middle, expectedState.middle)
+            assertAreEqual("header", actualState.headerOLD, expectedState.headerOLD)
+            assertAreEqual("middle", actualState.middleOLD, expectedState.middleOLD)
             assertAreEqual("footer", actualState.footer, expectedState.footer)
-            MatcherAssert.assertThat("parts1", actualState.blockParts, CoreMatchers.equalTo(expectedState.blockParts))
+            MatcherAssert.assertThat("parts1", actualState.blockPartsOLD, CoreMatchers.equalTo(expectedState.blockPartsOLD))
         }
     }
 }

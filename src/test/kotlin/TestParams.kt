@@ -1,36 +1,35 @@
-import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 
 class TestParams
 {
     companion object
     {
-        val classKeywords = ToolsOld.classKeywords
-
         val brackets = arrayOf(
             arrayOf("{", "}", "Curly brackets"),
             arrayOf("(", ")", "Round brackets"),
             arrayOf("[", "]", "Square brackets")
         )
 
-        val brackets2 = join(brackets, brackets)
-
-        val booleans = arrayOf(
-            arrayOf("false", "false"),
-            arrayOf("true", "true")
+        val classKeywords = arrayOf(
+            "abstract class",
+            "class",
+            "extends",
+            "implements",
+            "with"
         )
 
-        val statementOrBlockBooleans = arrayOf(
-            arrayOf("false", "s();"),
-            arrayOf("true", "{}")
+        val keywords = arrayOf(
+            //"case", // ?
+            "catch",
+            "do",
+            "else",
+            "finally",
+            "for",
+            "if",
+            "switch",
+            "try",
+            "while"
         )
-
-        val booleans2 = join(booleans, booleans)
-        val statementOrBlockBooleans2 = join(statementOrBlockBooleans, statementOrBlockBooleans)
-        val booleans3 = join(booleans2, booleans)
-        val statementOrBlockBooleans3 = join(statementOrBlockBooleans2, statementOrBlockBooleans)
-
-        val keywords = ToolsOld.keywords
 
         val lineBreaks = arrayOf(
             arrayOf("\n", "\\n"),
@@ -41,16 +40,9 @@ class TestParams
 
         val lineBreaksAndBrackets = join(lineBreaks, brackets)
 
-        val lineBreaksAndKeywords = join(lineBreaks, keywords)
-
         val quotes = arrayOf(
             arrayOf("\"", "Normal quotes"),
             arrayOf("'", "Apostrophes")
-        )
-
-        val quotesWithOtherQuotes = arrayOf(
-            arrayOf("\"", "'", "Normal quotes and apostrophes"),
-            arrayOf("'", "\"", "Apostrophes and normal quotes")
         )
 
         val quotesWithInnerQuotes = arrayOf(
@@ -58,6 +50,11 @@ class TestParams
             arrayOf("\"", "\\\"", "Normal quotes with inner escaped normal quotes"),
             arrayOf("'", "\"", "Apostrophes with inner normal quotes"),
             arrayOf("'", "\\'", "Apostrophes with inner escaped apostrophes")
+        )
+
+        val quotesWithOtherQuotes = arrayOf(
+            arrayOf("\"", "'", "Normal quotes and apostrophes"),
+            arrayOf("'", "\"", "Apostrophes and normal quotes")
         )
 
         val specials = arrayOf(
@@ -72,6 +69,15 @@ class TestParams
             Constants.SEMICOLON
         )
 
+        private val statementOrBlockBooleans = arrayOf(
+            arrayOf("false", "s();"),
+            arrayOf("true", "{}")
+        )
+
+        val statementOrBlockBooleans2 = join(statementOrBlockBooleans, statementOrBlockBooleans)
+
+        val statementOrBlockBooleans3 = join(statementOrBlockBooleans2, statementOrBlockBooleans)
+
         val whitespaces = arrayOf(
             arrayOf(" ", "Space"),
             arrayOf("\t", "Tab"),
@@ -81,29 +87,23 @@ class TestParams
             arrayOf("\r\n", "\\r\\n")
         )
 
-        private fun join(array1: Array<Array<String>>, array2: Array<Array<String>>): Array<Array<String>>
+        private fun join(arrayOfArrays1: Array<Array<String>>, arrayOfArrays2: Array<Array<String>>): Array<Array<String>>
         {
             var result = arrayOf<Array<String>>()
 
-            for (a1 in array1)
+            for (array1 in arrayOfArrays1)
             {
-                for (a2 in array2)
+                for (array2 in arrayOfArrays2)
                 {
                     var newArray = arrayOf<String>()
 
-                    for (i1 in 0 until a1.size - 1)
-                    {
-                        val e1 = a1[i1]
-                        newArray += e1
-                    }
+                    for (array1Index in 0 until array1.size - 1)
+                        newArray += array1[array1Index]
 
-                    for (i2 in 0 until a2.size - 1)
-                    {
-                        val e2 = a2[i2]
-                        newArray += e2
-                    }
+                    for (array2Index in 0 until array2.size - 1)
+                        newArray += array2[array2Index]
 
-                    newArray += a1.last() + " + " + a2.last()
+                    newArray += array1.last() + " + " + array2.last()
 
                     result += newArray
                 }
@@ -112,25 +112,22 @@ class TestParams
             return result
         }
 
-        private fun join(array1: Array<Array<String>>, array2: Array<String>): Array<Array<String>>
+        private fun join(arrayOfArrays1: Array<Array<String>>, array2: Array<String>): Array<Array<String>>
         {
             var result = arrayOf<Array<String>>()
 
-            for (a1 in array1)
+            for (array1 in arrayOfArrays1)
             {
-                for (e2 in array2)
+                for (array2Item in array2)
                 {
                     var newArray = arrayOf<String>()
 
-                    for (i1 in 0 until a1.size - 1)
-                    {
-                        val e1 = a1[i1]
-                        newArray += e1
-                    }
+                    for (array1Index in 0 until array1.size - 1)
+                        newArray += array1[array1Index]
 
-                    newArray += e2
+                    newArray += array2Item
 
-                    newArray += a1.last() + " + " + e2
+                    newArray += array1.last() + " + " + array2Item
 
                     result += newArray
                 }

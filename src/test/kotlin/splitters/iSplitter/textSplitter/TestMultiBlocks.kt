@@ -12,32 +12,6 @@ import splitters.SplitterTestTools
 class TestMultiBlocks
 {
     @Test
-    fun ifStatementAndElseIfStatementAndElseStatementWithSpaces()
-    {
-        val inputText = "if (a) a(); else if (b) b(); else c();"
-        val inputParams = SplitParams(expectClosingBrace = true)
-
-        val expectedRemainingText = ""
-        val expectedPart = Statement("if (a) a(); else if (b) b(); else c();")
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
-    }
-
-    @Test
-    fun ifStatementAndElseIfStatementAndElseStatementWithoutSpaces()
-    {
-        val inputText = "if(a)a();else if(b)b();else c();"
-        val inputParams = SplitParams(expectClosingBrace = true)
-
-        val expectedRemainingText = ""
-        val expectedPart = Statement("if(a)a();else if(b)b();else c();")
-        val expectedParts = listOf<IPart>(expectedPart)
-
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
-    }
-
-    @Test
     fun ifBlockAndElseBlockWithSpaces()
     {
         val inputText = "if (a) { a(); } else { b(); }"
@@ -62,6 +36,32 @@ class TestMultiBlocks
         val parts1 = listOf(Statement("a();"))
         val parts2 = listOf(Statement("b();"))
         val expectedPart = MultiBlock.double("if(a){", "}else{", "}", parts1, parts2)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
+    }
+
+    @Test
+    fun ifStatementAndElseIfStatementAndElseStatementWithSpaces()
+    {
+        val inputText = "if (a) a(); else if (b) b(); else c();"
+        val inputParams = SplitParams(expectClosingBrace = true)
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement("if (a) a(); else if (b) b(); else c();")
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
+    }
+
+    @Test
+    fun ifStatementAndElseIfStatementAndElseStatementWithoutSpaces()
+    {
+        val inputText = "if(a)a();else if(b)b();else c();"
+        val inputParams = SplitParams(expectClosingBrace = true)
+
+        val expectedRemainingText = ""
+        val expectedPart = Statement("if(a)a();else if(b)b();else c();")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
