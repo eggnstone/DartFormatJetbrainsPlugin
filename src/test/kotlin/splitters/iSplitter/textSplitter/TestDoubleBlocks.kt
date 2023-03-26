@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.SplitParams
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import splitters.SplitterTestTools
@@ -11,17 +12,33 @@ import splitters.SplitterTestTools
 class TestDoubleBlocks
 {
     @Test
-    fun ifBlockAndElseBlock()
+    fun ifBlockAndElseBlockWithSpaces()
     {
-        val inputText = "if (true) { statement1; } else { statement2; }"
+        val inputText = "if (a) { a(); } else { b(); }"
+        val inputParams = SplitParams(expectClosingBrace = true)
 
         val expectedRemainingText = ""
-        val parts1 = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val parts2 = listOf(Whitespace(" "), Statement("statement2;"), Whitespace(" "))
-        val expectedPart = DoubleBlock("if (true) {", "} else {", "}", parts1, parts2)
+        val parts1 = listOf(Whitespace(" "), Statement("a();"), Whitespace(" "))
+        val parts2 = listOf(Whitespace(" "), Statement("b();"), Whitespace(" "))
+        val expectedPart = DoubleBlock("if (a) {", "} else {", "}", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
-        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts , inputParams)
+    }
+
+    @Test
+    fun ifBlockAndElseBlockWithoutSpaces()
+    {
+        val inputText = "if (a){a();} else {b();}"
+        val inputParams = SplitParams(expectClosingBrace = true)
+
+        val expectedRemainingText = ""
+        val parts1 = listOf(  Statement("a();") )
+        val parts2 = listOf(  Statement("b();") )
+        val expectedPart = DoubleBlock("if (a){", "} else {", "}", parts1, parts2)
+        val expectedParts = listOf<IPart>(expectedPart)
+
+        SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
     }
 
     @Test

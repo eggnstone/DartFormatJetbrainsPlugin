@@ -20,8 +20,15 @@ class TestParams
             arrayOf("true", "true")
         )
 
+        val statementOrBlockBooleans = arrayOf(
+            arrayOf("false", "a();"),
+            arrayOf("true", "{}")
+        )
+
         val booleans2 = join(booleans, booleans)
+        val statementOrBlockBooleans2 = join(statementOrBlockBooleans, statementOrBlockBooleans)
         val booleans3 = join(booleans2, booleans)
+        val statementOrBlockBooleans3 = join(statementOrBlockBooleans2, statementOrBlockBooleans)
 
         val keywords = ToolsOld.keywords
 

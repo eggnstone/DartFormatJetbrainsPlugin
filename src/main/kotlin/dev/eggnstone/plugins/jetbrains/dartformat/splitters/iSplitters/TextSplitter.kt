@@ -443,17 +443,22 @@ class TextSplitter : ISplitter
 
         private fun handleSemicolonHasNoBlock(oldState: TextSplitterState): TextSplitterHandleResult
         {
-            val tempRemainingText = StringWrapper.substring(oldState.remainingText, 1) // removing the ";"
-            if (StringWrapper.startsWith(tempRemainingText, "}"))
-                TODO("TextSplitter.handleSemicolonHasNoBlock") // return handleSemicolonHasNoBlockWithOpeningBraceNext(oldState)
+            val state = oldState.clone()
+            state.log("handleSemicolonHasNoBlock")
 
-            return handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState)
+            val tempRemainingText = StringWrapper.substring(oldState.remainingText, 1) // removing the ";"
+            if (DotlinLogger.isEnabled) DotlinLogger.log("tempRemainingText: ${Tools.toDisplayString(tempRemainingText)}")
+
+            if (StringWrapper.startsWith(tempRemainingText, "}"))
+                return handleSemicolonHasNoBlockWithClosingBraceNext(oldState)
+
+            return handleSemicolonHasNoBlockWithoutClosingBraceNext(oldState)
         }
 
-        private fun handleSemicolonHasNoBlockWithoutOpeningBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlockWithoutClosingBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
         {
             val state = oldState.clone()
-            state.log("handleSemicolonHasNoBlockWithoutOpeningBrace")
+            state.log("handleSemicolonHasNoBlockWithoutClosingBraceNext")
 
             state.currentText += ";"
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
@@ -492,10 +497,21 @@ class TextSplitter : ISplitter
             state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
 
-            //state.isSecondBlockWithBrackets = StringWrapper.startsWith(state.remainingText, "{")
-
             state.log("handleSemicolonHasNoBlockWithoutOpeningBrace exit-2")
             return TextSplitterHandleResult(state, null)
+        }
+
+        private fun handleSemicolonHasNoBlockWithClosingBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
+        {
+            val state = oldState.clone()
+            state.log("handleSemicolonHasNoBlockWithClosingBraceNext")
+
+            state.currentText += ";"
+            if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayString(state.currentText)}")
+            state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the ";"
+            if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayString(state.remainingText)}")
+
+            return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(Statement(state.currentText))))
         }
     }
 }
