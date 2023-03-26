@@ -1,6 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.splitters
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 
 class TypeSplitter

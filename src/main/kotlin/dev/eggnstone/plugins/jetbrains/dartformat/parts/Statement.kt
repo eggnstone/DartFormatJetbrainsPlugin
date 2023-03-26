@@ -1,6 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 data class Statement(val text: String) : IPart
 {

@@ -24,6 +24,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentSta
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.SafetyTools
 import java.awt.Font
 import java.util.*
 import javax.swing.BoxLayout
@@ -317,6 +318,8 @@ class PluginFormat : AnAction()
 
             @Suppress("UnnecessaryVariable")
             val indentResult = masterIndenter.indentParts(splitResult.parts)
+
+            SafetyTools.checkForUnexpectedChanges(inputText, indentResult)
 
             return indentResult
         }

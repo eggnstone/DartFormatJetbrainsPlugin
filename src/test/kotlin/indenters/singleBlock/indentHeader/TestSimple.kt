@@ -19,7 +19,7 @@ class TestSimple
         TestTools.assertAreEqual("", actualText, expectedText)
     }
 
-@Test
+    @Test
     fun oneLine()
     {
         val inputText = "class C {"
@@ -159,8 +159,8 @@ class TestSimple
         TestTools.assertAreEqual("", actualText, expectedText)
     }
 
-   @Test
-   @Ignore
+    @Test
+    @Ignore
     fun endOfLineCommentWithQuotesAtTextStartAndTrailingSpaces()
     {
         val inputText =

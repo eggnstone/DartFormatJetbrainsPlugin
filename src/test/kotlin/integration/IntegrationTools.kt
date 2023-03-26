@@ -4,6 +4,7 @@ import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.PartTools
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.SafetyTools
 
 class IntegrationTools
 {
@@ -19,6 +20,8 @@ class IntegrationTools
             val actualOutputText = MasterIndenter(4).indentParts(parts)
 
             TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
+
+            SafetyTools.checkForUnexpectedChanges(inputText, actualOutputText)
         }
 
         fun testTwice(inputText: String, expectedOutputText: String)
@@ -30,6 +33,9 @@ class IntegrationTools
             val actualOutputText = MasterIndenter(4).indentParts(parts2)
 
             TestTools.assertAreEqual("", actualOutputText, expectedOutputText)
+
+            SafetyTools.checkForUnexpectedChanges(inputText, tempText)
+            SafetyTools.checkForUnexpectedChanges(tempText, actualOutputText)
         }
     }
 }
