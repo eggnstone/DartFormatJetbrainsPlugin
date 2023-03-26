@@ -42,8 +42,8 @@ class TextSplitterState(val inputText: String)
             DotlinLogger.log("params.isEnum:             ${params.isEnum}")
         }
 
-        DotlinLogger.log("currentText:               ${Tools.toDisplayString(currentText)}")
-        DotlinLogger.log("remainingText:             ${Tools.toDisplayString(remainingText)}")
+        DotlinLogger.log("currentText:               ${Tools.toDisplayStringShort(currentText)}")
+        DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(remainingText)}")
 
         DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
@@ -54,12 +54,12 @@ class TextSplitterState(val inputText: String)
         DotlinLogger.log("isInAssignment:            $isInAssignment")
         DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
 
-        DotlinLogger.log("header:                    ${Tools.toDisplayString(header)}")
-        DotlinLogger.log("middle:                    ${Tools.toDisplayString(middle)}")
+        DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(header)}")
+        DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(middle)}")
 
         DotlinLogger.log("headers:                   ${Tools.toDisplayStringForStrings(headers)}")
         DotlinLogger.log("parts:                     ${Tools.toDisplayStringForPartLists(parts)}")
-        DotlinLogger.log("footer:                    ${Tools.toDisplayString(footer)}")
+        DotlinLogger.log("footer:                    ${Tools.toDisplayStringShort(footer)}")
 
         DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockParts)}")
 

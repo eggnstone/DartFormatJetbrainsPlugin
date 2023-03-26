@@ -1,54 +1,78 @@
 package indenters.singleBlock.indentPart
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.SingleBlockIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test
 
 class TestSimple
 {
     @Test
-    fun singleBlock()
+    fun singleBlockWithSpace()
     {
-        val inputPart = SingleBlock("class C\n{", "}")
+        val inputPart = MultiBlock.single("class C {", "}")
 
-        val expectedText =
-            "class C\n" +
-                "{}"
+        val expectedText = "class C {}"
 
-        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun singleBlockWithSpaceAndAnnotation()
+    {
+        val inputPart = MultiBlock.single("@annotation\ntext {", "}")
+
+        val expectedText = "@annotation\ntext {}"
+
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
     fun singleBlockWithLineBreak()
     {
-        val inputPart = SingleBlock("class C\n{", "}", listOf(Whitespace("\n")))
+        val inputPart = MultiBlock.single("class C\n{", "}")
+
+        val expectedText =
+            "class C\n" +
+                "{}"
+
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun singleBlockWithLineBreakInside()
+    {
+        val inputPart = MultiBlock.single("class C\n{", "}", listOf(Whitespace("\n")))
 
         val expectedText =
             "class C\n" +
                 "{\n" +
                 "}"
 
-        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
     fun singleBlockWithMultiLineHeader()
     {
-        val inputPart = SingleBlock("class C\nwith X\n{", "}")
+        val inputPart = MultiBlock.single("class C\nwith X\n{", "}")
 
         val expectedText =
             "class C\n" +
                 "    with X\n" +
                 "{}"
 
-        val actualText = SingleBlockIndenter(4).indentPart(inputPart)
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

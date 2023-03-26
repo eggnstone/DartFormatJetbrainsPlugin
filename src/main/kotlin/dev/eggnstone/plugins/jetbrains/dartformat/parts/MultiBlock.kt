@@ -2,9 +2,17 @@ package dev.eggnstone.plugins.jetbrains.dartformat.parts
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.Tools
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 
 data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>>, val footer: String) : IPart
 {
+    companion object
+    {
+        fun single(header: String, footer: String, parts: List<IPart> = listOf()): IPart = MultiBlock(listOf(header), listOf(parts), footer)
+
+        fun double(header: String, middle: String, footer: String, parts1: List<IPart> = listOf(), parts2: List<IPart> = listOf()): IPart = MultiBlock(listOf(header, middle), listOf(parts1, parts2), footer)
+    }
+
     override fun recreate(): String
     {
         if (headers.size != partLists.size)
@@ -28,12 +36,20 @@ data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>
 
     override fun toString(): String
     {
+        if (DotlinTools.isEmpty(headers))
+            throw DartFormatException("DotlinTools.isEmpty(headers)")
+
         if (headers.size != partLists.size)
             throw DartFormatException("headers.size != parts.size")
 
         val result = StringBuilder()
 
-        result.append("MultiBlock(")
+        when (headers.size)
+        {
+            1 -> result.append("MultiBlock.single(")
+            2 -> result.append("MultiBlock.double(")
+            else -> result.append("MultiBlock(")
+        }
 
         @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
         for (i in 0 until headers.size)

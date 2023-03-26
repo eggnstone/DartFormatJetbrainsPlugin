@@ -11,15 +11,17 @@ class LevelsCalculator
 {
     fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayString(line)}, oldBracketPackages=${oldBracketPackages.size})")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayStringShort(line)}, oldBracketPackages=${oldBracketPackages.size})")
 
         if (StringWrapper.isEmpty(line))
-            return Levels(0, listOf(), false)
+            return Levels(0, 0, listOf(), false)
 
         var brackets = 0
+        var closedConditionals = 0
         var conditionals = 0
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
+        var isIf = false
         var isElse = false
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
@@ -32,7 +34,7 @@ class LevelsCalculator
             /*
             if (DotlinLogger.isEnabled)
             {
-                DotlinLogger.log("    item: ${Tools.toDisplayString(item)}")
+                DotlinLogger.log("    item: ${Tools.toDisplayStringShort(item)}")
                 DotlinLogger.log("    isInSingleQuoteString: $isInSingleQuoteString")
                 DotlinLogger.log("    isInDoubleQuoteString: $isInDoubleQuoteString")
             }
@@ -77,6 +79,7 @@ class LevelsCalculator
 
             if (item == "if")
             {
+                isIf = true
                 if (!isElse)
                     conditionals++
                 continue
@@ -85,7 +88,15 @@ class LevelsCalculator
             if (item == "else")
             {
                 isElse = true
+                //if (isIf)
+                closedConditionals++
+                conditionals++
                 continue
+            }
+
+            if (item == "else if")
+            {
+                TODO()
             }
 
             if (item.length == 1 && Tools.isOpeningBracket(item))
@@ -112,7 +123,7 @@ class LevelsCalculator
                 val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
-                    TODO("LevelsCalculator.calcLevels: item (${Tools.toDisplayString(item)}) != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
+                    TODO("LevelsCalculator.calcLevels: item (${Tools.toDisplayStringShort(item)}) != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
 
                 brackets--
                 currentBrackets.removeLast()
@@ -123,7 +134,7 @@ class LevelsCalculator
             /*if (item.length > 1 && (item.startsWith("{") || item.startsWith("}")))
                 TODO()*/
 
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    ${Tools.toDisplayString(item)} = ? -> nothing")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    ${Tools.toDisplayStringShort(item)} = ? -> nothing")
         }
 
         if (DotlinTools.isNotEmpty(currentBrackets))
@@ -132,6 +143,6 @@ class LevelsCalculator
             currentBracketPackages.add(BracketPackage(currentBrackets, lineIndex))
         }
 
-        return Levels(conditionals, currentBracketPackages, isElse)
+        return Levels(conditionals, closedConditionals, currentBracketPackages, isElse)
     }
 }

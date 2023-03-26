@@ -21,7 +21,7 @@ class TestParams
         )
 
         val statementOrBlockBooleans = arrayOf(
-            arrayOf("false", "a();"),
+            arrayOf("false", "s();"),
             arrayOf("true", "{}")
         )
 

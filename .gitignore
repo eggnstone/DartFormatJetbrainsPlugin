@@ -43,4 +43,5 @@ bin/
 
 ### Manually added ###
 /*.hprof
+*.old
 src/test/kotlin/integration/dataFiles/Temp.*.dart

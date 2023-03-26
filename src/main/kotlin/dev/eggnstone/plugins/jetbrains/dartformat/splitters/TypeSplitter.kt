@@ -74,7 +74,7 @@ class TypeSplitter
         if (StringWrapper.isNotEmpty(currentText))
             items.add(currentText)
 
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("TypeSplitter(${Tools.toDisplayString(s)}) -> ${Tools.toDisplayStringForStrings(items)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("TypeSplitter(${Tools.toDisplayStringShort(s)}) -> ${Tools.toDisplayStringForStrings(items)}")
         return items
     }
 }

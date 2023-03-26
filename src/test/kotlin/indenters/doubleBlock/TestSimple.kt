@@ -1,9 +1,9 @@
 package indenters.doubleBlock
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.DoubleBlockIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class TestSimple
     fun doubleBlock()
     {
         val inputPart =
-            DoubleBlock(
+            MultiBlock.double(
                 "if (true)\n{",
                 "}\nelse\n{",
                 "}"
@@ -25,16 +25,16 @@ class TestSimple
                 "else\n" +
                 "{}"
 
-        val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("",actualText, expectedText)
     }
 
     @Test
     fun doubleBlockWithLineBreaks()
     {
         val inputPart =
-            DoubleBlock(
+            MultiBlock.double(
                 "if (true)\n{",
                 "}\nelse\n{",
                 "}",
@@ -50,8 +50,8 @@ class TestSimple
                 "{\n" +
                 "}"
 
-        val actualText = DoubleBlockIndenter(4).indentPart(inputPart)
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("",actualText, expectedText)
     }
 }

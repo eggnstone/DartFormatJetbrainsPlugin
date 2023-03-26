@@ -13,7 +13,7 @@ class TestSingleBlockClasses
         val inputText = "class C {}"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("class C {", "}")
+        val expectedPart = MultiBlock.single("class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -29,7 +29,7 @@ class TestSingleBlockClasses
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n"))
-        val expectedPart = SingleBlock("class C\n{", "}", parts)
+        val expectedPart = MultiBlock.single("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -49,7 +49,7 @@ class TestSingleBlockClasses
             Whitespace("\n"),
             Comment("// COMMENT\n")
         )
-        val expectedPart = SingleBlock("class C\n{", "}", parts)
+        val expectedPart = MultiBlock.single("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -73,7 +73,7 @@ class TestSingleBlockClasses
             Statement("abc();\n"),
             Comment("// COMMENT2\n")
         )
-        val expectedPart = SingleBlock("class C\n{", "}", parts)
+        val expectedPart = MultiBlock.single("class C\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -85,7 +85,7 @@ class TestSingleBlockClasses
         val inputText = "abstract class C {}"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("abstract class C {", "}")
+        val expectedPart = MultiBlock.single("abstract class C {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)

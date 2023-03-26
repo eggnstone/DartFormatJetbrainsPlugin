@@ -1,7 +1,7 @@
 package indenters.singleBlock.indentFooter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.SingleBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,6 +12,6 @@ class TestTrivial
     {
         val inputText = ""
 
-        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentFooter(inputText) }
+        assertThrows<DartFormatException> { MultiBlockIndenter(4).indentFooter(inputText) }
     }
 }

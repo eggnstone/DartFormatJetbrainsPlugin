@@ -1,7 +1,7 @@
 package indenters.singleBlock.indentFooter
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.SingleBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
 import org.junit.Test
 
 class TestSimple
@@ -13,9 +13,9 @@ class TestSimple
 
         val expectedText = "}"
 
-        val actualText = SingleBlockIndenter(4).indentFooter(inputText)
+        val actualText = MultiBlockIndenter(4).indentFooter(inputText)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     /*@Test
@@ -25,7 +25,7 @@ class TestSimple
 
         val expectedText = "}"
 
-        val actualText = SingleBlockIndenter(4).indentFooter(inputText)
+        val actualText = MultiBlockIndenter(4).indentFooter(inputText)
 
         TestTools.assertAreEqual(actualText, expectedText)
     }*/

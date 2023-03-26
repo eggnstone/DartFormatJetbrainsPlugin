@@ -1,7 +1,7 @@
 package indenters.singleBlock.indentHeader
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.SingleBlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,7 +12,7 @@ class TestTrivial
     {
         val inputText = ""
 
-        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentHeader(inputText) }
+        assertThrows<DartFormatException> { MultiBlockIndenter(4).indentHeader(inputText) }
     }
 
     @Test
@@ -20,6 +20,14 @@ class TestTrivial
     {
         val inputText = " "
 
-        assertThrows<DartFormatException> { SingleBlockIndenter(4).indentHeader(inputText) }
+        assertThrows<DartFormatException> { MultiBlockIndenter(4).indentHeader(inputText) }
+    }
+
+    @Test
+    fun spacesOnlyThrows()
+    {
+        val inputText = "  "
+
+        assertThrows<DartFormatException> { MultiBlockIndenter(4).indentHeader(inputText) }
     }
 }

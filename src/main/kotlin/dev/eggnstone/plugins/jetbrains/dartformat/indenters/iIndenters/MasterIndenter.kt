@@ -35,9 +35,9 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
             result += indentedPart
 
             if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentParts: Result of part #$i: $part")
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedPart:           ${Tools.toDisplayString(Tools.shorten(indentedPart, 100, true))}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedPart:           ${Tools.toDisplayStringShort(indentedPart)}")
             val lastLine = Tools.getLastLine(indentedPart)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLine:               ${Tools.toDisplayString(lastLine)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLine:               ${Tools.toDisplayStringShort(lastLine)}")
             val lastLineLength = lastLine.length
             if (DotlinLogger.isEnabled) DotlinLogger.log("  lastLineLength:         $lastLineLength")
 
@@ -58,8 +58,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
         when (inputPart)
         {
             is Comment -> return CommentIndenter(spacesPerLevel)
-            is DoubleBlock -> return DoubleBlockIndenter(spacesPerLevel)
-            is SingleBlock -> return SingleBlockIndenter(spacesPerLevel)
+            is MultiBlock -> return MultiBlockIndenter(spacesPerLevel)
             is Statement -> return StatementIndenter(spacesPerLevel)
             is Whitespace -> return WhitespaceIndenter()
             else -> TODO("IPart not implemented yet: ${inputPart::class.simpleName}")

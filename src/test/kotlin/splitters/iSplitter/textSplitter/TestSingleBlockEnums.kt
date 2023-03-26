@@ -1,9 +1,6 @@
 package splitters.iSplitter.textSplitter
 
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import splitters.SplitterTestTools
@@ -16,7 +13,7 @@ class TestSingleBlockEnums
         val inputText = "enum E {}"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("enum E {", "}")
+        val expectedPart = MultiBlock.single("enum E {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -29,7 +26,7 @@ class TestSingleBlockEnums
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("A "))
-        val expectedPart = SingleBlock("enum E {", "}", parts)
+        val expectedPart = MultiBlock.single("enum E {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -42,7 +39,7 @@ class TestSingleBlockEnums
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("A, B "))
-        val expectedPart = SingleBlock("enum E {", "}", parts)
+        val expectedPart = MultiBlock.single("enum E {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -58,7 +55,7 @@ class TestSingleBlockEnums
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n"))
-        val expectedPart = SingleBlock("enum E\n{", "}", parts)
+        val expectedPart = MultiBlock.single("enum E\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -75,7 +72,7 @@ class TestSingleBlockEnums
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n  "), Statement("A\n"))
-        val expectedPart = SingleBlock("enum E\n{", "}", parts)
+        val expectedPart = MultiBlock.single("enum E\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -93,7 +90,7 @@ class TestSingleBlockEnums
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n  "), Statement("A,\n  B\n"))
-        val expectedPart = SingleBlock("enum E\n{", "}", parts)
+        val expectedPart = MultiBlock.single("enum E\n{", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)

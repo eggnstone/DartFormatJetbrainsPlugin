@@ -12,6 +12,20 @@ class Tools
         private const val closingBrackets = "])}"
         private const val openingBrackets = "{[("
 
+        fun countLeadingSpaces(s: String): Int
+        {
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until s.length)
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
+                if (c != " ")
+                    return i
+            }
+
+            return s.length
+        }
+
         fun getClosingBracket(closingBracket: String): String
         {
             @Suppress("LiftReturnOrAssignment") // dotlin
@@ -24,11 +38,100 @@ class Tools
             }
         }
 
-        fun isClosingBracket(c: String): Boolean = StringWrapper.containsChar(closingBrackets, c)
-        fun isOpeningBracket(c: String): Boolean = StringWrapper.containsChar(openingBrackets, c)
+        fun getElseEndPos(s: String): Int
+        {
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getElseEndPos(${toDisplayStringShort(s)})")
+
+            val searchText = "else"
+
+            if (s == searchText)
+                return s.length
+
+            val pos = StringWrapper.indexOf(s, searchText)
+            if (pos == -1)
+                return -1
+
+            val leadingText = StringWrapper.substring(s, 0, pos)
+            if (!StringWrapper.isBlank(leadingText))
+                return -1
+
+            val trailingText = StringWrapper.substring(s, pos + searchText.length)
+            if (StringWrapper.isEmpty(trailingText))
+                return s.length
+
+            if (StringWrapper.isBlank(trailingText))
+                return s.length
+
+            @Suppress("ReplaceGetOrSet") // dotlin
+            val cFirst = trailingText.get(0).toString()
+            if (!isWhitespace(cFirst) && cFirst != "{")
+                return -1
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until trailingText.length)
+            {
+                @Suppress("ReplaceGetOrSet") // dotlin
+                val c = trailingText.get(i).toString()
+                if (!isWhitespace(c))
+                    return pos + searchText.length + i
+            }
+
+            TODO("cannot be reached") // return -1
+        }
+
+        fun getIndentOfLastLine(s: String): Int = countLeadingSpaces(getLastLine(s))
+
+        fun getLastLine(s: String): String
+        {
+            if (StringWrapper.isEmpty(s))
+                return ""
+
+            val lastChar = StringWrapper.last(s)
+            if (lastChar == "\n" || lastChar == "\r")
+                return ""
+
+            val lastN = s.lastIndexOf("\n")
+            val lastR = s.lastIndexOf("\r")
+            val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
+            if (lastLineBreakPos == -1)
+                return s
+
+            return StringWrapper.substring(s, lastLineBreakPos + 1)
+        }
+
+        fun getNextLinePos(s: String): Int
+        {
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getNextLinePos(${toDisplayStringShort(s)})")
+
+            val nrPos = StringWrapper.indexOf(s, "\n\r")
+            val rnPos = StringWrapper.indexOf(s, "\r\n")
+
+            if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
+                return nrPos + 2
+
+            if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
+                return rnPos + 2
+
+            val nPos = StringWrapper.indexOf(s, "\n")
+            if (nPos >= 0)
+                return nPos + 1
+
+            val rPos = StringWrapper.indexOf(s, "\r")
+            if (rPos >= 0)
+                return rPos + 1
+
+            return -1
+        }
+
         fun isBracket(c: String): Boolean = StringWrapper.containsChar(openingBrackets + closingBrackets, c)
+
+        fun isClosingBracket(c: String): Boolean = StringWrapper.containsChar(closingBrackets, c)
+
+        fun isOpeningBracket(c: String): Boolean = StringWrapper.containsChar(openingBrackets, c)
+
         fun isWhitespace(c: String): Boolean = StringWrapper.containsChar("\n\r\t ", c)
 
+        @Suppress("MemberVisibilityCanBePrivate")
         fun shorten(s: String, maxLength: Int, addEllipsis: Boolean): String
         {
             if (s.length < maxLength)
@@ -41,73 +144,19 @@ class Tools
             //return s.substring(0, maxLength)
         }
 
+        fun shorten100(s: String): String = shorten(s, 100, true)
+
         fun toDisplayString(s: String): String = "\"" + toDisplayStringSimple(s) + "\""
+
+        fun toDisplayStringShort(s: String): String = toDisplayString(shorten100(s))
+
         fun toDisplayStringSimple(s: String): String = StringWrapper.replace(StringWrapper.replace(s, "\r", "\\r"), "\n", "\\n")
 
-        fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
         fun toDisplayStringForPartLists(partLists: List<List<IPart>>): String = "[" + toDisplayStringForPartListsInternal(partLists) + "]"
 
+        fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
+
         fun toDisplayStringForStrings(strings: List<String>): String = "[" + toDisplayStringForStringsInternal(strings) + "]"
-
-        private fun toDisplayStringForPartsInternal(parts: List<IPart>): String
-        {
-            var result = ""
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-            for (i in 0 until parts.size) // workaround for dotlin
-            {
-                @Suppress("ReplaceGetOrSet") // workaround for dotlin
-                val part = parts.get(i) // workaround for dotlin
-                if (StringWrapper.isNotEmpty(result))
-                    result += ","
-
-                result += toDisplayStringSimple(part.toString())
-            }
-
-            return result
-        }
-
-        private fun toDisplayStringForPartListsInternal(partLists: List<List<IPart>>): String
-        {
-            var result = ""
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
-            for (i in 0 until partLists.size) // workaround for dotlin
-            {
-                @Suppress("ReplaceGetOrSet") // workaround for dotlin
-                val parts = partLists.get(i) // workaround for dotlin
-                if (StringWrapper.isNotEmpty(result))
-                    result += ","
-
-                result += toDisplayStringForParts(parts)
-            }
-
-            return result
-        }
-
-        private fun toDisplayStringForStringsInternal(strings: List<String>): String
-        {
-            var result = ""
-
-            /* dotlin
-            for (s in strings)
-                result += toDisplayString1(s)
-            */
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
-            for (i in 0 until strings.size)
-            {
-                if (i > 0)
-                    result += ","
-
-                result += toDisplayString(strings[i])
-            }
-
-            // dotlin
-            //return toDisplayString1(strings.joinToString(separator = "") { it })
-
-            return result
-        }
 
         fun trimSimple(s: String): String = trimStartSimple(trimEndSimple(s))
 
@@ -159,103 +208,64 @@ class Tools
             return endText
         }
 
-        fun getElseEndPos(s: String): Int
+        private fun toDisplayStringForPartListsInternal(partLists: List<List<IPart>>): String
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("getElseEndPos(${toDisplayString(s)})")
+            var result = ""
 
-            val searchText = "else"
-
-            if (s == searchText)
-                return s.length
-
-            val pos = StringWrapper.indexOf(s, searchText)
-            if (pos == -1)
-                return -1
-
-            val leadingText = StringWrapper.substring(s, 0, pos)
-            if (!StringWrapper.isBlank(leadingText))
-                return -1
-
-            val trailingText = StringWrapper.substring(s, pos + searchText.length)
-            if (StringWrapper.isEmpty(trailingText))
-                return s.length
-
-            if (StringWrapper.isBlank(trailingText))
-                return s.length
-
-            @Suppress("ReplaceGetOrSet") // dotlin
-            val cFirst = trailingText.get(0).toString()
-            if (!isWhitespace(cFirst) && cFirst != "{")
-                return -1
-
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
-            for (i in 0 until trailingText.length)
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+            for (i in 0 until partLists.size) // workaround for dotlin
             {
-                @Suppress("ReplaceGetOrSet") // dotlin
-                val c = trailingText.get(i).toString()
-                if (!isWhitespace(c))
-                    return pos + searchText.length + i
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin
+                val parts = partLists.get(i) // workaround for dotlin
+                if (StringWrapper.isNotEmpty(result))
+                    result += ","
+
+                result += toDisplayStringForParts(parts)
             }
 
-            TODO("cannot be reached") // return -1
+            return result
         }
 
-        fun getNextLinePos(s: String): Int
+        private fun toDisplayStringForPartsInternal(parts: List<IPart>): String
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("getNextLinePos(${toDisplayString(s)})")
+            var result = ""
 
-            val nrPos = StringWrapper.indexOf(s, "\n\r")
-            val rnPos = StringWrapper.indexOf(s, "\r\n")
-
-            if (nrPos >= 0 && (rnPos < 0 || nrPos < rnPos))
-                return nrPos + 2
-
-            if (rnPos >= 0 && (nrPos < 0 || rnPos < nrPos))
-                return rnPos + 2
-
-            val nPos = StringWrapper.indexOf(s, "\n")
-            if (nPos >= 0)
-                return nPos + 1
-
-            val rPos = StringWrapper.indexOf(s, "\r")
-            if (rPos >= 0)
-                return rPos + 1
-
-            return -1
-        }
-
-        fun getIndentOfLastLine(s: String): Int = countLeadingSpaces(getLastLine(s))
-
-        fun getLastLine(s: String): String
-        {
-            if (StringWrapper.isEmpty(s))
-                return ""
-
-            val last = StringWrapper.last(s)
-            if (last == "\n" || last == "\r")
-                return ""
-
-            val lastN = s.lastIndexOf("\n")
-            val lastR = s.lastIndexOf("\r")
-            val lastLineBreakPos = DotlinTools.maxOf(lastN, lastR)
-            if (lastLineBreakPos == -1)
-                return s
-
-            return StringWrapper.substring(s, lastLineBreakPos + 1)
-        }
-
-        fun countLeadingSpaces(s: String): Int
-        {
-            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
-            for (i in 0 until s.length)
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+            for (i in 0 until parts.size) // workaround for dotlin
             {
-                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
-                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
-                if (c != " ")
-                    return i
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin
+                val part = parts.get(i) // workaround for dotlin
+                if (StringWrapper.isNotEmpty(result))
+                    result += ","
+
+                result += toDisplayStringSimple(part.toString())
             }
 
-            return s.length
+            return result
+        }
+
+        private fun toDisplayStringForStringsInternal(strings: List<String>): String
+        {
+            var result = ""
+
+            /* dotlin
+            for (s in strings)
+                result += toDisplayString1(s)
+            */
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until strings.size)
+            {
+                if (i > 0)
+                    result += ","
+
+                result += toDisplayString(strings[i])
+            }
+
+            // dotlin
+            //return toDisplayString1(strings.joinToString(separator = "") { it })
+
+            return result
         }
     }
 }

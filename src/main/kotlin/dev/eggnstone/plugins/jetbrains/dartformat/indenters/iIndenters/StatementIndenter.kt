@@ -42,7 +42,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(lineIndex) // workaround for dotlin
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayStringShort(line)}")
 
             var startsWithColon = false
             if (!usesColon)
@@ -55,16 +55,18 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
             if (DotlinLogger.isEnabled)
             {
-                DotlinLogger.log("    currentConditionals: $currentConditionals")
-                DotlinLogger.log("    newConditionals:     ${levels.newConditionals}")
-                DotlinLogger.log("    newBracketPackages:  ${levels.newBracketPackages}")
-                DotlinLogger.log("    isElse:              ${levels.isElse}")
+                DotlinLogger.log("    currentConditionals:   $currentConditionals")
+                DotlinLogger.log("    newConditionals:       ${levels.newConditionals}")
+                DotlinLogger.log("    newClosedConditionals: ${levels.newClosedConditionals}")
+                DotlinLogger.log("    newBracketPackages:    ${levels.newBracketPackages}")
+                DotlinLogger.log("    isElse:                ${levels.isElse}")
             }
 
-            if (levels.isElse && currentConditionals == 0)
-                throw DartFormatException("levels.isElse && currentConditionals == 0")
+            /*if (levels.isElse && currentConditionals == 0)
+                throw DartFormatException("levels.isElse && currentConditionals == 0")*/
 
-            val adjustedCurrentConditionals = currentConditionals + (if (levels.isElse) -1 else 0)
+            //val adjustedCurrentConditionals = currentConditionals + (if (levels.isElse) -1 else 0)
+            val adjustedCurrentConditionals = currentConditionals + (if (levels.newClosedConditionals > 0) -1 else 0)
             val tempLevel = adjustedCurrentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
             var pad = StringWrapper.getSpaces(tempLevel * spacesPerLevel)
 
@@ -77,7 +79,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
 
             result += pad + line
             //currentLevel += levels.nextLevel
-            currentConditionals += levels.newConditionals
+            currentConditionals += levels.newConditionals - levels.newClosedConditionals
             //currentLevel = currentConditionals + levels.newBracketPackages.size
             //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentLevel: $currentLevel")
             currentBracketPackages = levels.newBracketPackages

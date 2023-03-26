@@ -11,7 +11,7 @@ class CommentExtractor
     {
         fun extract(inputText: String, currentIndent: Int): ExtractionResult
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(currentIndent=$currentIndent, ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("CommentExtractor.extract(currentIndent=$currentIndent, ${Tools.toDisplayStringShort(inputText)})")
 
             if (StringWrapper.isEmpty(inputText))
                 return ExtractionResult("", currentIndent, "")

@@ -39,7 +39,7 @@ class CommentIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Line #$i: leadingSpaces=${Tools.countLeadingSpaces(line)} ${Tools.toDisplayString(line)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("Line #$i: leadingSpaces=${Tools.countLeadingSpaces(line)} ${Tools.toDisplayStringShort(line)}")
 
             var spaces = indentLevel * spacesPerLevel
             if (i > 0)

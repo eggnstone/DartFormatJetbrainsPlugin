@@ -18,7 +18,7 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -32,7 +32,7 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -60,7 +60,7 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -76,7 +76,7 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -110,6 +110,6 @@ class TestSimpleIfs
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

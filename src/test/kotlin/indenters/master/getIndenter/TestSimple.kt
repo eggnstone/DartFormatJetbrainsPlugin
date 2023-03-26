@@ -1,10 +1,7 @@
 package indenters.master.getIndenter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.*
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.DoubleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.junit.Test
@@ -34,20 +31,20 @@ class TestSimple
     @Test
     fun singleBlock()
     {
-        val inputPart = SingleBlock("", "")
+        val inputPart = MultiBlock.single("", "")
 
         val indenter = MasterIndenter(4).getIndenter(inputPart)
 
-        MatcherAssert.assertThat(indenter is SingleBlockIndenter, equalTo(true))
+        MatcherAssert.assertThat(indenter is MultiBlockIndenter, equalTo(true))
     }
 
     @Test
     fun doubleBlock()
     {
-        val inputPart = DoubleBlock("", "", "")
+        val inputPart = MultiBlock.double("", "", "")
 
         val indenter = MasterIndenter(4).getIndenter(inputPart)
 
-        MatcherAssert.assertThat(indenter is DoubleBlockIndenter, equalTo(true))
+        MatcherAssert.assertThat(indenter is MultiBlockIndenter, equalTo(true))
     }
 }

@@ -17,7 +17,7 @@ class TestSimple
 
         val actualText = MasterIndenter(4).indentParts(inputParts)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -29,7 +29,7 @@ class TestSimple
 
         val actualText = MasterIndenter(4).indentParts(inputParts)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -41,7 +41,7 @@ class TestSimple
 
         val actualText = MasterIndenter(4).indentParts(inputParts)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -53,7 +53,7 @@ class TestSimple
 
         val actualText = MasterIndenter(4).indentParts(inputParts)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 
     @Test
@@ -65,6 +65,6 @@ class TestSimple
 
         val actualText = MasterIndenter(4).indentParts(inputParts)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

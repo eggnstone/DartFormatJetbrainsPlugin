@@ -24,9 +24,9 @@ class TestTrivial
 
         val actualResult = CommentExtractor.extract(inputText, inputStartPos)
 
-        TestTools.assertAreEqual(actualResult.comment, expectedComment)
-        MatcherAssert.assertThat(actualResult.startPos, CoreMatchers.equalTo(expectedStartPos))
-        TestTools.assertAreEqual(actualResult.remainingText, expectedRemainingText)
+        TestTools.assertAreEqual("Comment", actualResult.comment, expectedComment)
+        MatcherAssert.assertThat("StartPos", actualResult.startPos, CoreMatchers.equalTo(expectedStartPos))
+        TestTools.assertAreEqual("RemainingText", actualResult.remainingText, expectedRemainingText)
     }
 
     @Test

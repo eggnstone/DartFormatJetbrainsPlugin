@@ -21,7 +21,7 @@ class StringWrapper
         fun isNotEmpty(s: String) = s.isNotEmpty()
 
         @Suppress("ReplaceGetOrSet")
-        fun last(s: String): Any = s.get(s.length - 1).toString()
+        fun last(s: String): String = s.get(s.length - 1).toString()
 
         fun replace(s: String, searchChar: String, replaceText: String): String = s.replace(searchChar, replaceText)
 

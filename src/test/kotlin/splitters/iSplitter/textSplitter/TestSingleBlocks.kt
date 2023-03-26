@@ -1,10 +1,7 @@
 package splitters.iSplitter.textSplitter
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.SplitParams
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
@@ -54,7 +51,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "}", parts)
+        val expectedPart = MultiBlock.single("if (true) {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -67,7 +64,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "} else statement2;", parts)
+        val expectedPart = MultiBlock.single("if (true) {", "} else statement2;", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -83,7 +80,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "}  \n  else  \n  statement2;", parts)
+        val expectedPart = MultiBlock.single("if (true) {", "}  \n  else  \n  statement2;", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -96,7 +93,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement2;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) statement1; else {", "}", parts)
+        val expectedPart = MultiBlock.single("if (true) statement1; else {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -117,7 +114,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = " elseX"
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))
-        val expectedPart = SingleBlock("if (true) {", "}", parts)
+        val expectedPart = MultiBlock.single("if (true) {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -129,7 +126,7 @@ class TestSingleBlocks
         val inputText = "{}"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("{", "}")
+        val expectedPart = MultiBlock.single("{", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -141,7 +138,7 @@ class TestSingleBlocks
         val inputText = "abc {}"
 
         val expectedRemainingText = ""
-        val expectedPart = SingleBlock("abc {", "}")
+        val expectedPart = MultiBlock.single("abc {", "}")
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)
@@ -154,7 +151,7 @@ class TestSingleBlocks
 
         val expectedRemainingText = ""
         val parts = listOf<IPart>()
-        val expectedPart = SingleBlock("for (int i = 0; i < 10; i++) {", "}", parts)
+        val expectedPart = MultiBlock.single("for (int i = 0; i < 10; i++) {", "}", parts)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts)

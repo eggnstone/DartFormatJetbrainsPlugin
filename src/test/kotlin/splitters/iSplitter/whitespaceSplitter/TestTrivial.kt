@@ -31,8 +31,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        TestTools.assertAreEqual(result.remainingText, expectedRemainingText)
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+        TestTools.assertAreEqual("RemainingText", result.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("Parts", result.parts, equalTo(expectedParts))
     }
 
     @Test
@@ -46,8 +46,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        TestTools.assertAreEqual(result.remainingText, expectedRemainingText)
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+        TestTools.assertAreEqual("RemainingText", result.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("Parts", result.parts, equalTo(expectedParts))
     }
 
     @Test
@@ -61,8 +61,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        TestTools.assertAreEqual(result.remainingText, expectedRemainingText)
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+        TestTools.assertAreEqual("RemainingText", result.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("Parts", result.parts, equalTo(expectedParts))
     }
 
     @Test
@@ -76,8 +76,8 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        TestTools.assertAreEqual(result.remainingText, expectedRemainingText)
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+        TestTools.assertAreEqual("RemainingText", result.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("Parts", result.parts, equalTo(expectedParts))
     }
 
     @Test
@@ -91,7 +91,7 @@ class TestTrivial
 
         val result = WhitespaceSplitter().split(inputText)
 
-        TestTools.assertAreEqual(result.remainingText, expectedRemainingText)
-        MatcherAssert.assertThat(result.parts, equalTo(expectedParts))
+        TestTools.assertAreEqual("RemainingText", result.remainingText, expectedRemainingText)
+        MatcherAssert.assertThat("Parts", result.parts, equalTo(expectedParts))
     }
 }

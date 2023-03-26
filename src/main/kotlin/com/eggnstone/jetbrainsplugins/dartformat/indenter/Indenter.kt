@@ -330,11 +330,11 @@ class Indenter(private val spacesPerLevel: Int = 4)
         val pad = " ".repeat(level * spacesPerLevel)
 
         //if (DotlinLogger.isEnabled) DotlinLogger.log("pad:    $pad<")
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("text:   ${Tools.toDisplayString(text)}<")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("text:   ${Tools.toDisplayStringShort(text)}<")
 
         @Suppress("UnnecessaryVariable")
         val result = pad + text
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("result: ${Tools.toDisplayString(result)}<")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("result: ${Tools.toDisplayStringShort(result)}<")
 
         return result
     }

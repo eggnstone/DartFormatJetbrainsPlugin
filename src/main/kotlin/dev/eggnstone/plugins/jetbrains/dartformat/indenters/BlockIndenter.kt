@@ -19,7 +19,7 @@ class BlockIndenter(spacesPerLevel: Int)
         //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
 
         val body = masterIndenter.indentParts(parts)
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayString(body)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayStringShort(body)}")
         val lines = lineSplitter.split(body, trim = false)
 
         //if (DotlinLogger.isEnabled) DotlinLogger.log("  Lines :${lines.size}")
@@ -29,13 +29,13 @@ class BlockIndenter(spacesPerLevel: Int)
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$i: ${Tools.toDisplayString(line)}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$i: ${Tools.toDisplayStringShort(line)}")
             //val pad = if (StringWrapper.isBlank(line)) "" else "A"+DotlinTools.getSpaces(spacesPerLevel) +"X"
             val pad = if (StringWrapper.isBlank(line)) "" else StringWrapper.getSpaces(spacesPerLevel)
             indentedBody.append(pad + line)
         }
 
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayString(indentedBody)}")
+        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: indentedBody: ${Tools.toDisplayStringShort(indentedBody)}")
         return indentedBody.toString()
     }
 }

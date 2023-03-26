@@ -1,7 +1,7 @@
 package splitters.iSplitter.textSplitter.handleSemicolonHasBlock
 
 import TestTools
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.SingleBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
 import org.hamcrest.CoreMatchers
@@ -28,7 +28,7 @@ class TestHandleSemicolonHasBlock
         expectedState.header = header
         expectedState.footer = expectedFooter
 
-        val expectedParts = listOf(SingleBlock(header, expectedFooter))
+        val expectedParts = listOf(MultiBlock.single(header, expectedFooter))
 
         val actualHandleResult = TextSplitter.handleSemicolonHasBlock(inputState)
 

@@ -10,7 +10,7 @@ class StringSplitter
     {
         fun split(s: String, delimiter: String, trim: Boolean): List<String>
         {
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayString(s)} delimiter=${Tools.toDisplayString(delimiter)} trim=$trim")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("StringSplitter.split: s=${Tools.toDisplayStringShort(s)} delimiter=${Tools.toDisplayStringShort(delimiter)} trim=$trim")
 
             @Suppress("ReplaceSizeZeroCheckWithIsEmpty")
             if (delimiter.length == 0)
@@ -57,11 +57,11 @@ class StringSplitter
                 i++
             }
 
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentText: ${Tools.toDisplayString(currentText)}")
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    loop rest:   ${Tools.toDisplayString(s.substring(i))}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentText: ${Tools.toDisplayStringShort(currentText)}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    loop rest:   ${Tools.toDisplayStringShort(s.substring(i))}")
 
             val rest = currentText + StringWrapper.substring(s, i)
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("    rest:        ${Tools.toDisplayString(rest)}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("    rest:        ${Tools.toDisplayStringShort(rest)}")
 
             if (StringWrapper.isNotEmpty(rest))
             {
@@ -75,8 +75,8 @@ class StringSplitter
                         /*if (rest.contains("\n") || rest.contains("\r"))
                             TODO("DotlinTools.isEmpty(trimmedRest)")*/
 
-                        //TODO("Rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim")
-                        //result.add("/*rest is empty s=${Tools.toDisplayString(s.replace("*", "_"))} delimiter=${Tools.toDisplayString(delimiter)} rest=${Tools.toDisplayString(rest)} trim=$trim*/")
+                        //TODO("Rest is empty s=${Tools.toDisplayStringShort(s.replace("*", "_"))} delimiter=${Tools.toDisplayStringShort(delimiter)} rest=${Tools.toDisplayStringShort(rest)} trim=$trim")
+                        //result.add("/*rest is empty s=${Tools.toDisplayStringShort(s.replace("*", "_"))} delimiter=${Tools.toDisplayStringShort(delimiter)} rest=${Tools.toDisplayStringShort(rest)} trim=$trim*/")
                         //result.add("_EMPTY2_")
                     }
                     else

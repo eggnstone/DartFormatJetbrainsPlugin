@@ -43,7 +43,7 @@ class TestMultiBlocks
         val expectedRemainingText = ""
         val parts1 = listOf(Whitespace(" "), Statement("a();"), Whitespace(" "))
         val parts2 = listOf(Whitespace(" "), Statement("b();"), Whitespace(" "))
-        val expectedPart = DoubleBlock("if (a) {", "} else {", "}", parts1, parts2)
+        val expectedPart = MultiBlock.double("if (a) {", "} else {", "}", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)
@@ -58,7 +58,7 @@ class TestMultiBlocks
         val expectedRemainingText = ""
         val parts1 = listOf(Statement("a();"))
         val parts2 = listOf(Statement("b();"))
-        val expectedPart = DoubleBlock("if(a){", "}else{", "}", parts1, parts2)
+        val expectedPart = MultiBlock.double("if(a){", "}else{", "}", parts1, parts2)
         val expectedParts = listOf<IPart>(expectedPart)
 
         SplitterTestTools.testSplit(TextSplitter(), inputText, expectedRemainingText, expectedParts, inputParams)

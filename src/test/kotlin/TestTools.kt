@@ -38,13 +38,7 @@ class TestTools
             //MatcherAssert.assertThat(actual, CoreMatchers.equalTo(expected))
         }
 
-        // TODO: remove this so a reason must always be given.
-        fun assertAreEqual(actual: String, expected: String)
-        {
-            assertAreEqual(null, actual, expected, 4)
-        }
-
-        fun assertAreEqual(reason: String?, actual: String, expected: String, stackPos: Int = 3)
+        fun assertAreEqual(reason: String , actual: String, expected: String, stackPos: Int = 3)
         {
             val actualSimple = Tools.toDisplayStringSimple(actual)
             val expectedSimple = Tools.toDisplayStringSimple(expected)

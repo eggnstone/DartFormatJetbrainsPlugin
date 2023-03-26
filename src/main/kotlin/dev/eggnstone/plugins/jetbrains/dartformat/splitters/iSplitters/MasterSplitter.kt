@@ -18,7 +18,7 @@ class MasterSplitter : ISplitter
             TODO("MasterSplitter.splitAll")
             DotlinLogger.log("MasterSplitter.splitAll")
             DotlinLogger.log("  parts:         ${Tools.toDisplayStringForParts(splitResult.parts)}")
-            DotlinLogger.log("  remainingText: ${Tools.toDisplayString(splitResult.remainingText)}")
+            DotlinLogger.log("  remainingText: ${Tools.toDisplayStringShort(splitResult.remainingText)}")
             throw DartFormatException("splitResult.remainingText.isNotEmpty()")
         }
 
@@ -27,7 +27,7 @@ class MasterSplitter : ISplitter
 
     override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int): SplitResult
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.split: ${Tools.toDisplayString(Tools.shorten(inputText, 100, true))}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.split: ${Tools.toDisplayStringShort(inputText)}")
 
         val parts = mutableListOf<IPart>()
 
@@ -35,7 +35,7 @@ class MasterSplitter : ISplitter
         var remainingText = inputText
         while (StringWrapper.isNotEmpty(remainingText))
         {
-            DotlinLogger.log("===> ${Tools.toDisplayString(Tools.shorten(remainingText, 100, true))}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("===> ${Tools.toDisplayStringShort(remainingText)}")
 
             val splitter = getSplitter(remainingText)
             @Suppress("FoldInitializerAndIfToElvis")
@@ -65,9 +65,9 @@ class MasterSplitter : ISplitter
             {
                 DotlinLogger.log("Result from '${splitter.name}' splitter:")
                 DotlinLogger.log("  parts:              ${Tools.toDisplayStringForParts(splitResult.parts)}")
-                DotlinLogger.log("  remainingText:      ${Tools.toDisplayString(Tools.shorten(splitResult.remainingText, 100, true))}")
-                DotlinLogger.log("  > consumedText:     ${Tools.toDisplayString(Tools.shorten(consumedText, 100, true))}")
-                DotlinLogger.log("  > lastConsumedLine: ${Tools.toDisplayString(Tools.shorten(lastConsumedLine, 100, true))}")
+                DotlinLogger.log("  remainingText:      ${Tools.toDisplayStringShort(splitResult.remainingText)}")
+                DotlinLogger.log("  > consumedText:     ${Tools.toDisplayStringShort(consumedText)}")
+                DotlinLogger.log("  > lastConsumedLine: ${Tools.toDisplayStringShort(lastConsumedLine)}")
                 DotlinLogger.log("  > currentIndent:    $currentIndent")
             }
 

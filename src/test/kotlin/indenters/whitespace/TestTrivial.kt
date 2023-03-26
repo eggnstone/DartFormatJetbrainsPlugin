@@ -27,6 +27,6 @@ class TestTrivial
 
         val actualText = WhitespaceIndenter().indentPart(inputPart)
 
-        TestTools.assertAreEqual(actualText, expectedText)
+        TestTools.assertAreEqual("", actualText, expectedText)
     }
 }

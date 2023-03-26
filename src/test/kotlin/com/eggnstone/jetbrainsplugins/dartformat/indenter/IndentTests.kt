@@ -17,6 +17,6 @@ class IndentTests
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
 
-        TestTools.assertAreEqual(actualOutputText, expectedOutputText)
+        TestTools.assertAreEqual("",actualOutputText, expectedOutputText)
     }
 }
