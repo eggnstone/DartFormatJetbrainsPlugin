@@ -28,7 +28,7 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleClosingBracket(currentChar: String, oldState: TextSplitterState, params: SplitParams): TextSplitterHandleResult
+        private fun handleClosingBracket(currentChar: String, oldState: TextSplitterState, params: SplitParams): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleClosingBracket", params)
@@ -38,17 +38,17 @@ class TextSplitter : ISplitter
                 if (params.isEnum)
                 {
                     val statement = Statement(state.currentText)
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(statement)))
+                    return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(statement)))
                 }
 
                 if (!params.expectClosingBrace)
                     throw DartFormatException("TextSplitter.handleClosingBracket: Unexpected closing bracket: currentChar=${Tools.toDisplayStringShort(currentChar)} remainingText=${Tools.toDisplayStringShort(state.remainingText)}")
 
                 if (StringWrapper.isEmpty(state.currentText))
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf()))
+                    return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf()))
 
                 val statement = Statement(state.currentText)
-                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(statement)))
+                return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(statement)))
             }
 
             val lastOpeningBracket = state.currentBrackets.removeLast()
@@ -59,7 +59,7 @@ class TextSplitter : ISplitter
             state.currentText += currentChar
             state.remainingText = StringWrapper.substring(state.remainingText, 1)
 
-            return TextSplitterHandleResult(state, null)
+            return TextSplitterHandleStateResult(state)
         }
 
         fun handleColon(oldState: TextSplitterState): TextSplitterState
@@ -80,7 +80,7 @@ class TextSplitter : ISplitter
             return state
         }
 
-        private fun handleComment(oldState: TextSplitterState, currentIndent: Int): TextSplitterHandleResult
+        private fun handleComment(oldState: TextSplitterState, currentIndent: Int): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleComment")
@@ -108,7 +108,7 @@ class TextSplitter : ISplitter
                     if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
                     // remove? state.commentOnlyHashCode = extractionResult.comment.hashCode()
                     val comment = Comment(extractionResult.comment, extractionResult.startPos)
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(comment)))
+                    return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(comment)))
                 }
             }
             else
@@ -126,7 +126,7 @@ class TextSplitter : ISplitter
             state.remainingText = extractionResult.remainingText
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
 
-            return TextSplitterHandleResult(state, null)
+            return TextSplitterHandleStateResult(state)
         }
 
         private fun handleEqualSign(oldState: TextSplitterState): TextSplitterState
@@ -198,7 +198,7 @@ class TextSplitter : ISplitter
             return state
         }
 
-        fun handleOpeningBrace(oldState: TextSplitterState): TextSplitterHandleResult
+        fun handleOpeningBrace(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleOpeningBrace")
@@ -231,10 +231,10 @@ class TextSplitter : ISplitter
                 throw DartFormatException("Missing closing brace: ${Tools.toDisplayStringShort(state.remainingText)}")
             }
 
-            return handleClosingBrace(state,   result.parts);
+            return handleClosingBrace(state, result.parts)
         }
 
-        private fun handleClosingBrace(oldState: TextSplitterState,   parts: List<IPart>): TextSplitterHandleResult
+        private fun handleClosingBrace(oldState: TextSplitterState, parts: List<IPart>): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleClosingBrace")
@@ -244,10 +244,13 @@ class TextSplitter : ISplitter
                 //if (DotlinLogger.isEnabled) DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
                 state.log("handleClosingBrace exit-1")
 
-                state.headers.add("TODO 1")
+                state.headers.add(state.currentText)
                 state.parts.add(parts)
-                val multiBlock = MultiBlock(state.headers, state.parts, "}")
-                return TextSplitterHandleResult(state, SplitResult("", listOf(multiBlock)))
+                state.footer = "}"
+                state.currentText = ""
+                state.remainingText = ""
+                val multiBlock = MultiBlock(state.headers, state.parts, state.footer)
+                return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(multiBlock)))
             }
 
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the "}"
@@ -258,14 +261,17 @@ class TextSplitter : ISplitter
 
             if (elseEndPos == -1)
             {
+                TODO("elseEndPos == -1")
                 state.footer = "}"
                 state.log("handleClosingBrace exit-2")
 
                 state.headers.add("TODO 2")
                 state.parts.add(parts)
                 val multiBlock = MultiBlock(state.headers, state.parts, "} FOOTER 2")
-                return TextSplitterHandleResult(state, SplitResult("", listOf(multiBlock)))
+                return TextSplitterHandleSplitResult(SplitResult("", listOf(multiBlock)))
             }
+
+            TODO("elseEndPos >= 0")
 
             val header = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
             if (DotlinLogger.isEnabled) DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(header)}")
@@ -289,7 +295,7 @@ class TextSplitter : ISplitter
             state.currentText = ""
 
             state.log("handleClosingBrace exit-3")
-            return TextSplitterHandleResult(state, null)
+            return TextSplitterHandleStateResult(state)
         }
 
         private fun handleOpeningBracket(currentChar: String, oldState: TextSplitterState): TextSplitterState
@@ -303,7 +309,7 @@ class TextSplitter : ISplitter
             return state
         }
 
-        fun handleSemicolon(oldState: TextSplitterState): TextSplitterHandleResult
+        fun handleSemicolon(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             if (oldState.hasBlockOLD)
                 return handleSemicolonHasBlock(oldState)
@@ -311,7 +317,7 @@ class TextSplitter : ISplitter
             return handleSemicolonHasNoBlock(oldState)
         }
 
-        fun handleSemicolonHasBlock(oldState: TextSplitterState): TextSplitterHandleResult
+        fun handleSemicolonHasBlock(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleSemicolonHasBlock")
@@ -330,10 +336,10 @@ class TextSplitter : ISplitter
 
             state.log("handleSemicolonHasBlock exit")
             val singleBlock = MultiBlock.single(state.headerOLD, state.footer, state.blockPartsOLD)
-            return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(singleBlock)))
+            return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(singleBlock)))
         }
 
-        private fun handleSemicolonHasNoBlock(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlock(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleSemicolonHasNoBlock")
@@ -347,7 +353,7 @@ class TextSplitter : ISplitter
             return handleSemicolonHasNoBlockWithoutClosingBraceNext(oldState)
         }
 
-        private fun handleSemicolonHasNoBlockWithClosingBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlockWithClosingBraceNext(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleSemicolonHasNoBlockWithClosingBraceNext")
@@ -358,10 +364,10 @@ class TextSplitter : ISplitter
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
 
             val statement = Statement(state.currentText)
-            return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(statement)))
+            return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(statement)))
         }
 
-        private fun handleSemicolonHasNoBlockWithoutClosingBraceNext(oldState: TextSplitterState): TextSplitterHandleResult
+        private fun handleSemicolonHasNoBlockWithoutClosingBraceNext(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
             state.log("handleSemicolonHasNoBlockWithoutClosingBraceNext")
@@ -393,11 +399,11 @@ class TextSplitter : ISplitter
 
                     state.log("handleSemicolonHasNoBlockWithoutOpeningBrace exit-1-Statement")
                     val statement = Statement(state.currentText)
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(statement)))
+                    return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(statement)))
                 }
 
                 val statement = Statement(state.currentText)
-                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(statement)))
+                return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(statement)))
             }
 
             state.currentText += StringWrapper.substring(state.remainingText, 0, elseEndPos)
@@ -406,7 +412,7 @@ class TextSplitter : ISplitter
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
 
             state.log("handleSemicolonHasNoBlockWithoutOpeningBrace exit-2")
-            return TextSplitterHandleResult(state, null)
+            return TextSplitterHandleStateResult(state)
         }
     }
 
@@ -451,12 +457,15 @@ class TextSplitter : ISplitter
 
             if (StringWrapper.startsWith(state.remainingText, "//") || StringWrapper.startsWith(state.remainingText, "/*"))
             {
-                val handleResult = handleComment(state, currentIndent)
-                if (handleResult.splitResult != null)
-                    return handleResult.splitResult
-
-                state = handleResult.state
-                continue
+                when (val handleResult = handleComment(state, currentIndent))
+                {
+                    is TextSplitterHandleSplitResult -> return handleResult.splitResult
+                    is TextSplitterHandleStateResult ->
+                    {
+                        state = handleResult.state
+                        continue
+                    }
+                }
             }
 
             if (currentChar == "=" && DotlinTools.isEmpty(state.currentBrackets))
@@ -473,22 +482,28 @@ class TextSplitter : ISplitter
 
             if (currentChar == ";" && DotlinTools.isEmpty(state.currentBrackets))
             {
-                val handleResult = handleSemicolon(state)
-                if (handleResult.splitResult != null)
-                    return handleResult.splitResult
-
-                state = handleResult.state
-                continue
+                when (val handleResult = handleSemicolon(state))
+                {
+                    is TextSplitterHandleSplitResult -> return handleResult.splitResult
+                    is TextSplitterHandleStateResult ->
+                    {
+                        state = handleResult.state
+                        continue
+                    }
+                }
             }
 
             if (currentChar == "{" && !state.isInAssignment && DotlinTools.isEmpty(state.currentBrackets))
             {
-                val handleResult = handleOpeningBrace(state)
-                if (handleResult.splitResult != null)
-                    return handleResult.splitResult
-
-                state = handleResult.state
-                continue
+                when (val handleResult = handleOpeningBrace(state))
+                {
+                    is TextSplitterHandleSplitResult -> return handleResult.splitResult
+                    is TextSplitterHandleStateResult ->
+                    {
+                        state = handleResult.state
+                        continue
+                    }
+                }
             }
 
             if (Tools.isOpeningBracket(currentChar))
@@ -499,12 +514,15 @@ class TextSplitter : ISplitter
 
             if (Tools.isClosingBracket(currentChar))
             {
-                val handleResult = handleClosingBracket(currentChar, state, params)
-                if (handleResult.splitResult != null)
-                    return handleResult.splitResult
-
-                state = handleResult.state
-                continue
+                when (val handleResult = handleClosingBracket(currentChar, state, params))
+                {
+                    is TextSplitterHandleSplitResult -> return handleResult.splitResult
+                    is TextSplitterHandleStateResult ->
+                    {
+                        state = handleResult.state
+                        continue
+                    }
+                }
             }
 
             state.currentText += currentChar

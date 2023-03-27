@@ -3,6 +3,7 @@ package splitters.iSplitter.textSplitter.handleSemicolonHasBlock
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterHandleSplitResult
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitterState
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -30,11 +31,9 @@ class TestHandleSemicolonHasBlock
 
         val expectedParts = listOf(MultiBlock.single(header, expectedFooter))
 
-        val actualHandleResult = TextSplitter.handleSemicolonHasBlock(inputState)
+        val actualHandleResult = TextSplitter.handleSemicolonHasBlock(inputState) as TextSplitterHandleSplitResult
 
-        TestTools.assertStatesAreEqual(actualHandleResult.state, expectedState)
-
-        val splitResult = actualHandleResult.splitResult!!
+        val splitResult = actualHandleResult.splitResult
         TestTools.assertAreEqual("splitResult.remainingText", splitResult.remainingText, expectedRemainingText)
         MatcherAssert.assertThat("splitResult.parts", splitResult.parts, CoreMatchers.equalTo(expectedParts))
     }
