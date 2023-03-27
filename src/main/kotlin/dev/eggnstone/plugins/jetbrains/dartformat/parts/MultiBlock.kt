@@ -10,7 +10,7 @@ data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>
     {
         fun single(header: String, footer: String, parts: List<IPart> = listOf()): IPart = MultiBlock(listOf(header), listOf(parts), footer)
 
-        fun double(header: String, middle: String, footer: String, parts1: List<IPart> = listOf(), parts2: List<IPart> = listOf()): IPart = MultiBlock(listOf(header, middle), listOf(parts1, parts2), footer)
+        fun double(header1: String, header2: String, footer: String, parts1: List<IPart> = listOf(), parts2: List<IPart> = listOf()): IPart = MultiBlock(listOf(header1, header2), listOf(parts1, parts2), footer)
     }
 
     init

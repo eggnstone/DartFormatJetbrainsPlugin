@@ -336,7 +336,8 @@ class TextSplitter : ISplitter
 
                 val partLists = mutableListOf(parts)
                 partLists.addAll(elseIfMultiBlock.partLists)
-                val footer = "}"
+                val footer = elseIfMultiBlock.footer
+                //val footer = "}TODO"+elseIfMultiBlock.footer+"END"
 
                 val multiBlock = MultiBlock(headers, partLists, footer)
                 return TextSplitterHandleSplitResult(SplitResult(elseIfResult.remainingText, listOf(multiBlock)))
@@ -370,16 +371,16 @@ class TextSplitter : ISplitter
 
         fun handleSemicolon(oldState: TextSplitterState): ITextSplitterHandleResult
         {
-            if (oldState.partLists.size > 0) // hasBlockOLD)
-                return handleSemicolonHasBlock(oldState)
+            if (oldState.partLists.size > 0)
+                return handleSemicolonHasBlocks(oldState)
 
             return handleSemicolonHasNoBlock(oldState)
         }
 
-        fun handleSemicolonHasBlock(oldState: TextSplitterState): ITextSplitterHandleResult
+        fun handleSemicolonHasBlocks(oldState: TextSplitterState): ITextSplitterHandleResult
         {
             val state = oldState.clone()
-            state.log("handleSemicolonHasBlock")
+            state.log("handleSemicolonHasBlocks")
 
             state.currentText += ";"
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:               ${Tools.toDisplayStringShort(state.currentText)}")
@@ -393,15 +394,15 @@ class TextSplitter : ISplitter
             state.currentText = ""
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:              ${Tools.toDisplayStringShort(state.currentText)}")
 
-            if (state.headers.size != 1)
-                throw DartFormatException("state.headers.size (${state.headers.size}) != 1")
+            if (state.headers.size == 0)
+                throw DartFormatException("state.headers.size == 0")
 
-            if (state.partLists.size != 1)
-                throw DartFormatException("state.partLists.size != 1")
+            if (state.headers.size != state.partLists.size)
+                throw DartFormatException("state.headers.size (${state.headers.size}) != state.partLists.size (${state.partLists.size})")
 
-            state.log("handleSemicolonHasBlock exit")
-            val singleBlock = MultiBlock.single(state.headers[0], state.footer, state.partLists[0]) //blockPartsOLD)
-            return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(singleBlock)))
+            state.log("handleSemicolonHasBlocks exit")
+            val multiBlock = MultiBlock(state.headers, state.partLists, state.footer)
+            return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(multiBlock)))
         }
 
         private fun handleSemicolonHasNoBlock(oldState: TextSplitterState): ITextSplitterHandleResult
