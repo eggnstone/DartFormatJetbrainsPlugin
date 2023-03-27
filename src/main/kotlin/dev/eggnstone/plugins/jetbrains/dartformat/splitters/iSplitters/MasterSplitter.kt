@@ -25,7 +25,7 @@ class MasterSplitter : ISplitter
         return splitResult.parts
     }
 
-    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int): SplitResult
+    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int, stopAfter: Int): SplitResult
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("MasterSplitter.split: ${Tools.toDisplayStringShort(inputText)}")
 
@@ -74,6 +74,9 @@ class MasterSplitter : ISplitter
             remainingText = splitResult.remainingText
             //parts += result.parts // dotlin
             parts.addAll(splitResult.parts)
+
+            if (stopAfter >= 0 && parts.size >= stopAfter)
+                return SplitResult(splitResult.remainingText, parts)
         }
 
         return SplitResult("", parts)

@@ -299,7 +299,7 @@ class TextSplitter : ISplitter
 
             state.log("elseEndPos >= 0 && ifEndPos >= 0")
 
-            val elseIfResult = MasterSplitter().split(tempRemainingText)
+            val elseIfResult = MasterSplitter().split(tempRemainingText, params = SplitParams(), inputCurrentIndent = 0, stopAfter = 1)
             if (DotlinLogger.isEnabled) DotlinLogger.log("tempRemainingText:         ${Tools.toDisplayStringShort(tempRemainingText)}")
             if (DotlinLogger.isEnabled) DotlinLogger.log("elseIfResult:              $elseIfResult")
 
@@ -481,7 +481,7 @@ class TextSplitter : ISplitter
         }
     }
 
-    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int): SplitResult
+    override fun split(inputText: String, params: SplitParams, inputCurrentIndent: Int, stopAfter: Int): SplitResult
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("TextSplitter.split: inputCurrentIndent=$inputCurrentIndent isEnum=${params.isEnum} ${Tools.toDisplayStringShort(inputText)}")
 
