@@ -1,11 +1,13 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
-class BlockIndenter(spacesPerLevel: Int)
+class BlockIndenter(private val spacesPerLevel: Int)
 {
     companion object
     {
@@ -14,9 +16,9 @@ class BlockIndenter(spacesPerLevel: Int)
 
     private var masterIndenter = MasterIndenter(spacesPerLevel)
 
-    fun indentParts(parts: List<IPart>, spacesPerLevel: Int): String
+    fun indentParts(parts: List<IPart>): String
     {
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
 
         val body = masterIndenter.indentParts(parts)
         //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayStringShort(body)}")
@@ -29,8 +31,14 @@ class BlockIndenter(spacesPerLevel: Int)
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(i) // workaround for dotlin
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$i: ${Tools.toDisplayStringShort(line)}")
-            //val pad = if (StringWrapper.isBlank(line)) "" else "A"+DotlinTools.getSpaces(spacesPerLevel) +"X"
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$i: ${Tools.toDisplayStringShort(line)}")
+
+            if (i == 0 && !Tools.containsLineBreak(line))
+            {
+                indentedBody.append(line)
+                continue
+            }
+
             val pad = if (StringWrapper.isBlank(line)) "" else StringWrapper.getSpaces(spacesPerLevel)
             indentedBody.append(pad + line)
         }

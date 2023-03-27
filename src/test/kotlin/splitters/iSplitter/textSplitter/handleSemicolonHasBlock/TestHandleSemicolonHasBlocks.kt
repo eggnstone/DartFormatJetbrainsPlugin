@@ -62,7 +62,7 @@ class TestHandleSemicolonHasBlocks
         expectedState.headers.add(header2)
         expectedState.footer = expectedFooter
 
-        val expectedParts = listOf(MultiBlock.double(header1,header2, expectedFooter))
+        val expectedParts = listOf(MultiBlock.double(header1, header2, expectedFooter))
 
         val actualHandleResult = TextSplitter.handleSemicolonHasBlocks(inputState) as TextSplitterHandleSplitResult
 

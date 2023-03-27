@@ -23,11 +23,9 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentPart: $part")
 
         if (part !is MultiBlock)
-            throw DartFormatException("Unexpected non-DoubleBlock type.")
+            throw DartFormatException("Unexpected non-MultiBlock type.")
 
         val multiBlock: MultiBlock = part
-        if (multiBlock.headers.size != multiBlock.partLists.size)
-            throw DartFormatException("headers.size != parts.size")
 
         val result = StringBuilder()
 
@@ -36,39 +34,24 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // dotlin
             val header = multiBlock.headers.get(i)
-            val indentedHeader = indentHeader(header, i == 0)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  header #$i: $header")
 
-            /*val indentedHeader = if (i == 0)
-            {
-                val indentedHeader = if (header.startsWith("abstract class ") || header.startsWith("class "))
-                    indentHeader(header)
-                else
-                    header
-            }
-            else
-                header*/
+            val indentedHeader = indentHeader(header, i == 0)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedHeader: $indentedHeader")
 
             result.append(indentedHeader)
 
             @Suppress("ReplaceGetOrSet") // dotlin
             val parts = multiBlock.partLists.get(i)
-            val indentedParts = blockIndenter.indentParts(parts, spacesPerLevel)
+            val indentedParts = blockIndenter.indentParts(parts)
             result.append(indentedParts)
         }
 
-        /*val footer = multiBlock.footer
-        val indentedFooter = if (false)
-            indentFooter(footer)
-        else
-            footer
-
-        result.append(indentedFooter)*/
-
         val footer = multiBlock.footer
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  footer: $footer")
         val indentedFooter = indentFooter(footer)
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedFooter: $indentedFooter")
         result.append(indentedFooter)
-
-        //result.append(multiBlock.footer)
 
         return result.toString()
     }

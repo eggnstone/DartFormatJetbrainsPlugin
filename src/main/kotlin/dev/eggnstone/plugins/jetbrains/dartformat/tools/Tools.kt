@@ -13,6 +13,8 @@ class Tools
         private const val closingBrackets = "])}"
         private const val openingBrackets = "{[("
 
+        fun containsLineBreak(s: String) = StringWrapper.containsChar(s, "\n") || StringWrapper.containsChar(s, "\r")
+
         fun countLeadingSpaces(s: String): Int
         {
             @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
