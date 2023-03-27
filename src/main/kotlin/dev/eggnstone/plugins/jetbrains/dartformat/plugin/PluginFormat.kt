@@ -6,18 +6,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ContentIterator
-import com.intellij.openapi.ui.popup.Balloon
-import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.BalloonImpl
-import com.intellij.util.ui.JBUI
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
@@ -25,28 +19,13 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.SafetyTools
-import java.awt.Font
 import java.util.*
-import javax.swing.BoxLayout
-import javax.swing.JLabel
-import javax.swing.JPanel
-
-typealias FormatHandler = (virtualFile: VirtualFile, project: Project, lines: MutableList<String>) -> Boolean
 
 class PluginFormat : AnAction()
 {
     companion object
     {
         private val masterSplitter = MasterSplitter()
-    }
-
-    private class FormatIterator(private val format: FormatHandler, private val project: Project, private val lines: MutableList<String>) : ContentIterator
-    {
-        override fun processFile(virtualFile: VirtualFile): Boolean
-        {
-            //DotlinLogger.log("FormatIterator.processFile: $virtualFile")
-            return format(virtualFile, project, lines)
-        }
     }
 
     override fun actionPerformed(e: AnActionEvent)
@@ -56,29 +35,35 @@ class PluginFormat : AnAction()
         val config = getConfig()
         if (!config.isEnabled)
         {
-            val title = "DartFormat"
             val subtitle = "No formatting option enabled"
             val messages = listOf("Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat")
-            notifyWarning(title, subtitle, messages, project, null)
+            notifyWarning(messages, project, subtitle)
             return
         }
 
-        val startTime = Date()
-
-        val editor = e.getData(CommonDataKeys.EDITOR_EVEN_IF_INACTIVE)
-
         try
         {
-            val lines = mutableListOf<String>()
-            val formatIterator = FormatIterator(this::formatDartFile, project, lines)
-            val virtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+            val startTime = Date()
 
+            val finalVirtualFiles = mutableSetOf<VirtualFile>()
+            val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
+            val selectedVirtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+
+            //DotlinLogger.log("${selectedVirtualFiles.size} selected files:")
+            for (selectedVirtualFile in selectedVirtualFiles)
+            {
+                //DotlinLogger.log("  Selected file: $selectedVirtualFile")
+                VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
+            }
+
+            var changedFiles = 0
+            //DotlinLogger.log("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
-                for (virtualFile in virtualFiles)
+                for (finalVirtualFile in finalVirtualFiles)
                 {
-                    // TODO: filter out already visited files!
-                    //DotlinLogger.log("\n  $virtualFile")
-                    VfsUtilCore.iterateChildrenRecursively(virtualFile, this::filterDartFiles, formatIterator)
+                    //DotlinLogger.log("  Final file: $finalVirtualFile")
+                    if (formatDartFile(finalVirtualFile, project))
+                        changedFiles++
                 }
             }
 
@@ -86,178 +71,106 @@ class PluginFormat : AnAction()
             val diffTime = endTime.time - startTime.time
             val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
 
-            var filesText = "${virtualFiles.size} file"
-            if (virtualFiles.size != 1)
-                filesText += "s"
+            var finalVirtualFilesText = "${finalVirtualFiles.size} file"
+            if (finalVirtualFiles.size != 1)
+                finalVirtualFilesText += "s"
 
-            lines.add(0, "Formatting $filesText took $diffTimeText.")
-            notify("DartFormat", null, project, editor, lines)
+            val changedFilesText: String = when (changedFiles)
+            {
+                0 -> "Nothing"
+                1 -> "1 file"
+                else -> "$changedFiles files"
+            }
+
+            val lines = mutableListOf<String>()
+            lines.add("Formatting $finalVirtualFilesText took $diffTimeText.")
+            lines.add("$changedFilesText changed.")
+            notifyInfo(lines, project)
         }
-        catch (err: Exception)
+        catch (err: DartFormatException)
         {
+            DotlinLogger.log("DartFormatException: ${err.message}")
             val errMessage = err.message ?: "Unknown error."
             val errMessages = errMessage.split("\n")
-            notifyError("DartFormat", null, project, editor, errMessages)
-        }
-        catch (err: Error)
-        {
-            val errMessage = err.message ?: "Unknown error."
-            val errMessages = errMessage.split("\n")
-            notifyError("DartFormat", null, project, editor, errMessages)
+            notifyError(errMessages, project)
         }
     }
 
-    private fun notify(title: String, subtitle: String?, project: Project, editor: Editor?, lines: List<String>)
+    private fun notifyInfo(lines: List<String>, project: Project, subtitle: String? = null)
     {
-        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.INFORMATION, project)
-        //notifyByEditorPopup(editor, lines)
+        notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, project, subtitle)
     }
 
-    private fun notifyWarning(title: String, subtitle: String?, lines: List<String>, project: Project, editor: Editor?)
+    private fun notifyWarning(lines: List<String>, project: Project, subtitle: String? = null)
     {
-        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.WARNING, project)
-        //notifyByEditorPopup(editor, lines)
+        notifyByToolWindowBalloon(lines, NotificationType.WARNING, project, subtitle)
     }
 
-    private fun notifyError(title: String, subtitle: String?, project: Project, editor: Editor?, lines: List<String>)
+    private fun notifyError(lines: List<String>, project: Project, subtitle: String? = null)
     {
-        notifyByToolWindowBalloon(title, subtitle, lines, NotificationType.ERROR, project)
-        //notifyByEditorPopup(editor, lines)
+        notifyByToolWindowBalloon(lines, NotificationType.ERROR, project, subtitle)
     }
 
-    private fun notifyByToolWindowBalloon(title: String, subtitle: String?, lines: List<String>, type: NotificationType, project: Project)
+    private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, project: Project, subtitle: String? = null)
     {
         val combinedLines = lines.joinToString("<br/>")
 
         val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-        val notification = notificationGroup.createNotification(title, combinedLines, type)
+        val notification = notificationGroup.createNotification("DartFormat", combinedLines, type)
         notification.subtitle = subtitle
         notification.notify(project)
     }
 
-    private fun notifyByEditorPopup(editor: Editor?, lines: List<String>)
+    private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
+
+    private fun formatDartFile(virtualFile: VirtualFile, project: Project): Boolean
     {
-        if (editor == null)
-        {
-            DotlinLogger.log("editor == null")
-            //val combinedLines = lines.joinToString("\n")
-            //DotlinLogger.log(combinedLines)
-            return
-        }
-
-        val factory = JBPopupFactory.getInstance()
-
-        val panel = JPanel()
-        panel.layout = BoxLayout(panel, BoxLayout.PAGE_AXIS)
-        panel.border = JBUI.Borders.empty(4)
-
-        val title = JLabel("DartFormat")
-        title.font = Font(title.font.name, Font.BOLD, 14)
-        title.border = JBUI.Borders.emptyBottom(4)
-        panel.add(title)
-
-        for (line in lines)
-            panel.add(JLabel(line))
-
-        val balloonBuilder = factory.createBalloonBuilder(panel)
-        val balloon = balloonBuilder.createBalloon()
-        val position = factory.guessBestPopupLocation(editor)
-
-        if (balloon is BalloonImpl)
-            balloon.setFillColor(panel.background)
-
-        balloon.show(position, Balloon.Position.below)
-    }
-
-    private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || isDartFile(virtualFile)
-
-    private fun isDartFile(virtualFile: VirtualFile): Boolean
-    {
-        if (virtualFile.extension != "dart")
-            return false
-
-        if (virtualFile.name.endsWith(".freezed.dart"))
-            return false
-
-        if (virtualFile.name.endsWith(".g.dart"))
-            return false
-
-        if (virtualFile.name.endsWith(".gr.dart"))
-            return false
-
-        return true
-    }
-
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project, lines: MutableList<String>): Boolean
-    {
-        if (!isDartFile(virtualFile))
-        {
-            //DotlinLogger.log("formatDartFile: $virtualFile")
-            //DotlinLogger.log("  Not a dart file!")
-            return true
-        }
-
         try
         {
             val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
-            @Suppress("FoldInitializerAndIfToElvis")
-            if (fileEditor == null)
-                return formatDartFileByBinaryContent(virtualFile)
-
-            return formatDartFileByFileEditor(fileEditor, lines)
+            return if (fileEditor == null)
+                formatDartFileByBinaryContent(virtualFile)
+            else
+                formatDartFileByFileEditor(fileEditor)
         }
         catch (err: Exception)
         {
-            throw DartFormatException("$virtualFile\n${err.message}")
+            throw DartFormatException("${virtualFile.path}\n${err.message}")
         }
         catch (err: Error)
         {
-            throw DartFormatException("$virtualFile\n${err.message}")
+            throw DartFormatException("${virtualFile.path}\n${err.message}")
         }
     }
 
     private fun formatDartFileByBinaryContent(virtualFile: VirtualFile): Boolean
     {
-        try
+        if (!virtualFile.isWritable)
         {
-            if (!virtualFile.isWritable)
-            {
-                DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
-                DotlinLogger.log("  !virtualFile.isWritable")
-                return false
-            }
-
-            val inputBytes = virtualFile.inputStream.readAllBytes()
-            val inputText = String(inputBytes)
-            val outputText = format(inputText)
-            if (outputText == inputText)
-                return true
-
-            val outputBytes = outputText.toByteArray()
-            ApplicationManager.getApplication().runWriteAction {
-                virtualFile.setBinaryContent(outputBytes)
-            }
-
-            return true
-        }
-        catch (err: DartFormatException)
-        {
-            throw DartFormatException("2 $virtualFile: ${err.message}")
-            /*
-            DotlinLogger.log("While formatting: $virtualFile:")
-            DotlinLogger.log("$err")
-            return false
-            */
-        }
-        catch (err: AssertionError)
-        {
-            DotlinLogger.log("While formatting: $virtualFile:")
-            DotlinLogger.log("$err")
+            DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
+            DotlinLogger.log("  !virtualFile.isWritable")
             return false
         }
+
+        val inputBytes = virtualFile.inputStream.readAllBytes()
+        val inputText = String(inputBytes)
+        val outputText = format(inputText)
+        if (outputText == inputText)
+        {
+            //DotlinLogger.log("Nothing changed.")
+            return false
+        }
+
+        val outputBytes = outputText.toByteArray()
+        ApplicationManager.getApplication().runWriteAction {
+            virtualFile.setBinaryContent(outputBytes)
+        }
+
+        //DotlinLogger.log("Something changed.")
+        return true
     }
 
-    private fun formatDartFileByFileEditor(fileEditor: FileEditor, lines: MutableList<String>): Boolean
+    private fun formatDartFileByFileEditor(fileEditor: FileEditor): Boolean
     {
         if (fileEditor !is TextEditor)
         {
@@ -268,39 +181,21 @@ class PluginFormat : AnAction()
 
         val editor = fileEditor.editor
 
-        try
+        val document = editor.document
+        val inputText = document.text
+        val outputText = format(inputText)
+        if (outputText == inputText)
         {
-            val document = editor.document
-            val inputText = document.text
-            val outputText = format(inputText)
-            if (outputText == inputText)
-            {
-                lines += "Nothing changed."
-                return true
-            }
-
-            ApplicationManager.getApplication().runWriteAction {
-                document.setText(outputText)
-            }
-
-            lines += "Something changed."
-            return true
-        }
-        catch (err: DartFormatException)
-        {
-            throw DartFormatException("$fileEditor: ${err.message}")
-            /*
-            DotlinLogger.log("While formatting: $virtualFile:")
-            DotlinLogger.log("$err")
-            return false
-            */
-        }
-        catch (err: AssertionError)
-        {
-            DotlinLogger.log("While formatting: $fileEditor:")
-            DotlinLogger.log("$err")
+            //DotlinLogger.log("Nothing changed.")
             return false
         }
+
+        ApplicationManager.getApplication().runWriteAction {
+            document.setText(outputText)
+        }
+
+        //DotlinLogger.log("Something changed.")
+        return true
     }
 
     private fun format(inputText: String): String
