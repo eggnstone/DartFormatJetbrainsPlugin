@@ -39,11 +39,11 @@ class Tools
             }
         }
 
-        fun getElseEndPos(s: String): Int
-        {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("getElseEndPos(${toDisplayStringShort(s)})")
+        fun getElseEndPos(s: String): Int = getTextEndPos(s, "else")
 
-            val searchText = "else"
+        fun getTextEndPos(s: String, searchText: String): Int
+        {
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getTextEndPos(${toDisplayStringShort(s)})")
 
             if (s == searchText)
                 return s.length

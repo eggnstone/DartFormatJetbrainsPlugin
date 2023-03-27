@@ -18,7 +18,7 @@ class BlockTestsParametrizedWithStatementOrBlockBooleans2(private val params: Te
     }
 
     @Test
-    fun ifElseIfElse()
+    fun ifElse()
     {
         val inputText =
             "if (a)\n" +

@@ -9,7 +9,7 @@ class MasterIndenter(private val spacesPerLevel: Int) : IIndenter
 {
     override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentPart: $part")
+         if (DotlinLogger.isEnabled) DotlinLogger.log("MasterIndenter.indentPart: $part")
 
         val indenter = getIndenter(part)
         return indenter.indentPart(part, startIndent, indentLevel)

@@ -20,6 +20,8 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
     override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentPart: $part")
+
         if (part !is MultiBlock)
             throw DartFormatException("Unexpected non-DoubleBlock type.")
 
@@ -198,16 +200,26 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                     usesColon = true
             }
 
-            // TODO: find a better solution
+            /*// TODO: find a better solution
             //if (StringWrapper.startsWith(headerLine, "async ") || headerLine == "async")//DotlinTools.trimEnd(headerLine) == "async"))
             if (StringWrapper.startsWith(headerLine, "async ")
                 || StringWrapper.startsWith(headerLine, "async\t")
                 || StringWrapper.startsWith(headerLine, "async\n")
                 || StringWrapper.startsWith(headerLine, "async\r")
                 || headerLine == "async"
-            )
+            )*/
+            val asyncEndPos = Tools.getTextEndPos(headerLine, "async")
+            if (asyncEndPos >= 0)
             {
                 // no padding for "async..."
+                result += headerLine
+                continue
+            }
+
+            val elseEndPos = Tools.getElseEndPos(headerLine)
+            if (elseEndPos >= 0)
+            {
+                // no padding for "else..."
                 result += headerLine
                 continue
             }

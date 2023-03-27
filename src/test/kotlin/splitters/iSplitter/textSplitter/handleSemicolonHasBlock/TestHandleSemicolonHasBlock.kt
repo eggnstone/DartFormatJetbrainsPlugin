@@ -19,14 +19,14 @@ class TestHandleSemicolonHasBlock
         val inputState = TextSplitterState("")
         inputState.currentText = "abc"
         inputState.remainingText = ";}"
-        inputState.headerOLD = header
+        //inputState.headerOLD = header
 
         val expectedFooter = "abc;"
         val expectedRemainingText = "}"
         val expectedState = TextSplitterState("")
         expectedState.currentText = ""
         expectedState.remainingText = expectedRemainingText
-        expectedState.headerOLD = header
+        //expectedState.headerOLD = header
         expectedState.footer = expectedFooter
 
         val expectedParts = listOf(MultiBlock.single(header, expectedFooter))

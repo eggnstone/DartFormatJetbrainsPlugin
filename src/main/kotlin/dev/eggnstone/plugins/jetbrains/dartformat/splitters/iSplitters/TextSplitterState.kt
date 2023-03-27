@@ -13,7 +13,7 @@ class TextSplitterState(val inputText: String)
     var commentOnlyHashCode: Int? = null
     var currentBrackets = mutableListOf<String>()
 
-    var hasBlockOLD = false
+    //var hasBlockOLD = false
     var hasColon = false
 
     var isInApostrophes = false
@@ -24,9 +24,9 @@ class TextSplitterState(val inputText: String)
     var parts = mutableListOf<List<IPart>>()
     var footer = ""
 
-    var headerOLD = ""
-    var middleOLD = ""
-    var blockPartsOLD: List<IPart> = listOf()
+    //var headerOLD = ""
+    //var middleOLD = ""
+    //var blockPartsOLD: List<IPart> = listOf()
 
     fun log(s: String, params: SplitParams? = null)
     {
@@ -73,16 +73,16 @@ class TextSplitterState(val inputText: String)
 
         newState.currentBrackets = DotlinTools.clone(currentBrackets)
 
-        newState.hasBlockOLD = hasBlockOLD
+        //newState.hasBlockOLD = hasBlockOLD
         newState.hasColon = hasColon
 
         newState.isInApostrophes = isInApostrophes
         newState.isInAssignment = isInAssignment
         newState.isInNormalQuotes = isInNormalQuotes
 
-        newState.headerOLD = headerOLD
+        /*newState.headerOLD = headerOLD
         newState.middleOLD = middleOLD
-        newState.blockPartsOLD = DotlinTools.clone(blockPartsOLD)
+        newState.blockPartsOLD = DotlinTools.clone(blockPartsOLD)*/
 
         newState.headers = DotlinTools.clone(headers)
         newState.parts = DotlinTools.clone(parts)
