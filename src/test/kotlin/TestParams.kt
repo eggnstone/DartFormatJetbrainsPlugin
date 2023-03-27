@@ -69,14 +69,14 @@ class TestParams
             Constants.SEMICOLON
         )
 
-        private val statementOrBlockBooleans = arrayOf(
-            arrayOf("false", "s();"),
-            arrayOf("true", "{}")
+        val statementOrBlockBooleans1 = arrayOf(
+            TestParamBool1(false, "s();"),
+            TestParamBool1(true, "{}")
         )
 
-        val statementOrBlockBooleans2 = join(statementOrBlockBooleans, statementOrBlockBooleans)
+        val statementOrBlockBooleans2 = join(statementOrBlockBooleans1, statementOrBlockBooleans1)
 
-        val statementOrBlockBooleans3 = join(statementOrBlockBooleans2, statementOrBlockBooleans)
+        val statementOrBlockBooleans3 = join(statementOrBlockBooleans2, statementOrBlockBooleans1)
 
         val whitespaces = arrayOf(
             arrayOf(" ", "Space"),
@@ -112,26 +112,24 @@ class TestParams
             return result
         }
 
-        private fun join(arrayOfArrays1: Array<Array<String>>, array2: Array<String>): Array<Array<String>>
+        private fun join(array1: Array<TestParamBool1>, array2: Array<TestParamBool1>): Array<TestParamBool2>
         {
-            var result = arrayOf<Array<String>>()
+            var result = arrayOf<TestParamBool2>()
 
-            for (array1 in arrayOfArrays1)
-            {
+            for (array1Item in array1)
                 for (array2Item in array2)
-                {
-                    var newArray = arrayOf<String>()
+                    result += TestParamBool2(array1Item.b0, array2Item.b0, array1Item.name + " + " + array2Item.name)
 
-                    for (array1Index in 0 until array1.size - 1)
-                        newArray += array1[array1Index]
+            return result
+        }
 
-                    newArray += array2Item
+        private fun join(array1: Array<TestParamBool2>, array2: Array<TestParamBool1>): Array<TestParamBool3>
+        {
+            var result = arrayOf<TestParamBool3>()
 
-                    newArray += array1.last() + " + " + array2Item
-
-                    result += newArray
-                }
-            }
+            for (array1Item in array1)
+                for (array2Item in array2)
+                    result += TestParamBool3(array1Item.b0, array1Item.b1, array2Item.b0, array1Item.name + " + " + array2Item.name)
 
             return result
         }

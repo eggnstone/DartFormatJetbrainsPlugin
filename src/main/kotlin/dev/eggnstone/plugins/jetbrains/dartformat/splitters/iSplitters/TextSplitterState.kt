@@ -46,16 +46,16 @@ class TextSplitterState(val inputText: String)
 
         DotlinLogger.log("currentBrackets:           ${Tools.toDisplayStringForStrings(currentBrackets)}")
 
-        DotlinLogger.log("hasBlock:                  $hasBlockOLD")
         DotlinLogger.log("hasColon:                  $hasColon")
 
         DotlinLogger.log("isInApostrophes:           $isInApostrophes")
         DotlinLogger.log("isInAssignment:            $isInAssignment")
         DotlinLogger.log("isInNormalQuotes:          $isInNormalQuotes")
 
-        DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(headerOLD)}")
-        DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(middleOLD)}")
-        DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockPartsOLD)}")
+        //DotlinLogger.log("hasBlock:                  $hasBlockOLD")
+        //DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(headerOLD)}")
+        //DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(middleOLD)}")
+        //DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockPartsOLD)}")
 
         DotlinLogger.log("headers:                   ${Tools.toDisplayStringForStrings(headers)}")
         DotlinLogger.log("parts:                     ${Tools.toDisplayStringForPartLists(parts)}")

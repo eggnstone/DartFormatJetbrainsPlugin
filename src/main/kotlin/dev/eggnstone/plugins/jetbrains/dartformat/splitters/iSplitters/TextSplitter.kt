@@ -6,6 +6,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.extractors.CommentExtractor
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Comment
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
@@ -230,36 +231,23 @@ class TextSplitter : ISplitter
                 throw DartFormatException("Missing closing brace: ${Tools.toDisplayStringShort(state.remainingText)}")
             }
 
-            if (state.hasBlockOLD)
-            {
-                if (state.remainingText == "}")
-                {
-                    state.remainingText = ""
-                    state.middleOLD += "{"
-                    state.footer = "}"
+            return handleClosingBrace(state,   result.parts);
+        }
 
-                    state.log("handleOpeningBrace exit-1-DoubleBlock")
-                    val doubleBlock = MultiBlock.double(state.headerOLD, state.middleOLD, state.footer, state.blockPartsOLD, result.parts)
-                    return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(doubleBlock)))
-                }
-
-                // starts with "}" but has more
-
-                state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the "}"
-                state.middleOLD += "{"
-                state.footer = "}"
-
-                state.log("handleOpeningBrace exit-2-DoubleBlock")
-                val doubleBlock = MultiBlock.double(state.headerOLD, state.middleOLD, state.footer, state.blockPartsOLD, result.parts)
-                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(doubleBlock)))
-            }
+        private fun handleClosingBrace(oldState: TextSplitterState,   parts: List<IPart>): TextSplitterHandleResult
+        {
+            val state = oldState.clone()
+            state.log("handleClosingBrace")
 
             if (state.remainingText == "}")
             {
                 //if (DotlinLogger.isEnabled) DotlinLogger.log("- Returning SingleBlock (remainingText == \"}\")")
-                state.log("handleOpeningBrace exit-2-SingleBlock")
-                val singleBlock = MultiBlock.single(state.currentText, "}", result.parts)
-                return TextSplitterHandleResult(state, SplitResult("", listOf(singleBlock)))
+                state.log("handleClosingBrace exit-1")
+
+                state.headers.add("TODO 1")
+                state.parts.add(parts)
+                val multiBlock = MultiBlock(state.headers, state.parts, "}")
+                return TextSplitterHandleResult(state, SplitResult("", listOf(multiBlock)))
             }
 
             state.remainingText = StringWrapper.substring(state.remainingText, 1) // removing the "}"
@@ -271,13 +259,19 @@ class TextSplitter : ISplitter
             if (elseEndPos == -1)
             {
                 state.footer = "}"
-                state.log("handleOpeningBrace exit-3-SingleBlock")
-                val singleBlock = MultiBlock.single(state.currentText, state.footer, result.parts)
-                return TextSplitterHandleResult(state, SplitResult(state.remainingText, listOf(singleBlock)))
+                state.log("handleClosingBrace exit-2")
+
+                state.headers.add("TODO 2")
+                state.parts.add(parts)
+                val multiBlock = MultiBlock(state.headers, state.parts, "} FOOTER 2")
+                return TextSplitterHandleResult(state, SplitResult("", listOf(multiBlock)))
             }
 
+            val header = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(header)}")
+
             state.middleOLD = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(state.middleOLD)}")
+            //if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(state.middleOLD)}")
 
             state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
@@ -287,14 +281,14 @@ class TextSplitter : ISplitter
 
             state.hasBlockOLD = true
             state.headerOLD = state.currentText
-            state.blockPartsOLD = result.parts
+            state.blockPartsOLD = parts
 
-            state.headers.add(state.currentText)
-            state.parts.add(result.parts)
+            state.headers.add(header)
+            state.parts.add(parts)
 
             state.currentText = ""
 
-            state.log("handleOpeningBrace exit-4")
+            state.log("handleClosingBrace exit-3")
             return TextSplitterHandleResult(state, null)
         }
 

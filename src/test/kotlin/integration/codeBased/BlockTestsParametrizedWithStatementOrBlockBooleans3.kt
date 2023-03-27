@@ -1,5 +1,6 @@
 package integration.codeBased
 
+import TestParamBool3
 import TestParams
 import integration.IntegrationTools
 import org.junit.Test
@@ -7,42 +8,33 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(value = Parameterized::class)
-class BlockTestsParametrizedWithStatementOrBlockBooleans3(
-    useBlockText0: String,
-    useBlockText1: String,
-    useBlockText2: String,
-    @Suppress("UNUSED_PARAMETER") unused: String
-)
+class BlockTestsParametrizedWithStatementOrBlockBooleans3(private val params: TestParamBool3)
 {
     companion object
     {
         @JvmStatic
-        @Parameterized.Parameters(name = "{3}")
+        @Parameterized.Parameters(name = "{0}")
         fun data() = TestParams.statementOrBlockBooleans3
     }
-
-    private val useBlock0: Boolean = useBlockText0 == "true"
-    private val useBlock1: Boolean = useBlockText1 == "true"
-    private val useBlock2: Boolean = useBlockText2 == "true"
 
     @Test
     fun ifElseIfElse()
     {
         val inputText =
             "if (a)\n" +
-                (if (useBlock0) "{}" else "a();") + "\n" +
+                (if (params.b0) "{ab();}" else "as();") + "\n" +
                 "else if (b)\n" +
-                (if (useBlock1) "{}" else "b();") + "\n" +
+                (if (params.b1) "{bb();}" else "bs();") + "\n" +
                 "else\n" +
-                (if (useBlock2) "{}" else "c();")
+                (if (params.b2) "{cb();}" else "cs();")
 
         val expectedOutputText =
             "if (a)\n" +
-                (if (useBlock0) "{}" else "    a();") + "\n" +
+                (if (params.b0) "{ab();}" else "    as();") + "\n" +
                 "else if (b)\n" +
-                (if (useBlock1) "{}" else "    b();") + "\n" +
+                (if (params.b1) "{bb();}" else "    bs();") + "\n" +
                 "else\n" +
-                (if (useBlock2) "{}" else "    c();")
+                (if (params.b2) "{cb();}" else "    cs();")
 
         IntegrationTools.test(inputText, expectedOutputText, true)
     }
