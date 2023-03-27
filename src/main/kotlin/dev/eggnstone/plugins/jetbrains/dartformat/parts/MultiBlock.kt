@@ -13,11 +13,14 @@ data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>
         fun double(header: String, middle: String, footer: String, parts1: List<IPart> = listOf(), parts2: List<IPart> = listOf()): IPart = MultiBlock(listOf(header, middle), listOf(parts1, parts2), footer)
     }
 
-    override fun recreate(): String
+    init
     {
         if (headers.size != partLists.size)
-            throw DartFormatException("headers.size != parts.size")
+            throw DartFormatException("headers.size (${headers.size}) != partLists.size (${partLists.size})")
+    }
 
+    override fun recreate(): String
+    {
         val result = StringBuilder()
 
         @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
@@ -38,9 +41,6 @@ data class MultiBlock(val headers: List<String>, val partLists: List<List<IPart>
     {
         if (DotlinTools.isEmpty(headers))
             throw DartFormatException("DotlinTools.isEmpty(headers)")
-
-        if (headers.size != partLists.size)
-            throw DartFormatException("headers.size != parts.size")
 
         val result = StringBuilder()
 

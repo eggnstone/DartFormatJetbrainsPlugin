@@ -21,7 +21,7 @@ class TextSplitterState(val inputText: String)
     var isInNormalQuotes = false
 
     var headers = mutableListOf<String>()
-    var parts = mutableListOf<List<IPart>>()
+    var partLists = mutableListOf<List<IPart>>()
     var footer = ""
 
     //var headerOLD = ""
@@ -58,7 +58,7 @@ class TextSplitterState(val inputText: String)
         //DotlinLogger.log("blockParts:                ${Tools.toDisplayStringForParts(blockPartsOLD)}")
 
         DotlinLogger.log("headers:                   ${Tools.toDisplayStringForStrings(headers)}")
-        DotlinLogger.log("parts:                     ${Tools.toDisplayStringForPartLists(parts)}")
+        DotlinLogger.log("partLists:                 ${Tools.toDisplayStringForPartLists(partLists)}")
         DotlinLogger.log("footer:                    ${Tools.toDisplayStringShort(footer)}")
 
         DotlinLogger.log("----- $s ---------------------------------------- $s\n")
@@ -85,7 +85,7 @@ class TextSplitterState(val inputText: String)
         newState.blockPartsOLD = DotlinTools.clone(blockPartsOLD)*/
 
         newState.headers = DotlinTools.clone(headers)
-        newState.parts = DotlinTools.clone(parts)
+        newState.partLists = DotlinTools.clone(partLists)
         newState.footer = footer
 
 

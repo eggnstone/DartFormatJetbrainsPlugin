@@ -234,6 +234,8 @@ class TextSplitter : ISplitter
 
         private fun handleClosingBrace(oldState: TextSplitterState, parts: List<IPart>): ITextSplitterHandleResult
         {
+            if (DotlinLogger.isEnabled) DotlinLogger.log("TextSplitter.handleClosingBrace: parts: ${Tools.toDisplayStringForParts(parts)}")
+
             val state = oldState.clone()
             state.log("handleClosingBrace")
 
@@ -241,11 +243,11 @@ class TextSplitter : ISplitter
             {
                 state.remainingText = ""
                 state.headers.add(state.currentText)
-                state.parts.add(parts)
+                state.partLists.add(parts)
                 state.footer = "}"
                 state.log("handleClosingBrace exit-1")
 
-                val multiBlock = MultiBlock(state.headers, state.parts, state.footer)
+                val multiBlock = MultiBlock(state.headers, state.partLists, state.footer)
                 return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(multiBlock)))
             }
 
@@ -261,14 +263,16 @@ class TextSplitter : ISplitter
 
                 //state.remainingText = ""
                 state.headers.add(state.currentText)
-                state.parts.add(parts)
+                state.partLists.add(parts)
                 state.footer = "}"
                 state.log("handleClosingBrace exit-2")
 
-                val multiBlock = MultiBlock(state.headers, state.parts, state.footer)
+                val multiBlock = MultiBlock(state.headers, state.partLists, state.footer)
                 return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(multiBlock)))
             }
 
+            val tempLeadingText = StringWrapper.substring(state.remainingText, 0, elseEndPos)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("tempLeadingText:           ${Tools.toDisplayStringShort(tempLeadingText)}")
             val tempRemainingText = StringWrapper.substring(state.remainingText, elseEndPos)
             if (DotlinLogger.isEnabled) DotlinLogger.log("tempRemainingText:         ${Tools.toDisplayStringShort(tempRemainingText)}")
 
@@ -279,19 +283,13 @@ class TextSplitter : ISplitter
             {
                 state.log("elseEndPos >= 0 && ifEndPos == -1")
 
-                //val header = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
                 val header = state.currentText
                 if (DotlinLogger.isEnabled) DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(header)}")
 
-                //state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
-                //state.remainingText = "}"+ state.remainingText
                 if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
 
-                /*if (StringWrapper.isEmpty(state.remainingText))
-                    throw DartFormatException("StringWrapper.isEmpty(state.remainingText)")*/
-
                 state.headers.add(header)
-                state.parts.add(parts)
+                state.partLists.add(parts)
 
                 state.currentText = "}"
 
@@ -299,36 +297,64 @@ class TextSplitter : ISplitter
                 return TextSplitterHandleStateResult(state)
             }
 
+            state.log("elseEndPos >= 0 && ifEndPos >= 0")
+
             val elseIfResult = MasterSplitter().split(tempRemainingText)
             if (DotlinLogger.isEnabled) DotlinLogger.log("tempRemainingText:         ${Tools.toDisplayStringShort(tempRemainingText)}")
             if (DotlinLogger.isEnabled) DotlinLogger.log("elseIfResult:              $elseIfResult")
 
-            state.log("elseEndPos >= 0 && ifEndPos >= 0")
-            TODO("elseEndPos >= 0 && ifEndPos >= 0")
-
-            val header = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
+            val header = state.currentText
             if (DotlinLogger.isEnabled) DotlinLogger.log("header:                    ${Tools.toDisplayStringShort(header)}")
 
-            //state.middleOLD = "}" + StringWrapper.substring(state.remainingText, 0, elseEndPos)
-            //if (DotlinLogger.isEnabled) DotlinLogger.log("middle:                    ${Tools.toDisplayStringShort(state.middleOLD)}")
-
-            state.remainingText = StringWrapper.substring(state.remainingText, elseEndPos)
+            state.remainingText = elseIfResult.remainingText
             if (DotlinLogger.isEnabled) DotlinLogger.log("remainingText:             ${Tools.toDisplayStringShort(state.remainingText)}")
 
-            if (StringWrapper.isEmpty(state.remainingText))
-                throw DartFormatException("StringWrapper.isEmpty(state.remainingText)")
-
-            /*state.hasBlockOLD = true
-            state.headerOLD = state.currentText
-            state.blockPartsOLD = parts*/
-
             state.headers.add(header)
-            state.parts.add(parts)
+            state.partLists.add(parts)
 
             state.currentText = ""
 
             state.log("handleClosingBrace exit-4")
-            return TextSplitterHandleStateResult(state)
+
+            if (elseIfResult.parts.size != 1)
+                throw DartFormatException("elseIfResult.parts.size (${elseIfResult.parts.size}) != 1")
+
+            val elseIfPart = elseIfResult.parts[0]
+            if (elseIfPart is MultiBlock)
+            {
+                val elseIfMultiBlock: MultiBlock = elseIfPart
+
+                val headers = mutableListOf(header)
+                for (i in 0 until elseIfMultiBlock.headers.size)
+                {
+                    val headerI = elseIfMultiBlock.headers[i]
+                    if (i == 0)
+                        headers.add("}$tempLeadingText$headerI")
+                    else
+                        headers.add(headerI)
+                }
+
+                val partLists = mutableListOf(parts)
+                partLists.addAll(elseIfMultiBlock.partLists)
+                val footer = "}"
+
+                val multiBlock = MultiBlock(headers, partLists, footer)
+                return TextSplitterHandleSplitResult(SplitResult(elseIfResult.remainingText, listOf(multiBlock)))
+            }
+
+            if (elseIfPart is Statement)
+            {
+                val elseIfStatement: Statement = elseIfPart
+
+                val headers = mutableListOf(header)
+                val partLists = mutableListOf(parts)
+                val footer = "}$tempLeadingText${elseIfStatement.text}"
+
+                val multiBlock = MultiBlock(headers, partLists, footer)
+                return TextSplitterHandleSplitResult(SplitResult(elseIfResult.remainingText, listOf(multiBlock)))
+            }
+
+            TODO("elseIfPart is ?: ${elseIfPart::class.simpleName}")
         }
 
         private fun handleOpeningBracket(currentChar: String, oldState: TextSplitterState): TextSplitterState
@@ -344,7 +370,7 @@ class TextSplitter : ISplitter
 
         fun handleSemicolon(oldState: TextSplitterState): ITextSplitterHandleResult
         {
-            if (oldState.parts.size > 0) // hasBlockOLD)
+            if (oldState.partLists.size > 0) // hasBlockOLD)
                 return handleSemicolonHasBlock(oldState)
 
             return handleSemicolonHasNoBlock(oldState)
@@ -368,13 +394,13 @@ class TextSplitter : ISplitter
             if (DotlinLogger.isEnabled) DotlinLogger.log("currentText:              ${Tools.toDisplayStringShort(state.currentText)}")
 
             if (state.headers.size != 1)
-                throw DartFormatException("state.headers.size != 1")
+                throw DartFormatException("state.headers.size (${state.headers.size}) != 1")
 
-            if (state.parts.size != 1)
-                throw DartFormatException("state.parts.size != 1")
+            if (state.partLists.size != 1)
+                throw DartFormatException("state.partLists.size != 1")
 
             state.log("handleSemicolonHasBlock exit")
-            val singleBlock = MultiBlock.single(state.headers[0], state.footer, state.parts[0]) //blockPartsOLD)
+            val singleBlock = MultiBlock.single(state.headers[0], state.footer, state.partLists[0]) //blockPartsOLD)
             return TextSplitterHandleSplitResult(SplitResult(state.remainingText, listOf(singleBlock)))
         }
 

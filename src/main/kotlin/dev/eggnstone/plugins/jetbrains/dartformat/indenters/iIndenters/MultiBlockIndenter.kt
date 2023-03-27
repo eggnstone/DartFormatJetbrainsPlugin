@@ -75,8 +75,9 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
     fun indentHeader(header: String, isFirst: Boolean = true): String
     {
+        /*// TODO!
         if (!isFirst)
-            return header
+            return header*/
 
         return indentHeaderInternal(header)
     }
@@ -98,7 +99,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             return "{"
 
         var usesColon = false
-        var result = headerLines[0]
+        val result = StringBuffer(headerLines[0])
 
         var startIndex = 1
         var isInMultiLineComment = false
@@ -114,7 +115,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (isInMultiLineComment)
             {
-                result += currentLine
+                result.append(currentLine)
                 startIndex++
 
                 if (StringWrapper.containsString(previousLine, "*/"))
@@ -125,7 +126,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(previousLine, "/*"))
             {
-                result += currentLine
+                result.append(currentLine)
                 startIndex++
 
                 if (!StringWrapper.containsString(previousLine, "*/"))
@@ -136,14 +137,14 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (StringWrapper.startsWith(previousLine, "//"))
             {
-                result += currentLine
+                result.append(currentLine)
                 startIndex++
                 continue
             }
 
             if (StringWrapper.startsWith(previousLine, "@"))
             {
-                result += currentLine
+                result.append(currentLine)
                 startIndex++
                 continue
             }
@@ -166,7 +167,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
             if (isInMultiLineComment)
             {
-                result += headerLine
+                result.append(headerLine)
 
                 if (StringWrapper.containsString(headerLine, "*/"))
                     isInMultiLineComment = false
@@ -177,7 +178,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (StringWrapper.startsWith(headerLine, "/*"))
             {
                 // no padding for multi line comments
-                result += headerLine
+                result.append(headerLine)
 
                 if (!StringWrapper.containsString(headerLine, "*/"))
                     isInMultiLineComment = true
@@ -188,7 +189,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (StringWrapper.startsWith(headerLine, "//"))
             {
                 // no padding for end of line comments
-                result += headerLine
+                result.append(headerLine)
                 continue
             }
 
@@ -200,19 +201,11 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                     usesColon = true
             }
 
-            /*// TODO: find a better solution
-            //if (StringWrapper.startsWith(headerLine, "async ") || headerLine == "async")//DotlinTools.trimEnd(headerLine) == "async"))
-            if (StringWrapper.startsWith(headerLine, "async ")
-                || StringWrapper.startsWith(headerLine, "async\t")
-                || StringWrapper.startsWith(headerLine, "async\n")
-                || StringWrapper.startsWith(headerLine, "async\r")
-                || headerLine == "async"
-            )*/
             val asyncEndPos = Tools.getTextEndPos(headerLine, "async")
             if (asyncEndPos >= 0)
             {
                 // no padding for "async..."
-                result += headerLine
+                result.append(headerLine)
                 continue
             }
 
@@ -220,13 +213,13 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (elseEndPos >= 0)
             {
                 // no padding for "else..."
-                result += headerLine
+                result.append(headerLine)
                 continue
             }
 
             if (StringWrapper.isBlank(headerLine))
             {
-                result += Tools.trimSimple(headerLine)
+                result.append(Tools.trimSimple(headerLine))
                 continue
             }
 
@@ -235,13 +228,13 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (usesColon && !startsWithColon)
                 pad = "$pad  "
 
-            result += pad + headerLine
+            result.append(pad + headerLine)
         }
 
-        result += "{"
-        if (DotlinLogger.isEnabled) DotlinLogger.log("  result: ${Tools.toDisplayStringShort(result)}")
+        result.append("{")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  result: ${Tools.toDisplayStringShort(result.toString())}")
 
-        return result
+        return result.toString()
     }
 
     fun indentFooter(footer: String): String
@@ -304,9 +297,9 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 continue
             }
 
-            val pos = Tools.getElseEndPos(currentLine)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("pos: $pos")
-            if (pos >= 0)
+            val elseEndPos = Tools.getElseEndPos(currentLine)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos: $elseEndPos")
+            if (elseEndPos >= 0)
             {
                 result.append(currentLine)
                 startIndex++
@@ -356,6 +349,21 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             {
                 TODO("SingleBlockIndenter.indentFooter 7")
                 // no padding for end of line comments
+                result.append(footerLine)
+                continue
+            }
+
+            val elseEndPos = Tools.getElseEndPos(footerLine)
+            if (elseEndPos >= 0)
+            {
+                // no padding for "else..."
+                result.append(footerLine)
+                continue
+            }
+
+            if (footerLine.startsWith("{"))
+            {
+                // no padding for "{..."
                 result.append(footerLine)
                 continue
             }
