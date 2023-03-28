@@ -45,7 +45,7 @@ class Tools
 
         fun getTextEndPos(s: String, searchText: String): Int
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("getTextEndPos(${toDisplayStringShort(s)})")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("getTextEndPos(${toDisplayStringShort(s)}, ${toDisplayString(searchText)})")
 
             if (s == searchText)
                 return s.length
@@ -59,6 +59,7 @@ class Tools
                 return -1
 
             val trailingText = StringWrapper.substring(s, pos + searchText.length)
+            DotlinLogger.log("trailingText: ${toDisplayString(trailingText)}")
             if (StringWrapper.isEmpty(trailingText))
                 return s.length
 
@@ -67,7 +68,7 @@ class Tools
 
             @Suppress("ReplaceGetOrSet") // dotlin
             val cFirst = trailingText.get(0).toString()
-            if (!isWhitespace(cFirst) && cFirst != "{")
+            if (!isWhitespace(cFirst) && cFirst != "{" && cFirst != ":")
                 return -1
 
             @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
@@ -75,7 +76,7 @@ class Tools
             {
                 @Suppress("ReplaceGetOrSet") // dotlin
                 val c = trailingText.get(i).toString()
-                if (!isWhitespace(c))
+                if (!isWhitespace(c) || c == ":")
                     return pos + searchText.length + i
             }
 

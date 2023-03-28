@@ -1,5 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.indenters
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
@@ -24,6 +25,9 @@ class BlockIndenter(private val spacesPerLevel: Int)
         //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayStringShort(body)}")
         val lines = lineSplitter.split(body, trim = false)
 
+        var isInCaseOrDefault = false
+        var isInSwitch = false
+
         //if (DotlinLogger.isEnabled) DotlinLogger.log("  Lines :${lines.size}")
         val indentedBody = StringBuilder()
         @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
@@ -33,13 +37,33 @@ class BlockIndenter(private val spacesPerLevel: Int)
             val line = lines.get(i) // workaround for dotlin
             if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$i: ${Tools.toDisplayStringShort(line)}")
 
+            var caseOrDefaultEndPos = Tools.getTextEndPos(line, "case")
+            if (caseOrDefaultEndPos < 0)
+                caseOrDefaultEndPos = Tools.getTextEndPos(line, "default")
+
+            if (caseOrDefaultEndPos < 0)
+            {
+                if (isInCaseOrDefault)
+                    isInCaseOrDefault = false
+            }
+            else
+            {
+                isInSwitch = true
+                if (isInCaseOrDefault)
+                    throw DartFormatException("caseOrDefaultEndPos >= 0 && isInCaseOrDefault")
+
+                isInCaseOrDefault = true
+            }
+
             if (i == 0 && !Tools.containsLineBreak(line))
             {
                 indentedBody.append(line)
                 continue
             }
 
-            val pad = if (StringWrapper.isBlank(line)) "" else StringWrapper.getSpaces(spacesPerLevel)
+            val level = if (isInSwitch) if (isInCaseOrDefault) 1 else 2 else 1
+
+            val pad = if (StringWrapper.isBlank(line)) "" else StringWrapper.getSpaces(level * spacesPerLevel)
             indentedBody.append(pad + line)
         }
 

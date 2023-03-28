@@ -186,7 +186,7 @@ class TestSimpleIsFirst
 
     @Test
     @Ignore
-    fun endOfLineCommentWithQuotesAtTextStartAndTrailingSpaces()
+    fun endOfLineCommentWithQuotesAtTextStartAndTrailingSpaces_trimEnd()
     {
         val inputText =
             "//\"comment1\"\n" +

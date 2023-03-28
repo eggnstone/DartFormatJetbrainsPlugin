@@ -105,7 +105,7 @@ class TestMultiLineComments
 
     @Test
     @Ignore
-    fun multiLineCommentWithSpacesAtEndOfLine()
+    fun multiLineCommentWithSpacesAtEndOfLine_trimCommentEnd()
     {
         val inputText =
             "/* multi line    \n" +
