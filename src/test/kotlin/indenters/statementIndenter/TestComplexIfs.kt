@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import org.junit.Test
 
-class TestComplex
+class TestComplexIfs
 {
     @Test
     fun twoNestedIfs()

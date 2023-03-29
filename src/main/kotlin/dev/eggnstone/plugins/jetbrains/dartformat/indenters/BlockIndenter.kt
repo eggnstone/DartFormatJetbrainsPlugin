@@ -22,7 +22,7 @@ class BlockIndenter(private val spacesPerLevel: Int)
         if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts(${Tools.toDisplayStringForParts(parts)})")
 
         val body = masterIndenter.indentParts(parts)
-        //if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayStringShort(body)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("BlockIndenter.indentParts: body: ${Tools.toDisplayStringShort(body)}")
         val lines = lineSplitter.split(body, trim = false)
 
         var isInCaseOrDefault = false
@@ -61,7 +61,8 @@ class BlockIndenter(private val spacesPerLevel: Int)
                 continue
             }
 
-            val level = if (isInSwitch) if (isInCaseOrDefault) 1 else 2 else 1
+            //val level = if (isInSwitch) if (isInCaseOrDefault) 1 else 2 else 1
+            val level = 1
 
             val pad = if (StringWrapper.isBlank(line)) "" else StringWrapper.getSpaces(level * spacesPerLevel)
             indentedBody.append(pad + line)

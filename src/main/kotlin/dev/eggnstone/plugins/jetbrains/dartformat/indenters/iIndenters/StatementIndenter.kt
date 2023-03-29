@@ -30,12 +30,13 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         val recreatedPart = statement.recreate()
         val lines = LineSplitter().split(recreatedPart, true)
 
-        var currentConditionals = 0
-        var usesColon = false
-        var result = ""
-
         var currentBracketPackages: List<BracketPackage> = listOf() // ok
         //var currentBracketPackages = listOf<BracketPackage>()
+        var currentConditionals = 0
+        var isSwitch = false
+        var usesColon = false
+
+        var result = ""
 
         @Suppress("ReplaceManualRangeWithIndicesCalls")
         for (lineIndex in 0 until lines.size) // workaround for dotlin
@@ -52,6 +53,17 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                     usesColon = true
             }
 
+            if (lineIndex == 0)
+            {
+                var caseOrDefaultEndPos = Tools.getTextEndPos(line, "case")
+                if (caseOrDefaultEndPos < 0)
+                    caseOrDefaultEndPos = Tools.getTextEndPos(line, "default")
+
+                if (caseOrDefaultEndPos >= 0)
+                    isSwitch = true
+            }
+
+            val switchLevel = if (isSwitch) if (lineIndex==0) 0 else 1 else 0
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
             if (DotlinLogger.isEnabled)
             {
@@ -68,7 +80,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             //val adjustedCurrentConditionals = currentConditionals + (if (levels.isElse) -1 else 0)
             val adjustedCurrentConditionals = currentConditionals + (if (levels.newClosedConditionals > 0) -1 else 0)
             val tempLevel = adjustedCurrentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
-            var pad = StringWrapper.getSpaces(tempLevel * spacesPerLevel)
+            var pad = StringWrapper.getSpaces((switchLevel + tempLevel) * spacesPerLevel)
 
             if (usesColon)
             {
