@@ -1,6 +1,8 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.intellij.notification.*
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationListener
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -87,13 +89,36 @@ class PluginFormat : AnAction()
             lines.add("$changedFilesText changed.")
             notifyInfo(lines, project)
         }
-        catch (err: DartFormatException)
+        catch (err: Exception)
         {
-            DotlinLogger.log("DartFormatException: ${err.message}")
-            val errMessage = err.message ?: "Unknown error."
-            val errMessages = errMessage.split("\n")
-            notifyError(errMessages, project)
+            reportError(err, project)
         }
+        catch (err: Error)
+        {
+            reportError(err, project)
+        }
+    }
+
+    private fun reportError(throwable: Throwable, project: Project)
+    {
+        val message = if (throwable.message == null) "Unknown error" else throwable.message
+        DotlinLogger.log("Throwable: $message")
+
+        var stacktrace = throwable.stackTraceToString()
+        var pos = stacktrace.lastIndexOf("dev.eggnstone")
+        if (pos >= 0)
+        {
+            pos = stacktrace.indexOf("\n", pos)
+            if (pos >= 0)
+                stacktrace = stacktrace.substring(0, pos - 1)
+        }
+
+        val title = "Error while formatting: $message"
+        val body = "Please supply any additional information here:\n\n```\n$message\n$stacktrace\n```"
+        val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
+        val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
+
+        notifyError(text, project)
     }
 
     private fun notifyInfo(lines: List<String>, project: Project, subtitle: String? = null)
@@ -106,18 +131,26 @@ class PluginFormat : AnAction()
         notifyByToolWindowBalloon(lines, NotificationType.WARNING, project, subtitle)
     }
 
-    private fun notifyError(lines: List<String>, project: Project, subtitle: String? = null)
+    //private fun notifyErrorWithNormalLineBreaks(lines: List<String>, project: Project, subtitle: String? = null)
+    private fun notifyError(text: String, project: Project, subtitle: String? = null)
     {
-        notifyByToolWindowBalloon(lines, NotificationType.ERROR, project, subtitle)
+        //val combinedLines = lines.joinToString("\n")
+        //notifyByToolWindowBalloon(combinedLines, NotificationType.ERROR, project, subtitle)
+        notifyByToolWindowBalloon(text, NotificationType.ERROR, project, subtitle)
     }
 
     private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, project: Project, subtitle: String? = null)
     {
         val combinedLines = lines.joinToString("<br/>")
+        notifyByToolWindowBalloon(combinedLines, type, project, subtitle)
+    }
 
+    private fun notifyByToolWindowBalloon(text: String, type: NotificationType, project: Project, subtitle: String? = null)
+    {
         val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-        val notification = notificationGroup.createNotification("DartFormat", combinedLines, type)
+        val notification = notificationGroup.createNotification("DartFormat", text, type)
         notification.subtitle = subtitle
+        notification.setListener(NotificationListener.UrlOpeningListener(true))
         notification.notify(project)
     }
 
