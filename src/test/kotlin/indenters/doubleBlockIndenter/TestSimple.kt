@@ -21,9 +21,9 @@ class TestSimple
 
         val expectedText =
             "if (true)\n" +
-                "{}\n" +
-                "else\n" +
-                "{}"
+            "{}\n" +
+            "else\n" +
+            "{}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
@@ -44,11 +44,11 @@ class TestSimple
 
         val expectedText =
             "if (true)\n" +
-                "{\n" +
-                "}\n" +
-                "else\n" +
-                "{\n" +
-                "}"
+            "{\n" +
+            "}\n" +
+            "else\n" +
+            "{\n" +
+            "}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 

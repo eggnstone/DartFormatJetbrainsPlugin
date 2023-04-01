@@ -1,7 +1,10 @@
 package splitters.iSplitter.textSplitter
 
 import TestParams
-import dev.eggnstone.plugins.jetbrains.dartformat.parts.*
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Whitespace
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.TextSplitter
 import org.junit.Test
 import org.junit.runner.RunWith

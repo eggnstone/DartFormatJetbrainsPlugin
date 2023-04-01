@@ -6,8 +6,8 @@ class DartFormatConfig(isTest: Boolean = false)
         get(): Boolean
         {
             return removeUnnecessaryCommas
-                || removeLineBreaksAfterArrows
-                || indentationIsEnabled
+            || removeLineBreaksAfterArrows
+            || indentationIsEnabled
         }
 
     var removeUnnecessaryCommas = isTest

@@ -85,15 +85,15 @@ class TestsParametrizedWithLevel(private val level: Int)
 
         val inputText =
             "/*\n" +
-                StringWrapper.getSpaces(line1Indent) + "comment\n" +
-                StringWrapper.getSpaces(line2Indent) + "*/"
+            StringWrapper.getSpaces(line1Indent) + "comment\n" +
+            StringWrapper.getSpaces(line2Indent) + "*/"
         val inputPart = Comment(inputText, line0Indent)
 
         @Suppress("UnnecessaryVariable")
         val expectedText =
             space + "/*\n" +
-                space + StringWrapper.getSpaces(line1Indent - line0Indent) + "comment\n" +
-                space + StringWrapper.getSpaces(line2Indent - line0Indent) + "*/"
+            space + StringWrapper.getSpaces(line1Indent - line0Indent) + "comment\n" +
+            space + StringWrapper.getSpaces(line2Indent - line0Indent) + "*/"
 
         val actualText = CommentIndenter(SPACES_PER_LEVEL).indentPart(inputPart, DEFAULT_START_INDENT, level)
 

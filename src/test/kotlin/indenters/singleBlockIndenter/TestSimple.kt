@@ -39,7 +39,7 @@ class TestSimple
 
         val expectedText =
             "class C\n" +
-                "{}"
+            "{}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
@@ -53,8 +53,8 @@ class TestSimple
 
         val expectedText =
             "class C\n" +
-                "{\n" +
-                "}"
+            "{\n" +
+            "}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 
@@ -68,8 +68,8 @@ class TestSimple
 
         val expectedText =
             "class C\n" +
-                "    with X\n" +
-                "{}"
+            "    with X\n" +
+            "{}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 

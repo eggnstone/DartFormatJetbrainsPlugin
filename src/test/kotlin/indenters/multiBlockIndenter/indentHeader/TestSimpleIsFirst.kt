@@ -61,11 +61,11 @@ class TestSimpleIsFirst
     {
         val inputText =
             "class C\n" +
-                "{"
+            "{"
 
         val expectedText =
             "class C\n" +
-                "{"
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -77,13 +77,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "class C\n" +
-                "with X\n" +
-                "{"
+            "with X\n" +
+            "{"
 
         val expectedText =
             "class C\n" +
-                "    with X\n" +
-                "{"
+            "    with X\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -95,13 +95,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "void main()\n" +
-                "async\n" +
-                "{"
+            "async\n" +
+            "{"
 
         val expectedText =
             "void main()\n" +
-                "async\n" +
-                "{"
+            "async\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -113,13 +113,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "@annotation\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "@annotation\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -131,15 +131,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "@annotation1\n" +
-                "@annotation2\n" +
-                "void main()\n" +
-                "{"
+            "@annotation2\n" +
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "@annotation1\n" +
-                "@annotation2\n" +
-                "void main()\n" +
-                "{"
+            "@annotation2\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -151,13 +151,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "//comment\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "//comment\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -169,15 +169,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "//\"comment1\"\n" +
-                "//    \"comment2\"\n" +
-                "void main()\n" +
-                "{"
+            "//    \"comment2\"\n" +
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "//\"comment1\"\n" +
-                "//    \"comment2\"\n" +
-                "void main()\n" +
-                "{"
+            "//    \"comment2\"\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -190,15 +190,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "//\"comment1\"\n" +
-                "//    \"comment2\"    \n" +
-                "void main()\n" +
-                "{"
+            "//    \"comment2\"    \n" +
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "//\"comment1\"\n" +
-                "//    \"comment2\"\n" +
-                "void main()\n" +
-                "{"
+            "//    \"comment2\"\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -210,13 +210,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "void main()\n" +
-                "//comment\n" +
-                "{"
+            "//comment\n" +
+            "{"
 
         val expectedText =
             "void main()\n" +
-                "//comment\n" +
-                "{"
+            "//comment\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -228,13 +228,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "/*comment*/\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "/*comment*/\n" +
-                "void main()\n" +
-                "{"
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -246,11 +246,11 @@ class TestSimpleIsFirst
     {
         val inputText =
             "/*comment*/void main()\n" +
-                "{"
+            "{"
 
         val expectedText =
             "/*comment*/void main()\n" +
-                "{"
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -262,15 +262,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "/*comment1\n" +
-                "comment2*/\n" +
-                "void main()\n" +
-                "{"
+            "comment2*/\n" +
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "/*comment1\n" +
-                "comment2*/\n" +
-                "void main()\n" +
-                "{"
+            "comment2*/\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -282,17 +282,17 @@ class TestSimpleIsFirst
     {
         val inputText =
             "/*comment1\n" +
-                "comment2\n" +
-                "comment3*/\n" +
-                "void main()\n" +
-                "{"
+            "comment2\n" +
+            "comment3*/\n" +
+            "void main()\n" +
+            "{"
 
         val expectedText =
             "/*comment1\n" +
-                "comment2\n" +
-                "comment3*/\n" +
-                "void main()\n" +
-                "{"
+            "comment2\n" +
+            "comment3*/\n" +
+            "void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -304,13 +304,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "/*comment1\n" +
-                "comment2*/void main()\n" +
-                "{"
+            "comment2*/void main()\n" +
+            "{"
 
         val expectedText =
             "/*comment1\n" +
-                "comment2*/void main()\n" +
-                "{"
+            "comment2*/void main()\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -322,13 +322,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "void main()\n" +
-                "/*comment*/\n" +
-                "{"
+            "/*comment*/\n" +
+            "{"
 
         val expectedText =
             "void main()\n" +
-                "/*comment*/\n" +
-                "{"
+            "/*comment*/\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -340,15 +340,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "void main()\n" +
-                "/*comment1\n" +
-                "comment2*/\n" +
-                "{"
+            "/*comment1\n" +
+            "comment2*/\n" +
+            "{"
 
         val expectedText =
             "void main()\n" +
-                "/*comment1\n" +
-                "comment2*/\n" +
-                "{"
+            "/*comment1\n" +
+            "comment2*/\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -360,17 +360,17 @@ class TestSimpleIsFirst
     {
         val inputText =
             "void main()\n" +
-                "/*comment1\n" +
-                "comment2\n" +
-                "comment3*/\n" +
-                "{"
+            "/*comment1\n" +
+            "comment2\n" +
+            "comment3*/\n" +
+            "{"
 
         val expectedText =
             "void main()\n" +
-                "/*comment1\n" +
-                "comment2\n" +
-                "comment3*/\n" +
-                "{"
+            "/*comment1\n" +
+            "comment2\n" +
+            "comment3*/\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -382,13 +382,13 @@ class TestSimpleIsFirst
     {
         val inputText =
             "C()\n" +
-                ": a = b\n" +
-                "{"
+            ": a = b\n" +
+            "{"
 
         val expectedText =
             "C()\n" +
-                "    : a = b\n" +
-                "{"
+            "    : a = b\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -400,15 +400,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "C()\n" +
-                ":\n" +
-                "a = b\n" +
-                "{"
+            ":\n" +
+            "a = b\n" +
+            "{"
 
         val expectedText =
             "C()\n" +
-                "    :\n" +
-                "      a = b\n" +
-                "{"
+            "    :\n" +
+            "      a = b\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -420,15 +420,15 @@ class TestSimpleIsFirst
     {
         val inputText =
             "C()\n" +
-                ": a = b,\n" +
-                "c = d\n" +
-                "{"
+            ": a = b,\n" +
+            "c = d\n" +
+            "{"
 
         val expectedText =
             "C()\n" +
-                "    : a = b,\n" +
-                "      c = d\n" +
-                "{"
+            "    : a = b,\n" +
+            "      c = d\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 
@@ -440,17 +440,17 @@ class TestSimpleIsFirst
     {
         val inputText =
             "C()\n" +
-                ":\n" +
-                "a = b,\n" +
-                "c = d\n" +
-                "{"
+            ":\n" +
+            "a = b,\n" +
+            "c = d\n" +
+            "{"
 
         val expectedText =
             "C()\n" +
-                "    :\n" +
-                "      a = b,\n" +
-                "      c = d\n" +
-                "{"
+            "    :\n" +
+            "      a = b,\n" +
+            "      c = d\n" +
+            "{"
 
         val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
 

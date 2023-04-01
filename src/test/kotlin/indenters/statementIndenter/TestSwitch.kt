@@ -14,8 +14,8 @@ class TestSwitch
 
         val expectedText =
             "case:\n" +
-                "    s();\n" +
-                "    break;"
+            "    s();\n" +
+            "    break;"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -29,8 +29,8 @@ class TestSwitch
 
         val expectedText =
             "default:\n" +
-                "    s();\n" +
-                "    break;"
+            "    s();\n" +
+            "    break;"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

@@ -22,11 +22,11 @@ class BlockTestsParametrizedWithStatementOrBlockBooleans1(private val params: Te
     {
         val inputText =
             "if (a)\n" +
-                (if (params.b0) "{}" else "a();")
+            (if (params.b0) "{}" else "a();")
 
         val expectedOutputText =
             "if (a)\n" +
-                (if (params.b0) "{}" else "    a();")
+            (if (params.b0) "{}" else "    a();")
 
         IntegrationTools.test(inputText, expectedOutputText, true)
     }

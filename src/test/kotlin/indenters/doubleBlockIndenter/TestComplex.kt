@@ -23,13 +23,13 @@ class TestComplex
 
         val expectedText =
             "if (true)\n" +
-                "{\n" +
-                "    abc();\n" +
-                "}\n" +
-                "else\n" +
-                "{\n" +
-                "    def();\n" +
-                "}"
+            "{\n" +
+            "    abc();\n" +
+            "}\n" +
+            "else\n" +
+            "{\n" +
+            "    def();\n" +
+            "}"
 
         val actualText = MultiBlockIndenter(4).indentPart(inputPart)
 

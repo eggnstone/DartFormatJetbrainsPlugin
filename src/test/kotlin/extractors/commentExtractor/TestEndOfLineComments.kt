@@ -32,7 +32,7 @@ class TestEndOfLineComments
     {
         val inputText =
             "// end of line comment\n" +
-                "abc();"
+            "abc();"
         val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "// end of line comment\n"

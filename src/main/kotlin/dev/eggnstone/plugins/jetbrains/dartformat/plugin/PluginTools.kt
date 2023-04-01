@@ -17,6 +17,7 @@ class PluginTools
             if (virtualFile.name.endsWith(".g.dart"))
                 return false
 
+            @Suppress("RedundantIf")
             if (virtualFile.name.endsWith(".gr.dart"))
                 return false
 

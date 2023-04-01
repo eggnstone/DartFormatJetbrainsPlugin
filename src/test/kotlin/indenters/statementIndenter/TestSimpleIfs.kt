@@ -14,7 +14,7 @@ class TestSimpleIfs
 
         val expectedText =
             "if\n" +
-                "    abc();"
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -28,7 +28,7 @@ class TestSimpleIfs
 
         val expectedText =
             "if\n" +
-                "    abc();"
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -42,7 +42,7 @@ class TestSimpleIfs
 
         val expectedText =
             "if()\n" +
-                "    abc();"
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -56,7 +56,7 @@ class TestSimpleIfs
 
         val expectedText =
             "if ()\n" +
-                "    abc();"
+            "    abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -70,9 +70,9 @@ class TestSimpleIfs
 
         val expectedText =
             "if (a)\n" +
-                "    a();\n" +
-                "else\n" +
-                "    b();"
+            "    a();\n" +
+            "else\n" +
+            "    b();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -86,9 +86,9 @@ class TestSimpleIfs
 
         val expectedText =
             "if (a)\n" +
-                "    a();\n" +
-                "else if (b)\n" +
-                "    b();"
+            "    a();\n" +
+            "else if (b)\n" +
+            "    b();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -102,11 +102,11 @@ class TestSimpleIfs
 
         val expectedText =
             "if (a)\n" +
-                "    a();\n" +
-                "else if (b)\n" +
-                "    b();\n" +
-                "else\n" +
-                "    c();"
+            "    a();\n" +
+            "else if (b)\n" +
+            "    b();\n" +
+            "else\n" +
+            "    c();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

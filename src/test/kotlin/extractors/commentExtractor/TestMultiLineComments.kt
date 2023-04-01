@@ -33,7 +33,7 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line comment */\n" +
-                "abc();"
+            "abc();"
         val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment = "/* multi line comment */"
@@ -42,7 +42,7 @@ class TestMultiLineComments
         val expectedStartPos = inputStartPos
         val expectedRemainingText =
             "\n" +
-                "abc();"
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText, inputStartPos)
 
@@ -56,19 +56,19 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line\n" +
-                "comment */\n" +
-                "abc();"
+            "comment */\n" +
+            "abc();"
         val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment =
             "/* multi line\n" +
-                "comment */"
+            "comment */"
 
         @Suppress("UnnecessaryVariable")
         val expectedStartPos = inputStartPos
         val expectedRemainingText =
             "\n" +
-                "abc();"
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText, inputStartPos)
 
@@ -82,19 +82,19 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line\n" +
-                "comment */\n" +
-                "abc();"
+            "comment */\n" +
+            "abc();"
         val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment =
             "/* multi line\n" +
-                "comment */"
+            "comment */"
 
         @Suppress("UnnecessaryVariable")
         val expectedStartPos = inputStartPos
         val expectedRemainingText =
             "\n" +
-                "abc();"
+            "abc();"
 
         val actualResult = CommentExtractor.extract(inputText, inputStartPos)
 
@@ -109,12 +109,12 @@ class TestMultiLineComments
     {
         val inputText =
             "/* multi line    \n" +
-                "comment */"
+            "comment */"
         val inputStartPos = 1 + (Math.random() * 1000).toInt()
 
         val expectedComment =
             "/* multi line\n" +
-                "comment */"
+            "comment */"
 
         @Suppress("UnnecessaryVariable")
         val expectedStartPos = inputStartPos

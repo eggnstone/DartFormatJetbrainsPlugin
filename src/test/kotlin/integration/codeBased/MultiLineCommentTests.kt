@@ -10,11 +10,11 @@ class MultiLineCommentTests
     {
         val inputText =
             "if (true) /*multi line comment*/\n" +
-                "abc();"
+            "abc();"
 
         val expectedOutputText =
             "if (true) /*multi line comment*/\n" +
-                "    abc();"
+            "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }
@@ -24,11 +24,11 @@ class MultiLineCommentTests
     {
         val inputText =
             "if (true) /*multi line def(); comment*/\n" +
-                "abc();"
+            "abc();"
 
         val expectedOutputText =
             "if (true) /*multi line def(); comment*/\n" +
-                "    abc();"
+            "    abc();"
 
         IntegrationTools.test(inputText, expectedOutputText)
     }

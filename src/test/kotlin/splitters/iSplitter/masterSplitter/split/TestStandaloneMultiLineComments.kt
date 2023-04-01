@@ -16,9 +16,9 @@ class TestStandaloneMultiLineComments
         val whitespace = " "
         val comment =
             "/*\n" +
-                "for ()\n" +
-                "  def();\n" +
-                "*/"
+            "for ()\n" +
+            "  def();\n" +
+            "*/"
         val inputText = statement + whitespace + comment
 
         val expectedRemainingText = ""

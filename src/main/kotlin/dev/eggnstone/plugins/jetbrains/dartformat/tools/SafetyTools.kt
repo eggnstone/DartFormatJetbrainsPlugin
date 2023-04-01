@@ -23,9 +23,11 @@ class SafetyTools
                 return
 
             val pos = StringUtils.indexOfDifference(commaLessOldText, commaLessNewText)
-            throw DartFormatException("Unexpected difference in formatted text:" +
+            throw DartFormatException(
+                "Unexpected difference in formatted text:" +
                 " Old: ${Tools.toDisplayStringShort(StringWrapper.substring(commaLessOldText, pos))}" +
-                " New: ${Tools.toDisplayStringShort(StringWrapper.substring(commaLessNewText, pos))}")
+                " New: ${Tools.toDisplayStringShort(StringWrapper.substring(commaLessNewText, pos))}"
+            )
         }
     }
 }

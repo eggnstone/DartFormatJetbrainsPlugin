@@ -27,8 +27,8 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "$openingBracket\n" +
-                "    abc;\n" +
-                closingBracket
+            "    abc;\n" +
+            closingBracket
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -48,10 +48,10 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "$openingBracket\n" +
-                "    $openingBracket\n" +
-                "        abc;\n" +
-                "    $closingBracket\n" +
-                closingBracket
+            "    $openingBracket\n" +
+            "        abc;\n" +
+            "    $closingBracket\n" +
+            closingBracket
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -68,7 +68,7 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "${openingBracket}abc;$closingBracket\n" +
-                "def;"
+            "def;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -85,7 +85,7 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "abc${openingBracket}def;$closingBracket\n" +
-                "ghi;"
+            "ghi;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -103,8 +103,8 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "abc$openingBracket\n" +
-                "    ${openingBracket}def;$closingBracket\n" +
-                "    ghi;"
+            "    ${openingBracket}def;$closingBracket\n" +
+            "    ghi;"
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -122,8 +122,8 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "abc$openingBracket\n" +
-                "    def;\n" +
-                closingBracket
+            "    def;\n" +
+            closingBracket
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -142,9 +142,9 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "if (a == b)\n" +
-                "$openingBracket\n" +
-                "    abc;\n" +
-                closingBracket
+            "$openingBracket\n" +
+            "    abc;\n" +
+            closingBracket
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)
@@ -162,8 +162,8 @@ class IndentTestsParametrizedWithBrackets(private val openingBracket: String, pr
         )
         val expectedOutputText =
             "if (a == b) $openingBracket\n" +
-                "    abc;\n" +
-                closingBracket
+            "    abc;\n" +
+            closingBracket
 
         val indenter = Indenter()
         val actualOutputText = indenter.indent(inputTokens)

@@ -13,9 +13,9 @@ class TestMultiLineComments
     {
         val inputText =
             "/*\n" +
-                "for ()\n" +
-                "  abc();\n" +
-                "*/"
+            "for ()\n" +
+            "  abc();\n" +
+            "*/"
 
         val expectedRemainingText = ""
         val expectedPart = Comment(inputText)
@@ -31,9 +31,9 @@ class TestMultiLineComments
 
         val inputText =
             "/*\n" +
-                "for ()\n" +
-                "  abc();\n" +
-                "*/"
+            "for ()\n" +
+            "  abc();\n" +
+            "*/"
 
         val expectedRemainingText = ""
         val expectedPart = Comment(inputText, currentIndent)

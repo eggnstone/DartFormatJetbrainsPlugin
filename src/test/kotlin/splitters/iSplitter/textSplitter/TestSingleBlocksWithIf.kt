@@ -43,8 +43,8 @@ class TestSingleBlocksWithIf
     {
         val inputText =
             "if (true) { statement1; }  \n" +
-                "  else  \n" +
-                "  statement2;"
+            "  else  \n" +
+            "  statement2;"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace(" "), Statement("statement1;"), Whitespace(" "))

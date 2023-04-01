@@ -14,8 +14,8 @@ class TestComplexIfs
 
         val expectedText =
             "if (true)\n" +
-                "    if (true)\n" +
-                "        abc();"
+            "    if (true)\n" +
+            "        abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -29,7 +29,7 @@ class TestComplexIfs
 
         val expectedText =
             "if (true) if (true)\n" +
-                "        abc();"
+            "        abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -43,9 +43,9 @@ class TestComplexIfs
 
         val expectedText =
             "if (true)\n" +
-                "    if (true)\n" +
-                "        if (true)\n" +
-                "            abc();"
+            "    if (true)\n" +
+            "        if (true)\n" +
+            "            abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 
@@ -59,7 +59,7 @@ class TestComplexIfs
 
         val expectedText =
             "if (true) if (true) if (true)\n" +
-                "            abc();"
+            "            abc();"
 
         val actualText = StatementIndenter(4).indentPart(inputPart)
 

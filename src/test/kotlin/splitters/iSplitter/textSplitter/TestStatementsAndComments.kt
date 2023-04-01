@@ -29,9 +29,9 @@ class TestStatementsAndComments
     {
         val comment =
             "/*\n" +
-                "for ()\n" +
-                "  abc();\n" +
-                "*/"
+            "for ()\n" +
+            "  abc();\n" +
+            "*/"
         val statement = "def();"
 
         val inputText = comment + "\n" + statement
@@ -49,9 +49,9 @@ class TestStatementsAndComments
         val statement = "abc();"
         val comment =
             "/*\n" +
-                "for ()\n" +
-                "  def();\n" +
-                "*/"
+            "for ()\n" +
+            "  def();\n" +
+            "*/"
 
         val inputText = "$statement $comment"
 

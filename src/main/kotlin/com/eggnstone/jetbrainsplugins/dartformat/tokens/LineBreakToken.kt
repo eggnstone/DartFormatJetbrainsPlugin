@@ -2,7 +2,7 @@ package com.eggnstone.jetbrainsplugins.dartformat.tokens
 
 import com.eggnstone.jetbrainsplugins.dartformat.ToolsOld
 
-class LineBreakToken constructor(val text: String) : IToken
+class LineBreakToken(val text: String) : IToken
 {
     companion object
     {

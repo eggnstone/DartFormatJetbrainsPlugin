@@ -63,7 +63,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                     isSwitch = true
             }
 
-            val switchLevel = if (isSwitch) if (lineIndex==0) 0 else 1 else 0
+            val switchLevel = if (isSwitch) if (lineIndex == 0) 0 else 1 else 0
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
             if (DotlinLogger.isEnabled)
             {

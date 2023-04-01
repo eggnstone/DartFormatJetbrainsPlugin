@@ -24,8 +24,8 @@ class TestSingleBlockClasses
     {
         val inputText =
             "class C\n" +
-                "{\n" +
-                "}"
+            "{\n" +
+            "}"
 
         val expectedRemainingText = ""
         val parts = listOf(Whitespace("\n"))
@@ -40,9 +40,9 @@ class TestSingleBlockClasses
     {
         val inputText =
             "class C\n" +
-                "{\n" +
-                "// COMMENT\n" +
-                "}"
+            "{\n" +
+            "// COMMENT\n" +
+            "}"
 
         val expectedRemainingText = ""
         val parts = listOf(
@@ -60,11 +60,11 @@ class TestSingleBlockClasses
     {
         val inputText =
             "class C\n" +
-                "{\n" +
-                "// COMMENT1\n" +
-                "abc();\n" +
-                "// COMMENT2\n" +
-                "}"
+            "{\n" +
+            "// COMMENT1\n" +
+            "abc();\n" +
+            "// COMMENT2\n" +
+            "}"
 
         val expectedRemainingText = ""
         val parts = listOf(
