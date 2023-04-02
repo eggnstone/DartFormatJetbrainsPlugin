@@ -11,10 +11,10 @@ class LevelsCalculator
 {
     fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayStringShort(line)}, oldBracketPackages=${oldBracketPackages.size})")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayStringShort(line)}, oldBracketPackages=${Tools.toDisplayStringForBracketPackages(oldBracketPackages)})")
 
         if (StringWrapper.isEmpty(line))
-            return Levels(0, 0, listOf(), false)
+            return Levels(0, 0, listOf(), isElse = false, isInSquareBracketIf = false)
 
         var brackets = 0
         var closedConditionals = 0
@@ -22,9 +22,11 @@ class LevelsCalculator
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
         var isElse = false
+        var isInSquareBracketIf = false
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
         var isInMultiLineComment = false
+        val isInSquareBrackets = DotlinTools.isNotEmpty(oldBracketPackages) && DotlinTools.isNotEmpty(oldBracketPackages.last().brackets) && oldBracketPackages.last().brackets.last() == "["
 
         val items = TypeSplitter().split(line)
         if (DotlinLogger.isEnabled) DotlinLogger.log("  items: ${Tools.toDisplayStringForStrings(items)}")
@@ -84,6 +86,15 @@ class LevelsCalculator
                 continue
             }
 
+            if (item == ",")
+            {
+                if (isInSquareBracketIf)
+                {
+                    conditionals--
+                    isInSquareBracketIf = false
+                }
+            }
+
             if (item == "do" || item == "for" || item == "while")
             {
                 conditionals++
@@ -92,6 +103,9 @@ class LevelsCalculator
 
             if (item == "if")
             {
+                if (isInSquareBrackets)
+                    isInSquareBracketIf = true
+
                 if (!isElse)
                     conditionals++
                 continue
@@ -154,6 +168,6 @@ class LevelsCalculator
             currentBracketPackages.add(BracketPackage(currentBrackets, lineIndex))
         }
 
-        return Levels(conditionals, closedConditionals, currentBracketPackages, isElse)
+        return Levels(conditionals, closedConditionals, currentBracketPackages, isElse, isInSquareBracketIf)
     }
 }

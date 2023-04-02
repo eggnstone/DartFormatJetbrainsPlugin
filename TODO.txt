@@ -1,7 +1,6 @@
 TODOs
 - Indent:
     - leading period
-    - if in []
     - arrows with linebreak
     - abc().then(()\n{ indents too much
     - if(\ indents too much
@@ -9,10 +8,8 @@ TODOs
     - for\nif\n{ not indented enough
     - before end of line comments
 
-
-
-
 DONE
+- if in []
 - start-of-line-colon (:)
 - switch-case and switch-default
 ??? Done? TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")  WordPressTools.kt

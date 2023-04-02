@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinTools
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
+import dev.eggnstone.plugins.jetbrains.dartformat.levels.BracketPackage
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 
 class Tools
@@ -156,6 +157,8 @@ class Tools
 
         fun toDisplayStringSimple(s: String): String = StringWrapper.replace(StringWrapper.replace(s, "\r", "\\r"), "\n", "\\n")
 
+        fun toDisplayStringForBracketPackages(bracketPackages: List<BracketPackage>): String = "[" + toDisplayStringForBracketPackagesInternal(bracketPackages) + "]"
+
         fun toDisplayStringForPartLists(partLists: List<List<IPart>>): String = "[" + toDisplayStringForPartListsInternal(partLists) + "]"
 
         fun toDisplayStringForParts(parts: List<IPart>): String = "[" + toDisplayStringForPartsInternal(parts) + "]"
@@ -243,6 +246,24 @@ class Tools
                     result += ","
 
                 result += toDisplayStringSimple(part.toString())
+            }
+
+            return result
+        }
+
+        private fun toDisplayStringForBracketPackagesInternal(bracketPackages: List<BracketPackage>): String
+        {
+            var result = ""
+
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
+            for (i in 0 until bracketPackages.size) // workaround for dotlin
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin
+                val bracketPackage = bracketPackages.get(i) // workaround for dotlin
+                if (StringWrapper.isNotEmpty(result))
+                    result += ","
+
+                result += toDisplayStringSimple(bracketPackage.toString())
             }
 
             return result

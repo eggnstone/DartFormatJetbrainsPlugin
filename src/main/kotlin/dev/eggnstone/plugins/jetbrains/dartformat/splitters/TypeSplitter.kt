@@ -11,6 +11,7 @@ class TypeSplitter
             //SplitType("Bracket", Tools.Companion::isBracket, false), dotlin
             //SplitType("Whitespace", Tools.Companion::isWhitespace, true), dotlin
             TypeSplitterType("Bracket", false, { currentChar: String, _: String? -> Tools.isBracket(currentChar) }, false),
+            TypeSplitterType("Comma", false, { currentChar: String, _: String? -> currentChar == "," }, false),
             TypeSplitterType("EndOfLineComment", true, { currentChar: String, nextChar: String? -> currentChar == "/" && nextChar == "/" }, false),
             TypeSplitterType("MultiLineCommentStart", true, { currentChar: String, nextChar: String? -> currentChar == "/" && nextChar == "*" }, false),
             TypeSplitterType("MultiLineCommentEnd", true, { currentChar: String, nextChar: String? -> currentChar == "*" && nextChar == "/" }, false),
