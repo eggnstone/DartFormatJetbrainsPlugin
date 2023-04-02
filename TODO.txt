@@ -1,19 +1,20 @@
 TODOs
 - Indent:
-    - start-of-line-colon (:)
-    - switch-case and switch-default
+    - leading period
+    - if in []
+    - arrows with linebreak
+    - abc().then(()\n{ indents too much
+    - if(\ indents too much
+    - return a.b(\nc:d,\ne:f); last line not indented
+    - for\nif\n{ not indented enough
     - before end of line comments
-    - [] brackets: LoadingWidget
-
-_getCount().then((int count)
-    {
-        state = AsyncData<CacheInfo>(CacheInfo(count: count));
-});
 
 
 
 
 DONE
+- start-of-line-colon (:)
+- switch-case and switch-default
 ??? Done? TODO("StringSplitter.split: trimmedCurrentText.isEmpty()")  WordPressTools.kt
 TODO("TextSplitter.handleOpeningBrace: is double block")    Cache.kt
 Unexpected closing bracket: currentChar="}" remainingText="}\r\n"

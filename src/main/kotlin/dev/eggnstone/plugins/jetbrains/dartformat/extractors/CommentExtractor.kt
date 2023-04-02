@@ -34,7 +34,6 @@ class CommentExtractor
             {
                 var comment = "/*"
 
-                @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
                 for (i in 2 until inputText.length) // workaround for dotlin
                 {
                     if (i + 1 < inputText.length)

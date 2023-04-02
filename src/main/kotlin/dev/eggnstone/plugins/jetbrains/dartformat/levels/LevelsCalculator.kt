@@ -21,24 +21,23 @@ class LevelsCalculator
         var conditionals = 0
         val currentBracketPackages = oldBracketPackages.toMutableList()
         var currentBrackets = mutableListOf<String>()
-        var isIf = false
         var isElse = false
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
+        var isInMultiLineComment = false
 
         val items = TypeSplitter().split(line)
         if (DotlinLogger.isEnabled) DotlinLogger.log("  items: ${Tools.toDisplayStringForStrings(items)}")
 
         for (item in items)
         {
-            /*
             if (DotlinLogger.isEnabled)
             {
                 DotlinLogger.log("    item: ${Tools.toDisplayStringShort(item)}")
                 DotlinLogger.log("    isInSingleQuoteString: $isInSingleQuoteString")
                 DotlinLogger.log("    isInDoubleQuoteString: $isInDoubleQuoteString")
+                DotlinLogger.log("    isInMultiLineComment:  $isInMultiLineComment")
             }
-            */
 
             if (isInSingleQuoteString)
             {
@@ -56,8 +55,22 @@ class LevelsCalculator
                 continue
             }
 
+            if (isInMultiLineComment)
+            {
+                if (item == "*/")
+                    isInMultiLineComment = false
+
+                continue
+            }
+
             if (item == "//")
                 break
+
+            if (item == "/*")
+            {
+                isInMultiLineComment = true
+                continue
+            }
 
             if (item == "'")
             {
@@ -79,7 +92,6 @@ class LevelsCalculator
 
             if (item == "if")
             {
-                isIf = true
                 if (!isElse)
                     conditionals++
                 continue
@@ -88,7 +100,6 @@ class LevelsCalculator
             if (item == "else")
             {
                 isElse = true
-                //if (isIf)
                 closedConditionals++
                 conditionals++
                 continue
@@ -113,7 +124,7 @@ class LevelsCalculator
                 {
                     // TODO: what to do when one bracket is removed and therefore an old bracket package is used but then new brackets are added?
                     if (DotlinTools.isEmpty(currentBracketPackages))
-                        throw DartFormatException("DotlinTools.isEmpty(currentBrackets)")
+                        throw DartFormatException("LevelsCalculator.calcLevels: DotlinTools.isEmpty(currentBrackets)")
 
                     val tempBracketPackage = currentBracketPackages.removeLast()
                     currentBrackets = tempBracketPackage.brackets.toMutableList()

@@ -114,7 +114,7 @@ class PluginFormat : AnAction()
         }
 
         val title = "Error while formatting: $message"
-        val body = "Please supply any additional information here:\n\n```\n$message\n$stacktrace\n```"
+        val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$message\n$stacktrace\n```"
         val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
         val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
 
