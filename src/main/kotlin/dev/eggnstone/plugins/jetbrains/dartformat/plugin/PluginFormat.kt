@@ -101,7 +101,7 @@ class PluginFormat : AnAction()
 
     private fun reportError(throwable: Throwable, project: Project)
     {
-        val message = if (throwable.message == null) "Unknown error" else throwable.message
+        val message = if (throwable.message == null) "Unknown error" else throwable.message!!
         DotlinLogger.log("Throwable: $message")
 
         var stacktrace = throwable.stackTraceToString()
@@ -113,8 +113,10 @@ class PluginFormat : AnAction()
                 stacktrace = stacktrace.substring(0, pos - 1)
         }
 
-        val title = "Error while formatting: $message"
-        val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$message\n$stacktrace\n```"
+        val safeMessageForTitle = message.replace("\"", "&quot;").replace("\n", " ")
+        val safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
+        val title = "Error while formatting: $safeMessageForTitle"
+        val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$safeStacktraceForBody\n```"
         val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
         val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
 

@@ -9,12 +9,12 @@ import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
 class LevelsCalculator
 {
-    fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>): Levels
+    fun calcLevels(line: String, lineIndex: Int, oldBracketPackages: List<BracketPackage>, wasInMultiLineComment: Boolean = false): Levels
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("LevelsCalculator.calcLevels(line=${Tools.toDisplayStringShort(line)}, oldBracketPackages=${Tools.toDisplayStringForBracketPackages(oldBracketPackages)})")
 
         if (StringWrapper.isEmpty(line))
-            return Levels(0, 0, listOf(), isElse = false, isInSquareBracketIf = false)
+            return Levels(0, 0, listOf(), isElse = false, isInSquareBracketIf = false, isInMultiLineComment = false)
 
         var brackets = 0
         var closedConditionals = 0
@@ -25,7 +25,7 @@ class LevelsCalculator
         var isInSquareBracketIf = false
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
-        var isInMultiLineComment = false
+        var isInMultiLineComment = wasInMultiLineComment
         val isInSquareBrackets = DotlinTools.isNotEmpty(oldBracketPackages) && DotlinTools.isNotEmpty(oldBracketPackages.last().brackets) && oldBracketPackages.last().brackets.last() == "["
 
         val items = TypeSplitter().split(line)
@@ -148,7 +148,7 @@ class LevelsCalculator
                 val lastItem = DotlinTools.last(currentBrackets)
                 //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
-                    TODO("LevelsCalculator.calcLevels: item (${Tools.toDisplayStringShort(item)}) != Tools.getClosingBracket(lastItem)") // throw DartFormatException("item != currentBrackets.last() Expected: $lastItem Is: $item")
+                    throw DartFormatException("LevelsCalculator.calcLevels: item (${Tools.toDisplayStringShort(item)}) != Tools.getClosingBracket(lastItem) (\"${Tools.getClosingBracket(lastItem)}\")")
 
                 brackets--
                 currentBrackets.removeLast()
@@ -168,6 +168,6 @@ class LevelsCalculator
             currentBracketPackages.add(BracketPackage(currentBrackets, lineIndex))
         }
 
-        return Levels(conditionals, closedConditionals, currentBracketPackages, isElse, isInSquareBracketIf)
+        return Levels(conditionals, closedConditionals, currentBracketPackages, isElse, isInSquareBracketIf, isInMultiLineComment)
     }
 }

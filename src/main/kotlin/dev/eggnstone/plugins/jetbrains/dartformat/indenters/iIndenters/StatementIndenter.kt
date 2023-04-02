@@ -36,6 +36,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         var isSwitch = false
         var usesColon = false
         var wasInSquareBracketIf = false
+        var wasInMultiLineComment = false
 
         var result = ""
 
@@ -65,7 +66,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             }
 
             val switchLevel = if (isSwitch) if (lineIndex == 0) 0 else 1 else 0
-            val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages)
+            val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages, wasInMultiLineComment = wasInMultiLineComment)
             val wasInSquareBrackets = DotlinTools.isNotEmpty(currentBracketPackages) && DotlinTools.isNotEmpty(currentBracketPackages.last().brackets) && currentBracketPackages.last().brackets.last() == "["
             val isInSquareBrackets = DotlinTools.isNotEmpty(levels.newBracketPackages) && DotlinTools.isNotEmpty(levels.newBracketPackages.last().brackets) && levels.newBracketPackages.last().brackets.last() == "["
             var conditionalCorrection = 0
@@ -73,6 +74,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                 conditionalCorrection = -1
 
             wasInSquareBracketIf = levels.isInSquareBracketIf
+            wasInMultiLineComment = levels.isInMultiLineComment
 
             if (DotlinLogger.isEnabled)
             {
@@ -87,6 +89,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                 DotlinLogger.log("    wasInSquareBracketIf:   $wasInSquareBracketIf")
                 DotlinLogger.log("    isInSquareBracketIf:    ${levels.isInSquareBracketIf}")
                 DotlinLogger.log("    conditionalCorrection:  $conditionalCorrection")
+                DotlinLogger.log("    isInMultiLineComment:   ${levels.isInMultiLineComment}")
             }
 
             /*if (levels.isElse && currentConditionals == 0)

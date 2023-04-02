@@ -30,4 +30,28 @@ class TestSquareBrackets
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
+
+    @Test
+    fun commentWithClosingRoundBracketWithLineBreaks()
+    {
+        val statement = Statement("[\n/*\n)\n*/\n];")
+
+        val expectedText = "[\n    /*\n    )\n    */\n];"
+
+        val actualText = StatementIndenter(4).indentPart(statement)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun commentWithClosingRoundBracketWithoutLineBreaks()
+    {
+        val statement = Statement("[\n/* ) */\n];")
+
+        val expectedText = "[\n    /* ) */\n];"
+
+        val actualText = StatementIndenter(4).indentPart(statement)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
 }
