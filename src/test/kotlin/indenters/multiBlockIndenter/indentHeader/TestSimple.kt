@@ -5,7 +5,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBloc
 import org.junit.Ignore
 import org.junit.Test
 
-class TestSimpleIsFirst
+class TestSimple
 {
     @Test
     fun simple()
@@ -14,7 +14,7 @@ class TestSimpleIsFirst
 
         val expectedText = "header{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -26,7 +26,7 @@ class TestSimpleIsFirst
 
         val expectedText = "@annotation\nheader{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -39,7 +39,7 @@ class TestSimpleIsFirst
 
         val expectedText = "@annotation\nheader\n{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -51,7 +51,7 @@ class TestSimpleIsFirst
 
         val expectedText = "class C {"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -67,7 +67,7 @@ class TestSimpleIsFirst
             "class C\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -85,7 +85,7 @@ class TestSimpleIsFirst
             "    with X\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -103,7 +103,7 @@ class TestSimpleIsFirst
             "async\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -121,7 +121,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -141,7 +141,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -159,7 +159,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -179,7 +179,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -200,7 +200,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -218,7 +218,7 @@ class TestSimpleIsFirst
             "//comment\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -236,7 +236,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -252,7 +252,7 @@ class TestSimpleIsFirst
             "/*comment*/void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -272,7 +272,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -294,7 +294,7 @@ class TestSimpleIsFirst
             "void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -312,7 +312,7 @@ class TestSimpleIsFirst
             "comment2*/void main()\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -330,7 +330,7 @@ class TestSimpleIsFirst
             "/*comment*/\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -350,7 +350,7 @@ class TestSimpleIsFirst
             "comment2*/\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -372,7 +372,7 @@ class TestSimpleIsFirst
             "comment3*/\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -390,7 +390,7 @@ class TestSimpleIsFirst
             "    : a = b\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -410,7 +410,7 @@ class TestSimpleIsFirst
             "      a = b\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -430,7 +430,7 @@ class TestSimpleIsFirst
             "      c = d\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -452,7 +452,7 @@ class TestSimpleIsFirst
             "      c = d\n" +
             "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -464,7 +464,7 @@ class TestSimpleIsFirst
 
         val expectedText = "{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -476,7 +476,7 @@ class TestSimpleIsFirst
 
         val expectedText = "\n{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
@@ -488,7 +488,7 @@ class TestSimpleIsFirst
 
         val expectedText = "\n\n{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = true)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }

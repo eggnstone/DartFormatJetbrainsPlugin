@@ -34,10 +34,10 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // dotlin
             val header = multiBlock.headers.get(i)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  header #$i: $header")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  header #$i: ${Tools.toDisplayString(header)}")
 
-            val indentedHeader = indentHeader(header, i == 0)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedHeader: $indentedHeader")
+            val indentedHeader = indentHeader(header)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedHeader: ${Tools.toDisplayString(indentedHeader)}")
 
             result.append(indentedHeader)
 
@@ -48,24 +48,15 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         }
 
         val footer = multiBlock.footer
-        if (DotlinLogger.isEnabled) DotlinLogger.log("  footer: $footer")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  footer: ${Tools.toDisplayString(footer)}")
         val indentedFooter = indentFooter(footer)
-        if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedFooter: $indentedFooter")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedFooter: ${Tools.toDisplayString(indentedFooter)}")
         result.append(indentedFooter)
 
         return result.toString()
     }
 
-    fun indentHeader(header: String, isFirst: Boolean = true): String
-    {
-        /*// TODO!
-        if (!isFirst)
-            return header*/
-
-        return indentHeaderInternal(header)
-    }
-
-    private fun indentHeaderInternal(header: String): String
+    fun indentHeader(header: String): String
     {
         if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentHeader: ${Tools.toDisplayStringShort(header)}")
 

@@ -4,7 +4,7 @@ import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
 import org.junit.Test
 
-class TestSimpleIsNotFirst
+class TestIfElse
 {
     @Test
     fun doNotIndentBlockAfterElse()
@@ -13,12 +13,10 @@ class TestSimpleIsNotFirst
 
         val expectedText = "}\nelse\n{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = false)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
-
-    //"}\nelse if (b)\nbs();\nelse\n{"
 
     @Test
     fun indentAfterElse_doNotIndentBlockAfterElseIfElse()
@@ -27,7 +25,7 @@ class TestSimpleIsNotFirst
 
         val expectedText = "}\nelse if (b)\n    b();\nelse\n{"
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText, isFirst = false)
+        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
