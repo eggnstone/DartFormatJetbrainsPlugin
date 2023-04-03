@@ -26,7 +26,8 @@ class LevelsCalculator
         var isInSingleQuoteString = false
         var isInDoubleQuoteString = false
         var isInMultiLineComment = wasInMultiLineComment
-        val isInSquareBrackets = DotlinTools.isNotEmpty(oldBracketPackages) && DotlinTools.isNotEmpty(oldBracketPackages.last().brackets) && oldBracketPackages.last().brackets.last() == "["
+        val oldBracketPackagesLastBracket: String? = oldBracketPackages.lastOrNull()?.brackets?.lastOrNull()
+        val isInSquareBrackets = oldBracketPackagesLastBracket == "["
 
         val items = TypeSplitter().split(line)
         if (DotlinLogger.isEnabled) DotlinLogger.log("  items: ${Tools.toDisplayStringForStrings(items)}")
@@ -146,7 +147,6 @@ class LevelsCalculator
                 }
 
                 val lastItem = DotlinTools.last(currentBrackets)
-                //if (item != Tools.getClosingBracket(currentBrackets.last())) dotlin
                 if (item != Tools.getClosingBracket(lastItem))
                     throw DartFormatException("LevelsCalculator.calcLevels: item (${Tools.toDisplayStringShort(item)}) != Tools.getClosingBracket(lastItem) (\"${Tools.getClosingBracket(lastItem)}\")")
 

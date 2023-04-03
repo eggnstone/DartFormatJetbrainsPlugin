@@ -315,5 +315,70 @@ class Tools
 
             return indentationKeywords.contains(getFirstWord(s))
         }
+
+        fun addBracket(inputBracketPackages: List<BracketPackage>, bracket: String): List<BracketPackage>
+        {
+            val lastInputBracketPackage = inputBracketPackages.last()
+
+            val newBracketPackages = inputBracketPackages.toMutableList()
+            val newBrackets = lastInputBracketPackage.brackets.toMutableList()
+            newBrackets.add(bracket)
+            val newBracketPackage = BracketPackage(newBrackets, lastInputBracketPackage.lineIndex)
+            newBracketPackages[newBracketPackages.size - 1] = newBracketPackage
+
+            return newBracketPackages
+        }
+
+        fun addBracket(inputBracketPackage: BracketPackage, bracket: String): BracketPackage
+        {
+            val newBrackets = inputBracketPackage.brackets.toMutableList()
+            newBrackets.add(bracket)
+
+            return BracketPackage(newBrackets, inputBracketPackage.lineIndex)
+        }
+
+        fun removeFirstBracket(inputBracketPackages: List<BracketPackage>): List<BracketPackage>
+        {
+            val firstInputBracketPackage = inputBracketPackages.first()
+
+            val newBracketPackages = inputBracketPackages.toMutableList()
+            val newBrackets = firstInputBracketPackage.brackets.toMutableList()
+            newBrackets.removeFirst()
+            val newBracketPackage = BracketPackage(newBrackets, firstInputBracketPackage.lineIndex)
+            newBracketPackages[0] = newBracketPackage
+
+            return newBracketPackages
+        }
+
+        fun removeFirstBracket(inputBracketPackage: BracketPackage): BracketPackage
+        {
+            val newBrackets = inputBracketPackage.brackets.toMutableList()
+            newBrackets.removeFirst()
+
+            return BracketPackage(newBrackets, inputBracketPackage.lineIndex)
+        }
+
+        fun moveBracketFromLastToPenultimate(oldBracketPackages: List<BracketPackage>): List<BracketPackage>
+        {
+            if (oldBracketPackages.size < 2)
+                throw DartFormatException("oldBracketPackages.size < 2")
+
+            val oldPenultimateBracketPackage = oldBracketPackages[oldBracketPackages.size - 2]
+            val oldLastBracketPackage = oldBracketPackages[oldBracketPackages.size - 1]
+            val bracket = oldLastBracketPackage.brackets.first()
+
+            val newPenultimateBracketPackage = addBracket(oldPenultimateBracketPackage, bracket)
+            val newLastInputBracketPackage = removeFirstBracket(oldLastBracketPackage)
+
+            val newBracketPackages = oldBracketPackages.toMutableList()
+            newBracketPackages[newBracketPackages.size - 2] = newPenultimateBracketPackage
+
+            if (DotlinTools.isEmpty(newLastInputBracketPackage.brackets))
+                newBracketPackages.removeLast()
+            else
+                newBracketPackages[newBracketPackages.size - 1] = newLastInputBracketPackage
+
+            return newBracketPackages
+        }
     }
 }

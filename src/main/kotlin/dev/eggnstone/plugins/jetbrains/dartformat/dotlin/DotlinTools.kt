@@ -21,6 +21,7 @@ class DotlinTools
         @Suppress("ReplaceSizeCheckWithIsNotEmpty")
         fun <T> isNotEmpty(l: List<T>): Boolean = l.size > 0
 
+        fun first(list: List<String>): String = list[list.size - 1]
         fun last(list: List<String>): String = list[list.size - 1]
 
         // kotlin maxOf
