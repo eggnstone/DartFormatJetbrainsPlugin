@@ -13,6 +13,7 @@ class Tools
     {
         private const val closingBrackets = "])}"
         private const val openingBrackets = "{[("
+        private val indentationKeywords = listOf("else", "for", "if", "while")
 
         fun containsLineBreak(s: String) = StringWrapper.containsChar(s, "\n") || StringWrapper.containsChar(s, "\r")
 
@@ -291,6 +292,28 @@ class Tools
             //return toDisplayString1(strings.joinToString(separator = "") { it })
 
             return result
+        }
+
+        private fun getFirstWord(s: String): String
+        {
+            @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
+            for (i in 0 until s.length)
+            {
+                @Suppress("ReplaceGetOrSet") // workaround for dotlin for: for (c in text)
+                val c = s.get(i).toString() // workaround for dotlin for: for (c in text)
+                if (isWhitespace(c))
+                    return StringWrapper.substring(s, 0, i)
+            }
+
+            return s
+        }
+
+        fun startsWithIndentationKeyword(s: String): Boolean
+        {
+            if (StringWrapper.isEmpty(s))
+                return false
+
+            return indentationKeywords.contains(getFirstWord(s))
         }
     }
 }

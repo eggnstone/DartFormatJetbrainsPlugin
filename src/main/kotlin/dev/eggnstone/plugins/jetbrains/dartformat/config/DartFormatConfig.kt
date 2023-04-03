@@ -14,6 +14,6 @@ class DartFormatConfig(isTest: Boolean = false)
 
     var removeLineBreaksAfterArrows = isTest
 
-    var indentationIsEnabled = isTest
+    var indentationIsEnabled = true
     var indentationSpacesPerLevel = 4
 }

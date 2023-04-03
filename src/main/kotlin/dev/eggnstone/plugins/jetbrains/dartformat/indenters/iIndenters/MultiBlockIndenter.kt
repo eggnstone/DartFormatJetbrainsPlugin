@@ -76,7 +76,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val shortenedHeader = StringWrapper.substring(header, 0, header.length - 1)
 
-        if (StringWrapper.startsWith(shortenedHeader, "if"))
+        if (Tools.startsWithIndentationKeyword(shortenedHeader))
         {
             val statement = Statement("$shortenedHeader STATEMENT;")
             val indentedHeader = statementIndenter.indentPart(statement)
