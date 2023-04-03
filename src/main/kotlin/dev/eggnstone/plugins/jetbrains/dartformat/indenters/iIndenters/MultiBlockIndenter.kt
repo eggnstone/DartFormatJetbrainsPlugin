@@ -4,8 +4,10 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
 import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.StringWrapper
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.BlockIndenter
+import dev.eggnstone.plugins.jetbrains.dartformat.indenters.IndentResult
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.IPart
 import dev.eggnstone.plugins.jetbrains.dartformat.parts.MultiBlock
+import dev.eggnstone.plugins.jetbrains.dartformat.parts.Statement
 import dev.eggnstone.plugins.jetbrains.dartformat.splitters.LineSplitter
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Tools
 
@@ -17,6 +19,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
     }
 
     private val blockIndenter = BlockIndenter(spacesPerLevel)
+    private val statementIndenter = StatementIndenter(spacesPerLevel)
 
     override fun indentPart(part: IPart, startIndent: Int, indentLevel: Int): String
     {
@@ -26,39 +29,44 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             throw DartFormatException("Unexpected non-MultiBlock type.")
 
         val multiBlock: MultiBlock = part
-
         val result = StringBuilder()
+        var lastIndentLevel = 0
 
-        @Suppress("ReplaceManualRangeWithIndicesCalls") // dotlin
         for (i in 0 until multiBlock.headers.size)
         {
             @Suppress("ReplaceGetOrSet") // dotlin
             val header = multiBlock.headers.get(i)
             if (DotlinLogger.isEnabled) DotlinLogger.log("  header #$i: ${Tools.toDisplayString(header)}")
 
-            val indentedHeader = indentHeader(header)
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedHeader: ${Tools.toDisplayString(indentedHeader)}")
+            val indentedHeaderResult = indentHeader(header, lastIndentLevel)
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("  indentedHeader: ${Tools.toDisplayString(indentedHeaderResult.text)}")
+                DotlinLogger.log("  level:          ${indentedHeaderResult.level}")
+            }
 
-            result.append(indentedHeader)
+            result.append(indentedHeaderResult.text)
 
             @Suppress("ReplaceGetOrSet") // dotlin
             val parts = multiBlock.partLists.get(i)
-            val indentedParts = blockIndenter.indentParts(parts)
+            val indentedParts = blockIndenter.indentParts(parts, indentedHeaderResult.level)
+
             result.append(indentedParts)
+            lastIndentLevel = indentedHeaderResult.level
         }
 
         val footer = multiBlock.footer
         if (DotlinLogger.isEnabled) DotlinLogger.log("  footer: ${Tools.toDisplayString(footer)}")
-        val indentedFooter = indentFooter(footer)
+        val indentedFooter = indentFooter(footer, lastIndentLevel)
         if (DotlinLogger.isEnabled) DotlinLogger.log("  indentedFooter: ${Tools.toDisplayString(indentedFooter)}")
         result.append(indentedFooter)
 
         return result.toString()
     }
 
-    fun indentHeader(header: String): String
+    fun indentHeader(header: String, lastIndentLevel: Int = 0): IndentResult
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentHeader: ${Tools.toDisplayStringShort(header)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentHeader: lastIndentLevel=$lastIndentLevel ${Tools.toDisplayStringShort(header)}")
 
         if (StringWrapper.isEmpty(header))
             throw DartFormatException("Unexpected empty header.")
@@ -68,9 +76,40 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
 
         val shortenedHeader = StringWrapper.substring(header, 0, header.length - 1)
 
+        if (StringWrapper.startsWith(shortenedHeader, "if"))
+        {
+            val statement = Statement("$shortenedHeader STATEMENT;")
+            val indentedHeader = statementIndenter.indentPart(statement)
+            val bareHeader = indentedHeader.substring(0, indentedHeader.length - "STATEMENT;".length)
+            val bareHeaderTrimmedEnd = Tools.trimEndSimple(bareHeader)
+            val bareHeaderLastLine = Tools.getLastLine(bareHeader)
+            val bareHeaderLastLineTrimmedEnd = Tools.trimEndSimple(bareHeaderLastLine)
+            val indentation = bareHeaderLastLine.length - bareHeaderLastLineTrimmedEnd.length
+            var level = indentation / spacesPerLevel
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("  indentedHeader:               ${Tools.toDisplayString(indentedHeader)}")
+                DotlinLogger.log("  bareHeader:                   ${Tools.toDisplayString(bareHeader)}")
+                DotlinLogger.log("  bareHeaderTrimmedEnd:         ${Tools.toDisplayString(bareHeaderTrimmedEnd)}")
+                DotlinLogger.log("  bareHeaderLastLine:           ${Tools.toDisplayString(bareHeaderLastLine)}")
+                DotlinLogger.log("  bareHeaderLastLineTrimmedEnd: ${Tools.toDisplayString(bareHeaderLastLineTrimmedEnd)}")
+                DotlinLogger.log("  indentation:                  $indentation")
+                DotlinLogger.log("  level:                        $level")
+            }
+
+            if (level > 0)
+            {
+                level--
+                if (DotlinLogger.isEnabled) DotlinLogger.log("  Corrected level:              $level")
+            }
+
+            val result = bareHeaderTrimmedEnd + StringWrapper.getSpaces(level * spacesPerLevel) + "{"
+            return IndentResult(result, level)
+        }
+
         val headerLines = lineSplitter.split(shortenedHeader, trimStart = true, trimEnd = false)
         if (headerLines.isEmpty())
-            return "{"
+            return IndentResult("{")
 
         var usesColon = false
         val result = StringBuffer(headerLines[0])
@@ -132,7 +171,6 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             DotlinLogger.log("  headerLines.size: ${headerLines.size}")
         }
 
-        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in startIndex until headerLines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
@@ -208,18 +246,20 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
         result.append("{")
         if (DotlinLogger.isEnabled) DotlinLogger.log("  result: ${Tools.toDisplayStringShort(result.toString())}")
 
-        return result.toString()
+        return IndentResult(result.toString())
     }
 
-    fun indentFooter(footer: String): String
+    fun indentFooter(footer: String, lastIndentLevel: Int = 0): String
     {
-        if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentFooter: ${Tools.toDisplayStringShort(footer)}")
+        if (DotlinLogger.isEnabled) DotlinLogger.log("MultiBlockIndenter.indentFooter: lastIndentLevel=$lastIndentLevel ${Tools.toDisplayStringShort(footer)}")
 
         if (!StringWrapper.startsWith(footer, "}"))
             throw DartFormatException("Footer must start with closing brace: ${Tools.toDisplayStringShort(footer)}")
 
+        val additionalPad = StringWrapper.getSpaces(lastIndentLevel * spacesPerLevel)
+
         val footerLines = lineSplitter.split(footer, trim = true)
-        val result = StringBuffer(footerLines[0])
+        val result = StringBuffer(additionalPad + footerLines[0])
         var startIndex = 1
         var isInMultiLineComment = false
 
@@ -234,7 +274,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (isInMultiLineComment)
             {
                 TODO("SingleBlockIndenter.indentFooter 1")
-                result.append(currentLine)
+                result.append(additionalPad + currentLine)
                 startIndex++
 
                 if (StringWrapper.containsString(currentLine, "*/"))
@@ -246,7 +286,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (StringWrapper.startsWith(currentLine, "/*"))
             {
                 TODO("SingleBlockIndenter.indentFooter 2")
-                result.append(currentLine)
+                result.append(additionalPad + currentLine)
                 startIndex++
 
                 if (!StringWrapper.containsString(currentLine, "*/"))
@@ -258,7 +298,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (StringWrapper.startsWith(currentLine, "//"))
             {
                 TODO("SingleBlockIndenter.indentFooter 3")
-                result.append(currentLine)
+                result.append(additionalPad + currentLine)
                 startIndex++
                 continue
             }
@@ -266,7 +306,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (StringWrapper.trim(currentLine) == "}")
             {
                 TODO("SingleBlockIndenter.indentFooter 4")
-                result.append(currentLine)
+                result.append(additionalPad + currentLine)
                 startIndex++
                 continue
             }
@@ -275,7 +315,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (DotlinLogger.isEnabled) DotlinLogger.log("elseEndPos: $elseEndPos")
             if (elseEndPos >= 0)
             {
-                result.append(currentLine)
+                result.append(additionalPad + currentLine)
                 startIndex++
                 continue
             }
@@ -289,7 +329,6 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             DotlinLogger.log("  footerLines.size: ${footerLines.size}")
         }
 
-        @Suppress("ReplaceManualRangeWithIndicesCalls") // workaround for dotlin
         for (i in startIndex until footerLines.size) // workaround for dotlin
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
@@ -299,7 +338,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (isInMultiLineComment)
             {
                 TODO("SingleBlockIndenter.indentFooter 5")
-                result.append(footerLine)
+                result.append(additionalPad + footerLine)
 
                 if (StringWrapper.containsString(footerLine, "*/"))
                     isInMultiLineComment = false
@@ -311,7 +350,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             {
                 TODO("SingleBlockIndenter.indentFooter 6")
                 // no padding for multi line comments
-                result.append(footerLine)
+                result.append(additionalPad + footerLine)
 
                 if (!StringWrapper.containsString(footerLine, "*/"))
                     isInMultiLineComment = true
@@ -323,7 +362,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             {
                 TODO("SingleBlockIndenter.indentFooter 7")
                 // no padding for end of line comments
-                result.append(footerLine)
+                result.append(additionalPad + footerLine)
                 continue
             }
 
@@ -331,14 +370,14 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
             if (elseEndPos >= 0)
             {
                 // no padding for "else..."
-                result.append(footerLine)
+                result.append(additionalPad + footerLine)
                 continue
             }
 
             if (footerLine.startsWith("{"))
             {
                 // no padding for "{..."
-                result.append(footerLine)
+                result.append(additionalPad + footerLine)
                 continue
             }
 
@@ -346,7 +385,7 @@ class MultiBlockIndenter(private val spacesPerLevel: Int) : IIndenter
                 TODO("SingleBlockIndenter.indentFooter 8")
 
             val pad = StringWrapper.getSpaces(spacesPerLevel)
-            result.append(pad + footerLine)
+            result.append(additionalPad + pad + footerLine)
         }
 
         /*// TODO: find a better solution

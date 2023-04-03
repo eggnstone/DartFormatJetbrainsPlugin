@@ -2,6 +2,8 @@ package indenters.multiBlockIndenter.indentHeader
 
 import TestTools
 import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MultiBlockIndenter
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Ignore
 import org.junit.Test
 
@@ -13,10 +15,12 @@ class TestSimple
         val inputText = "header{"
 
         val expectedText = "header{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -25,10 +29,12 @@ class TestSimple
         val inputText = "@annotation\n    header{"
 
         val expectedText = "@annotation\nheader{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -38,10 +44,12 @@ class TestSimple
         val inputText = "@annotation\nheader    \n{"
 
         val expectedText = "@annotation\nheader\n{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -50,10 +58,12 @@ class TestSimple
         val inputText = "class C {"
 
         val expectedText = "class C {"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -66,10 +76,12 @@ class TestSimple
         val expectedText =
             "class C\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -84,10 +96,12 @@ class TestSimple
             "class C\n" +
             "    with X\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -102,10 +116,12 @@ class TestSimple
             "void main()\n" +
             "async\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -120,10 +136,12 @@ class TestSimple
             "@annotation\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -140,10 +158,12 @@ class TestSimple
             "@annotation2\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -158,10 +178,12 @@ class TestSimple
             "//comment\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -178,10 +200,12 @@ class TestSimple
             "//    \"comment2\"\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -199,10 +223,12 @@ class TestSimple
             "//    \"comment2\"\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -217,10 +243,12 @@ class TestSimple
             "void main()\n" +
             "//comment\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -235,10 +263,12 @@ class TestSimple
             "/*comment*/\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -251,10 +281,12 @@ class TestSimple
         val expectedText =
             "/*comment*/void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -271,10 +303,12 @@ class TestSimple
             "comment2*/\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -293,10 +327,12 @@ class TestSimple
             "comment3*/\n" +
             "void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -311,10 +347,12 @@ class TestSimple
             "/*comment1\n" +
             "comment2*/void main()\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -329,10 +367,12 @@ class TestSimple
             "void main()\n" +
             "/*comment*/\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -349,10 +389,12 @@ class TestSimple
             "/*comment1\n" +
             "comment2*/\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -371,10 +413,12 @@ class TestSimple
             "comment2\n" +
             "comment3*/\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -389,10 +433,12 @@ class TestSimple
             "C()\n" +
             "    : a = b\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -409,10 +455,12 @@ class TestSimple
             "    :\n" +
             "      a = b\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -429,10 +477,12 @@ class TestSimple
             "    : a = b,\n" +
             "      c = d\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -451,10 +501,12 @@ class TestSimple
             "      a = b,\n" +
             "      c = d\n" +
             "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -463,10 +515,12 @@ class TestSimple
         val inputText = "{"
 
         val expectedText = "{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -475,10 +529,12 @@ class TestSimple
         val inputText = "\n{"
 
         val expectedText = "\n{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 
     @Test
@@ -487,9 +543,11 @@ class TestSimple
         val inputText = "\n\n{"
 
         val expectedText = "\n\n{"
+        val expectedLevel = 0
 
-        val actualText = MultiBlockIndenter(4).indentHeader(inputText)
+        val actualResult = MultiBlockIndenter(4).indentHeader(inputText)
 
-        TestTools.assertAreEqual("", actualText, expectedText)
+        TestTools.assertAreEqual("Text", actualResult.text, expectedText)
+        MatcherAssert.assertThat("Level", actualResult.level, CoreMatchers.equalTo(expectedLevel))
     }
 }
