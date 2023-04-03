@@ -44,4 +44,28 @@ class TestIfs
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
+
+    @Test
+    fun oneIfWithOnePeriod()
+    {
+        val inputPart = MultiBlock.single("if (a\n.b)\n{", "}", listOf(Whitespace("\n"), Statement("s();\n")))
+
+        val expectedText = "if (a\n    .b)\n{\n    s();\n}"
+
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun oneIfWithTwoPeriods()
+    {
+        val inputPart = MultiBlock.single("if (a\n.b\n.c)\n{", "}", listOf(Whitespace("\n"), Statement("s();\n")))
+
+        val expectedText = "if (a\n    .b\n    .c)\n{\n    s();\n}"
+
+        val actualText = MultiBlockIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
 }

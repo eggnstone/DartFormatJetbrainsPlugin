@@ -112,4 +112,35 @@ class TestSimpleIfs
 
         TestTools.assertAreEqual("", actualText, expectedText)
     }
+
+    @Test
+    fun simpleIfWithOnePeriod()
+    {
+        val inputPart = Statement("if (a\n.b)\n STATEMENT;")
+
+        val expectedText =
+            "if (a\n" +
+            "    .b)\n" +
+            "    STATEMENT;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
+
+    @Test
+    fun simpleIfWithTwoPeriods()
+    {
+        val inputPart = Statement("if (a\n.b\n.c)\n STATEMENT;")
+
+        val expectedText =
+            "if (a\n" +
+            "    .b\n" +
+            "    .c)\n" +
+            "    STATEMENT;"
+
+        val actualText = StatementIndenter(4).indentPart(inputPart)
+
+        TestTools.assertAreEqual("", actualText, expectedText)
+    }
 }

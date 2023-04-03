@@ -45,7 +45,7 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
         {
             @Suppress("ReplaceGetOrSet") // workaround for dotlin
             val line = lines.get(lineIndex) // workaround for dotlin
-            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayStringShort(line)}")
+            if (DotlinLogger.isEnabled) DotlinLogger.log("  Line #$lineIndex: ${Tools.toDisplayString(line)}")
 
             var startsWithColon = false
             if (!usesColon)
@@ -69,9 +69,10 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
             val levels = levelsCalculator.calcLevels(line, lineIndex, currentBracketPackages, wasInMultiLineComment = wasInMultiLineComment)
             val wasInSquareBrackets = DotlinTools.isNotEmpty(currentBracketPackages) && DotlinTools.isNotEmpty(currentBracketPackages.last().brackets) && currentBracketPackages.last().brackets.last() == "["
             val isInSquareBrackets = DotlinTools.isNotEmpty(levels.newBracketPackages) && DotlinTools.isNotEmpty(levels.newBracketPackages.last().brackets) && levels.newBracketPackages.last().brackets.last() == "["
-            var conditionalCorrection = 0
+            val isInRoundBrackets = DotlinTools.isNotEmpty(levels.newBracketPackages) && DotlinTools.isNotEmpty(levels.newBracketPackages.last().brackets) && levels.newBracketPackages.last().brackets.last() == "("
+            var adjustmentForIfsInSquareBrackets = 0
             if (wasInSquareBrackets && !isInSquareBrackets && wasInSquareBracketIf)
-                conditionalCorrection = -1
+                adjustmentForIfsInSquareBrackets = -1
 
             wasInSquareBracketIf = levels.isInSquareBracketIf
             wasInMultiLineComment = levels.isInMultiLineComment
@@ -88,16 +89,23 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                 DotlinLogger.log("    isInSquareBrackets:     $isInSquareBrackets")
                 DotlinLogger.log("    wasInSquareBracketIf:   $wasInSquareBracketIf")
                 DotlinLogger.log("    isInSquareBracketIf:    ${levels.isInSquareBracketIf}")
-                DotlinLogger.log("    conditionalCorrection:  $conditionalCorrection")
+                DotlinLogger.log("    adjustmentForIfsInSquareBrackets: $adjustmentForIfsInSquareBrackets")
                 DotlinLogger.log("    isInMultiLineComment:   ${levels.isInMultiLineComment}")
+                DotlinLogger.log("    usesColon:              $usesColon")
             }
 
-            /*if (levels.isElse && currentConditionals == 0)
-                throw DartFormatException("levels.isElse && currentConditionals == 0")*/
+            // TODO: either rename or ...
+            var adjustmentForIfsAndBrackets = 0
+            if (isInRoundBrackets && line.startsWith("."))
+                adjustmentForIfsAndBrackets = -1
+            if (DotlinLogger.isEnabled) DotlinLogger.log("    adjustmentForIfsAndBrackets: $adjustmentForIfsAndBrackets")
 
-            //val adjustedCurrentConditionals = currentConditionals + (if (levels.isElse) -1 else 0)
-            val adjustedCurrentConditionals = currentConditionals + conditionalCorrection + (if (levels.newClosedConditionals > 0) -1 else 0)
+            val adjustedCurrentConditionals = currentConditionals + adjustmentForIfsAndBrackets + adjustmentForIfsInSquareBrackets + (if (levels.newClosedConditionals > 0) -1 else 0)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("    adjustedCurrentConditionals: $adjustedCurrentConditionals")
+
             val tempLevel = adjustedCurrentConditionals + DotlinTools.minOf(currentBracketPackages.size, levels.newBracketPackages.size)
+            if (DotlinLogger.isEnabled) DotlinLogger.log("    tempLevel:              $tempLevel")
+
             var pad = StringWrapper.getSpaces((switchLevel + tempLevel) * spacesPerLevel)
 
             if (usesColon)
@@ -107,14 +115,21 @@ class StatementIndenter(private val spacesPerLevel: Int) : IIndenter
                     pad = "  $pad"
             }
 
+            if (DotlinLogger.isEnabled)
+            {
+                DotlinLogger.log("    pad:                    ${Tools.toDisplayString(pad)}")
+                DotlinLogger.log("    line:                   ${Tools.toDisplayString(line)}")
+            }
+
             result += pad + line
             //currentLevel += levels.nextLevel
-            currentConditionals += levels.newConditionals - levels.newClosedConditionals + conditionalCorrection
+            currentConditionals += levels.newConditionals - levels.newClosedConditionals + adjustmentForIfsInSquareBrackets
             //currentLevel = currentConditionals + levels.newBracketPackages.size
             //if (DotlinLogger.isEnabled) DotlinLogger.log("    currentLevel: $currentLevel")
             currentBracketPackages = levels.newBracketPackages
         }
 
+        if (DotlinLogger.isEnabled) DotlinLogger.log("  result: ${Tools.toDisplayString(result)}")
         return result
     }
 }
