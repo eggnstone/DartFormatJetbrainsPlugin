@@ -3,7 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.config
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.util.ui.FormBuilder
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.text.NumberFormat
@@ -34,7 +34,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Error in apply: configState == null")
+            if (Logger.isEnabled) Logger.log("Error in apply: configState == null")
             return
         }
 
@@ -110,7 +110,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Error in isModified: configState == null")
+            if (Logger.isEnabled) Logger.log("Error in isModified: configState == null")
             return false
         }
 
@@ -124,7 +124,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (DotlinLogger.isEnabled) DotlinLogger.log("Error in reset: configState == null")
+            if (Logger.isEnabled) Logger.log("Error in reset: configState == null")
             return
         }
 

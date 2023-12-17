@@ -17,19 +17,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
-import dev.eggnstone.plugins.jetbrains.dartformat.dotlin.DotlinLogger
-import dev.eggnstone.plugins.jetbrains.dartformat.indenters.iIndenters.MasterIndenter
-import dev.eggnstone.plugins.jetbrains.dartformat.splitters.iSplitters.MasterSplitter
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.SafetyTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import java.util.*
 
 class PluginFormat : AnAction()
 {
-    companion object
-    {
-        private val masterSplitter = MasterSplitter()
-    }
-
     override fun actionPerformed(e: AnActionEvent)
     {
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
@@ -51,19 +43,19 @@ class PluginFormat : AnAction()
             val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
             val selectedVirtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-            //DotlinLogger.log("${selectedVirtualFiles.size} selected files:")
+            //Logger.log("${selectedVirtualFiles.size} selected files:")
             for (selectedVirtualFile in selectedVirtualFiles)
             {
-                //DotlinLogger.log("  Selected file: $selectedVirtualFile")
+                //Logger.log("  Selected file: $selectedVirtualFile")
                 VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
             }
 
             var changedFiles = 0
-            //DotlinLogger.log("${finalVirtualFiles.size} final files:")
+            //Logger.log("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
-                    //DotlinLogger.log("  Final file: $finalVirtualFile")
+                    //Logger.log("  Final file: $finalVirtualFile")
                     if (formatDartFile(finalVirtualFile, project))
                         changedFiles++
                 }
@@ -102,7 +94,7 @@ class PluginFormat : AnAction()
     private fun reportError(throwable: Throwable, project: Project)
     {
         val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-        DotlinLogger.log("Throwable: $message")
+        Logger.log("Throwable: $message")
 
         var stacktrace = throwable.stackTraceToString()
         var pos = stacktrace.lastIndexOf("dev.eggnstone")
@@ -182,8 +174,8 @@ class PluginFormat : AnAction()
     {
         if (!virtualFile.isWritable)
         {
-            DotlinLogger.log("formatDartFileByBinaryContent: $virtualFile")
-            DotlinLogger.log("  !virtualFile.isWritable")
+            Logger.log("formatDartFileByBinaryContent: $virtualFile")
+            Logger.log("  !virtualFile.isWritable")
             return false
         }
 
@@ -192,7 +184,7 @@ class PluginFormat : AnAction()
         val outputText = format(inputText)
         if (outputText == inputText)
         {
-            //DotlinLogger.log("Nothing changed.")
+            //Logger.log("Nothing changed.")
             return false
         }
 
@@ -201,7 +193,7 @@ class PluginFormat : AnAction()
             virtualFile.setBinaryContent(outputBytes)
         }
 
-        //DotlinLogger.log("Something changed.")
+        //Logger.log("Something changed.")
         return true
     }
 
@@ -209,8 +201,8 @@ class PluginFormat : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            DotlinLogger.log("formatDartFileByFileEditor: $fileEditor")
-            DotlinLogger.log("  fileEditor !is TextEditor")
+            Logger.log("formatDartFileByFileEditor: $fileEditor")
+            Logger.log("  fileEditor !is TextEditor")
             return false
         }
 
@@ -221,7 +213,7 @@ class PluginFormat : AnAction()
         val outputText = format(inputText)
         if (outputText == inputText)
         {
-            //DotlinLogger.log("Nothing changed.")
+            //Logger.log("Nothing changed.")
             return false
         }
 
@@ -229,33 +221,25 @@ class PluginFormat : AnAction()
             document.setText(outputText)
         }
 
-        //DotlinLogger.log("Something changed.")
+        //Logger.log("Something changed.")
         return true
     }
 
     private fun format(inputText: String): String
     {
-        DotlinLogger.isEnabled = false
+        Logger.isEnabled = false
 
         try
         {
             val config = getConfig()
 
-            val splitResult = masterSplitter.split(inputText)
-            //PartTools.printParts(splitResult.parts)
+            // TODO
 
-            val masterIndenter = MasterIndenter(config.indentationSpacesPerLevel)
-
-            @Suppress("UnnecessaryVariable")
-            val indentResult = masterIndenter.indentParts(splitResult.parts)
-
-            SafetyTools.checkForUnexpectedChanges(inputText, indentResult)
-
-            return indentResult
+            return inputText
         }
         finally
         {
-            DotlinLogger.isEnabled = true
+            Logger.isEnabled = true
         }
     }
 

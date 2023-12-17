@@ -1,6 +1,6 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.dotlin
+package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
-class DotlinLogger
+class Logger
 {
     companion object
     {

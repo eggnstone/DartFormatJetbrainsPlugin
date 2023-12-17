@@ -9,12 +9,12 @@ class CollectVirtualFilesIterator(private val virtualFiles: MutableSet<VirtualFi
     {
         if (PluginTools.isDartFile(virtualFile))
         {
-            //DotlinLogger.log("    CollectVirtualFilesIterator.processFile: OK: $virtualFile")
+            //Logger.log("    CollectVirtualFilesIterator.processFile: OK: $virtualFile")
             virtualFiles.add(virtualFile)
         }
         else
         {
-            //DotlinLogger.log("    CollectVirtualFilesIterator.processFile: Not a dart file: $virtualFile")
+            //Logger.log("    CollectVirtualFilesIterator.processFile: Not a dart file: $virtualFile")
         }
 
         return true
