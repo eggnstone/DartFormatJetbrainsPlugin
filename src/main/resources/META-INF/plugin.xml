@@ -8,39 +8,9 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 1.4.0</b>
+        <b>Version 2.0.0</b>
         <ul>
           <li>Complete re-implementation.</li>
-        </ul>
-        <br/>
-        <b>Version 1.3.0</b>
-        <ul>
-          <li>Added indentation</li>
-        </ul>
-        <br/>
-        <b>Version 1.2.1</b>
-        <ul>
-          <li>Formatting of selected files can now be undone</li>
-        </ul>
-        <br/>
-        <b>Version 1.2.0</b>
-        <ul>
-          <li>Added removal of line breaks after arrows</li>
-        </ul>
-        <br/>
-        <b>Version 1.1.2</b>
-        <ul>
-          <li>Handling strings properly now.</li>
-        </ul>
-        <br/>
-        <b>Version 1.1.1</b>
-        <ul>
-          <li>Excluding *.freezed.dart and *.g.dart and *.gr.dart now.</li>
-        </ul>
-        <br/>
-        <b>Version 1.1.0</b>
-        <ul>
-          <li>Now works on currently selected folders and files, too.</li>
         </ul>
         ]]>
     </change-notes>
@@ -54,11 +24,6 @@
         Because it's configurable.<br/>
         <br/>
         Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.<br/>
-        <br/>
-        <b>Planned features:</b>
-        <ul>
-            <li>Put braces on new line</li>
-        </ul>
         <br/>
         Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>

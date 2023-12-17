@@ -144,6 +144,12 @@ class PluginFormat : AnAction()
         val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
         val notification = notificationGroup.createNotification("DartFormat", text, type)
         notification.subtitle = subtitle
+        /*
+        val action = NotificationAction.createSimple("TODO XYZ") {
+            BrowserUtil.browse(url)
+        }
+        notification.addAction(action)
+        */
         notification.setListener(NotificationListener.UrlOpeningListener(true))
         notification.notify(project)
     }
@@ -233,9 +239,9 @@ class PluginFormat : AnAction()
         {
             val config = getConfig()
 
-            // TODO
+            val resultText = "/*TODO: DartFormat*/\n/*Config: $config*/\n$inputText"
 
-            return inputText
+            return resultText
         }
         finally
         {
