@@ -22,6 +22,8 @@ import java.util.*
 
 class PluginFormat : AnAction()
 {
+    val DEBUG = true
+
     override fun actionPerformed(e: AnActionEvent)
     {
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
@@ -43,19 +45,19 @@ class PluginFormat : AnAction()
             val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
             val selectedVirtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-            //Logger.log("${selectedVirtualFiles.size} selected files:")
+            if (DEBUG) Logger.log("${selectedVirtualFiles.size} selected files:")
             for (selectedVirtualFile in selectedVirtualFiles)
             {
-                //Logger.log("  Selected file: $selectedVirtualFile")
+                if (DEBUG) Logger.log("  Selected file: $selectedVirtualFile")
                 VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
             }
 
             var changedFiles = 0
-            //Logger.log("${finalVirtualFiles.size} final files:")
+            if (DEBUG) Logger.log("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
-                    //Logger.log("  Final file: $finalVirtualFile")
+                    if (DEBUG) Logger.log("  Final file: $finalVirtualFile")
                     if (formatDartFile(finalVirtualFile, project))
                         changedFiles++
                 }
@@ -190,7 +192,7 @@ class PluginFormat : AnAction()
         val outputText = format(inputText)
         if (outputText == inputText)
         {
-            //Logger.log("Nothing changed.")
+            if (DEBUG) Logger.log("Nothing changed.")
             return false
         }
 
@@ -199,7 +201,7 @@ class PluginFormat : AnAction()
             virtualFile.setBinaryContent(outputBytes)
         }
 
-        //Logger.log("Something changed.")
+        if (DEBUG) Logger.log("Something changed.")
         return true
     }
 
@@ -219,7 +221,7 @@ class PluginFormat : AnAction()
         val outputText = format(inputText)
         if (outputText == inputText)
         {
-            //Logger.log("Nothing changed.")
+            if (DEBUG) Logger.log("Nothing changed.")
             return false
         }
 
@@ -227,7 +229,7 @@ class PluginFormat : AnAction()
             document.setText(outputText)
         }
 
-        //Logger.log("Something changed.")
+        if (DEBUG) Logger.log("Something changed.")
         return true
     }
 
@@ -239,9 +241,16 @@ class PluginFormat : AnAction()
         {
             val config = getConfig()
 
-            val resultText = "/*TODO: DartFormat*/\n/*Config: $config*/\n$inputText"
+            val process = ProcessBuilder("dart_format --pipe")
+                .start()
 
-            return resultText
+            process.outputStream.bufferedWriter().use { it.write(inputText) }
+            process.outputStream.close()
+
+            if (process.exitValue() != 0)
+                throw Exception(process.errorStream.bufferedReader().readText())
+
+            return process.inputStream.bufferedReader().readText()
         }
         finally
         {
