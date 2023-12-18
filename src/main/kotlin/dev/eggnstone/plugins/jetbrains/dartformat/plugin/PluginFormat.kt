@@ -18,6 +18,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import java.util.*
 
 class PluginFormat : AnAction()
@@ -241,16 +242,24 @@ class PluginFormat : AnAction()
         {
             val config = getConfig()
 
-            val process = ProcessBuilder("dart_format --pipe")
+            if (!OsTools.isWindows())
+                throw Exception("Error: Only Windows is supported.")
+
+            val process = ProcessBuilder("cmd", "/c", "dart_format", "--pipe")
                 .start()
 
-            process.outputStream.bufferedWriter().use { it.write(inputText) }
-            process.outputStream.close()
+            process.outputStream.bufferedWriter().use { it.write("/*IN*/$inputText") }
+            process.waitFor(60, java.util.concurrent.TimeUnit.SECONDS)
 
-            if (process.exitValue() != 0)
-                throw Exception(process.errorStream.bufferedReader().readText())
+            val errorText = process.errorStream.bufferedReader().readText()
+            if (errorText.isNotEmpty())
+                throw Exception(errorText)
 
-            return process.inputStream.bufferedReader().readText()
+            val formattedText = process.inputStream.bufferedReader().readText()
+            if (formattedText.isEmpty())
+                throw Exception("Error: No output received.")
+
+            return "/*HUHU*/$formattedText"
         }
         finally
         {
