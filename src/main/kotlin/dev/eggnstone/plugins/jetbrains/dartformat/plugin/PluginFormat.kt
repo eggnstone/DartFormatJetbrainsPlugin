@@ -27,7 +27,7 @@ class PluginFormat : AnAction()
     {
         private const val DART_FORMAT_EXCEPTION_IS_BUG_PREFIX = "IsBug|"
         private const val DART_FORMAT_EXCEPTION_NORMAL_PREFIX = "Normal|"
-        private const val DEBUG = true
+        private const val DEBUG = false
     }
 
     override fun actionPerformed(e: AnActionEvent)

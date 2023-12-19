@@ -4,7 +4,15 @@ class DartFormatConfig(isTest: Boolean = false)
 {
     fun toJson(): String
     {
-        return "{}"
+        return "{" +
+            "\\\"addNewLineAfterClosingBrace\\\": true," +
+            "\\\"addNewLineAfterOpeningBrace\\\": true," +
+            "\\\"addNewLineAfterSemicolon\\\": true," +
+            "\\\"addNewLineAtEndOfText\\\": true," +
+            "\\\"addNewLineBeforeClosingBrace\\\": true," +
+            "\\\"addNewLineBeforeOpeningBrace\\\": true," +
+            "\\\"maxEmptyLines\\\": 1" +
+            "}"
     }
 
     val isEnabled
