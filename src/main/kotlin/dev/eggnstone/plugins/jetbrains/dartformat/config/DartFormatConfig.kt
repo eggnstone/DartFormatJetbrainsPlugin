@@ -2,12 +2,17 @@ package dev.eggnstone.plugins.jetbrains.dartformat.config
 
 class DartFormatConfig(isTest: Boolean = false)
 {
+    fun toJson(): String
+    {
+        return "{}"
+    }
+
     val isEnabled
         get(): Boolean
         {
             return removeUnnecessaryCommas
-            || removeLineBreaksAfterArrows
-            || indentationIsEnabled
+                || removeLineBreaksAfterArrows
+                || indentationIsEnabled
         }
 
     var removeUnnecessaryCommas = isTest

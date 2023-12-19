@@ -34,7 +34,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (Logger.isEnabled) Logger.log("Error in apply: configState == null")
+            Logger.log("Error in apply: configState == null")
             return
         }
 
@@ -110,7 +110,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (Logger.isEnabled) Logger.log("Error in isModified: configState == null")
+            Logger.log("Error in isModified: configState == null")
             return false
         }
 
@@ -124,7 +124,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         if (config == null)
         {
-            if (Logger.isEnabled) Logger.log("Error in reset: configState == null")
+            Logger.log("Error in reset: configState == null")
             return
         }
 

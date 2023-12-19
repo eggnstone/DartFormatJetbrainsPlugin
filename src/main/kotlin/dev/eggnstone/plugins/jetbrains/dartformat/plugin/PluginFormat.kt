@@ -23,7 +23,12 @@ import java.util.*
 
 class PluginFormat : AnAction()
 {
-    val DEBUG = true
+    companion object
+    {
+        private const val DART_FORMAT_EXCEPTION_IS_BUG_PREFIX = "IsBug|"
+        private const val DART_FORMAT_EXCEPTION_NORMAL_PREFIX = "Normal|"
+        private const val DEBUG = true
+    }
 
     override fun actionPerformed(e: AnActionEvent)
     {
@@ -96,8 +101,15 @@ class PluginFormat : AnAction()
 
     private fun reportError(throwable: Throwable, project: Project)
     {
+        if (throwable is DartFormatException && !throwable.isBug)
+        {
+            val text = throwable.message!!
+            notifyWarning(listOf(text), project)
+            return
+        }
+
         val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-        Logger.log("Throwable: $message")
+        if (DEBUG) Logger.log("Throwable: $message")
 
         var stacktrace = throwable.stackTraceToString()
         var pos = stacktrace.lastIndexOf("dev.eggnstone")
@@ -169,13 +181,17 @@ class PluginFormat : AnAction()
             else
                 formatDartFileByFileEditor(fileEditor)
         }
+        catch (err: DartFormatException)
+        {
+            throw err
+        }
         catch (err: Exception)
         {
-            throw DartFormatException("${virtualFile.path}\n${err.message}")
+            throw DartFormatException(isBug = true, "${virtualFile.path}\n${err.message}")
         }
         catch (err: Error)
         {
-            throw DartFormatException("${virtualFile.path}\n${err.message}")
+            throw DartFormatException(isBug = true, "${virtualFile.path}\n${err.message}")
         }
     }
 
@@ -183,8 +199,11 @@ class PluginFormat : AnAction()
     {
         if (!virtualFile.isWritable)
         {
-            Logger.log("formatDartFileByBinaryContent: $virtualFile")
-            Logger.log("  !virtualFile.isWritable")
+            if (DEBUG)
+            {
+                Logger.log("formatDartFileByBinaryContent: $virtualFile")
+                Logger.log("  !virtualFile.isWritable")
+            }
             return false
         }
 
@@ -210,8 +229,11 @@ class PluginFormat : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            Logger.log("formatDartFileByFileEditor: $fileEditor")
-            Logger.log("  fileEditor !is TextEditor")
+            if (DEBUG)
+            {
+                Logger.log("formatDartFileByFileEditor: $fileEditor")
+                Logger.log("  fileEditor !is TextEditor")
+            }
             return false
         }
 
@@ -236,30 +258,44 @@ class PluginFormat : AnAction()
 
     private fun format(inputText: String): String
     {
-        Logger.isEnabled = false
+        if (inputText.isEmpty())
+            return ""
+
+        //Logger.isEnabled = false
 
         try
         {
             val config = getConfig()
 
             if (!OsTools.isWindows())
-                throw Exception("Error: Only Windows is supported.")
+                throw DartFormatException(isBug = true, "Error: Only Windows is supported.")
 
-            val process = ProcessBuilder("cmd", "/c", "dart_format", "--pipe")
+            val configJson = config.toJson()
+            if (DEBUG) Logger.log("configJson: $configJson")
+
+            val process = ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--config=$configJson")
                 .start()
 
-            process.outputStream.bufferedWriter().use { it.write("/*IN*/$inputText") }
-            process.waitFor(60, java.util.concurrent.TimeUnit.SECONDS)
+            process.outputStream.bufferedWriter().use { it.write(inputText) }
+            process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS)
 
             val errorText = process.errorStream.bufferedReader().readText()
             if (errorText.isNotEmpty())
-                throw Exception(errorText)
+            {
+                if (errorText.startsWith(DART_FORMAT_EXCEPTION_NORMAL_PREFIX))
+                    throw DartFormatException(isBug = false, errorText.substring(DART_FORMAT_EXCEPTION_NORMAL_PREFIX.length))
+
+                if (errorText.startsWith(DART_FORMAT_EXCEPTION_IS_BUG_PREFIX))
+                    throw DartFormatException(isBug = true, errorText.substring(DART_FORMAT_EXCEPTION_IS_BUG_PREFIX.length))
+
+                throw DartFormatException(isBug = true, "Unknown DartFormatException: $errorText")
+            }
 
             val formattedText = process.inputStream.bufferedReader().readText()
             if (formattedText.isEmpty())
-                throw Exception("Error: No output received.")
+                throw DartFormatException(isBug = true, "Error: No output received.")
 
-            return "/*HUHU*/$formattedText"
+            return formattedText
         }
         finally
         {
