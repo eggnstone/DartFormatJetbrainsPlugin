@@ -272,15 +272,16 @@ class PluginFormat : AnAction()
         {
             val config = getConfig()
 
-            if (!OsTools.isWindows())
-                throw DartFormatErrorException("Error: Only Windows is supported.")
-
             val configJson = config.toJson()
             if (DEBUG) Logger.log("configJson: $configJson")
 
-            val process = ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--config=$configJson")
-                .start()
+            val processBuilder =
+                if (OsTools.isWindows())
+                    ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
+                else
+                    ProcessBuilder("dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
 
+            val process = processBuilder.start()
             process.outputStream.bufferedWriter().use { it.write(inputText) }
             process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS)
 
