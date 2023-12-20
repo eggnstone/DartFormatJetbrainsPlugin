@@ -14,7 +14,8 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatErrorException
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatWarningException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -25,8 +26,8 @@ class PluginFormat : AnAction()
 {
     companion object
     {
-        private const val DART_FORMAT_EXCEPTION_IS_BUG_PREFIX = "IsBug|"
-        private const val DART_FORMAT_EXCEPTION_NORMAL_PREFIX = "Normal|"
+        private const val DART_FORMAT_ERROR_EXCEPTION_PREFIX = "DartFormatErrorException|"
+        private const val DART_FORMAT_WARNING_EXCEPTION_PREFIX = "DartFormatWarningException|"
         private const val DEBUG = false
     }
 
@@ -101,7 +102,7 @@ class PluginFormat : AnAction()
 
     private fun reportError(throwable: Throwable, project: Project)
     {
-        if (throwable is DartFormatException && !throwable.isBug)
+        if (throwable is DartFormatWarningException)
         {
             val text = throwable.message!!
             notifyWarning(listOf(text), project)
@@ -181,17 +182,21 @@ class PluginFormat : AnAction()
             else
                 formatDartFileByFileEditor(fileEditor)
         }
-        catch (err: DartFormatException)
+        catch (err: DartFormatErrorException)
+        {
+            throw err
+        }
+        catch (err: DartFormatWarningException)
         {
             throw err
         }
         catch (err: Exception)
         {
-            throw DartFormatException(isBug = true, "${virtualFile.path}\n${err.message}")
+            throw DartFormatErrorException("${virtualFile.path}\n${err.message}")
         }
         catch (err: Error)
         {
-            throw DartFormatException(isBug = true, "${virtualFile.path}\n${err.message}")
+            throw DartFormatErrorException("${virtualFile.path}\n${err.message}")
         }
     }
 
@@ -268,7 +273,7 @@ class PluginFormat : AnAction()
             val config = getConfig()
 
             if (!OsTools.isWindows())
-                throw DartFormatException(isBug = true, "Error: Only Windows is supported.")
+                throw DartFormatErrorException("Error: Only Windows is supported.")
 
             val configJson = config.toJson()
             if (DEBUG) Logger.log("configJson: $configJson")
@@ -282,18 +287,18 @@ class PluginFormat : AnAction()
             val errorText = process.errorStream.bufferedReader().readText()
             if (errorText.isNotEmpty())
             {
-                if (errorText.startsWith(DART_FORMAT_EXCEPTION_NORMAL_PREFIX))
-                    throw DartFormatException(isBug = false, errorText.substring(DART_FORMAT_EXCEPTION_NORMAL_PREFIX.length))
+                if (errorText.startsWith(DART_FORMAT_ERROR_EXCEPTION_PREFIX))
+                    throw DartFormatErrorException(errorText.substring(DART_FORMAT_ERROR_EXCEPTION_PREFIX.length))
 
-                if (errorText.startsWith(DART_FORMAT_EXCEPTION_IS_BUG_PREFIX))
-                    throw DartFormatException(isBug = true, errorText.substring(DART_FORMAT_EXCEPTION_IS_BUG_PREFIX.length))
+                if (errorText.startsWith(DART_FORMAT_WARNING_EXCEPTION_PREFIX))
+                    throw DartFormatWarningException(errorText.substring(DART_FORMAT_WARNING_EXCEPTION_PREFIX.length))
 
-                throw DartFormatException(isBug = true, "Unknown DartFormatException: $errorText")
+                throw DartFormatErrorException("Unknown error: $errorText")
             }
 
             val formattedText = process.inputStream.bufferedReader().readText()
             if (formattedText.isEmpty())
-                throw DartFormatException(isBug = true, "Error: No output received.")
+                throw DartFormatErrorException("Error: No output received.")
 
             return formattedText
         }
