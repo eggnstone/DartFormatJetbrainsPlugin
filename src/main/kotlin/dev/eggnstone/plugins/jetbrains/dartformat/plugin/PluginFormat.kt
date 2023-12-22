@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.beust.klaxon.Json
 import com.beust.klaxon.Klaxon
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationListener
@@ -29,6 +28,8 @@ class PluginFormat : AnAction()
     companion object
     {
         private const val DEBUG = false
+        private const val WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS = 100L
+        private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 5
     }
 
     override fun actionPerformed(e: AnActionEvent)
@@ -90,13 +91,9 @@ class PluginFormat : AnAction()
             lines.add("$changedFilesText changed.")
             notifyInfo(lines, project)
         }
-        catch (err: Exception)
+        catch (e: Exception)
         {
-            reportError(err, project)
-        }
-        catch (err: Error)
-        {
-            reportError(err, project)
+            reportError(e, project)
         }
     }
 
@@ -182,17 +179,13 @@ class PluginFormat : AnAction()
             else
                 formatDartFileByFileEditor(fileEditor)
         }
-        catch (err: DartFormatException)
+        catch (e: DartFormatException)
         {
-            throw err
+            throw e
         }
-        catch (err: Exception)
+        catch (e: Exception)
         {
-            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${err.message}")
-        }
-        catch (err: Error)
-        {
-            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${err.message}")
+            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${e.message}", e)
         }
     }
 
@@ -249,6 +242,16 @@ class PluginFormat : AnAction()
             return false
         }
 
+        /*val fixedOutputText:String = if (outputText.contains("\r\n"))
+        {
+            Logger.log("#################################################")
+            Logger.log("Why does the outputText contain wrong linebreaks?")
+            Logger.log("#################################################")
+            outputText.replace("\r\n", "\n")
+        }
+        else
+            outputText*/
+
         ApplicationManager.getApplication().runWriteAction {
             document.setText(outputText)
         }
@@ -271,41 +274,80 @@ class PluginFormat : AnAction()
             val configJson = config.toJson()
             if (DEBUG) Logger.log("configJson: $configJson")
 
-            val processBuilder =
-                if (OsTools.isWindows())
-                    ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
-                else
-                    ProcessBuilder("dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
+            val processBuilder: ProcessBuilder = if (OsTools.isWindows())
+                ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
+            else
+                ProcessBuilder("dart_format", "--pipe", "--errors-as-json", "--config=$configJson")
 
             val process = processBuilder.start()
-            process.outputStream.bufferedWriter().use { it.write(inputText) }
-            process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS)
+            process.outputStream.bufferedWriter().use {
+                it.write(inputText)
+                it.close()
+            }
 
-            val errorText = process.errorStream.bufferedReader().readText()
+            val outputBuffer = StringBuffer()
+            val outputStream = process.inputStream
+            val outputReader = outputStream.bufferedReader()
+            val errorBuffer = StringBuffer()
+            val errorStream = process.errorStream
+            val errorReader = errorStream.bufferedReader()
+
+            var waitedMillis = 0L
+            while (waitedMillis < WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
+            {
+                var readSome = false
+
+                if (outputStream.available() > 0)
+                {
+                    outputBuffer.append(outputReader.readText())
+                    readSome = true
+                }
+
+                if (errorStream.available() > 0)
+                {
+                    errorBuffer.append(errorReader.readText())
+                    readSome = true
+                }
+
+                if (readSome)
+                    continue
+
+                if (process.waitFor(WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
+                    break
+
+                waitedMillis += WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS
+            }
+
+            if (process.isAlive)
+                throw DartFormatException(FailType.ERROR, "Timeout after $WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS seconds waiting for dart_format to finish.")
+
+            if (outputStream.available() > 0)
+                outputBuffer.append(outputReader.readText())
+
+            if (errorStream.available() > 0)
+                errorBuffer.append(errorReader.readText())
+
+            val errorText = errorBuffer.toString()
             if (errorText.isNotEmpty())
             {
-                val d : DartFormatException?;
+                val d: DartFormatException?
 
                 try
                 {
-                    d =  Klaxon().parse<DartFormatException>(errorText)
+                    d = Klaxon().parse<DartFormatException>(errorText)
                 }
                 catch (e: Exception)
                 {
-                    throw DartFormatException(FailType.ERROR, e.toString())
-                }
-                catch (e: Error)
-                {
-                    throw DartFormatException(FailType.ERROR, e.toString())
+                    throw DartFormatException(FailType.ERROR, e.toString(), e)
                 }
 
                 if (d == null)
                     throw DartFormatException(FailType.ERROR, "Failed to parse: $errorText")
 
-                throw d;
+                throw d
             }
 
-            val formattedText = process.inputStream.bufferedReader().readText()
+            val formattedText = outputBuffer.toString()
             if (formattedText.isEmpty())
                 throw DartFormatException(FailType.ERROR, "No output received.")
 
