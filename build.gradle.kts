@@ -1,7 +1,7 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("org.jetbrains.intellij") version "1.13.2"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
@@ -12,7 +12,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    implementation("com.beust:klaxon:5.5")
 }
 
 // Configure Gradle IntelliJ Plugin

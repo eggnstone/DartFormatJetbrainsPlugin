@@ -1,5 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
+import com.beust.klaxon.Json
+import com.beust.klaxon.Klaxon
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
@@ -14,8 +16,8 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatErrorException
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatWarningException
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -26,8 +28,6 @@ class PluginFormat : AnAction()
 {
     companion object
     {
-        private const val DART_FORMAT_ERROR_EXCEPTION_PREFIX = "DartFormatErrorException|"
-        private const val DART_FORMAT_WARNING_EXCEPTION_PREFIX = "DartFormatWarningException|"
         private const val DEBUG = false
     }
 
@@ -102,15 +102,15 @@ class PluginFormat : AnAction()
 
     private fun reportError(throwable: Throwable, project: Project)
     {
-        if (throwable is DartFormatWarningException)
+        if (throwable is DartFormatException && throwable.type == FailType.WARNING)
         {
-            val text = throwable.message!!
+            val text = throwable.message
             notifyWarning(listOf(text), project)
             return
         }
 
         val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-        if (DEBUG) Logger.log("Throwable: $message")
+        if (DEBUG) Logger.log("throwable.message: $message")
 
         var stacktrace = throwable.stackTraceToString()
         var pos = stacktrace.lastIndexOf("dev.eggnstone")
@@ -182,21 +182,17 @@ class PluginFormat : AnAction()
             else
                 formatDartFileByFileEditor(fileEditor)
         }
-        catch (err: DartFormatErrorException)
-        {
-            throw err
-        }
-        catch (err: DartFormatWarningException)
+        catch (err: DartFormatException)
         {
             throw err
         }
         catch (err: Exception)
         {
-            throw DartFormatErrorException("${virtualFile.path}\n${err.message}")
+            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${err.message}")
         }
         catch (err: Error)
         {
-            throw DartFormatErrorException("${virtualFile.path}\n${err.message}")
+            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${err.message}")
         }
     }
 
@@ -288,18 +284,30 @@ class PluginFormat : AnAction()
             val errorText = process.errorStream.bufferedReader().readText()
             if (errorText.isNotEmpty())
             {
-                if (errorText.startsWith(DART_FORMAT_ERROR_EXCEPTION_PREFIX))
-                    throw DartFormatErrorException(errorText.substring(DART_FORMAT_ERROR_EXCEPTION_PREFIX.length))
+                val d : DartFormatException?;
 
-                if (errorText.startsWith(DART_FORMAT_WARNING_EXCEPTION_PREFIX))
-                    throw DartFormatWarningException(errorText.substring(DART_FORMAT_WARNING_EXCEPTION_PREFIX.length))
+                try
+                {
+                    d =  Klaxon().parse<DartFormatException>(errorText)
+                }
+                catch (e: Exception)
+                {
+                    throw DartFormatException(FailType.ERROR, e.toString())
+                }
+                catch (e: Error)
+                {
+                    throw DartFormatException(FailType.ERROR, e.toString())
+                }
 
-                throw DartFormatErrorException("Unknown error: $errorText")
+                if (d == null)
+                    throw DartFormatException(FailType.ERROR, "Failed to parse: $errorText")
+
+                throw d;
             }
 
             val formattedText = process.inputStream.bufferedReader().readText()
             if (formattedText.isEmpty())
-                throw DartFormatErrorException("Error: No output received.")
+                throw DartFormatException(FailType.ERROR, "No output received.")
 
             return formattedText
         }
