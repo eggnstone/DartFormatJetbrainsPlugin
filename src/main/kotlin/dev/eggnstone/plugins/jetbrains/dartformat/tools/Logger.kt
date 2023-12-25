@@ -12,5 +12,11 @@ class Logger
             if (isEnabled)
                 println(s)
         }
+
+        fun logError(s: String)
+        {
+            if (isEnabled)
+                println("ERROR: $s")
+        }
     }
 }

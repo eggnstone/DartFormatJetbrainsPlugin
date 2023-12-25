@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 @State(
     name = "DartFormatPersistentStateComponent",
@@ -20,8 +21,9 @@ class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatCo
                 {
                     ApplicationManager.getApplication().getService(DartFormatPersistentStateComponent::class.java)
                 }
-                catch (e: NullPointerException)
+                catch (e: Exception)
                 {
+                    Logger.logError("DartFormatPersistentStateComponent.instance: $e")
                     null
                 }
             }
@@ -36,6 +38,14 @@ class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatCo
 
     override fun loadState(state: DartFormatConfig)
     {
-        dartFormatConfig = state
+        try
+        {
+            dartFormatConfig = state
+        }
+        catch (e: Exception)
+        {
+            Logger.logError("DartFormatPersistentStateComponent.loadState: $e")
+            dartFormatConfig = DartFormatConfig()
+        }
     }
 }

@@ -37,7 +37,7 @@ class PluginFormat : AnAction()
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
 
         val config = getConfig()
-        if (!config.isEnabled)
+        if (config == DartFormatConfig())
         {
             val subtitle = "No formatting option enabled"
             val messages = listOf("Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat")
@@ -107,7 +107,7 @@ class PluginFormat : AnAction()
         }
 
         val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-        if (DEBUG) Logger.log("throwable.message: $message")
+        if (DEBUG) Logger.logError("throwable.message: $message")
 
         var stacktrace = throwable.stackTraceToString()
         var pos = stacktrace.lastIndexOf("dev.eggnstone")
