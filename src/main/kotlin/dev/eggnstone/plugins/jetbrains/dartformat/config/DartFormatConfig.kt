@@ -99,17 +99,17 @@ class DartFormatConfig(
         val finalMaxEmptyLines = if (maxEmptyLinesIsEnabled) maxEmptyLines else -1
 
         return "{" +
-            "\\\"addNewLineAfterClosingBrace\\\": " + addNewLineAfterClosingBrace + "," +
-            "\\\"addNewLineAfterOpeningBrace\\\": " + addNewLineAfterOpeningBrace + "," +
-            "\\\"addNewLineAfterSemicolon\\\": " + addNewLineAfterSemicolon + "," +
-            "\\\"addNewLineAtEndOfText\\\": " + addNewLineAtEndOfText + "," +
-            "\\\"addNewLineBeforeClosingBrace\\\": " + addNewLineBeforeClosingBrace + "," +
-            "\\\"addNewLineBeforeOpeningBrace\\\": " + addNewLineBeforeOpeningBrace + "," +
-            "\\\"indentationSpacesPerLevel\\\": " + finalIndentationSpacesPerLevel + "," +
-            "\\\"maxEmptyLines\\\": " + finalMaxEmptyLines +
+            "\\\"AddNewLineAfterClosingBrace\\\": " + addNewLineAfterClosingBrace + "," +
+            "\\\"AddNewLineAfterOpeningBrace\\\": " + addNewLineAfterOpeningBrace + "," +
+            "\\\"AddNewLineAfterSemicolon\\\": " + addNewLineAfterSemicolon + "," +
+            "\\\"AddNewLineAtEndOfText\\\": " + addNewLineAtEndOfText + "," +
+            "\\\"AddNewLineBeforeClosingBrace\\\": " + addNewLineBeforeClosingBrace + "," +
+            "\\\"AddNewLineBeforeOpeningBrace\\\": " + addNewLineBeforeOpeningBrace + "," +
+            "\\\"IndentationSpacesPerLevel\\\": " + finalIndentationSpacesPerLevel + "," +
+            "\\\"MaxEmptyLines\\\": " + finalMaxEmptyLines +
             //"," +
-            /*"\\\"removeLineBreaksAfterArrows\\\": " + removeLineBreaksAfterArrows + "," +
-            "\\\"removeUnnecessaryCommas\\\": " + removeUnnecessaryCommas +*/
+            /*"\\\"RemoveLineBreaksAfterArrows\\\": " + removeLineBreaksAfterArrows + "," +
+            "\\\"RemoveUnnecessaryCommas\\\": " + removeUnnecessaryCommas +*/
             "}"
     }
 }
