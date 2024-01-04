@@ -29,7 +29,7 @@ class PluginFormat : AnAction()
     {
         private const val DEBUG = false
         private const val WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS = 100L
-        private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 5
+        private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 15
     }
 
     override fun actionPerformed(e: AnActionEvent)
@@ -93,6 +93,13 @@ class PluginFormat : AnAction()
         }
         catch (e: Exception)
         {
+            reportError(e, project)
+        }
+        catch (e: Error)
+        {
+            // catch errors, too, in order to report all problems, e.g.:
+            // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
+            // - java.lang.NoClassDefFoundError: com/beust/klaxon/Klaxon
             reportError(e, project)
         }
     }
@@ -242,7 +249,7 @@ class PluginFormat : AnAction()
             return false
         }
 
-        /*val fixedOutputText:String = if (outputText.contains("\r\n"))
+        val fixedOutputText: String = if (outputText.contains("\r\n"))
         {
             Logger.log("#################################################")
             Logger.log("Why does the outputText contain wrong linebreaks?")
@@ -250,10 +257,10 @@ class PluginFormat : AnAction()
             outputText.replace("\r\n", "\n")
         }
         else
-            outputText*/
+            outputText
 
         ApplicationManager.getApplication().runWriteAction {
-            document.setText(outputText)
+            document.setText(fixedOutputText)
         }
 
         if (DEBUG) Logger.log("Something changed.")
