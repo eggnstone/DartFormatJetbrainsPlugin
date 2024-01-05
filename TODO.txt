@@ -1,0 +1,11 @@
+TODO
+====
+- force acceptance of beta disclaimer
+
+DOING
+=====
+- use plugin mode
+
+DONE
+====
+- load at startup

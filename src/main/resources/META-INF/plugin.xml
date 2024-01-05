@@ -1,7 +1,7 @@
 <idea-plugin>
     <actions>
         <action
-                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.PluginFormat"
+                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatAction"
                 id="dev.eggnstone.plugins.jetbrains.dartformat.Format">
             <keyboard-shortcut first-keystroke="control alt COMMA" keymap="$default"/>
         </action>
@@ -37,6 +37,7 @@
         </applicationConfigurable>
         <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
         <notificationGroup id="DartFormat" displayType="BALLOON"/>
+        <postStartupActivity implementation="dev.eggnstone.plugins.jetbrains.dartformat.plugin.StartupActivity"/>
     </extensions>
     <!--
     Cannot change package anymore:

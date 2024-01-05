@@ -1,8 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationListener
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -20,16 +17,23 @@ import dev.eggnstone.plugins.jetbrains.dartformat.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
 
-class PluginFormat : AnAction()
+class FormatAction : AnAction()
 {
     companion object
     {
-        private const val DEBUG = false
+        private const val DEBUG_FORMAT_ACTION = false
         private const val WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS = 100L
         private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 15
+    }
+
+    init
+    {
+        Logger.log("FormatAction: init")
     }
 
     override fun actionPerformed(e: AnActionEvent)
@@ -41,7 +45,7 @@ class PluginFormat : AnAction()
         {
             val subtitle = "No formatting option enabled"
             val messages = listOf("Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat")
-            notifyWarning(messages, project, subtitle)
+            NotificationTools.notifyWarning(messages, project, subtitle)
             return
         }
 
@@ -53,19 +57,19 @@ class PluginFormat : AnAction()
             val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
             val selectedVirtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-            if (DEBUG) Logger.log("${selectedVirtualFiles.size} selected files:")
+            if (DEBUG_FORMAT_ACTION) Logger.log("${selectedVirtualFiles.size} selected files:")
             for (selectedVirtualFile in selectedVirtualFiles)
             {
-                if (DEBUG) Logger.log("  Selected file: $selectedVirtualFile")
+                if (DEBUG_FORMAT_ACTION) Logger.log("  Selected file: $selectedVirtualFile")
                 VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
             }
 
             var changedFiles = 0
-            if (DEBUG) Logger.log("${finalVirtualFiles.size} final files:")
+            if (DEBUG_FORMAT_ACTION) Logger.log("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
-                    if (DEBUG) Logger.log("  Final file: $finalVirtualFile")
+                    if (DEBUG_FORMAT_ACTION) Logger.log("  Final file: $finalVirtualFile")
                     if (formatDartFile(finalVirtualFile, project))
                         changedFiles++
                 }
@@ -89,89 +93,18 @@ class PluginFormat : AnAction()
             val lines = mutableListOf<String>()
             lines.add("Formatting $finalVirtualFilesText took $diffTimeText.")
             lines.add("$changedFilesText changed.")
-            notifyInfo(lines, project)
+            NotificationTools.notifyInfo(lines, project)
         }
         catch (e: Exception)
         {
-            reportError(e, project)
+            NotificationTools.reportThrowable(e, project)
         }
         catch (e: Error)
         {
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
-            reportError(e, project)
+            NotificationTools.reportThrowable(e, project)
         }
-    }
-
-    private fun reportError(throwable: Throwable, project: Project)
-    {
-        if (throwable is DartFormatException && throwable.type == FailType.WARNING)
-        {
-            val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
-            val text = optionalLocation + throwable.message
-            notifyWarning(listOf(text), project)
-            return
-        }
-
-        val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-        if (DEBUG) Logger.logError("throwable.message: $message")
-
-        var stacktrace = throwable.stackTraceToString()
-        var pos = stacktrace.lastIndexOf("dev.eggnstone")
-        if (pos >= 0)
-        {
-            pos = stacktrace.indexOf("\n", pos)
-            if (pos >= 0)
-                stacktrace = stacktrace.substring(0, pos - 1)
-        }
-
-        val safeMessageForTitle = message.replace("\"", "&quot;").replace("\n", " ")
-        val safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
-        val title = "Error while formatting: $safeMessageForTitle"
-        val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$safeStacktraceForBody\n```"
-        val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
-        val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
-
-        notifyError(text, project)
-    }
-
-    private fun notifyInfo(lines: List<String>, project: Project, subtitle: String? = null)
-    {
-        notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, project, subtitle)
-    }
-
-    private fun notifyWarning(lines: List<String>, project: Project, subtitle: String? = null)
-    {
-        notifyByToolWindowBalloon(lines, NotificationType.WARNING, project, subtitle)
-    }
-
-    //private fun notifyErrorWithNormalLineBreaks(lines: List<String>, project: Project, subtitle: String? = null)
-    private fun notifyError(text: String, project: Project, subtitle: String? = null)
-    {
-        //val combinedLines = lines.joinToString("\n")
-        //notifyByToolWindowBalloon(combinedLines, NotificationType.ERROR, project, subtitle)
-        notifyByToolWindowBalloon(text, NotificationType.ERROR, project, subtitle)
-    }
-
-    private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, project: Project, subtitle: String? = null)
-    {
-        val combinedLines = lines.joinToString("<br/>")
-        notifyByToolWindowBalloon(combinedLines, type, project, subtitle)
-    }
-
-    private fun notifyByToolWindowBalloon(text: String, type: NotificationType, project: Project, subtitle: String? = null)
-    {
-        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-        val notification = notificationGroup.createNotification("DartFormat", text, type)
-        notification.subtitle = subtitle
-        /*
-        val action = NotificationAction.createSimple("TODO XYZ") {
-            BrowserUtil.browse(url)
-        }
-        notification.addAction(action)
-        */
-        notification.setListener(NotificationListener.UrlOpeningListener(true))
-        notification.notify(project)
     }
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
@@ -182,9 +115,9 @@ class PluginFormat : AnAction()
         {
             val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
             return if (fileEditor == null)
-                formatDartFileByBinaryContent(virtualFile)
+                formatDartFileByBinaryContent(project, virtualFile)
             else
-                formatDartFileByFileEditor(fileEditor)
+                formatDartFileByFileEditor(project, fileEditor)
         }
         catch (e: DartFormatException)
         {
@@ -196,11 +129,11 @@ class PluginFormat : AnAction()
         }
     }
 
-    private fun formatDartFileByBinaryContent(virtualFile: VirtualFile): Boolean
+    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): Boolean
     {
         if (!virtualFile.isWritable)
         {
-            if (DEBUG)
+            if (DEBUG_FORMAT_ACTION)
             {
                 Logger.log("formatDartFileByBinaryContent: $virtualFile")
                 Logger.log("  !virtualFile.isWritable")
@@ -210,10 +143,10 @@ class PluginFormat : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val outputText = format(inputText)
+        val outputText = format(project, inputText)
         if (outputText == inputText)
         {
-            if (DEBUG) Logger.log("Nothing changed.")
+            if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
             return false
         }
 
@@ -222,15 +155,15 @@ class PluginFormat : AnAction()
             virtualFile.setBinaryContent(outputBytes)
         }
 
-        if (DEBUG) Logger.log("Something changed.")
+        if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
         return true
     }
 
-    private fun formatDartFileByFileEditor(fileEditor: FileEditor): Boolean
+    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): Boolean
     {
         if (fileEditor !is TextEditor)
         {
-            if (DEBUG)
+            if (DEBUG_FORMAT_ACTION)
             {
                 Logger.log("formatDartFileByFileEditor: $fileEditor")
                 Logger.log("  fileEditor !is TextEditor")
@@ -242,10 +175,10 @@ class PluginFormat : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val outputText = format(inputText)
+        val outputText = format(project, inputText)
         if (outputText == inputText)
         {
-            if (DEBUG) Logger.log("Nothing changed.")
+            if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
             return false
         }
 
@@ -263,23 +196,25 @@ class PluginFormat : AnAction()
             document.setText(fixedOutputText)
         }
 
-        if (DEBUG) Logger.log("Something changed.")
+        if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
         return true
     }
 
-    private fun format(inputText: String): String
+    private fun format(project: Project, inputText: String): String
     {
         if (inputText.isEmpty())
             return ""
 
         //Logger.isEnabled = false
 
+        return ExternalDartFormatter.instance.format(project, inputText)
+
         try
         {
             val config = getConfig()
 
             val configJson = config.toJson()
-            if (DEBUG) Logger.log("configJson: $configJson")
+            if (DEBUG_FORMAT_ACTION) Logger.log("configJson: $configJson")
 
             val processBuilder: ProcessBuilder = if (OsTools.isWindows())
                 ProcessBuilder("cmd", "/c", "dart_format", "--pipe", "--errors-as-json", "--config=$configJson")

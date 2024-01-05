@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.plugin
+package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import com.intellij.openapi.vfs.VirtualFile
 
