@@ -4,5 +4,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat
 data class DartFormatException(
     val type: FailType,
     override val message: String,
-    override val cause: Throwable? = null
+    override val cause: Throwable? = null,
+    val line: Int? = null,
+    val column: Int? = null
 ) : Exception()

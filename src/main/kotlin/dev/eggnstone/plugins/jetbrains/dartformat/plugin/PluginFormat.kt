@@ -107,7 +107,8 @@ class PluginFormat : AnAction()
     {
         if (throwable is DartFormatException && throwable.type == FailType.WARNING)
         {
-            val text = throwable.message
+            val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
+            val text = optionalLocation + throwable.message
             notifyWarning(listOf(text), project)
             return
         }

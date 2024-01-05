@@ -16,7 +16,9 @@ class JsonTools
                 val typeText = obj.jsonObject["Type"]?.jsonPrimitive?.content
                 val type: FailType = if (typeText == "Warning") FailType.WARNING else FailType.ERROR
                 val messageText = obj.jsonObject["Message"]?.jsonPrimitive?.content ?: ""
-                DartFormatException(type, messageText)
+                val line = obj.jsonObject["Line"]?.jsonPrimitive?.content?.toInt() ?: -1
+                val column = obj.jsonObject["Column"]?.jsonPrimitive?.content?.toInt() ?: -1
+                DartFormatException(type, messageText, line = line, column = column)
             }
             catch (e: Exception)
             {
