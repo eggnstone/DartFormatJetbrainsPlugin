@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.beust.klaxon.Klaxon
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
@@ -17,6 +16,7 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -99,7 +99,6 @@ class PluginFormat : AnAction()
         {
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
-            // - java.lang.NoClassDefFoundError: com/beust/klaxon/Klaxon
             reportError(e, project)
         }
     }
@@ -341,7 +340,7 @@ class PluginFormat : AnAction()
 
                 try
                 {
-                    d = Klaxon().parse<DartFormatException>(errorText)
+                    d = JsonTools.parseDartFormatException(errorText)
                 }
                 catch (e: Exception)
                 {

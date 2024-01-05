@@ -13,7 +13,6 @@ repositories {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-    implementation("com.beust:klaxon:5.5")
 }
 
 // Configure Gradle IntelliJ Plugin
