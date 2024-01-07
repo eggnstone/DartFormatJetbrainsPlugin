@@ -93,13 +93,9 @@ class ExternalDartFormat
                 if (commandResponse.statusCode != 201)
                 {
                     val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-
-                    Logger.log("ExternalDartFormat.run: notifying")
-                    formatJob.complete()
-                    Logger.log("ExternalDartFormat.run: notified")
-
                     Logger.logError(errorText)
                     NotificationTools.notifyError(errorText, project)
+                    formatJob.errorText = errorText
                     continue
                 }
 
@@ -144,13 +140,9 @@ class ExternalDartFormat
                 if (commandResponse.statusCode != 202)
                 {
                     val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-
-                    Logger.log("ExternalDartFormat.run: notifying")
-                    formatJob.complete()
-                    Logger.log("ExternalDartFormat.run: notified")
-
                     Logger.logError(errorText)
                     NotificationTools.notifyError(errorText, project)
+                    formatJob.errorText = errorText
                     continue
                 }
 
@@ -163,13 +155,9 @@ class ExternalDartFormat
                 if (commandResponse.statusCode != 203)
                 {
                     val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-
-                    Logger.log("ExternalDartFormat.run: notifying")
-                    formatJob.complete()
-                    Logger.log("ExternalDartFormat.run: notified")
-
                     Logger.logError(errorText)
                     NotificationTools.notifyError(errorText, project)
+                    formatJob.errorText = errorText
                     continue
                 }
 
@@ -177,13 +165,9 @@ class ExternalDartFormat
                 if (resultLength == null || resultLength <= 0)
                 {
                     val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-
-                    Logger.log("ExternalDartFormat.run: notifying")
-                    formatJob.complete()
-                    Logger.log("ExternalDartFormat.run: notified")
-
                     Logger.logError(errorText)
                     NotificationTools.notifyError(errorText, project)
+                    formatJob.errorText = errorText
                     continue
                 }
 
@@ -202,37 +186,35 @@ class ExternalDartFormat
                 if (result.length != resultLength)
                 {
                     val errorText = "result.length != resultLength: ${result.length} != $resultLength"
-
-                    Logger.log("ExternalDartFormat.run: notifying")
-                    formatJob.complete()
-                    Logger.log("ExternalDartFormat.run: notified")
-
                     Logger.logError(result)
                     Logger.logError(errorText)
                     NotificationTools.notifyError(errorText, project)
+                    formatJob.errorText = errorText
                     continue
                 }
 
                 formatJob.outputText = result
 
-                Logger.log("ExternalDartFormat.run: notifying")
-                formatJob.complete()
-                Logger.log("ExternalDartFormat.run: notified")
-
                 if (formatJob.command == "quit)")
                     break
-            }
-            catch (e: Error)
-            {
-                Logger.logError("ExternalDartFormat.run: Error: $e")
-                NotificationTools.reportThrowable(e, project)
-                formatJob.complete()
             }
             catch (e: Exception)
             {
                 Logger.logError("ExternalDartFormat.run: Exception: $e")
                 NotificationTools.reportThrowable(e, project)
+                formatJob.errorText = e.toString()
+            }
+            catch (e: Error)
+            {
+                Logger.logError("ExternalDartFormat.run: Error: $e")
+                NotificationTools.reportThrowable(e, project)
+                formatJob.errorText = e.toString()
+            }
+            finally
+            {
+                Logger.log("ExternalDartFormat.run: Calling formatJob.complete()")
                 formatJob.complete()
+                Logger.log("ExternalDartFormat.run: Called formatJob.complete()")
             }
         }
 
