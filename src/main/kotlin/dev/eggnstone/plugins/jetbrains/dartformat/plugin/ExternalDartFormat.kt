@@ -1,13 +1,16 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.project.Project
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
+import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
+import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import java.io.BufferedWriter
 
 class ExternalDartFormat
 {
@@ -48,6 +51,7 @@ class ExternalDartFormat
         val errorReader = StreamReader(process.errorStream)
         val outputWriter = process.outputStream.bufferedWriter()
 
+        // TODO: replace with HTTP-like command
         val json = inputReader.readLine()
         Logger.log("ExternalDartFormat: $json")
         val jsonElement = JsonTools.parse(json)
@@ -69,13 +73,41 @@ class ExternalDartFormat
             NotificationTools.notifyError(errorText, project)
         }
 
+        val externalDartFormat2 = ExternalDartFormat2(inputReader, errorReader, outputWriter, process, project)
+
         while (true)
         {
             val formatJob = channel.receive()
-            Logger.log("ExternalDartFormat.run: Got new job!")
+            Logger.log("ExternalDartFormat.run: Got new job: ${formatJob.command}")
 
+            if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
+            {
+                formatJob.formatResult = externalDartFormat2.format(formatJob.inputText)
+                formatJob.complete()
+                continue
+            }
+
+            if (formatJob.command.toLowerCasePreservingASCIIRules() == "quit")
+            {
+                formatJob.complete()
+                break
+            }
+
+            formatJob.formatResult = FormatResult.error("Unknown command: ${formatJob.command}")
+            formatJob.complete()
+        }
+
+        Logger.log("ExternalDartFormat.run: END $project")
+
+            /*@Suppress("UNREACHABLE_CODE")
             try
             {
+                if (formatJob.command == "quit)")
+                    break
+
+                formatViaExternalDartFormat(formatJob, process, inputReader, errorReader, outputWriter, project)
+                continue
+
                 Logger.log("formatJob.inputText.length: ${formatJob.inputText.length}")
                 val inputText = formatJob.inputText
                 val inputLength = inputText.length
@@ -194,9 +226,6 @@ class ExternalDartFormat
                 }
 
                 formatJob.outputText = result
-
-                if (formatJob.command == "quit)")
-                    break
             }
             catch (e: Exception)
             {
@@ -215,16 +244,13 @@ class ExternalDartFormat
                 Logger.log("ExternalDartFormat.run: Calling formatJob.complete()")
                 formatJob.complete()
                 Logger.log("ExternalDartFormat.run: Called formatJob.complete()")
-            }
-        }
-
-        Logger.log("ExternalDartFormat.run: END $project")
+            }*/
     }
 
-    fun format(project: Project, inputText: String): String
+    fun format(project: Project, inputText: String): FormatResult
     {
         Logger.log("ExternalDartFormat.format")
-        NotificationTools.notifyInfo(listOf("ExternalDartFormat.format: TODO"), project)
+        //NotificationTools.notifyInfo(listOf("ExternalDartFormat.format: TODO"), project)
         val formatJob = FormatJob(command = "format", inputText = inputText)
 
         runBlocking {
@@ -236,7 +262,73 @@ class ExternalDartFormat
             Logger.log("ExternalDartFormat.format: joined")
         }
 
-        return formatJob.outputText ?: inputText
-    }
-}
+        return formatJob.formatResult ?: FormatResult.error("No result")
 
+        /*@Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+        if (formatResult == null)
+            return inputText
+
+        if (formatResult.failType == null)
+            return formatResult.text
+
+        if (formatResult.failType == FailType.WARNING)
+        {
+            NotificationTools.notifyWarning(listOf(formatResult.text), project)
+            return inputText
+        }
+
+        NotificationTools.notifyError(formatResult.text, project)
+        return inputText*/
+    }
+
+    /*private fun formatViaExternalDartFormat(formatJob: FormatJob, process: Process, inputReader: StreamReader, errorReader: StreamReader, outputWriter: BufferedWriter, project: Project)
+    {
+        Logger.log("ExternalDartFormat.formatViaExternalDartFormat()")
+
+        outputWriter.write("POST / HTTP/1.1\n")
+        outputWriter.write("User-Agent: DartFormatPlugin\n")
+        outputWriter.write("Content-Type: text/plain; charset=utf-8\n")
+        outputWriter.write("Content-Length: ${formatJob.inputText.length}\n")
+        outputWriter.write("Config: {}\n")
+        outputWriter.write("\n")
+        outputWriter.write(formatJob.inputText)
+
+        var contentLength = -1
+        var statusCode = -1
+        var status = ""
+        var isFirst = true
+        while(true)
+        {
+            val s = inputReader.readLine()
+            Logger.log("ExternalDartFormat.formatViaExternalDartFormat: $s")
+            if (s == "")
+                break
+
+            if (isFirst)
+            {
+                isFirst = false
+
+                if (!s.startsWith("HTTP/1.1 "))
+                {
+                    val errorText = "Unexpected response: \"$s\""
+                    Logger.logError("ExternalDartFormat.formatViaExternalDartFormat: $errorText")
+                    formatJob.errorText = errorText
+                }
+
+                statusCode = s.substring("HTTP/1.1 ".length, "HTTP/1.1 ".length + 3).toInt()
+                status = s.substring("HTTP/1.1 ".length + 4)
+                Logger.log("ExternalDartFormat.formatViaExternalDartFormat: statusCode: $statusCode status: $status")
+                continue
+            }
+
+            if (s.startsWith("Content-Length: "))
+            {
+                contentLength = s.substring("Content-Length: ".length).toInt()
+                Logger.log("ExternalDartFormat.formatViaExternalDartFormat: contentLength: $contentLength")
+                continue
+            }
+        }
+
+        formatJob.outputText = formatJob.inputText
+    }*/
+}

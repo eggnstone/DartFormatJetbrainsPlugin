@@ -11,15 +11,13 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
+import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
 
@@ -142,14 +140,14 @@ class FormatAction : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val outputText = format(project, inputText)
-        if (outputText == inputText)
+        val formatResultText = formatOrThrow(project, inputText)
+        if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
             return false
         }
 
-        val outputBytes = outputText.toByteArray()
+        val outputBytes = formatResultText.toByteArray()
         ApplicationManager.getApplication().runWriteAction {
             virtualFile.setBinaryContent(outputBytes)
         }
@@ -174,22 +172,22 @@ class FormatAction : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val outputText = format(project, inputText)
-        if (outputText == inputText)
+        val formatResultText = formatOrThrow(project, inputText)
+        if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
             return false
         }
 
-        val fixedOutputText: String = if (outputText.contains("\r\n"))
+        val fixedOutputText: String = if (formatResultText.contains("\r\n"))
         {
             Logger.log("#################################################")
             Logger.log("Why does the outputText contain wrong linebreaks?")
             Logger.log("#################################################")
-            outputText.replace("\r\n", "\n")
+            formatResultText.replace("\r\n", "\n")
         }
         else
-            outputText
+            formatResultText
 
         ApplicationManager.getApplication().runWriteAction {
             document.setText(fixedOutputText)
@@ -199,15 +197,29 @@ class FormatAction : AnAction()
         return true
     }
 
-    private fun format(project: Project, inputText: String): String
+    private fun formatOrThrow(project: Project, inputText: String): String
+    {
+        val formatResult = format(project, inputText)
+
+        if (formatResult.resultType == ResultType.ERROR)
+            throw DartFormatException(FailType.ERROR, formatResult.text)
+
+        if (formatResult.resultType == ResultType.WARNING)
+            throw DartFormatException(FailType.WARNING, formatResult.text)
+
+        return formatResult.text
+    }
+
+    private fun format(project: Project, inputText: String): FormatResult
     {
         if (inputText.isEmpty())
-            return ""
+            return FormatResult.ok("")
 
         //Logger.isEnabled = false
 
         return ExternalDartFormat.instance.format(project, inputText)
 
+        /*@Suppress("UNREACHABLE_CODE")
         try
         {
             val config = getConfig()
@@ -297,7 +309,7 @@ class FormatAction : AnAction()
         finally
         {
             Logger.isEnabled = true
-        }
+        }*/
     }
 
     private fun getConfig(): DartFormatConfig

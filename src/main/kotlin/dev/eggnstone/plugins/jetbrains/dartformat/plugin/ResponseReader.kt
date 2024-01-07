@@ -67,11 +67,11 @@ class ResponseReader
                 Logger.logError("ResponseReader.receiveAllLines: Exception: ${e.message}")
                 byteArray = ByteArray(0)
             }
-            catch (e: Error)
+            /*catch (e: Error)
             {
                 Logger.logError("ResponseReader.receiveAllLines: Error: ${e.message}")
                 byteArray = ByteArray(0)
-            }
+            }*/
 
             Logger.log("ResponseReader.receiveAllLines: Received ${byteArray.size} bytes.")
             val s = byteArray.decodeToString()
