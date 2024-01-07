@@ -3,7 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
+import dev.eggnstone.plugins.jetbrains.dartformat.pseudo_http.PseudoHttpClient
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
@@ -16,7 +16,6 @@ class ExternalDartFormat
     companion object
     {
         val instance = ExternalDartFormat()
-        private const val EXPECTED_PROTOCOL_VERSION = 1
     }
 
     private var mainJob: Job? = null
@@ -46,33 +45,31 @@ class ExternalDartFormat
             processBuilder.start()
         }
 
+        Logger.log("ExternalDartFormat.run: external dart_format started.")
+
         val inputReader = StreamReader(process.inputStream)
         val errorReader = StreamReader(process.errorStream)
         val outputWriter = process.outputStream.bufferedWriter()
+        val pseudoHttpClient = PseudoHttpClient(inputReader, outputWriter)
 
-        // TODO: replace with HTTP-like command
-        val json = inputReader.readLine()
-        Logger.log("ExternalDartFormat: $json")
-        val jsonElement = JsonTools.parse(json)
-        val statusCode = JsonTools.getInt(jsonElement, "StatusCode", -1)
-        val status = JsonTools.getString(jsonElement, "Status", "?")
-        if (statusCode != 200)
+        val result = pseudoHttpClient.get("/status")
+        if (result.statusCode != 200)
         {
-            val errorText = "Failed to start external dart_format: $statusCode $status"
+            val errorText = "Failed to start external dart_format: ${result.statusCode} ${result.status}"
             Logger.logError(errorText)
             NotificationTools.notifyError(errorText, project)
             return
         }
 
-        val protocolVersion = JsonTools.getInt(jsonElement, "ProtocolVersion", -1)
-        if (protocolVersion != EXPECTED_PROTOCOL_VERSION)
+        val protocolVersion = result.getHeaderInt("ProtocolVersion", -1)
+        if (protocolVersion != Constants.PROTOCOL_VERSION)
         {
-            val errorText = "External dart_format: expected protocol version $EXPECTED_PROTOCOL_VERSION, got $protocolVersion"
+            val errorText = "External dart_format: expected protocol version ${Constants.PROTOCOL_VERSION}, got $protocolVersion"
             Logger.logError(errorText)
             NotificationTools.notifyError(errorText, project)
         }
 
-        val externalDartFormat2 = ExternalDartFormat2(inputReader, errorReader, outputWriter, process, project)
+        val externalDartFormat2 = ExternalDartFormat2(pseudoHttpClient, inputReader, errorReader, outputWriter, process, project)
 
         while (true)
         {
@@ -262,6 +259,7 @@ class ExternalDartFormat
                     Logger.log("ExternalDartFormat.format: sending")
                     channel.send(formatJob)
                     Logger.log("ExternalDartFormat.format: sent")
+
                     Logger.log("ExternalDartFormat.format: joining")
                     formatJob.join()
                     Logger.log("ExternalDartFormat.format: joined")

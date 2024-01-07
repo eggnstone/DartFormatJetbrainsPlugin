@@ -2,10 +2,12 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.pseudo_http.PseudoHttpClient
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import java.io.BufferedWriter
 
 class ExternalDartFormat2(
+    private val pseudoHttpClient: PseudoHttpClient,
     private val inputReader: StreamReader,
     private val errorReader: StreamReader,
     private val outputWriter: BufferedWriter,
@@ -19,15 +21,7 @@ class ExternalDartFormat2(
         {
             Logger.log("ExternalDartFormat.format()")
 
-            Logger.log("ExternalDartFormat.format: writing to outputWriter ...")
-            outputWriter.write("POST / HTTP/1.1\n")
-            outputWriter.write("User-Agent: DartFormatPlugin\n")
-            outputWriter.write("Content-Type: text/plain; charset=utf-8\n")
-            outputWriter.write("Content-Length: ${inputText.length}\n")
-            outputWriter.write("Config: {}\n")
-            outputWriter.write("\n")
-            outputWriter.write(inputText)
-            Logger.log("ExternalDartFormat.format: wrote to outputWriter.")
+            val result = pseudoHttpClient.post("/format", inputText)
 
             var contentLength = -1
             var statusCode = -1
