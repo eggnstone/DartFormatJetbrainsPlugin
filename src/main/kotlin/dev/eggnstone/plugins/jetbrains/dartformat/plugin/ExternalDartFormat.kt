@@ -61,7 +61,7 @@ class ExternalDartFormat
             return
         }
 
-        val protocolVersion = result.getHeaderInt("ProtocolVersion", -1)
+        val protocolVersion = result.getHeaderInt("Protocol-Version", -1)
         if (protocolVersion != Constants.PROTOCOL_VERSION)
         {
             val errorText = "External dart_format: expected protocol version ${Constants.PROTOCOL_VERSION}, got $protocolVersion"

@@ -3,6 +3,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.pseudo_http
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
 import java.io.BufferedWriter
 
 class PseudoHttpClient(private val inputReader: StreamReader, private val outputWriter: BufferedWriter)
@@ -16,8 +17,6 @@ class PseudoHttpClient(private val inputReader: StreamReader, private val output
 
     fun get(path: String): PseudoHttpResult
     {
-
-        
         Logger.log("PseudoHttpClient.get($path)")
         Logger.log("PseudoHttpClient.get: writing to outputWriter ...")
         outputWriter.write("GET $path $PROTOCOL_AND_VERSION\n")
@@ -49,16 +48,29 @@ class PseudoHttpClient(private val inputReader: StreamReader, private val output
 
     private fun readResponse(): PseudoHttpResult
     {
+        Logger.log("PseudoHttpClient.readResponse()")
+
         try
         {
             val headers = mutableListOf<String>()
             val body = ByteArray(0)
 
-            Logger.log("PseudoHttpClient.readResponse: Calling inputReader.readLine() ...")
-            var s = inputReader.readLine()
-            Logger.log("PseudoHttpClient.readResponse: Called inputReader.readLine(): $s")
-            if (!s.startsWith(RESPONSE_PREFIX))
+            var s: String
+            while (true)
             {
+                Logger.log("PseudoHttpClient.readResponse: Calling inputReader.readLine() ...")
+                s = inputReader.readLine()
+                Logger.log("PseudoHttpClient.readResponse: Called inputReader.readLine(): ${StringTools.toDisplayString(s)}")
+
+                if (s == "")
+                {
+                    Logger.log("PseudoHttpClient.readResponse: Ignoring empty line. TODO: fix this.")
+                    continue
+                }
+
+                if (s.startsWith(RESPONSE_PREFIX))
+                    break
+
                 val errorText = "Unexpected response: \"$s\""
                 Logger.logError("PseudoHttpClient.readResponse: $errorText")
                 return PseudoHttpResult(500, errorText, headers)
@@ -69,12 +81,14 @@ class PseudoHttpClient(private val inputReader: StreamReader, private val output
 
             while (s != "")
             {
-                Logger.log("PseudoHttpClient.readResponse: readLine: $s")
                 headers.add(s)
 
+                Logger.log("PseudoHttpClient.readResponse: Calling inputReader.readLine() ...")
                 s = inputReader.readLine()
+                Logger.log("PseudoHttpClient.readResponse: Called inputReader.readLine(): ${StringTools.toDisplayString(s)}")
             }
 
+            Logger.log("PseudoHttpClient.readResponse: Received empty line. Returning PseudoHttpResult.")
             return PseudoHttpResult(statusCode, status, headers, body)
         }
         catch (e: Exception)

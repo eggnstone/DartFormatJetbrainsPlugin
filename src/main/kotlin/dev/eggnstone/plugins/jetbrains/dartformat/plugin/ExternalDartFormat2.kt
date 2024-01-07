@@ -22,8 +22,9 @@ class ExternalDartFormat2(
             Logger.log("ExternalDartFormat.format()")
 
             val result = pseudoHttpClient.post("/format", inputText)
+            Logger.log("result: ${result.statusCode} ${result.status} ${result.headers}")
 
-            var contentLength = -1
+            /*var contentLength = -1
             var statusCode = -1
             var status = ""
             var isFirst = true
@@ -59,7 +60,7 @@ class ExternalDartFormat2(
                     Logger.log("ExternalDartFormat.formatViaExternalDartFormat: contentLength: $contentLength")
                     continue
                 }
-            }
+            }*/
 
             return FormatResult.warning("TODO")
         }
