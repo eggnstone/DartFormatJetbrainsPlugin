@@ -13,6 +13,6 @@ class StartupActivity : com.intellij.openapi.startup.StartupActivity
     override fun runActivity(project: Project)
     {
         Logger.log("StartupActivity: runActivity")
-        ExternalDartFormatter.instance.init(project)
+        ExternalDartFormat.instance.init(project)
     }
 }

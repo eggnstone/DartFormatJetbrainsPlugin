@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat.plugin
+package dev.eggnstone.plugins.jetbrains.dartformat.json
 
 @kotlinx.serialization.Serializable
 data class JsonCommand(

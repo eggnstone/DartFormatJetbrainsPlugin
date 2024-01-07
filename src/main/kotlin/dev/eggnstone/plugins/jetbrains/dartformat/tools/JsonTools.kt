@@ -1,5 +1,7 @@
-package dev.eggnstone.plugins.jetbrains.dartformat
+package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -17,8 +19,14 @@ class JsonTools
             }
             catch (e: Exception)
             {
-                throw DartFormatException(FailType.ERROR, "Failed to parse JSON: $json", e)
+                throw DartFormatException(FailType.ERROR, "Failed to parse JSON/1: \"${toTransferString(json)}\"")
             }
+        }
+
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun toTransferString(json: String): String
+        {
+            return json.replace("\"","\\\"").replace("\n", "\\n").replace("\r", "\\r")
         }
 
         fun parseDartFormatException(json: String): DartFormatException?
@@ -36,7 +44,7 @@ class JsonTools
             }
             catch (e: Exception)
             {
-                return DartFormatException(FailType.ERROR, "Failed to parse JSON: $json", e)
+                return DartFormatException(FailType.ERROR, "Failed to parse JSON/2: \"${toTransferString(json)}\"")
             }
         }
 

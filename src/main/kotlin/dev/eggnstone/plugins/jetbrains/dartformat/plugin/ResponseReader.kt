@@ -1,67 +1,95 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.*
+import dev.eggnstone.plugins.jetbrains.dartformat.json.JsonResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import java.io.InputStream
 
 class ResponseReader
 {
     companion object
     {
-        private const val WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS = 100L
-        private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 5
-
-        fun readResponse(process: Process, sendSomethingWhileWaiting: Boolean = false): JsonResponse
+        fun readResponse(process: Process, inputReader: StreamReader, errorReader: StreamReader): JsonResponse
         {
             Logger.log("ResponseReader.readResponse()")
 
-            val inputStream = process.inputStream
-            val inputReader = inputStream.bufferedReader()
-            val outputStream = process.outputStream
-            val outputWriter = outputStream.bufferedWriter()
-            val errorStream = process.errorStream
-            val errorReader = errorStream.bufferedReader()
-
             var waitedMillis = 0L
-            while (waitedMillis < WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
+            while (waitedMillis < Constants.WAIT_FOR_READ_RESPONSE_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
             {
-                Logger.log("ExternalDartFormatter.readResponse() Loop")
+                //Logger.log("ResponseReader.readResponse: loop")
 
-                var readSome = false
+                val textFromInputStream = receiveLine(inputReader, "inputStream")
+                if (textFromInputStream != null)
+                    return JsonResponse.fromInputStream(textFromInputStream)
 
-                if (inputStream.available() > 0)
+                //Logger.log("ResponseReader.readResponse: 1")
+
+                val textFromErrorStream = receiveLine(errorReader, "errorStream")
+                if (textFromErrorStream != null)
+                    return JsonResponse.fromErrorStream(textFromErrorStream)
+
+                //Logger.log("ResponseReader.readResponse: 2")
+
+                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
-                    val s = inputReader.readLine()
-                    Logger.log("Received: $s")
-                    readSome = true
-                    return JsonResponse.fromOutputStream(s)
+                    val errorText = "Unexpected process exit."
+                    Logger.logError("ResponseReader.readResponse: $errorText")
+                    throw DartFormatException(FailType.ERROR, errorText)
                 }
 
-                if (errorStream.available() > 0)
-                {
-                    val s = errorReader.readLine()
-                    Logger.logError("Received error: $s")
-                    readSome = true
-                    return JsonResponse.fromErrorStream(s)
-                }
-
-                if (readSome)
-                    continue
-
-                if (sendSomethingWhileWaiting)
-                {
-                    Logger.log("ExternalDartFormatter.readResponse() Loop: Sending something")
-                    outputWriter.write("\n")
-                    outputWriter.flush()
-                }
-
-                if (process.waitFor(WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
-                    throw DartFormatException(FailType.ERROR, "Unexpected process exit")
-
-                waitedMillis += WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS
+                waitedMillis += Constants.WAIT_INTERVAL_IN_MILLIS
             }
 
-            throw DartFormatException(FailType.ERROR, "Timeout waiting for process to finish")
+            val errorText = "Timeout while waiting for response."
+            Logger.logError("ResponseReader.readResponse: $errorText")
+            throw DartFormatException(FailType.ERROR, errorText)
+        }
+
+        private fun receiveAllLines(stream: InputStream, name: String): String?
+        {
+            Logger.log("ResponseReader.receiveAllLines($name)")
+
+            val availableBytes = stream.available()
+            if (availableBytes <= 0)
+                return null
+
+            Logger.log("ResponseReader.receiveAllLines: Receiving: $availableBytes bytes from $name ...")
+
+            var byteArray: ByteArray
+            try
+            {
+                Logger.log("ResponseReader.receiveAllLines: Calling stream.readNBytes($availableBytes) ...")
+                byteArray = stream.readNBytes(availableBytes)
+                Logger.log("ResponseReader.receiveAllLines: Called stream.readNBytes($availableBytes).")
+            }
+            catch (e: Exception)
+            {
+                Logger.logError("ResponseReader.receiveAllLines: Exception: ${e.message}")
+                byteArray = ByteArray(0)
+            }
+            catch (e: Error)
+            {
+                Logger.logError("ResponseReader.receiveAllLines: Error: ${e.message}")
+                byteArray = ByteArray(0)
+            }
+
+            Logger.log("ResponseReader.receiveAllLines: Received ${byteArray.size} bytes.")
+            val s = byteArray.decodeToString()
+            Logger.log("ResponseReader.receiveAllLines: Received ${s.length} \"$s\"")
+
+            return s
+        }
+
+        private fun receiveLine(streamReader: StreamReader, name: String): String?
+        {
+            //Logger.log("ResponseReader.receiveLine($name)")
+
+            val availableBytes = streamReader.available()
+            if (availableBytes <= 0)
+                return null
+
+            Logger.log("ResponseReader.receiveLine: Receiving: $availableBytes bytes from $name ...")
+            return streamReader.readLine()
         }
     }
 }

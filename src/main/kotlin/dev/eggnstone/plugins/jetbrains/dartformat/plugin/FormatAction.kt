@@ -11,9 +11,10 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
-import dev.eggnstone.plugins.jetbrains.dartformat.JsonTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -27,8 +28,6 @@ class FormatAction : AnAction()
     companion object
     {
         private const val DEBUG_FORMAT_ACTION = false
-        private const val WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS = 100L
-        private const val WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS = 15
     }
 
     init
@@ -207,7 +206,7 @@ class FormatAction : AnAction()
 
         //Logger.isEnabled = false
 
-        return ExternalDartFormatter.instance.format(project, inputText)
+        return ExternalDartFormat.instance.format(project, inputText)
 
         try
         {
@@ -235,7 +234,7 @@ class FormatAction : AnAction()
             val errorReader = errorStream.bufferedReader()
 
             var waitedMillis = 0L
-            while (waitedMillis < WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
+            while (waitedMillis < Constants.WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
             {
                 var readSome = false
 
@@ -254,14 +253,14 @@ class FormatAction : AnAction()
                 if (readSome)
                     continue
 
-                if (process.waitFor(WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
+                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
                     break
 
-                waitedMillis += WAIT_FOR_PROCESS_TO_FINISHED_INTERVAL_IN_MILLIS
+                waitedMillis += Constants.WAIT_INTERVAL_IN_MILLIS
             }
 
             if (process.isAlive)
-                throw DartFormatException(FailType.ERROR, "Timeout after $WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS seconds waiting for dart_format to finish.")
+                throw DartFormatException(FailType.ERROR, "Timeout after ${Constants.WAIT_FOR_PROCESS_TO_FINISHED_TIMEOUT_IN_SECONDS} seconds waiting for dart_format to finish.")
 
             if (outputStream.available() > 0)
                 outputBuffer.append(outputReader.readText())
