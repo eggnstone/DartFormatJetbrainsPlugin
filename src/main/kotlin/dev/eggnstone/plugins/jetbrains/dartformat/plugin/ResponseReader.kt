@@ -14,7 +14,7 @@ class ResponseReader
             Logger.log("ResponseReader.readResponse()")
 
             var waitedMillis = 0L
-            while (waitedMillis < Constants.WAIT_FOR_READ_RESPONSE_TO_FINISHED_TIMEOUT_IN_SECONDS * 1000L)
+            while (waitedMillis < Constants.WAIT_FOR_READ_RESPONSE_IN_SECONDS * 1000L)
             {
                 //Logger.log("ResponseReader.readResponse: loop")
 
@@ -30,7 +30,7 @@ class ResponseReader
 
                 //Logger.log("ResponseReader.readResponse: 2")
 
-                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
+                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
                     val errorText = "Unexpected process exit."
                     Logger.logError("ResponseReader.readResponse: $errorText")
