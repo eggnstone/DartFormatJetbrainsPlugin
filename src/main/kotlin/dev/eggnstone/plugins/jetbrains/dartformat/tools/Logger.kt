@@ -4,8 +4,8 @@ class Logger
 {
     companion object
     {
+        @Suppress("MemberVisibilityCanBePrivate")
         var isEnabled: Boolean = true
-        //var isEnabled: Boolean = false
 
         fun log(s: String)
         {

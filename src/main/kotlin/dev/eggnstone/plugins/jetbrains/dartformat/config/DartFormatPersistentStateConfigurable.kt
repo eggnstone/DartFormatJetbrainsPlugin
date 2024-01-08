@@ -90,6 +90,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
+    private fun createAddNewLineAfterSemicolonPanel(): JComponent
+    {
+        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        panel.add(addNewLineAfterSemicolonCheckbox)
+
+        return panel
+    }
+
     private fun createAddNewLineBeforeClosingBracePanel(): JComponent
     {
         val panel = JPanel(FlowLayout(FlowLayout.LEFT))
@@ -116,6 +125,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         formBuilder.addComponent(createAddNewLineAfterOpeningBracePanel())
         formBuilder.addComponent(createAddNewLineBeforeClosingBracePanel())
         formBuilder.addComponent(createAddNewLineAfterClosingBracePanel())
+        formBuilder.addComponent(createAddNewLineAfterSemicolonPanel())
 
         //formBuilder.addComponent(createRemovalsPanel())
         //formBuilder.addComponent(createLineBreaksPanel())
@@ -141,14 +151,14 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
-    /*private fun createLineBreaksPanel(): JComponent
+    private fun createLineBreaksPanel(): JComponent
     {
         val panel = JPanel(FlowLayout(FlowLayout.LEFT))
 
-        panel.add(removeLineBreaksAfterArrowsCheckbox)
+        //panel.add(removeLineBreaksAfterArrowsCheckbox)
 
         return panel
-    }*/
+    }
 
     private fun createMaxLinesPanel(): JComponent
     {
@@ -160,14 +170,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
-    /*private fun createRemovalsPanel(): JComponent
+    private fun createRemovalsPanel(): JComponent
     {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panel = JPanel(FlowLayout(FlowLayout.LEADING))
 
-        panel.add(removeUnnecessaryCommasCheckbox)
+        //panel.add(removeUnnecessaryCommasCheckbox)
+        //panel.add(removeUnnecessaryCommasCheckbox)
 
         return panel
-    }*/
+    }
 
     override fun dispose()
     {

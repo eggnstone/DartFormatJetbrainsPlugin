@@ -37,7 +37,8 @@ class NotificationTools
 
             val safeMessageForTitle = message.replace("\"", "&quot;").replace("\n", " ")
             val safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
-            val title = "Error while formatting: $safeMessageForTitle"
+            //val title = "Error while formatting: $safeMessageForTitle"
+            val title = safeMessageForTitle
             val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$safeStacktraceForBody\n```"
             val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
             val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"

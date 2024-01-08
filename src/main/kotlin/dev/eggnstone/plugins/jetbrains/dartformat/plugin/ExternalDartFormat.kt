@@ -1,17 +1,22 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
-import dev.eggnstone.plugins.jetbrains.dartformat.pseudo_http.PseudoHttpClient
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import io.ktor.util.*
-import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import java.io.BufferedWriter
+import kotlinx.coroutines.future.await
+import org.intellij.markdown.html.urlEncode
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublishers
+import java.net.http.HttpResponse
 
 class ExternalDartFormat
 {
@@ -26,7 +31,8 @@ class ExternalDartFormat
     @OptIn(DelicateCoroutinesApi::class)
     fun init(project: Project)
     {
-        Logger.log("ExternalDartFormat: init: $project")
+        val methodName = "ExternalDartFormat.init"
+        Logger.log("$methodName: $project")
 
         if (mainJob != null)
             return
@@ -34,228 +40,91 @@ class ExternalDartFormat
         mainJob = GlobalScope.launch { run(project) }
     }
 
-    private suspend fun run(project: Project)
+    private suspend fun run(firstProject: Project)
     {
-        Logger.log("ExternalDartFormat.run: START $project")
+        val methodName = "ExternalDartFormat.run"
+        Logger.log("$methodName: START $firstProject")
 
-        val processBuilder: ProcessBuilder = if (OsTools.isWindows())
-            ProcessBuilder("cmd", "/c", "dart_format", "--plugin", "--errors-as-json")
-        else
-            ProcessBuilder("dart_format", "--plugin", "--errors-as-json")
-
-        val process = withContext(Dispatchers.IO) {
-            processBuilder.start()
-        }
-
-        Logger.log("ExternalDartFormat.run: external dart_format started.")
-
-        val inputReader = StreamReader(process.inputStream)
-        val errorReader = StreamReader(process.errorStream)
-
-        process.outputStream.preventFreeze()
-        val outputWriter1 = process.outputStream.writer()// .bufferedWriter()
-        val outputWriter = BufferedWriter(outputWriter1)
-        val pseudoHttpClient = PseudoHttpClient(inputReader, outputWriter, outputWriter1)
-
-        val result = pseudoHttpClient.get("/status")
-        if (result.statusCode != 200)
-        {
-            val errorText = "Failed to start external dart_format: ${result.statusCode} ${result.status}"
-            Logger.logError(errorText)
-            NotificationTools.notifyError(errorText, project)
-            return
-        }
-
-        val protocolVersion = result.getHeaderInt("Protocol-Version", -1)
-        if (protocolVersion != Constants.PROTOCOL_VERSION)
-        {
-            val errorText = "External dart_format: expected protocol version ${Constants.PROTOCOL_VERSION}, got $protocolVersion"
-            Logger.logError(errorText)
-            NotificationTools.notifyError(errorText, project)
-        }
-
-        val externalDartFormat2 = ExternalDartFormat2(pseudoHttpClient, inputReader, errorReader, outputWriter, process, project)
-
-        while (true)
-        {
-            val formatJob = channel.receive()
-            Logger.log("ExternalDartFormat.run: Got new job: ${formatJob.command}")
-
-            if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
-            {
-                Logger.log("Calling externalDartFormat2.format()")
-                formatJob.formatResult = externalDartFormat2.format(formatJob.inputText)
-                Logger.log("Called externalDartFormat2.format()")
-                Logger.log("Calling formatJob.complete()")
-                formatJob.complete()
-                Logger.log("Called formatJob.complete()")
-                continue
-            }
-
-            if (formatJob.command.toLowerCasePreservingASCIIRules() == "quit")
-            {
-                formatJob.complete()
-                break
-            }
-
-            formatJob.formatResult = FormatResult.error("Unknown command: ${formatJob.command}")
-            formatJob.complete()
-        }
-
-        Logger.log("ExternalDartFormat.run: END $project")
-
-        /*@Suppress("UNREACHABLE_CODE")
         try
         {
-            if (formatJob.command == "quit)")
-                break
+            val processBuilder: ProcessBuilder = if (OsTools.isWindows())
+                ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json")
+            else
+                ProcessBuilder("dart_format", "--web", "--errors-as-json")
 
-            formatViaExternalDartFormat(formatJob, process, inputReader, errorReader, outputWriter, project)
-            continue
-
-            Logger.log("formatJob.inputText.length: ${formatJob.inputText.length}")
-            val inputText = formatJob.inputText
-            val inputLength = inputText.length
-            var command = """{"Command": "PrepareToReceive", "ContentLength": ${inputLength}}"""
-            Logger.log("ExternalDartFormat: command: $command")
-
-            withContext(Dispatchers.IO) {
-                outputWriter.write(command + "\n")
-                outputWriter.flush()
+            val process = withContext(Dispatchers.IO) {
+                processBuilder.start()
             }
 
-            var commandResponse = ResponseReader.readResponse(process, inputReader, errorReader)
-            Logger.log("ExternalDartFormat: commandResponse 1: $commandResponse")
+            if (!process.isAlive)
+                throw Exception("Failed to start external dart_format: process is dead.")
 
-            if (commandResponse.statusCode != 201)
+            Logger.log("$methodName: External dart_format started.")
+
+            val inputReader = StreamReader(process.inputStream)
+            val baseUrl = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS)
+            Logger.log("$methodName: baseUrl: $baseUrl")
+
+            @Suppress("HttpUrlsUsage")
+            if (!baseUrl.startsWith("http://"))
+                throw Exception("Failed to start external dart_format: expected URL but got: $baseUrl")
+
+            val httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("$baseUrl/status"))
+                .header("User-Agent", "DartFormatPlugin")
+                .header("Content-Type", "text/plain; charset=utf-8")
+                .GET()
+                .build()
+
+            val httpResponse = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
+            Logger.log("$methodName: httpResponse: $httpResponse")
+            if (httpResponse.statusCode() != 200)
+                throw Exception("Failed to start external dart_format: requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
+
+            while (true)
             {
-                val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-                Logger.logError(errorText)
-                NotificationTools.notifyError(errorText, project)
-                formatJob.errorText = errorText
-                continue
-            }
+                val formatJob = channel.receive()
+                Logger.log("$methodName: Got new job: ${formatJob.command}")
 
-            commandResponse = ResponseReader.readResponse(process, inputReader, errorReader)
-            Logger.log("ExternalDartFormat: commandResponse 1a: $commandResponse")
-
-
-            Logger.log("ExternalDartFormat: Sending inputText ...")
-            withContext(Dispatchers.IO) {
-                Logger.log("ExternalDartFormat: Sending inputText START")
-
-                var s = inputText
-                while (s.length > 1000)
+                if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
-                    Logger.log("ExternalDartFormat: Sending inputText 2 a")
-                    outputWriter.write(s.substring(0, 1000))
-                    Logger.log("ExternalDartFormat: Sending inputText 2 b")
-                    Logger.log("ExternalDartFormat: Sending inputText 2 c")
-                    outputWriter.flush()
-                    Logger.log("ExternalDartFormat: Sending inputText 2 d")
-                    commandResponse = ResponseReader.readResponse(process, inputReader, errorReader)
-                    Logger.log("ExternalDartFormat: commandResponse 2: $commandResponse")
-                    s = s.substring(1000)
+                    Logger.log("Calling format()")
+                    formatJob.formatResult = formatViaExternalDartFormat(formatJob.project, baseUrl = baseUrl, config = formatJob.config!!, inputText = formatJob.inputText!!)
+                    Logger.log("Called format()")
+                    Logger.log("Calling formatJob.complete()")
+                    formatJob.complete()
+                    Logger.log("Called formatJob.complete()")
+                    continue
                 }
 
-                Logger.log("ExternalDartFormat: Sending inputText 2 r a ${s.length}")
-                outputWriter.write(s)
-                Logger.log("ExternalDartFormat: Sending inputText 2 r b")
-                outputWriter.flush()
-                Logger.log("ExternalDartFormat: Sending inputText 2 r c")
+                if (formatJob.command.toLowerCasePreservingASCIIRules() == "quit")
+                {
+                    formatJob.complete()
+                    break
+                }
 
-                Logger.log("ExternalDartFormat: Sending inputText END")
-            }
-            Logger.log("ExternalDartFormat: Sent inputText.")
-
-            do
-            {
-                commandResponse = ResponseReader.readResponse(process, inputReader, errorReader)
-                Logger.log("ExternalDartFormat: commandResponse 2: $commandResponse")
-            } while (commandResponse.statusCode == 100)
-
-            if (commandResponse.statusCode != 202)
-            {
-                val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-                Logger.logError(errorText)
-                NotificationTools.notifyError(errorText, project)
-                formatJob.errorText = errorText
-                continue
+                formatJob.formatResult = FormatResult.error("Unknown command: ${formatJob.command}")
+                formatJob.complete()
             }
 
-            do
-            {
-                commandResponse = ResponseReader.readResponse(process, inputReader, errorReader)
-                Logger.log("ExternalDartFormat: commandResponse 3: $commandResponse")
-            } while (commandResponse.statusCode == 100)
-
-            if (commandResponse.statusCode != 203)
-            {
-                val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-                Logger.logError(errorText)
-                NotificationTools.notifyError(errorText, project)
-                formatJob.errorText = errorText
-                continue
-            }
-
-            val resultLength = commandResponse.contentLength
-            if (resultLength == null || resultLength <= 0)
-            {
-                val errorText = "TODO: ERROR: statusCode: ${commandResponse.statusCode} status: ${commandResponse.status}"
-                Logger.logError(errorText)
-                NotificationTools.notifyError(errorText, project)
-                formatJob.errorText = errorText
-                continue
-            }
-
-            command = """{"Command": "RetrieveResult"}"""
-            Logger.log("ExternalDartFormat: command: $command")
-
-            withContext(Dispatchers.IO) {
-                outputWriter.write(command + "\n")
-                outputWriter.flush()
-            }
-
-            Logger.log("ExternalDartFormat.run: Calling read($resultLength) ...")
-            val result = inputReader.read(resultLength)
-            Logger.log("ExternalDartFormat.run: Called read($resultLength).")
-
-            if (result.length != resultLength)
-            {
-                val errorText = "result.length != resultLength: ${result.length} != $resultLength"
-                Logger.logError(result)
-                Logger.logError(errorText)
-                NotificationTools.notifyError(errorText, project)
-                formatJob.errorText = errorText
-                continue
-            }
-
-            formatJob.outputText = result
+            Logger.log("$methodName: END $firstProject")
         }
         catch (e: Exception)
         {
-            Logger.logError("ExternalDartFormat.run: Exception: $e")
-            NotificationTools.reportThrowable(e, project)
-            formatJob.errorText = e.toString()
+            Logger.logError("$methodName: Exception: $e")
+            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject)
         }
         catch (e: Error)
         {
-            Logger.logError("ExternalDartFormat.run: Error: $e")
-            NotificationTools.reportThrowable(e, project)
-            formatJob.errorText = e.toString()
+            Logger.logError("$methodName: Error: $e")
+            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject)
         }
-        finally
-        {
-            Logger.log("ExternalDartFormat.run: Calling formatJob.complete()")
-            formatJob.complete()
-            Logger.log("ExternalDartFormat.run: Called formatJob.complete()")
-        }*/
     }
 
-    fun format(project: Project, inputText: String): FormatResult
+    fun formatViaChannel(project: Project, inputText: String, config: String): FormatResult
     {
         Logger.log("ExternalDartFormat.format")
-        val formatJob = FormatJob(command = "format", inputText = inputText)
+        val formatJob = FormatJob(project = project, command = "Format", inputText = inputText, config = config)
 
         try
         {
@@ -288,54 +157,32 @@ class ExternalDartFormat
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
-    /*private fun formatViaExternalDartFormat(formatJob: FormatJob, process: Process, inputReader: StreamReader, errorReader: StreamReader, outputWriter: BufferedWriter, project: Project)
+    private suspend fun formatViaExternalDartFormat(project: Project, inputText: String, baseUrl: String, config: String): FormatResult
     {
-        Logger.log("ExternalDartFormat.formatViaExternalDartFormat()")
+        val methodName = "ExternalDartFormat.format"
 
-        outputWriter.write("POST / HTTP/1.1\n")
-        outputWriter.write("User-Agent: DartFormatPlugin\n")
-        outputWriter.write("Content-Type: text/plain; charset=utf-8\n")
-        outputWriter.write("Content-Length: ${formatJob.inputText.length}\n")
-        outputWriter.write("Config: {}\n")
-        outputWriter.write("\n")
-        outputWriter.write(formatJob.inputText)
-
-        var contentLength = -1
-        var statusCode = -1
-        var status = ""
-        var isFirst = true
-        while(true)
+        try
         {
-            val s = inputReader.readLine()
-            Logger.log("ExternalDartFormat.formatViaExternalDartFormat: $s")
-            if (s == "")
-                break
+            val safeConfig = urlEncode(config)
+            val httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("$baseUrl/format?Config=$safeConfig"))
+                .header("User-Agent", "DartFormatPlugin")
+                .header("Content-Type", "text/plain; charset=utf-8")
+                .POST(BodyPublishers.ofByteArray(inputText.toByteArray()))
+                .build()
 
-            if (isFirst)
-            {
-                isFirst = false
+            val httpResponse = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
+            Logger.log("$methodName: httpResponse: $httpResponse")
+            if (httpResponse.statusCode() != 200)
+                throw Exception("Failed to format via external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
-                if (!s.startsWith("HTTP/1.1 "))
-                {
-                    val errorText = "Unexpected response: \"$s\""
-                    Logger.logError("ExternalDartFormat.formatViaExternalDartFormat: $errorText")
-                    formatJob.errorText = errorText
-                }
-
-                statusCode = s.substring("HTTP/1.1 ".length, "HTTP/1.1 ".length + 3).toInt()
-                status = s.substring("HTTP/1.1 ".length + 4)
-                Logger.log("ExternalDartFormat.formatViaExternalDartFormat: statusCode: $statusCode status: $status")
-                continue
-            }
-
-            if (s.startsWith("Content-Length: "))
-            {
-                contentLength = s.substring("Content-Length: ".length).toInt()
-                Logger.log("ExternalDartFormat.formatViaExternalDartFormat: contentLength: $contentLength")
-                continue
-            }
+            return FormatResult.warning("TODO")
         }
-
-        formatJob.outputText = formatJob.inputText
-    }*/
+        catch (e: Exception)
+        {
+            Logger.logError("$methodName: Exception: $e")
+            NotificationTools.reportThrowable(e, project)
+            return FormatResult.error(e.toString())
+        }
+    }
 }
