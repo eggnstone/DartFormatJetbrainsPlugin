@@ -8,8 +8,10 @@ import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import io.ktor.util.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import java.io.BufferedWriter
 
 class ExternalDartFormat
 {
@@ -49,8 +51,11 @@ class ExternalDartFormat
 
         val inputReader = StreamReader(process.inputStream)
         val errorReader = StreamReader(process.errorStream)
-        val outputWriter = process.outputStream.bufferedWriter()
-        val pseudoHttpClient = PseudoHttpClient(inputReader, outputWriter)
+
+        process.outputStream.preventFreeze()
+        val outputWriter1 = process.outputStream.writer()// .bufferedWriter()
+        val outputWriter = BufferedWriter(outputWriter1)
+        val pseudoHttpClient = PseudoHttpClient(inputReader, outputWriter, outputWriter1)
 
         val result = pseudoHttpClient.get("/status")
         if (result.statusCode != 200)
@@ -255,15 +260,19 @@ class ExternalDartFormat
         try
         {
             runBlocking {
-                 withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                     Logger.log("ExternalDartFormat.format: sending")
                     channel.send(formatJob)
-                    Logger.log("ExternalDartFormat.format: sent")
+                    Logger.log("ExternalDartFormat.format: sent.")
+                    return@withTimeout "OK"
+                }
+            }
 
+            runBlocking {
+                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                     Logger.log("ExternalDartFormat.format: joining")
                     formatJob.join()
                     Logger.log("ExternalDartFormat.format: joined")
-
                     return@withTimeout "OK"
                 }
             }

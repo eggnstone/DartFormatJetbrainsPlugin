@@ -4,9 +4,13 @@ import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import java.io.BufferedWriter
+import java.io.OutputStreamWriter
 
-class PseudoHttpClient(private val inputReader: StreamReader, private val outputWriter: BufferedWriter)
+class PseudoHttpClient(private val inputReader: StreamReader, private val outputWriter: BufferedWriter, private val outputWriter1: OutputStreamWriter)
 {
     companion object
     {
@@ -23,6 +27,9 @@ class PseudoHttpClient(private val inputReader: StreamReader, private val output
         outputWriter.write("User-Agent: DartFormatPlugin\n")
         outputWriter.write("Protocol-Version: ${Constants.PROTOCOL_VERSION}\n")
         outputWriter.write("\n")
+        Logger.log("PseudoHttpClient.get: flushing outputWriter1 ...")
+        outputWriter1.flush()
+        Logger.log("PseudoHttpClient.get: flushing outputWriter ...")
         outputWriter.flush()
         Logger.log("PseudoHttpClient.get: wrote to outputWriter.")
 
@@ -32,16 +39,92 @@ class PseudoHttpClient(private val inputReader: StreamReader, private val output
     fun post(path: String, text: String): PseudoHttpResult
     {
         Logger.log("PseudoHttpClient.post($path)")
-        Logger.log("PseudoHttpClient.post: writing to outputWriter ...")
-        outputWriter.write("POST $path $PROTOCOL_AND_VERSION\n")
-        outputWriter.write("User-Agent: DartFormatPlugin\n")
-        outputWriter.write("Content-Type: text/plain; charset=utf-8\n")
-        outputWriter.write("Content-Length: ${text.length}\n")
-        outputWriter.write("Config: {}\n")
-        outputWriter.write("\n")
-        outputWriter.write(text)
-        outputWriter.flush()
-        Logger.log("PseudoHttpClient.post: wrote to outputWriter.")
+
+        try
+        {
+            val y: Any = runBlocking {
+                try
+                {
+                    val x: Any = withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                        try
+                        {
+                            Logger.log("PseudoHttpClient.post: writing to outputWriter ...")
+                            outputWriter.write("POST $path $PROTOCOL_AND_VERSION\n")
+                            outputWriter.write("User-Agent: DartFormatPlugin\n")
+                            outputWriter.write("Content-Type: text/plain; charset=utf-8\n")
+                            outputWriter.write("Content-Length: ${text.length}\n")
+                            outputWriter.write("Config: {}\n")
+                            outputWriter.write("\n")
+                            outputWriter.write(text)
+                            Logger.log("PseudoHttpClient.post: wrote to outputWriter.")
+                            Logger.log("PseudoHttpClient.post: flushing outputWriter ...")
+                            outputWriter.flush()
+                            Logger.log("PseudoHttpClient.post: flushed outputWriter.")
+
+                            return@withTimeout "OK"
+                        }
+                        catch (e: TimeoutCancellationException)
+                        {
+                            val errorText = "Timeout while writing to outputWriter."
+                            Logger.logError("PseudoHttpClient.post: $errorText")
+                            return@withTimeout errorText
+                        }
+                        catch (e: Exception)
+                        {
+                            val errorText = "Exception while writing to outputWriter: $e"
+                            Logger.logError("PseudoHttpClient.post: $errorText")
+                            return@withTimeout errorText
+                        }
+                        catch (e: Error)
+                        {
+                            val errorText = "Error while writing to outputWriter: $e"
+                            Logger.logError("PseudoHttpClient.post: $errorText")
+                            return@withTimeout errorText
+                        }
+                    }
+
+                    return@runBlocking x
+                }
+                catch (e: TimeoutCancellationException)
+                {
+                    val errorText = "Timeout while writing to outputWriter."
+                    Logger.logError("PseudoHttpClient.post: $errorText")
+                    return@runBlocking "Timeout"
+                }
+                catch (e: Exception)
+                {
+                    val errorText = "Exception while writing to outputWriter: $e"
+                    Logger.logError("PseudoHttpClient.post: $errorText")
+                    return@runBlocking errorText
+                }
+                catch (e: Error)
+                {
+                    val errorText = "Error while writing to outputWriter: $e"
+                    Logger.logError("PseudoHttpClient.post: $errorText")
+                    return@runBlocking errorText
+                }
+            }
+
+            return PseudoHttpResult(500, y.toString(), mutableListOf())
+        }
+        catch (e: TimeoutCancellationException)
+        {
+            val errorText = "Timeout while writing to outputWriter."
+            Logger.logError("PseudoHttpClient.post: $errorText")
+            return PseudoHttpResult(500, errorText, mutableListOf())
+        }
+        catch (e: Exception)
+        {
+            val errorText = "Exception while writing to outputWriter: $e"
+            Logger.logError("PseudoHttpClient.post: $errorText")
+            return PseudoHttpResult(500, errorText, mutableListOf())
+        }
+        catch (e: Error)
+        {
+            val errorText = "Error while writing to outputWriter: $e"
+            Logger.logError("PseudoHttpClient.post: $errorText")
+            return PseudoHttpResult(500, errorText, mutableListOf())
+        }
 
         return readResponse()
     }
