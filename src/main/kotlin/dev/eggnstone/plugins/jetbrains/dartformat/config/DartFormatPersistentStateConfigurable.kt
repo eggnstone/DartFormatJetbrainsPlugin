@@ -189,17 +189,17 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun isModified(): Boolean
     {
         return config.addNewLineAfterOpeningBrace != addNewLineAfterOpeningBraceCheckbox.isSelected
-            || config.addNewLineAfterClosingBrace != addNewLineAfterClosingBraceCheckbox.isSelected
-            || config.addNewLineBeforeOpeningBrace != addNewLineBeforeOpeningBraceCheckbox.isSelected
-            || config.addNewLineBeforeClosingBrace != addNewLineBeforeClosingBraceCheckbox.isSelected
-            || config.addNewLineAfterSemicolon != addNewLineAfterSemicolonCheckbox.isSelected
-            || config.addNewLineAtEndOfText != addNewLineAtEndOfTextCheckbox.isSelected
-            || config.indentationIsEnabled != indentationIsEnabledCheckbox.isSelected
-            || config.indentationSpacesPerLevel != indentationSpacesPerLevelField.text.toIntOrNull()
-            || config.maxEmptyLines != maxEmptyLinesField.text.toIntOrNull()
-            || config.maxEmptyLinesIsEnabled != maxEmptyLinesIsEnabledCheckbox.isSelected
-            /*|| config.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox.isSelected
-            || config.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox.isSelected*/
+        || config.addNewLineAfterClosingBrace != addNewLineAfterClosingBraceCheckbox.isSelected
+        || config.addNewLineBeforeOpeningBrace != addNewLineBeforeOpeningBraceCheckbox.isSelected
+        || config.addNewLineBeforeClosingBrace != addNewLineBeforeClosingBraceCheckbox.isSelected
+        || config.addNewLineAfterSemicolon != addNewLineAfterSemicolonCheckbox.isSelected
+        || config.addNewLineAtEndOfText != addNewLineAtEndOfTextCheckbox.isSelected
+        || config.indentationIsEnabled != indentationIsEnabledCheckbox.isSelected
+        || config.indentationSpacesPerLevel != indentationSpacesPerLevelField.text.toIntOrNull()
+        || config.maxEmptyLines != maxEmptyLinesField.text.toIntOrNull()
+        || config.maxEmptyLinesIsEnabled != maxEmptyLinesIsEnabledCheckbox.isSelected
+        /*|| config.removeUnnecessaryCommas != removeUnnecessaryCommasCheckbox.isSelected
+        || config.removeLineBreaksAfterArrows != removeLineBreaksAfterArrowsCheckbox.isSelected*/
     }
 
     override fun reset()

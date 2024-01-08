@@ -140,7 +140,7 @@ class FormatAction : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val formatResultText = formatOrThrow(project, inputText)
+        val formatResultText = formatOrReport(project, inputText) ?: return false
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
@@ -172,7 +172,7 @@ class FormatAction : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatOrThrow(project, inputText)
+        val formatResultText = formatOrReport(project, inputText) ?: return false
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
@@ -197,25 +197,34 @@ class FormatAction : AnAction()
         return true
     }
 
-    private fun formatOrThrow(project: Project, inputText: String): String
+    private fun formatOrReport(project: Project, inputText: String): String?
     {
-        val formatResult = format(project, inputText)
+        val formatResult = format(inputText)
 
         if (formatResult.resultType == ResultType.ERROR)
-            throw DartFormatException(FailType.ERROR, formatResult.text)
+        {
+            if (formatResult.throwable == null)
+                NotificationTools.notifyError(formatResult.text, project)
+            else
+                NotificationTools.reportThrowable(formatResult.throwable, project)
+            return null
+        }
 
         if (formatResult.resultType == ResultType.WARNING)
-            throw DartFormatException(FailType.WARNING, formatResult.text)
+        {
+            NotificationTools.notifyWarning(listOf(formatResult.text), project)
+            return null
+        }
 
         return formatResult.text
     }
 
-    private fun format(project: Project, inputText: String): FormatResult
+    private fun format(inputText: String): FormatResult
     {
         if (inputText.isEmpty())
             return FormatResult.ok("")
 
-        return ExternalDartFormat.instance.formatViaChannel(project, inputText, getConfig().toJson())
+        return ExternalDartFormat.instance.formatViaChannel(inputText, getConfig().toJson())
     }
 
     private fun getConfig(): DartFormatConfig

@@ -56,7 +56,7 @@ class NotificationTools
             notifyByToolWindowBalloon(lines, NotificationType.WARNING, project, subtitle)
         }
 
-        //private fun notifyErrorWithNormalLineBreaks(lines: List<String>, project: Project, subtitle: String? = null)
+        @Suppress("MemberVisibilityCanBePrivate")
         fun notifyError(text: String, project: Project, subtitle: String? = null)
         {
             notifyByToolWindowBalloon(text, NotificationType.ERROR, project, subtitle)
@@ -73,12 +73,14 @@ class NotificationTools
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
             val notification = notificationGroup.createNotification("DartFormat", text, type)
             notification.subtitle = subtitle
+
             /*
             val action = NotificationAction.createSimple("TODO XYZ") {
                 BrowserUtil.browse(url)
             }
             notification.addAction(action)
             */
+            @Suppress("DEPRECATION")
             notification.setListener(NotificationListener.UrlOpeningListener(true))
             notification.notify(project)
         }

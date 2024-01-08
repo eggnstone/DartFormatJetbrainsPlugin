@@ -89,7 +89,7 @@ class ExternalDartFormat
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
                     Logger.log("Calling format()")
-                    formatJob.formatResult = formatViaExternalDartFormat(formatJob.project, baseUrl = baseUrl, config = formatJob.config!!, inputText = formatJob.inputText!!)
+                    formatJob.formatResult = formatViaExternalDartFormat(baseUrl = baseUrl, config = formatJob.config!!, inputText = formatJob.inputText!!)
                     Logger.log("Called format()")
                     Logger.log("Calling formatJob.complete()")
                     formatJob.complete()
@@ -121,10 +121,10 @@ class ExternalDartFormat
         }
     }
 
-    fun formatViaChannel(project: Project, inputText: String, config: String): FormatResult
+    fun formatViaChannel(inputText: String, config: String): FormatResult
     {
         Logger.log("ExternalDartFormat.format")
-        val formatJob = FormatJob(project = project, command = "Format", inputText = inputText, config = config)
+        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config)
 
         try
         {
@@ -157,7 +157,7 @@ class ExternalDartFormat
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
-    private suspend fun formatViaExternalDartFormat(project: Project, inputText: String, baseUrl: String, config: String): FormatResult
+    private suspend fun formatViaExternalDartFormat(inputText: String, baseUrl: String, config: String): FormatResult
     {
         val methodName = "ExternalDartFormat.format"
 
@@ -171,7 +171,9 @@ class ExternalDartFormat
                 .POST(BodyPublishers.ofByteArray(inputText.toByteArray()))
                 .build()
 
+            Logger.log("$methodName: 1")
             val httpResponse = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
+            Logger.log("$methodName: 2")
             Logger.log("$methodName: httpResponse: $httpResponse")
             if (httpResponse.statusCode() != 200)
                 throw Exception("Failed to format via external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
@@ -180,9 +182,7 @@ class ExternalDartFormat
         }
         catch (e: Exception)
         {
-            Logger.logError("$methodName: Exception: $e")
-            NotificationTools.reportThrowable(e, project)
-            return FormatResult.error(e.toString())
+            return FormatResult.throwable(methodName, e)
         }
     }
 }
