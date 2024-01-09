@@ -11,11 +11,18 @@ import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
-import org.intellij.markdown.html.urlEncode
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.config.ConnectionConfig
+import org.apache.http.entity.ByteArrayEntity
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager
+import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
-import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 
 class ExternalDartFormat
@@ -37,13 +44,13 @@ class ExternalDartFormat
         if (mainJob != null)
             return
 
-        mainJob = GlobalScope.launch { run(project) }
+        mainJob = GlobalScope.launch { run() }
     }
 
-    private suspend fun run(firstProject: Project)
+    private suspend fun run()
     {
         val methodName = "ExternalDartFormat.run"
-        Logger.log("$methodName: START $firstProject")
+        Logger.log("$methodName: START")
 
         try
         {
@@ -62,8 +69,9 @@ class ExternalDartFormat
             Logger.log("$methodName: External dart_format started.")
 
             val inputReader = StreamReader(process.inputStream)
-            val baseUrl = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS)
-            Logger.log("$methodName: baseUrl: $baseUrl")
+            val baseUrl2 = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS)
+            Logger.log("$methodName: baseUrl: $baseUrl2")
+            val baseUrl = "http://127.0.0.1:8008"
 
             @Suppress("HttpUrlsUsage")
             if (!baseUrl.startsWith("http://"))
@@ -77,9 +85,11 @@ class ExternalDartFormat
                 .build()
 
             val httpResponse = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
-            Logger.log("$methodName: httpResponse: $httpResponse")
+            //Logger.log("$methodName: httpResponse: $httpResponse")
             if (httpResponse.statusCode() != 200)
                 throw Exception("Failed to start external dart_format: requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
+
+            //NotificationTools.notifyInfo(listOf("External dart_format started."), ProjectManager.getInstance().defaultProject)
 
             while (true)
             {
@@ -91,6 +101,7 @@ class ExternalDartFormat
                     Logger.log("Calling format()")
                     formatJob.formatResult = formatViaExternalDartFormat(baseUrl = baseUrl, config = formatJob.config!!, inputText = formatJob.inputText!!)
                     Logger.log("Called format()")
+                    //NotificationTools.notifyInfo(listOf("FORMATTED"), ProjectManager.getInstance().defaultProject)
                     Logger.log("Calling formatJob.complete()")
                     formatJob.complete()
                     Logger.log("Called formatJob.complete()")
@@ -107,7 +118,7 @@ class ExternalDartFormat
                 formatJob.complete()
             }
 
-            Logger.log("$methodName: END $firstProject")
+            Logger.log("$methodName: END")
         }
         catch (e: Exception)
         {
@@ -116,6 +127,7 @@ class ExternalDartFormat
         }
         catch (e: Error)
         {
+            // necessary?
             Logger.logError("$methodName: Error: $e")
             NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject)
         }
@@ -163,25 +175,64 @@ class ExternalDartFormat
 
         try
         {
-            val safeConfig = urlEncode(config)
+            val requestConfig = RequestConfig.custom()
+                .setConnectTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
+                .setConnectionRequestTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
+                .setSocketTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000).build()
+            val httpClient: CloseableHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
+            val httpRequest = HttpPost("$baseUrl/format")
+            httpRequest.entity = ByteArrayEntity(inputText.toByteArray())
+            val httpResponse: CloseableHttpResponse
+            try
+            {
+                Logger.log("$methodName: POST /format")
+                httpResponse = httpClient.execute(httpRequest, null)
+                Logger.log("$methodName: r: $httpResponse")
+            }
+            catch (e: SocketTimeoutException)
+            {
+                return FormatResult.error("Failed to format via external dart_format: Timeout")
+            }
+
+            Logger.log("$methodName: r: $httpResponse")
+
+            return FormatResult.warning("TODO")
+
+           /* val safeConfig = urlEncode(config)
             val httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create("$baseUrl/format?Config=$safeConfig"))
-                .header("User-Agent", "DartFormatPlugin")
+                //.uri(URI.create("$baseUrl/format?Config=$safeConfig"))
+                .uri(URI.create("$baseUrl/format"))
+                //.header("User-Agent", "DartFormatPlugin")
                 .header("Content-Type", "text/plain; charset=utf-8")
-                .POST(BodyPublishers.ofByteArray(inputText.toByteArray()))
+                //.GET()
+                //.POST(BodyPublishers.ofByteArray(inputText.toByteArray()))
+                .POST(BodyPublishers.ofString("inputText\n\n\n", charset("UTF-8")))
                 .build()
 
             Logger.log("$methodName: 1")
-            val httpResponse = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
+            //val x : Any = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray()).await()
+            val httpResponse: Any = HttpClient.newHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString())
+            //val httpResponse : Any = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
             Logger.log("$methodName: 2")
+            Logger.log("$methodName: $httpResponse")
+
+            @Suppress("KotlinConstantConditions")
+            if (httpResponse !is HttpResponse<*>)
+                throw Exception("Failed to format via external dart_format: $httpResponse")
+
             Logger.log("$methodName: httpResponse: $httpResponse")
             if (httpResponse.statusCode() != 200)
                 throw Exception("Failed to format via external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
-            return FormatResult.warning("TODO")
+            return FormatResult.warning("TODO")*/
         }
         catch (e: Exception)
         {
+            return FormatResult.throwable(methodName, e)
+        }
+        catch (e: Error)
+        {
+            // necessary?
             return FormatResult.throwable(methodName, e)
         }
     }

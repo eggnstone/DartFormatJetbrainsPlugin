@@ -8,22 +8,22 @@ class FormatResult(val resultType: ResultType, val text: String, val throwable: 
     {
         fun error(s: String): FormatResult
         {
-            return FormatResult(resultType = ResultType.ERROR, text = s)
+            return FormatResult(resultType = ResultType.Error, text = s)
         }
 
         fun throwable(s: String, e: Throwable): FormatResult
         {
-            return FormatResult(resultType = ResultType.ERROR, text = s, throwable = e)
+            return FormatResult(resultType = ResultType.Error, text = s, throwable = e)
         }
 
         fun ok(s: String): FormatResult
         {
-            return FormatResult(resultType = ResultType.OK, text = s)
+            return FormatResult(resultType = ResultType.Ok, text = s)
         }
 
         fun warning(s: String): FormatResult
         {
-            return FormatResult(resultType = ResultType.WARNING, text = s)
+            return FormatResult(resultType = ResultType.Warning, text = s)
         }
     }
 }

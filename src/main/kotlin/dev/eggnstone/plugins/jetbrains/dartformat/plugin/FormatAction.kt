@@ -62,35 +62,47 @@ class FormatAction : AnAction()
             }
 
             var changedFiles = 0
+            var encounteredError = false
             if (DEBUG_FORMAT_ACTION) Logger.log("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
                     if (DEBUG_FORMAT_ACTION) Logger.log("  Final file: $finalVirtualFile")
-                    if (formatDartFile(finalVirtualFile, project))
+                    val result = formatDartFile(finalVirtualFile, project)
+
+                    if (result == FormatResultType.Error)
+                    {
+                        encounteredError = true
+                        break
+                    }
+
+                    if (result == FormatResultType.SomethingChanged)
                         changedFiles++
                 }
             }
 
-            val endTime = Date()
-            val diffTime = endTime.time - startTime.time
-            val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
-
-            var finalVirtualFilesText = "${finalVirtualFiles.size} file"
-            if (finalVirtualFiles.size != 1)
-                finalVirtualFilesText += "s"
-
-            val changedFilesText: String = when (changedFiles)
+            if (!encounteredError)
             {
-                0 -> "Nothing"
-                1 -> "1 file"
-                else -> "$changedFiles files"
-            }
+                val endTime = Date()
+                val diffTime = endTime.time - startTime.time
+                val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
 
-            val lines = mutableListOf<String>()
-            lines.add("Formatting $finalVirtualFilesText took $diffTimeText.")
-            lines.add("$changedFilesText changed.")
-            NotificationTools.notifyInfo(lines, project)
+                var finalVirtualFilesText = "${finalVirtualFiles.size} file"
+                if (finalVirtualFiles.size != 1)
+                    finalVirtualFilesText += "s"
+
+                val changedFilesText: String = when (changedFiles)
+                {
+                    0 -> "Nothing"
+                    1 -> "1 file"
+                    else -> "$changedFiles files"
+                }
+
+                val lines = mutableListOf<String>()
+                lines.add("Formatting $finalVirtualFilesText took $diffTimeText.")
+                lines.add("$changedFilesText changed.")
+                NotificationTools.notifyInfo(lines, project)
+            }
         }
         catch (e: Exception)
         {
@@ -106,7 +118,7 @@ class FormatAction : AnAction()
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project): Boolean
+    private fun formatDartFile(virtualFile: VirtualFile, project: Project): FormatResultType
     {
         try
         {
@@ -124,9 +136,14 @@ class FormatAction : AnAction()
         {
             throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${e.message}", e)
         }
+        catch (e: Error)
+        {
+            // necessary?
+            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${e.message}", e)
+        }
     }
 
-    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): Boolean
+    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): FormatResultType
     {
         if (!virtualFile.isWritable)
         {
@@ -135,16 +152,17 @@ class FormatAction : AnAction()
                 Logger.log("formatDartFileByBinaryContent: $virtualFile")
                 Logger.log("  !virtualFile.isWritable")
             }
-            return false
+
+            return FormatResultType.NothingChanged
         }
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val formatResultText = formatOrReport(project, inputText) ?: return false
+        val formatResultText = formatOrReport(project, inputText) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
-            return false
+            return FormatResultType.NothingChanged
         }
 
         val outputBytes = formatResultText.toByteArray()
@@ -153,10 +171,10 @@ class FormatAction : AnAction()
         }
 
         if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
-        return true
+        return FormatResultType.SomethingChanged
     }
 
-    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): Boolean
+    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): FormatResultType
     {
         if (fileEditor !is TextEditor)
         {
@@ -165,18 +183,18 @@ class FormatAction : AnAction()
                 Logger.log("formatDartFileByFileEditor: $fileEditor")
                 Logger.log("  fileEditor !is TextEditor")
             }
-            return false
+            return FormatResultType.NothingChanged
         }
 
         val editor = fileEditor.editor
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatOrReport(project, inputText) ?: return false
+        val formatResultText = formatOrReport(project, inputText) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
-            return false
+            return FormatResultType.NothingChanged
         }
 
         val fixedOutputText: String = if (formatResultText.contains("\r\n"))
@@ -194,14 +212,14 @@ class FormatAction : AnAction()
         }
 
         if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
-        return true
+        return FormatResultType.SomethingChanged
     }
 
     private fun formatOrReport(project: Project, inputText: String): String?
     {
         val formatResult = format(inputText)
 
-        if (formatResult.resultType == ResultType.ERROR)
+        if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
                 NotificationTools.notifyError(formatResult.text, project)
@@ -210,7 +228,7 @@ class FormatAction : AnAction()
             return null
         }
 
-        if (formatResult.resultType == ResultType.WARNING)
+        if (formatResult.resultType == ResultType.Warning)
         {
             NotificationTools.notifyWarning(listOf(formatResult.text), project)
             return null
