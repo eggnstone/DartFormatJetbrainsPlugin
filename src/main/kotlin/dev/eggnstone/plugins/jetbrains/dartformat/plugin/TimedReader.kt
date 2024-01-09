@@ -1,9 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.Constants
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.FailType
-import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.*
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 class TimedReader
@@ -25,7 +22,7 @@ class TimedReader
                 {
                     val errorText = "Unexpected process exit."
                     Logger.logError("TimedReader.readResponse: $errorText")
-                    throw DartFormatException(FailType.ERROR, errorText)
+                    throw DartFormatException(FailType.Error, ExceptionSourceType.Local, errorText)
                 }
 
                 Thread.sleep(Constants.WAIT_INTERVAL_IN_MILLIS.toLong())
@@ -36,7 +33,7 @@ class TimedReader
 
             val errorText = "Timeout while waiting for response."
             Logger.logError("TimedReader.readLine: $errorText")
-            throw DartFormatException(FailType.ERROR, errorText)
+            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, errorText)
         }
 
         private fun receiveLine(streamReader: StreamReader): String?

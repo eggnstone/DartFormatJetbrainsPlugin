@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
@@ -134,12 +135,12 @@ class FormatAction : AnAction()
         }
         catch (e: Exception)
         {
-            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "${virtualFile.path}\n${e.message}", e)
         }
         catch (e: Error)
         {
             // necessary?
-            throw DartFormatException(FailType.ERROR, "${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "${virtualFile.path}\n${e.message}", e)
         }
     }
 
@@ -234,7 +235,7 @@ class FormatAction : AnAction()
             return null
         }
 
-        Logger.log("formatOrReport: ${formatResult.text}")
+        //Logger.log("formatOrReport: ${formatResult.text}")
         return formatResult.text
     }
 

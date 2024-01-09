@@ -1,7 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
-enum class FailType
+enum class ExceptionSourceType
 {
-    Error,
-    Warning
+    Local,
+    Remote
 }

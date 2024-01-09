@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -19,7 +20,7 @@ class JsonTools
             }
             catch (e: Exception)
             {
-                throw DartFormatException(FailType.ERROR, "Failed to parse JSON/1: \"${toTransferString(json)}\"")
+                throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "Failed to parse JSON/1: \"${toTransferString(json)}\"")
             }
         }
 
@@ -36,15 +37,15 @@ class JsonTools
             try
             {
                 val typeText = getString(jsonElement, "Type", "Error")
-                val type: FailType = if (typeText == "Warning") FailType.WARNING else FailType.ERROR
+                val type: FailType = if (typeText == "Warning") FailType.Warning else FailType.Error
                 val messageText = getString(jsonElement, "Message", "Unknown error")
                 val line = getInt(jsonElement, "Line", -1)
                 val column = getInt(jsonElement, "Column", -1)
-                return DartFormatException(type, messageText, line = line, column = column)
+                return DartFormatException(type, ExceptionSourceType.Remote, messageText, line = line, column = column)
             }
             catch (e: Exception)
             {
-                return DartFormatException(FailType.ERROR, "Failed to parse JSON/2: \"${toTransferString(json)}\"")
+                return DartFormatException(FailType.Error, ExceptionSourceType.Local, "Failed to parse JSON/2: \"${toTransferString(json)}\"")
             }
         }
 

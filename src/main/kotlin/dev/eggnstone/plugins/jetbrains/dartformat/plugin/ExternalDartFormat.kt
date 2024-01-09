@@ -2,9 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.vladsch.flexmark.util.misc.Utils.urlDecode
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -168,7 +166,7 @@ class ExternalDartFormat
             return FormatResult.error(errorText)
         }
 
-        Logger.log("formatJob.formatResult: ${formatJob.formatResult?.text}")
+        //Logger.log("formatJob.formatResult: ${formatJob.formatResult?.text}")
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
@@ -197,22 +195,10 @@ class ExternalDartFormat
                 return FormatResult.error("Failed to format via external dart_format: Timeout")
             }
 
-            Logger.log("$methodName: r: $httpResponse")
-            Logger.log("$methodName: r.allHeaders: ${httpResponse.allHeaders.joinToString("\n")}")
-            Logger.log("$methodName: r.entity: ${httpResponse.entity}")
-
             val dartFormatExceptionJson = httpResponse.getFirstHeader("X-DartFormat-Exception")
-                Logger.log("X-DartFormat-Result: " + httpResponse.getFirstHeader("X-DartFormat-Result"))
-                Logger.log("X-DartFormat-Exception: " + httpResponse.getFirstHeader("X-DartFormat-Exception"))
-
             if (dartFormatExceptionJson != null)
             {
-                val urlEncodedDartFormatException = dartFormatExceptionJson.value
-                //Logger.log("urlEncodedDartFormatException: $urlEncodedDartFormatException")
-                val urlDecodedDartFormatException = urlDecode(urlEncodedDartFormatException, null)
-                //Logger.log("urlDecodedDartFormatException: $urlDecodedDartFormatException")
                 val dartFormatException = JsonTools.parseDartFormatException(dartFormatExceptionJson.value)
-                Logger.log("DartFormatException: $dartFormatException")
                 return FormatResult.throwable(methodName, dartFormatException)
             }
 
@@ -220,7 +206,7 @@ class ExternalDartFormat
                 httpResponse.entity.content.readAllBytes()
             }.decodeToString()
 
-            Logger.log("$methodName: formattedText: $formattedText")
+            //Logger.log("$methodName: formattedText: $formattedText")
 
             return FormatResult.ok(formattedText)
         }

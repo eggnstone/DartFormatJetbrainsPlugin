@@ -5,6 +5,7 @@ import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 
 class NotificationTools
@@ -15,7 +16,7 @@ class NotificationTools
 
         fun reportThrowable(throwable: Throwable, project: Project)
         {
-            if (throwable is DartFormatException && throwable.type == FailType.WARNING)
+            if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
                 val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
                 val text = optionalLocation + throwable.message
@@ -26,20 +27,28 @@ class NotificationTools
             val message = if (throwable.message == null) "Unknown error" else throwable.message!!
             if (DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
 
-            var stacktrace = throwable.stackTraceToString()
-            var pos = stacktrace.lastIndexOf("dev.eggnstone")
-            if (pos >= 0)
+            var safeStacktraceForBody = ""
+            if (throwable !is DartFormatException || throwable.source == ExceptionSourceType.Local)
             {
-                pos = stacktrace.indexOf("\n", pos)
+                var stacktrace = throwable.stackTraceToString()
+                var pos = stacktrace.lastIndexOf("dev.eggnstone")
                 if (pos >= 0)
-                    stacktrace = stacktrace.substring(0, pos - 1)
+                {
+                    pos = stacktrace.indexOf("\n", pos)
+                    if (pos >= 0)
+                        stacktrace = stacktrace.substring(0, pos - 1)
+                }
+
+                safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
             }
 
             val safeMessageForTitle = message.replace("\"", "&quot;").replace("\n", " ")
-            val safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
             //val title = "Error while formatting: $safeMessageForTitle"
             val title = safeMessageForTitle
-            val body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n```\n$safeStacktraceForBody\n```"
+            var body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n"
+            if (safeStacktraceForBody.isNotEmpty())
+                body += "```\n$safeStacktraceForBody\n```"
+
             val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
             val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
 
