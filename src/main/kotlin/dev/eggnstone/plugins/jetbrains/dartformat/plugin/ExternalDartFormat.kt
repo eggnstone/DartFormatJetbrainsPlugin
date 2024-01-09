@@ -15,10 +15,9 @@ import kotlinx.coroutines.future.await
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.ByteArrayEntity
+import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
-import org.intellij.markdown.html.urlEncode
 import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.http.HttpClient
@@ -55,9 +54,9 @@ class ExternalDartFormat
         try
         {
             val processBuilder: ProcessBuilder = if (OsTools.isWindows())
-                ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json")
+                ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
             else
-                ProcessBuilder("dart_format", "--web", "--errors-as-json")
+                ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
 
             val process = withContext(Dispatchers.IO) {
                 processBuilder.start()
@@ -181,9 +180,12 @@ class ExternalDartFormat
                 .setConnectionRequestTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
                 .setSocketTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000).build()
             val httpClient: CloseableHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
-            val safeConfig = urlEncode(config)
-            val httpRequest = HttpPost("$baseUrl/format?Config=$safeConfig")
-            httpRequest.entity = ByteArrayEntity(inputText.toByteArray())
+            val httpRequest = HttpPost("$baseUrl/format")
+            val multipartEntityBuilder = MultipartEntityBuilder.create()
+            multipartEntityBuilder.addTextBody("Config", config)
+            multipartEntityBuilder.addTextBody("Text", inputText)
+            httpRequest.entity = multipartEntityBuilder.build()
+
             val httpResponse: CloseableHttpResponse
             try
             {
