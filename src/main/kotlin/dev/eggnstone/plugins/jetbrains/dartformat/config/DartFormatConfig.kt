@@ -33,14 +33,14 @@ class DartFormatConfig
         val finalMaxEmptyLines = if (maxEmptyLinesIsEnabled) maxEmptyLines else -1
 
         return "{" +
-        "\\\"AddNewLineAfterClosingBrace\\\": " + addNewLineAfterClosingBrace + "," +
-        "\\\"AddNewLineAfterOpeningBrace\\\": " + addNewLineAfterOpeningBrace + "," +
-        "\\\"AddNewLineAfterSemicolon\\\": " + addNewLineAfterSemicolon + "," +
-        "\\\"AddNewLineAtEndOfText\\\": " + addNewLineAtEndOfText + "," +
-        "\\\"AddNewLineBeforeClosingBrace\\\": " + addNewLineBeforeClosingBrace + "," +
-        "\\\"AddNewLineBeforeOpeningBrace\\\": " + addNewLineBeforeOpeningBrace + "," +
-        "\\\"IndentationSpacesPerLevel\\\": " + finalIndentationSpacesPerLevel + "," +
-        "\\\"MaxEmptyLines\\\": " + finalMaxEmptyLines +
+        "\"AddNewLineAfterClosingBrace\": " + addNewLineAfterClosingBrace + "," +
+        "\"AddNewLineAfterOpeningBrace\": " + addNewLineAfterOpeningBrace + "," +
+        "\"AddNewLineAfterSemicolon\": " + addNewLineAfterSemicolon + "," +
+        "\"AddNewLineAtEndOfText\": " + addNewLineAtEndOfText + "," +
+        "\"AddNewLineBeforeClosingBrace\": " + addNewLineBeforeClosingBrace + "," +
+        "\"AddNewLineBeforeOpeningBrace\": " + addNewLineBeforeOpeningBrace + "," +
+        "\"IndentationSpacesPerLevel\": " + finalIndentationSpacesPerLevel + "," +
+        "\"MaxEmptyLines\": " + finalMaxEmptyLines +
         "}"
     }
 }
