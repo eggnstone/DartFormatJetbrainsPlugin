@@ -2,8 +2,11 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.vladsch.flexmark.util.misc.Utils.urlDecode
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
@@ -14,11 +17,10 @@ import kotlinx.coroutines.future.await
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
-import org.apache.http.config.ConnectionConfig
 import org.apache.http.entity.ByteArrayEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager
+import org.intellij.markdown.html.urlEncode
 import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.http.HttpClient
@@ -166,6 +168,7 @@ class ExternalDartFormat
             return FormatResult.error(errorText)
         }
 
+        Logger.log("formatJob.formatResult: ${formatJob.formatResult?.text}")
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
@@ -180,14 +183,14 @@ class ExternalDartFormat
                 .setConnectionRequestTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
                 .setSocketTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000).build()
             val httpClient: CloseableHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
-            val httpRequest = HttpPost("$baseUrl/format")
+            val safeConfig = urlEncode(config)
+            val httpRequest = HttpPost("$baseUrl/format?Config=$safeConfig")
             httpRequest.entity = ByteArrayEntity(inputText.toByteArray())
             val httpResponse: CloseableHttpResponse
             try
             {
                 Logger.log("$methodName: POST /format")
                 httpResponse = httpClient.execute(httpRequest, null)
-                Logger.log("$methodName: r: $httpResponse")
             }
             catch (e: SocketTimeoutException)
             {
@@ -195,36 +198,31 @@ class ExternalDartFormat
             }
 
             Logger.log("$methodName: r: $httpResponse")
+            Logger.log("$methodName: r.allHeaders: ${httpResponse.allHeaders.joinToString("\n")}")
+            Logger.log("$methodName: r.entity: ${httpResponse.entity}")
 
-            return FormatResult.warning("TODO")
+            val dartFormatExceptionJson = httpResponse.getFirstHeader("X-DartFormat-Exception")
+                Logger.log("X-DartFormat-Result: " + httpResponse.getFirstHeader("X-DartFormat-Result"))
+                Logger.log("X-DartFormat-Exception: " + httpResponse.getFirstHeader("X-DartFormat-Exception"))
 
-           /* val safeConfig = urlEncode(config)
-            val httpRequest = HttpRequest.newBuilder()
-                //.uri(URI.create("$baseUrl/format?Config=$safeConfig"))
-                .uri(URI.create("$baseUrl/format"))
-                //.header("User-Agent", "DartFormatPlugin")
-                .header("Content-Type", "text/plain; charset=utf-8")
-                //.GET()
-                //.POST(BodyPublishers.ofByteArray(inputText.toByteArray()))
-                .POST(BodyPublishers.ofString("inputText\n\n\n", charset("UTF-8")))
-                .build()
+            if (dartFormatExceptionJson != null)
+            {
+                val urlEncodedDartFormatException = dartFormatExceptionJson.value
+                //Logger.log("urlEncodedDartFormatException: $urlEncodedDartFormatException")
+                val urlDecodedDartFormatException = urlDecode(urlEncodedDartFormatException, null)
+                //Logger.log("urlDecodedDartFormatException: $urlDecodedDartFormatException")
+                val dartFormatException = JsonTools.parseDartFormatException(dartFormatExceptionJson.value)
+                Logger.log("DartFormatException: $dartFormatException")
+                return FormatResult.throwable(methodName, dartFormatException)
+            }
 
-            Logger.log("$methodName: 1")
-            //val x : Any = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray()).await()
-            val httpResponse: Any = HttpClient.newHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString())
-            //val httpResponse : Any = HttpClient.newHttpClient().sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
-            Logger.log("$methodName: 2")
-            Logger.log("$methodName: $httpResponse")
+            val formattedText = withContext(Dispatchers.IO) {
+                httpResponse.entity.content.readAllBytes()
+            }.decodeToString()
 
-            @Suppress("KotlinConstantConditions")
-            if (httpResponse !is HttpResponse<*>)
-                throw Exception("Failed to format via external dart_format: $httpResponse")
+            Logger.log("$methodName: formattedText: $formattedText")
 
-            Logger.log("$methodName: httpResponse: $httpResponse")
-            if (httpResponse.statusCode() != 200)
-                throw Exception("Failed to format via external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
-
-            return FormatResult.warning("TODO")*/
+            return FormatResult.ok(formattedText)
         }
         catch (e: Exception)
         {

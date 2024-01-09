@@ -234,6 +234,7 @@ class FormatAction : AnAction()
             return null
         }
 
+        Logger.log("formatOrReport: ${formatResult.text}")
         return formatResult.text
     }
 
