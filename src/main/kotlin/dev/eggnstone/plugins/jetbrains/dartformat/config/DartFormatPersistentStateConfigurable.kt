@@ -99,6 +99,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
+    private fun createAddNewLineAtEndOfTextPanel(): JComponent
+    {
+        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        panel.add(addNewLineAtEndOfTextCheckbox)
+
+        return panel
+    }
+
     private fun createAddNewLineBeforeClosingBracePanel(): JComponent
     {
         val panel = JPanel(FlowLayout(FlowLayout.LEFT))
@@ -126,6 +135,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         formBuilder.addComponent(createAddNewLineBeforeClosingBracePanel())
         formBuilder.addComponent(createAddNewLineAfterClosingBracePanel())
         formBuilder.addComponent(createAddNewLineAfterSemicolonPanel())
+        formBuilder.addComponent(createAddNewLineAtEndOfTextPanel())
 
         //formBuilder.addComponent(createRemovalsPanel())
         //formBuilder.addComponent(createLineBreaksPanel())
@@ -188,12 +198,14 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     override fun isModified(): Boolean
     {
-        return config.addNewLineAfterOpeningBrace != addNewLineAfterOpeningBraceCheckbox.isSelected
+        @Suppress("SimplifyBooleanWithConstants")
+        return false
         || config.addNewLineAfterClosingBrace != addNewLineAfterClosingBraceCheckbox.isSelected
-        || config.addNewLineBeforeOpeningBrace != addNewLineBeforeOpeningBraceCheckbox.isSelected
-        || config.addNewLineBeforeClosingBrace != addNewLineBeforeClosingBraceCheckbox.isSelected
+        || config.addNewLineAfterOpeningBrace != addNewLineAfterOpeningBraceCheckbox.isSelected
         || config.addNewLineAfterSemicolon != addNewLineAfterSemicolonCheckbox.isSelected
         || config.addNewLineAtEndOfText != addNewLineAtEndOfTextCheckbox.isSelected
+        || config.addNewLineBeforeClosingBrace != addNewLineBeforeClosingBraceCheckbox.isSelected
+        || config.addNewLineBeforeOpeningBrace != addNewLineBeforeOpeningBraceCheckbox.isSelected
         || config.indentationIsEnabled != indentationIsEnabledCheckbox.isSelected
         || config.indentationSpacesPerLevel != indentationSpacesPerLevelField.text.toIntOrNull()
         || config.maxEmptyLines != maxEmptyLinesField.text.toIntOrNull()
@@ -204,19 +216,17 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     override fun reset()
     {
-        addNewLineAfterOpeningBraceCheckbox.isSelected = config.addNewLineAfterOpeningBrace
+        @Suppress("DuplicatedCode")
         addNewLineAfterClosingBraceCheckbox.isSelected = config.addNewLineAfterClosingBrace
-        addNewLineBeforeOpeningBraceCheckbox.isSelected = config.addNewLineBeforeOpeningBrace
-        addNewLineBeforeClosingBraceCheckbox.isSelected = config.addNewLineBeforeClosingBrace
+        addNewLineAfterOpeningBraceCheckbox.isSelected = config.addNewLineAfterOpeningBrace
         addNewLineAfterSemicolonCheckbox.isSelected = config.addNewLineAfterSemicolon
         addNewLineAtEndOfTextCheckbox.isSelected = config.addNewLineAtEndOfText
-
+        addNewLineBeforeClosingBraceCheckbox.isSelected = config.addNewLineBeforeClosingBrace
+        addNewLineBeforeOpeningBraceCheckbox.isSelected = config.addNewLineBeforeOpeningBrace
         indentationIsEnabledCheckbox.isSelected = config.indentationIsEnabled
         indentationSpacesPerLevelField.text = config.indentationSpacesPerLevel.toString()
-
         maxEmptyLinesField.text = config.maxEmptyLines.toString()
         maxEmptyLinesIsEnabledCheckbox.isSelected = config.maxEmptyLinesIsEnabled
-
         /*removeUnnecessaryCommasCheckbox.isSelected = config.removeUnnecessaryCommas
         removeLineBreaksAfterArrowsCheckbox.isSelected = config.removeLineBreaksAfterArrows*/
     }
