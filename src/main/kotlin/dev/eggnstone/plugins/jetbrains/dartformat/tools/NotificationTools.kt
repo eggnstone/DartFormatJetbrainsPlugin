@@ -44,7 +44,6 @@ class NotificationTools
             val posPipe = message.indexOf("|")
             val title = if (posPipe == -1) message else message.substring(0, posPipe)
             val subTitle = if (posPipe == -1) "" else message.substring(posPipe + 1)
-            val messageForNotification = title + (if (subTitle.isNotEmpty()) "\n$subTitle" else "")
 
             var body = "Please supply any additional information here, e.g. the source code that caused the error:\n\n"
             if (subTitle.isNotEmpty())
@@ -52,8 +51,9 @@ class NotificationTools
             if (stacktrace.isNotEmpty())
                 body += "```\n$stacktrace\n```"
 
-            val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
-            val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$messageForNotification"
+            val githubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
+            val url = "https://github.com/eggnstone/$githubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
+            val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$title"
 
             notifyError(text, project)
         }
