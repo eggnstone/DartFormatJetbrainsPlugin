@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import org.intellij.markdown.html.urlEncode
 
 class NotificationTools
 {
@@ -27,10 +28,10 @@ class NotificationTools
             val message = if (throwable.message == null) "Unknown error" else throwable.message!!
             if (DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
 
-            var safeStacktraceForBody = ""
+            var stacktrace = ""
             if (throwable !is DartFormatException || throwable.source == ExceptionSourceType.Local)
             {
-                var stacktrace = throwable.stackTraceToString()
+                stacktrace = throwable.stackTraceToString()
                 var pos = stacktrace.lastIndexOf("dev.eggnstone")
                 if (pos >= 0)
                 {
@@ -38,19 +39,21 @@ class NotificationTools
                     if (pos >= 0)
                         stacktrace = stacktrace.substring(0, pos - 1)
                 }
-
-                safeStacktraceForBody = stacktrace.replace("\"", "&quot;")
             }
 
-            val safeMessageForTitle = message.replace("\"", "&quot;").replace("\n", " ")
-            //val title = "Error while formatting: $safeMessageForTitle"
-            val title = safeMessageForTitle
-            var body = "Please supply any additional information here, e.g. the source code that cause the error:\n\n"
-            if (safeStacktraceForBody.isNotEmpty())
-                body += "```\n$safeStacktraceForBody\n```"
+            val posPipe = message.indexOf("|")
+            val title = if (posPipe == -1) message else message.substring(0, posPipe)
+            val subTitle = if (posPipe == -1) "" else message.substring(posPipe + 1)
+            val messageForNotification = title + (if (subTitle.isNotEmpty()) "\n$subTitle" else "")
 
-            val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=$title&body=$body"
-            val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$message"
+            var body = "Please supply any additional information here, e.g. the source code that caused the error:\n\n"
+            if (subTitle.isNotEmpty())
+                body += "```\n$subTitle\n```"
+            if (stacktrace.isNotEmpty())
+                body += "```\n$stacktrace\n```"
+
+            val url = "https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
+            val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$messageForNotification"
 
             notifyError(text, project)
         }

@@ -1,6 +1,10 @@
 TODO
 ====
 - force acceptance of beta disclaimer
+- option: stop when error encountered
+- update and auto-update for external dart_format
+- intro page
+- progress dialog
 
 DOING
 =====
