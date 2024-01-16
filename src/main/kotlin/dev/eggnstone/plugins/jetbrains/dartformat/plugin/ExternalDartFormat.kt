@@ -1,5 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
+import com.intellij.ide.AppLifecycleListener
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
@@ -14,6 +16,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.impl.client.CloseableHttpClient
@@ -53,6 +56,26 @@ class ExternalDartFormat
 
         try
         {
+            val connection = ApplicationManager.getApplication().messageBus.connect()
+            connection.subscribe(AppLifecycleListener.TOPIC, object : AppLifecycleListener
+            {
+                override fun appClosing()
+                {
+                    Logger.log("$methodName: appClosing")
+
+                    NotificationTools.notifyInfo(listOf("Shutting down external dart_format ..."), ProjectManager.getInstance().defaultProject)
+                    runBlocking {
+                        withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                            Logger.log("$methodName: sending quit")
+                            channel.send(FormatJob(command = "Quit", inputText = null, config = null))
+                            Logger.log("$methodName: sent quit")
+                            return@withTimeout "OK"
+                        }
+                    }
+                    NotificationTools.notifyInfo(listOf("Shut down external dart_format."), ProjectManager.getInstance().defaultProject)
+                }
+            })
+
             val processBuilder: ProcessBuilder = if (OsTools.isWindows())
                 ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
             else
@@ -88,19 +111,21 @@ class ExternalDartFormat
             if (httpResponse.statusCode() != 200)
                 throw Exception("Failed to start external dart_format: requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
-            //NotificationTools.notifyInfo(listOf("External dart_format started."), ProjectManager.getInstance().defaultProject)
+            NotificationTools.notifyInfo(listOf("External dart_format started."), ProjectManager.getInstance().defaultProject)
 
             while (true)
             {
                 val formatJob = channel.receive()
                 Logger.log("$methodName: Got new job: ${formatJob.command}")
 
+                if (!process.isAlive)
+                    NotificationTools.notifyError("External dart_format died.", ProjectManager.getInstance().defaultProject)
+
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
                     Logger.log("Calling format()")
                     formatJob.formatResult = formatViaExternalDartFormat(baseUrl = baseUrl, config = formatJob.config!!, inputText = formatJob.inputText!!)
                     Logger.log("Called format()")
-                    //NotificationTools.notifyInfo(listOf("FORMATTED"), ProjectManager.getInstance().defaultProject)
                     Logger.log("Calling formatJob.complete()")
                     formatJob.complete()
                     Logger.log("Called formatJob.complete()")
@@ -109,7 +134,12 @@ class ExternalDartFormat
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "quit")
                 {
+                    Logger.log("Calling quit()")
+                    formatJob.formatResult = quitExternalDartFormat(baseUrl = baseUrl)
+                    Logger.log("Called quit()")
+                    Logger.log("Calling formatJob.complete()")
                     formatJob.complete()
+                    Logger.log("Called formatJob.complete()")
                     break
                 }
 
@@ -169,9 +199,53 @@ class ExternalDartFormat
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
+    private fun quitExternalDartFormat(baseUrl: String) : FormatResult
+    {
+        val methodName = "ExternalDartFormat.quitExternalDartFormat"
+
+        try
+        {
+            val requestConfig = RequestConfig.custom()
+                .setConnectTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
+                .setConnectionRequestTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
+                .setSocketTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000).build()
+            val httpClient: CloseableHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
+            val httpRequest = HttpGet("$baseUrl/quit")
+
+            val httpResponse: CloseableHttpResponse
+            try
+            {
+                Logger.log("$methodName: GET /quit")
+                httpResponse = httpClient.execute(httpRequest, null)
+            }
+            catch (e: SocketTimeoutException)
+            {
+                return FormatResult.error("Failed to quit external dart_format: Timeout")
+            }
+
+            val dartFormatExceptionJson = httpResponse.getFirstHeader("X-DartFormat-Exception")
+            if (dartFormatExceptionJson != null)
+            {
+                val dartFormatException = JsonTools.parseDartFormatException(dartFormatExceptionJson.value)
+                return FormatResult.throwable(methodName, dartFormatException)
+            }
+
+            return FormatResult.ok("")
+        }
+        catch (e: Exception)
+        {
+            return FormatResult.throwable(methodName, e)
+        }
+        catch (e: Error)
+        {
+            // necessary?
+            return FormatResult.throwable(methodName, e)
+        }
+    }
+
     private suspend fun formatViaExternalDartFormat(inputText: String, baseUrl: String, config: String): FormatResult
     {
-        val methodName = "ExternalDartFormat.format"
+        val methodName = "ExternalDartFormat.formatViaExternalDartFormat"
 
         try
         {
@@ -207,8 +281,6 @@ class ExternalDartFormat
             val formattedText = withContext(Dispatchers.IO) {
                 httpResponse.entity.content.readAllBytes()
             }.decodeToString()
-
-            //Logger.log("$methodName: formattedText: $formattedText")
 
             return FormatResult.ok(formattedText)
         }
