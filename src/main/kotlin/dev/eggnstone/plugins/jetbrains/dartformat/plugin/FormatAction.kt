@@ -53,13 +53,20 @@ class FormatAction : AnAction()
 
             val finalVirtualFiles = mutableSetOf<VirtualFile>()
             val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
-            val selectedVirtualFiles = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+            val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-            if (DEBUG_FORMAT_ACTION) Logger.log("${selectedVirtualFiles.size} selected files:")
-            for (selectedVirtualFile in selectedVirtualFiles)
+            if (selectedVirtualFiles == null)
             {
-                if (DEBUG_FORMAT_ACTION) Logger.log("  Selected file: $selectedVirtualFile")
-                VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
+                if (DEBUG_FORMAT_ACTION) Logger.log("No files selected.")
+            }
+            else
+            {
+                if (DEBUG_FORMAT_ACTION) Logger.log("${selectedVirtualFiles.size} selected files:")
+                for (selectedVirtualFile in selectedVirtualFiles)
+                {
+                    if (DEBUG_FORMAT_ACTION) Logger.log("  Selected file: $selectedVirtualFile")
+                    VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
+                }
             }
 
             var changedFiles = 0

@@ -56,6 +56,7 @@ class ExternalDartFormat
                     Logger.log("$methodName: appClosing")
 
                     NotificationTools.notifyInfo(listOf("Shutting down external dart_format ..."), ProjectManager.getInstance().defaultProject)
+                    // TODO: timeout does not work
                     runBlocking {
                         withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                             Logger.log("$methodName: sending quit")
