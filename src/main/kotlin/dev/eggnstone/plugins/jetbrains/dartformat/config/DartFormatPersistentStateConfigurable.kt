@@ -2,8 +2,11 @@ package dev.eggnstone.plugins.jetbrains.dartformat.config
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
+import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
 import java.awt.FlowLayout
 import java.text.NumberFormat
 import javax.swing.*
@@ -54,6 +57,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     override fun apply()
     {
+        @Suppress("DuplicatedCode")
         config.acceptBeta = acceptBetaCheckbox.isSelected
 
         config.addNewLineAfterOpeningBrace = addNewLineAfterOpeningBraceCheckbox.isSelected
@@ -79,7 +83,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         //config.removeLineBreaksAfterArrows = removeLineBreaksAfterArrowsCheckbox.isSelected
     }
 
-    private fun createPanelAndAdd(checkbox: JComponent): JPanel = JPanel(FlowLayout(FlowLayout.LEFT)).apply { add(checkbox) }
+    private fun createPanelAndAdd(checkbox: JComponent): JPanel = createPanelFlowLayoutLeading().apply { add(checkbox) }
 
     private fun createAcceptBetaPanel() = createPanelAndAdd(acceptBetaCheckbox)
 
@@ -99,65 +103,118 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
 
-        formBuilder.addComponent(createAcceptBetaPanel())
+        @Suppress("JoinDeclarationAndAssignment")
+        var sectionPanel: JPanel
 
-        formBuilder.addComponent(createAddNewLineBeforeOpeningBracePanel())
-        formBuilder.addComponent(createAddNewLineAfterOpeningBracePanel())
-        formBuilder.addComponent(createAddNewLineBeforeClosingBracePanel())
-        formBuilder.addComponent(createAddNewLineAfterClosingBracePanel())
-        formBuilder.addComponent(createAddNewLineAfterSemicolonPanel())
-        formBuilder.addComponent(createAddNewLineAtEndOfTextPanel())
+        sectionPanel = createAndAddSectionPanel("General", formBuilder)
+        sectionPanel.add(createAcceptBetaPanel())
 
-        formBuilder.addComponent(createRemovalsPanel())
-        //formBuilder.addComponent(createLineBreaksPanel())
+        sectionPanel = createAndAddSectionPanel("Line Breaks", formBuilder)
+        sectionPanel.add(createAddNewLineBeforeOpeningBracePanel())
+        sectionPanel.add(createAddNewLineAfterOpeningBracePanel())
+        sectionPanel.add(createAddNewLineBeforeClosingBracePanel())
+        sectionPanel.add(createAddNewLineAfterClosingBracePanel())
+        sectionPanel.add(createAddNewLineAfterSemicolonPanel())
+        sectionPanel.add(createAddNewLineAtEndOfTextPanel())
 
-        formBuilder.addComponent(createIndentationPanel())
+        sectionPanel = createAndAddSectionPanel("Removals", formBuilder)
+        sectionPanel.add(createRemovalsPanel())
+        //sectionPanel.add(createLineBreaksPanel())
 
-        formBuilder.addComponent(createMaxLinesPanel())
+        sectionPanel = createAndAddSectionPanel("Indentation", formBuilder)
+        sectionPanel.add(createIndentationPanel())
 
-        val panel = JPanel(BorderLayout())
-        panel.add(formBuilder.panel, BorderLayout.NORTH)
+        sectionPanel = createAndAddSectionPanel("Empty Lines", formBuilder)
+        sectionPanel.add(createMaxLinesPanel())
 
+        val finalPanel = JPanel(BorderLayout())
+        finalPanel.add(formBuilder.panel, BorderLayout.NORTH)
+
+        return finalPanel
+    }
+
+    private fun createAndAddSectionPanel(name: String, formBuilder: FormBuilder): JPanel
+    {
+        val panel = createPanelBoxLayoutYAxis()
+        //panel.border = BorderFactory.createMatteBorder(4, 12, 20, 0, JBColor.RED)
+        panel.border = BorderFactory.createEmptyBorder(4, 12, 20, 0)
+        formBuilder.addComponent(createSection(name, panel))
         return panel
     }
 
-    private fun createIndentationPanel(): JComponent
+    private fun createSection(name: String, innerPanel: JPanel): JPanel
     {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panel = createPanelBoxLayoutYAxis()
+        panel.add(createSectionHead(name))
+        panel.add(innerPanel)
+        return panel
+    }
 
+    private fun createPanelBoxLayoutXAxis(): JPanel
+    {
+        val panel = JPanel()
+        panel.layout = BoxLayout(panel, BoxLayout.X_AXIS)
+        return panel
+    }
+
+    private fun createPanelBoxLayoutYAxis(): JPanel
+    {
+        val panel = JPanel()
+        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        return panel
+    }
+
+    private fun createPanelFlowLayoutLeading(): JPanel
+    {
+        return JPanel(FlowLayout(FlowLayout.LEADING))
+    }
+
+    @Suppress("SameParameterValue")
+    private fun createHorizontalSpacer(width: Int): JPanel
+    {
+        val panel = JPanel()
+        panel.preferredSize = Dimension(width, 0)
+        return panel
+    }
+
+    private fun createHorizontalSeparator(): JSeparator
+    {
+        val separator = JSeparator(SwingConstants.HORIZONTAL)
+        separator.maximumSize = Dimension(Int.MAX_VALUE, 2)
+        return separator
+    }
+
+    private fun createSectionHead(name: String): JPanel
+    {
+        val panel = createPanelBoxLayoutXAxis()
+        panel.add(JLabel(name))
+        panel.add(createHorizontalSpacer(6))
+        panel.add(createHorizontalSeparator())
+        return panel
+    }
+
+    private fun createIndentationPanel(): JPanel
+    {
+        val panel = createPanelFlowLayoutLeading()
         panel.add(indentationIsEnabledCheckbox)
         panel.add(indentationSpacesPerLevelField)
         panel.add(JLabel("spaces"))
-
         return panel
     }
 
-    private fun createLineBreaksPanel(): JComponent
+    private fun createMaxLinesPanel(): JPanel
     {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
-
-        //panel.add(removeLineBreaksAfterArrowsCheckbox)
-
-        return panel
-    }
-
-    private fun createMaxLinesPanel(): JComponent
-    {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
-
+        val panel = createPanelFlowLayoutLeading()
         panel.add(maxEmptyLinesIsEnabledCheckbox)
         panel.add(maxEmptyLinesField)
-
         return panel
     }
 
-    private fun createRemovalsPanel(): JComponent
+    private fun createRemovalsPanel(): JPanel
     {
-        val panel = JPanel(FlowLayout(FlowLayout.LEADING))
-
+        val panel = createPanelFlowLayoutLeading()
         panel.add(removeTrailingCommasCheckbox)
         //panel.add(removeUnnecessaryCommasCheckbox)
-
         return panel
     }
 
