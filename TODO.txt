@@ -5,11 +5,5 @@ TODO
 - update and auto-update for external dart_format
 - intro page
 - progress dialog
-
-DOING
-=====
-- use plugin mode
-
-DONE
-====
-- load at startup
+- log file
+- go to error location

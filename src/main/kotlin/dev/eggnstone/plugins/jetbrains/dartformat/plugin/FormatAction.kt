@@ -37,13 +37,29 @@ class FormatAction : AnAction()
     override fun actionPerformed(e: AnActionEvent)
     {
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
+        var lastFileName: String? = null
 
         val config = getConfig()
-        if (config == DartFormatConfig())
+
+        if (config.hasNothingEnabled())
         {
             val subtitle = "No formatting option enabled"
-            val messages = listOf("Please check File -&gt; Settings -&gt; Other Settings -&gt; DartFormat")
-            NotificationTools.notifyWarning(messages, project, subtitle)
+            val message = "<html><body>" +
+                "Please enable your desired formatting options:" +
+                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
+                "</body></html>"
+            NotificationTools.notifyWarning(message, project, subtitle)
+            return
+        }
+
+        if (!config.acceptBeta)
+        {
+            val subtitle = "Beta version not accepted"
+            val message = "<html><body>" +
+                "Please accept that this is a beta version and not everything works as it should:" +
+                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
+                "</body></html>"
+            NotificationTools.notifyWarning(message, project, subtitle)
             return
         }
 
@@ -76,6 +92,7 @@ class FormatAction : AnAction()
                 for (finalVirtualFile in finalVirtualFiles)
                 {
                     if (DEBUG_FORMAT_ACTION) Logger.log("  Final file: $finalVirtualFile")
+                    lastFileName = finalVirtualFile.path + " (FA1)"
                     val result = formatDartFile(finalVirtualFile, project)
 
                     if (result == FormatResultType.Error)
@@ -114,13 +131,13 @@ class FormatAction : AnAction()
         }
         catch (e: Exception)
         {
-            NotificationTools.reportThrowable(e, project)
+            NotificationTools.reportThrowable(e, project, lastFileName, "FA1")
         }
         catch (e: Error)
         {
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
-            NotificationTools.reportThrowable(e, project)
+            NotificationTools.reportThrowable(e, project, lastFileName, "FA2")
         }
     }
 
@@ -166,7 +183,7 @@ class FormatAction : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val formatResultText = formatOrReport(project, inputText) ?: return FormatResultType.Error
+        val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
@@ -198,7 +215,7 @@ class FormatAction : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatOrReport(project, inputText) ?: return FormatResultType.Error
+        val formatResultText = formatOrReport(project, inputText, fileEditor.file.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
@@ -223,22 +240,22 @@ class FormatAction : AnAction()
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatOrReport(project: Project, inputText: String): String?
+    private fun formatOrReport(project: Project, inputText: String, fileName: String): String?
     {
-        val formatResult = format(inputText)
+        val formatResult = format(inputText, fileName)
 
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
                 NotificationTools.notifyError(formatResult.text, project)
             else
-                NotificationTools.reportThrowable(formatResult.throwable, project)
+                NotificationTools.reportThrowable(formatResult.throwable, project, fileName, "FA3")
             return null
         }
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            NotificationTools.notifyWarning(listOf(formatResult.text), project)
+            NotificationTools.notifyWarning(formatResult.text, project)
             return null
         }
 
@@ -246,12 +263,19 @@ class FormatAction : AnAction()
         return formatResult.text
     }
 
-    private fun format(inputText: String): FormatResult
+    private fun format(inputText: String, fileName: String): FormatResult
     {
         if (inputText.isEmpty())
             return FormatResult.ok("")
 
-        return ExternalDartFormat.instance.formatViaChannel(inputText, getConfig().toJson())
+        val config = getConfig()
+        if (!config.acceptBeta)
+            return FormatResult.error("Beta version not accepted.")
+
+        val jsonConfig = config.toJson()
+        Logger.log("FormatAction.format: jsonConfig: $jsonConfig")
+
+        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, fileName)
     }
 
     private fun getConfig(): DartFormatConfig

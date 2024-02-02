@@ -15,13 +15,13 @@ class NotificationTools
     {
         private const val DEBUG_NOTIFICATION_TOOLS = false
 
-        fun reportThrowable(throwable: Throwable, project: Project)
+        fun reportThrowable(throwable: Throwable, project: Project, fileName: String?, fileNameSource: String)
         {
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
                 val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
                 val text = optionalLocation + throwable.message
-                notifyWarning(listOf(text), project)
+                notifyWarning(text, project)
                 return
             }
 
@@ -53,24 +53,29 @@ class NotificationTools
 
             val githubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
             val url = "https://github.com/eggnstone/$githubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
-            val text = "You found an error. Please <a href=\"$url\">report</a> it.<br/>$title"
+            val text = "You found an error." +
+                " Please <a href=\"$url\">report</a> it." +
+                "<br/>$title" +
+                "<br/>$fileName/$fileNameSource"
 
             notifyError(text, project)
         }
 
         fun notifyInfo(lines: List<String>, project: Project, subtitle: String? = null)
         {
+            Logger.log("Info-Notification: $lines")
             notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, project, subtitle)
         }
 
-        fun notifyWarning(lines: List<String>, project: Project, subtitle: String? = null)
+        fun notifyWarning(text: String, project: Project, subtitle: String? = null)
         {
-            notifyByToolWindowBalloon(lines, NotificationType.WARNING, project, subtitle)
+            Logger.log("Warning-Notification: $text")
+            notifyByToolWindowBalloon(text, NotificationType.WARNING, project, subtitle)
         }
 
-        @Suppress("MemberVisibilityCanBePrivate")
         fun notifyError(text: String, project: Project, subtitle: String? = null)
         {
+            Logger.log("Error-Notification: $text")
             notifyByToolWindowBalloon(text, NotificationType.ERROR, project, subtitle)
         }
 

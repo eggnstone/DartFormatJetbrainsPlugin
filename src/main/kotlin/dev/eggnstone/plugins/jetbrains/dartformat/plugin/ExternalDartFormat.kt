@@ -26,14 +26,14 @@ class ExternalDartFormat
     }
 
     private val channel = Channel<FormatJob>()
-    private var dartFormatClient : DartFormatClient? = null
+    private var dartFormatClient: DartFormatClient? = null
     private var mainJob: Job? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     fun init(project: Project)
     {
         val methodName = "$CLASS_NAME.init"
-        Logger.log("$methodName: $project")
+        Logger.log("$methodName()")
 
         if (mainJob != null)
             return
@@ -46,6 +46,8 @@ class ExternalDartFormat
         val methodName = "$CLASS_NAME.run"
         Logger.log("$methodName: START")
 
+        var lastFileName: String? = null
+
         try
         {
             val connection = ApplicationManager.getApplication().messageBus.connect()
@@ -57,15 +59,23 @@ class ExternalDartFormat
 
                     NotificationTools.notifyInfo(listOf("Shutting down external dart_format ..."), ProjectManager.getInstance().defaultProject)
                     // TODO: timeout does not work
-                    runBlocking {
-                        withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
-                            Logger.log("$methodName: sending quit")
-                            channel.send(FormatJob(command = "Quit", inputText = null, config = null))
-                            Logger.log("$methodName: sent quit")
-                            return@withTimeout "OK"
+                    try
+                    {
+                        runBlocking {
+                            withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                                Logger.log("$methodName: sending quit")
+                                channel.send(FormatJob(command = "Quit", inputText = null, config = null, fileName = null))
+                                Logger.log("$methodName: sent quit")
+                                return@withTimeout "OK"
+                            }
                         }
+
+                        NotificationTools.notifyInfo(listOf("Shut down external dart_format."), ProjectManager.getInstance().defaultProject)
                     }
-                    NotificationTools.notifyInfo(listOf("Shut down external dart_format."), ProjectManager.getInstance().defaultProject)
+                    catch (e: TimeoutCancellationException)
+                    {
+                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.", ProjectManager.getInstance().defaultProject)
+                    }
                 }
             })
 
@@ -74,6 +84,8 @@ class ExternalDartFormat
             else
                 ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
 
+            NotificationTools.notifyInfo(listOf("Starting external dart_format ...", "This may take a few seconds."), ProjectManager.getInstance().defaultProject)
+            Logger.log("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             val process = withContext(Dispatchers.IO) {
                 processBuilder.start()
             }
@@ -84,7 +96,7 @@ class ExternalDartFormat
             Logger.log("$methodName: External dart_format started.")
 
             val inputReader = StreamReader(process.inputStream)
-            val jsonEncodedResponse = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS)
+            val jsonEncodedResponse = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "initial response of external dart_format")
             val jsonResponse = JsonTools.parse(jsonEncodedResponse)
             val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
             Logger.log("$methodName: baseUrl: $baseUrl")
@@ -100,9 +112,13 @@ class ExternalDartFormat
             {
                 val formatJob = channel.receive()
                 Logger.log("$methodName: Got new job: ${formatJob.command}")
+                lastFileName = formatJob.fileName + " (EDF1)"
 
                 if (!process.isAlive)
+                {
+                    // TODO: fix
                     NotificationTools.notifyError("External dart_format died.", ProjectManager.getInstance().defaultProject)
+                }
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
@@ -135,21 +151,21 @@ class ExternalDartFormat
         catch (e: Exception)
         {
             Logger.logError("$methodName: Exception: $e")
-            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject)
+            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject, lastFileName, "EDF2")
         }
         catch (e: Error)
         {
             // necessary?
             Logger.logError("$methodName: Error: $e")
-            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject)
+            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject, lastFileName, "EDF3")
         }
     }
 
-    fun formatViaChannel(inputText: String, config: String): FormatResult
+    fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
         Logger.log(methodName)
-        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config)
+        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, fileName = fileName)
 
         try
         {
@@ -182,7 +198,7 @@ class ExternalDartFormat
         return formatJob.formatResult ?: FormatResult.error("No result")
     }
 
-    private suspend fun quitExternalDartFormat() : FormatResult
+    private suspend fun quitExternalDartFormat(): FormatResult
     {
         val methodName = "$CLASS_NAME.quitExternalDartFormat"
 

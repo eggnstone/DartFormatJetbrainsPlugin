@@ -7,7 +7,7 @@ class TimedReader
 {
     companion object
     {
-        fun readLine(process: Process, inputReader: StreamReader, timeoutInSeconds: Int): String
+        fun readLine(process: Process, inputReader: StreamReader, timeoutInSeconds: Int, waitForName: String): String
         {
             Logger.log("TimedReader.readLine()")
 
@@ -20,7 +20,7 @@ class TimedReader
 
                 if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
-                    val errorText = "Unexpected process exit."
+                    val errorText = "Unexpected process exit while waiting for $waitForName."
                     Logger.logError("TimedReader.readResponse: $errorText")
                     throw DartFormatException(FailType.Error, ExceptionSourceType.Local, errorText)
                 }

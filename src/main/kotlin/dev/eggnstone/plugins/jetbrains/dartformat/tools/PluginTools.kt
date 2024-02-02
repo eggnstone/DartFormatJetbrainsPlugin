@@ -11,6 +11,9 @@ class PluginTools
             if (virtualFile.extension != "dart")
                 return false
 
+            if (virtualFile.path.contains("/.dart_tool/") || virtualFile.path.contains("\\.dart_tool\\"))
+                return false
+
             if (virtualFile.name.endsWith(".freezed.dart"))
                 return false
 
