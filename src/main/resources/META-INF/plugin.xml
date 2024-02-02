@@ -10,7 +10,7 @@
         <![CDATA[
         <b>Version 2.0.0</b>
         <ul>
-          <li>Complete re-implementation.</li>
+          <li>Complete rewrite of the plugin. Now uses my dart_format package on pub.dev.</li>
         </ul>
         ]]>
     </change-notes>
