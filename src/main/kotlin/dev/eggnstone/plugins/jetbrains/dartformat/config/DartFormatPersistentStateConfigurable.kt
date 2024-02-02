@@ -1,13 +1,13 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
+import com.intellij.ide.browsers.UrlOpener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
-import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
-import java.awt.Color
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.net.URI
 import java.text.NumberFormat
 import javax.swing.*
 import javax.swing.text.NumberFormatter
@@ -85,20 +85,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     private fun createPanelAndAdd(checkbox: JComponent): JPanel = createPanelFlowLayoutLeading().apply { add(checkbox) }
 
-    private fun createAcceptBetaPanel() = createPanelAndAdd(acceptBetaCheckbox)
-
-    private fun createAddNewLineAfterClosingBracePanel() = createPanelAndAdd(addNewLineAfterClosingBraceCheckbox)
-
-    private fun createAddNewLineAfterOpeningBracePanel() = createPanelAndAdd(addNewLineAfterOpeningBraceCheckbox)
-
-    private fun createAddNewLineAfterSemicolonPanel() = createPanelAndAdd(addNewLineAfterSemicolonCheckbox)
-
-    private fun createAddNewLineAtEndOfTextPanel() = createPanelAndAdd(addNewLineAtEndOfTextCheckbox)
-
-    private fun createAddNewLineBeforeClosingBracePanel() = createPanelAndAdd(addNewLineBeforeClosingBraceCheckbox)
-
-    private fun createAddNewLineBeforeOpeningBracePanel() = createPanelAndAdd(addNewLineBeforeOpeningBraceCheckbox)
-
     override fun createComponent(): JComponent
     {
         val formBuilder: FormBuilder = FormBuilder.createFormBuilder()
@@ -107,19 +93,19 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         var sectionPanel: JPanel
 
         sectionPanel = createAndAddSectionPanel("General", formBuilder)
-        sectionPanel.add(createAcceptBetaPanel())
+        sectionPanel.add(createPanelAndAdd(acceptBetaCheckbox))
+        sectionPanel.add(createPanelAndAdd(createIntroLabel()))
 
         sectionPanel = createAndAddSectionPanel("Line Breaks", formBuilder)
-        sectionPanel.add(createAddNewLineBeforeOpeningBracePanel())
-        sectionPanel.add(createAddNewLineAfterOpeningBracePanel())
-        sectionPanel.add(createAddNewLineBeforeClosingBracePanel())
-        sectionPanel.add(createAddNewLineAfterClosingBracePanel())
-        sectionPanel.add(createAddNewLineAfterSemicolonPanel())
-        sectionPanel.add(createAddNewLineAtEndOfTextPanel())
+        sectionPanel.add(createPanelAndAdd(addNewLineBeforeOpeningBraceCheckbox))
+        sectionPanel.add(createPanelAndAdd(addNewLineAfterOpeningBraceCheckbox))
+        sectionPanel.add(createPanelAndAdd(addNewLineBeforeClosingBraceCheckbox))
+        sectionPanel.add(createPanelAndAdd(addNewLineAfterClosingBraceCheckbox))
+        sectionPanel.add(createPanelAndAdd(addNewLineAfterSemicolonCheckbox))
+        sectionPanel.add(createPanelAndAdd(addNewLineAtEndOfTextCheckbox))
 
         sectionPanel = createAndAddSectionPanel("Removals", formBuilder)
-        sectionPanel.add(createRemovalsPanel())
-        //sectionPanel.add(createLineBreaksPanel())
+        sectionPanel.add(createPanelAndAdd(removeTrailingCommasCheckbox))
 
         sectionPanel = createAndAddSectionPanel("Indentation", formBuilder)
         sectionPanel.add(createIndentationPanel())
@@ -131,6 +117,19 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         finalPanel.add(formBuilder.panel, BorderLayout.NORTH)
 
         return finalPanel
+    }
+
+    private fun createIntroLabel(): JLabel
+    {
+        val label = JLabel("<html><body>" +
+            "This plugin is a wrapper around my <a href=\"https://pub.dev/packages/dart_format\">dart_format</a> package on pub.dev.<br/>" +
+            "Please follow the <a href=\"https://pub.dev/packages/dart_format/install\">install instruction</a> there." +
+            "</body></html>")
+        // TODO:
+        // - only open on links
+        // - display different cursor
+        label.addMouseListener(OpenUrlAction(URI.create("https://pub.dev/packages/dart_format/install")))
+        return label
     }
 
     private fun createAndAddSectionPanel(name: String, formBuilder: FormBuilder): JPanel
@@ -210,14 +209,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
-    private fun createRemovalsPanel(): JPanel
-    {
-        val panel = createPanelFlowLayoutLeading()
-        panel.add(removeTrailingCommasCheckbox)
-        //panel.add(removeUnnecessaryCommasCheckbox)
-        return panel
-    }
-
+    // Is required although empty
     override fun dispose()
     {
     }
