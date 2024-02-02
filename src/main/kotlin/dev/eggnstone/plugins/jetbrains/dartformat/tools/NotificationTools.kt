@@ -15,7 +15,7 @@ class NotificationTools
     {
         private const val DEBUG_NOTIFICATION_TOOLS = false
 
-        fun reportThrowable(throwable: Throwable, project: Project, fileName: String?, fileNameSource: String)
+        fun reportThrowable(throwable: Throwable, project: Project, fileName: String?, source: String)
         {
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
@@ -56,7 +56,7 @@ class NotificationTools
             val text = "You found an error." +
                 " Please <a href=\"$url\">report</a> it." +
                 "<br/>$title" +
-                "<br/>$fileName/$fileNameSource"
+                "<br/>$fileName/$source"
 
             notifyError(text, project)
         }
@@ -67,6 +67,7 @@ class NotificationTools
             notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, project, subtitle)
         }
 
+        // TODO: add source to notifyX() methods
         fun notifyWarning(text: String, project: Project, subtitle: String? = null)
         {
             Logger.log("Warning-Notification: $text")
