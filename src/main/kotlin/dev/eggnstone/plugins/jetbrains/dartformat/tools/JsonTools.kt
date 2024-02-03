@@ -27,7 +27,7 @@ class JsonTools
         @Suppress("MemberVisibilityCanBePrivate")
         fun toTransferString(json: String): String
         {
-            return json.replace("\"","\\\"").replace("\n", "\\n").replace("\r", "\\r")
+            return json.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r")
         }
 
         fun parseDartFormatException(json: String): DartFormatException

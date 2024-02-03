@@ -15,9 +15,9 @@ class PluginTools
                 return false
 
             if (virtualFile.name.endsWith(".freezed.dart")
-                ||virtualFile.name.endsWith(".g.dart")
-                ||virtualFile.name.endsWith(".gr.dart")
-                ||virtualFile.name.endsWith(".pb.dart"))
+                || virtualFile.name.endsWith(".g.dart")
+                || virtualFile.name.endsWith(".gr.dart")
+                || virtualFile.name.endsWith(".pb.dart"))
                 return false
 
             return true

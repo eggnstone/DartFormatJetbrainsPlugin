@@ -64,7 +64,7 @@ class NotificationTools
             notifyError(text, NotificationInfo(project, linkTitle = linkTitle, linkUrl = linkUrl))
         }
 
-        fun notifyInfo(lines: List<String>, project:Project)
+        fun notifyInfo(lines: List<String>, project: Project)
         {
             Logger.log("Info-Notification: $lines")
             notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, NotificationInfo(project))

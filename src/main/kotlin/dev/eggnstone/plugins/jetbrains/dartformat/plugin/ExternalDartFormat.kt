@@ -2,7 +2,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
