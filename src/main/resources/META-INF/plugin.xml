@@ -8,10 +8,11 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.1</b>
+        <b>Version 2.0.2</b>
         <ul>
           <li>Small bug fixes.</li>
         </ul>
+        <br/>
         <b>Version 2.0.0</b>
         <ul>
           <li>Complete rewrite of the plugin. Now uses my dart_format package on pub.dev.</li>
