@@ -6,10 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +27,7 @@ class ExternalDartFormat
     private var mainJob: Job? = null
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun init(project: Project)
+    fun init()
     {
         val methodName = "$CLASS_NAME.init"
         Logger.log("$methodName()")
@@ -74,7 +71,7 @@ class ExternalDartFormat
                     }
                     catch (e: TimeoutCancellationException)
                     {
-                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.", ProjectManager.getInstance().defaultProject)
+                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.", NotificationInfo(ProjectManager.getInstance().defaultProject))
                     }
                 }
             })
@@ -117,7 +114,7 @@ class ExternalDartFormat
                 if (!process.isAlive)
                 {
                     // TODO: fix
-                    NotificationTools.notifyError("External dart_format died.", ProjectManager.getInstance().defaultProject)
+                    NotificationTools.notifyError("External dart_format died.", NotificationInfo(ProjectManager.getInstance().defaultProject))
                 }
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")

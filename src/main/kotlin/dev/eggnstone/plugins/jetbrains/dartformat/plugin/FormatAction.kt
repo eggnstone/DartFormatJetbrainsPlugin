@@ -18,6 +18,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
@@ -48,7 +49,7 @@ class FormatAction : AnAction()
                 "Please enable your desired formatting options:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, project, subtitle)
+            NotificationTools.notifyWarning(message, NotificationInfo(project, subtitle))
             return
         }
 
@@ -59,7 +60,7 @@ class FormatAction : AnAction()
                 "Please accept that this is a beta version and not everything works as it should:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, project, subtitle)
+            NotificationTools.notifyWarning(message, NotificationInfo(project, subtitle))
             return
         }
 
@@ -247,7 +248,7 @@ class FormatAction : AnAction()
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
-                NotificationTools.notifyError(formatResult.text, project)
+                NotificationTools.notifyError(formatResult.text, NotificationInfo(project))
             else
                 NotificationTools.reportThrowable(formatResult.throwable, project, fileName, "FA3")
             return null
@@ -255,7 +256,7 @@ class FormatAction : AnAction()
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            NotificationTools.notifyWarning(formatResult.text, project)
+            NotificationTools.notifyWarning(formatResult.text, NotificationInfo(project))
             return null
         }
 

@@ -1,6 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
-import com.intellij.ide.browsers.UrlOpener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.util.ui.FormBuilder

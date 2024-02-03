@@ -1,7 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
+import com.intellij.ide.BrowserUtil
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
@@ -21,7 +23,7 @@ class NotificationTools
             {
                 val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
                 val text = optionalLocation + throwable.message
-                notifyWarning(text, project)
+                notifyWarning(text, NotificationInfo(project))
                 return
             }
 
@@ -52,55 +54,57 @@ class NotificationTools
                 body += "```\n$stacktrace\n```"
 
             val githubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
-            val url = "https://github.com/eggnstone/$githubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
             val text = "You found an error." +
-                " Please <a href=\"$url\">report</a> it." +
+                " Please report it." +
                 "<br/>$title" +
                 "<br/>$fileName/$source"
+            val linkTitle = "Report error"
+            val linkUrl = "https://github.com/eggnstone/$githubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
 
-            notifyError(text, project)
+            notifyError(text, NotificationInfo(project, linkTitle = linkTitle, linkUrl = linkUrl))
         }
 
-        fun notifyInfo(lines: List<String>, project: Project, subtitle: String? = null)
+        fun notifyInfo(lines: List<String>, project:Project)
         {
             Logger.log("Info-Notification: $lines")
-            notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, project, subtitle)
+            notifyByToolWindowBalloon(lines, NotificationType.INFORMATION, NotificationInfo(project))
         }
 
         // TODO: add source to notifyX() methods
-        fun notifyWarning(text: String, project: Project, subtitle: String? = null)
+        fun notifyWarning(text: String, notificationInfo: NotificationInfo)
         {
             Logger.log("Warning-Notification: $text")
-            notifyByToolWindowBalloon(text, NotificationType.WARNING, project, subtitle)
+            notifyByToolWindowBalloon(text, NotificationType.WARNING, notificationInfo)
         }
 
-        fun notifyError(text: String, project: Project, subtitle: String? = null)
+        fun notifyError(text: String, notificationInfo: NotificationInfo)
         {
             Logger.log("Error-Notification: $text")
-            notifyByToolWindowBalloon(text, NotificationType.ERROR, project, subtitle)
+            notifyByToolWindowBalloon(text, NotificationType.ERROR, notificationInfo)
         }
 
-        private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, project: Project, subtitle: String? = null)
+        @Suppress("SameParameterValue")
+        private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, notificationInfo: NotificationInfo)
         {
             val combinedLines = lines.joinToString("<br/>")
-            notifyByToolWindowBalloon(combinedLines, type, project, subtitle)
+            notifyByToolWindowBalloon(combinedLines, type, notificationInfo)
         }
 
-        private fun notifyByToolWindowBalloon(text: String, type: NotificationType, project: Project, subtitle: String? = null)
+        private fun notifyByToolWindowBalloon(text: String, type: NotificationType, notificationInfo: NotificationInfo)
         {
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-            val notification = notificationGroup.createNotification("DartFormat", text, type)
-            notification.subtitle = subtitle
+            val notification: Notification = notificationGroup.createNotification("DartFormat", text, type)
+            notification.subtitle = notificationInfo.subtitle
 
-            /*
-            val action = NotificationAction.createSimple("TODO XYZ") {
-                BrowserUtil.browse(url)
+            if (notificationInfo.linkTitle != null && notificationInfo.linkUrl != null)
+            {
+                val action = NotificationAction.createSimple(notificationInfo.linkTitle) {
+                    BrowserUtil.browse(notificationInfo.linkUrl)
+                }
+                notification.addAction(action)
             }
-            notification.addAction(action)
-            */
-            @Suppress("DEPRECATION")
-            notification.setListener(NotificationListener.UrlOpeningListener(true))
-            notification.notify(project)
+
+            notification.notify(notificationInfo.project)
         }
     }
 }
