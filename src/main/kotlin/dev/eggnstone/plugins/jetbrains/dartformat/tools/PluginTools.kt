@@ -14,13 +14,10 @@ class PluginTools
             if (virtualFile.path.contains("/.dart_tool/") || virtualFile.path.contains("\\.dart_tool\\"))
                 return false
 
-            if (virtualFile.name.endsWith(".freezed.dart"))
-                return false
-
-            if (virtualFile.name.endsWith(".g.dart"))
-                return false
-
-            if (virtualFile.name.endsWith(".gr.dart"))
+            if (virtualFile.name.endsWith(".freezed.dart")
+                ||virtualFile.name.endsWith(".g.dart")
+                ||virtualFile.name.endsWith(".gr.dart")
+                ||virtualFile.name.endsWith(".pb.dart"))
                 return false
 
             return true
