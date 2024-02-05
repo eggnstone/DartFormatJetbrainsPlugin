@@ -6,6 +6,7 @@ import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
@@ -71,40 +72,41 @@ class NotificationTools
         }
 
         // TODO: add source to notifyX() methods
-        fun notifyWarning(text: String, notificationInfo: NotificationInfo)
+        fun notifyWarning(text: String, notificationInfo: NotificationInfo? = null)
         {
             Logger.log("Warning-Notification: $text")
             notifyByToolWindowBalloon(text, NotificationType.WARNING, notificationInfo)
         }
 
-        fun notifyError(text: String, notificationInfo: NotificationInfo)
+        fun notifyError(text: String, notificationInfo: NotificationInfo? = null)
         {
             Logger.log("Error-Notification: $text")
             notifyByToolWindowBalloon(text, NotificationType.ERROR, notificationInfo)
         }
 
         @Suppress("SameParameterValue")
-        private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, notificationInfo: NotificationInfo)
+        private fun notifyByToolWindowBalloon(lines: List<String>, type: NotificationType, notificationInfo: NotificationInfo? = null)
         {
             val combinedLines = lines.joinToString("<br/>")
             notifyByToolWindowBalloon(combinedLines, type, notificationInfo)
         }
 
-        private fun notifyByToolWindowBalloon(text: String, type: NotificationType, notificationInfo: NotificationInfo)
+        private fun notifyByToolWindowBalloon(text: String, type: NotificationType, notificationInfo: NotificationInfo? = null)
         {
+            val finalNotificationInfo = notificationInfo ?: NotificationInfo(ProjectManager.getInstance().defaultProject)
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
             val notification: Notification = notificationGroup.createNotification("DartFormat", text, type)
-            notification.subtitle = notificationInfo.subtitle
+            notification.subtitle = finalNotificationInfo.subtitle
 
-            if (notificationInfo.linkTitle != null && notificationInfo.linkUrl != null)
+            if (finalNotificationInfo.linkTitle != null && finalNotificationInfo.linkUrl != null)
             {
-                val action = NotificationAction.createSimple(notificationInfo.linkTitle) {
-                    BrowserUtil.browse(notificationInfo.linkUrl)
+                val action = NotificationAction.createSimple(finalNotificationInfo.linkTitle) {
+                    BrowserUtil.browse(finalNotificationInfo.linkUrl)
                 }
                 notification.addAction(action)
             }
 
-            notification.notify(notificationInfo.project)
+            notification.notify(finalNotificationInfo.project)
         }
     }
 }

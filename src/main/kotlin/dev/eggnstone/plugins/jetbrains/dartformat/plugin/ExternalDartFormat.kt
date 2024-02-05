@@ -70,7 +70,7 @@ class ExternalDartFormat
                     }
                     catch (e: TimeoutCancellationException)
                     {
-                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.", NotificationInfo(ProjectManager.getInstance().defaultProject))
+                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.")
                     }
                 }
             })
@@ -83,13 +83,25 @@ class ExternalDartFormat
             NotificationTools.notifyInfo(listOf("Starting external dart_format ...", "This may take a few seconds."), ProjectManager.getInstance().defaultProject)
             Logger.log("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             val process = withContext(Dispatchers.IO) {
-                processBuilder.start()
+                try
+                {
+                    processBuilder.start()
+                }
+                catch (e: Exception)
+                {
+                    NotificationTools.notifyError("Failed to start external dart_format: ${e.message}")
+                    throw e
+                }
             }
 
-            if (!process.isAlive)
-                throw Exception("Failed to start external dart_format: process is dead.")
+            if (process.isAlive)
+            {
+                //Logger.log("$methodName: External dart_format started.")
+                NotificationTools.notifyInfo(listOf("External dart_format process is alive."), ProjectManager.getInstance().defaultProject)
+            }
+            else
+                throw Exception("External dart_format process is dead.")
 
-            Logger.log("$methodName: External dart_format started.")
 
             val inputReader = StreamReader(process.inputStream)
             val jsonEncodedResponse = TimedReader.readLine(process, inputReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "initial response of external dart_format")
@@ -100,9 +112,9 @@ class ExternalDartFormat
 
             val httpResponse = dartFormatClient!!.get("/status")
             if (httpResponse.statusCode() != 200)
-                throw Exception("Failed to start external dart_format: requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
+                throw Exception("External dart_format: requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
-            NotificationTools.notifyInfo(listOf("External dart_format started."), ProjectManager.getInstance().defaultProject)
+            NotificationTools.notifyInfo(listOf("External dart_format is ready."), ProjectManager.getInstance().defaultProject)
 
             while (true)
             {
@@ -113,7 +125,7 @@ class ExternalDartFormat
                 if (!process.isAlive)
                 {
                     // TODO: fix
-                    NotificationTools.notifyError("External dart_format died.", NotificationInfo(ProjectManager.getInstance().defaultProject))
+                    NotificationTools.notifyError("External dart_format process died.")
                 }
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
