@@ -8,15 +8,9 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.4</b>
-        <ul>
-          <li>Better error logging and reporting.</li>
-        </ul>
-        <br/>
-        <b>Version 2.0.0</b>
-        <ul>
-          <li>Complete rewrite of the plugin. Now uses my dart_format package on pub.dev.</li>
-        </ul>
+        <b>Version 2.0.5:</b> Small bug fixes.<br/>
+        <b>Version 2.0.4:</b> Better error logging and reporting.<br/>
+        <b>Version 2.0.0:</b> Complete rewrite of the plugin. Now uses my dart_format package on pub.dev.<br/>
         ]]>
     </change-notes>
     <depends>com.intellij.modules.platform</depends>
@@ -30,8 +24,13 @@
         <br/>
         Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.<br/>
         <br/>
-        Please submit feature requests here: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues</a><br/>
-        Source code: <a href="https://github.com/eggnstone/DartFormat">GitHub</a>
+        <b>This plugin:</b><br/>
+        Source code: <a href="https://github.com/eggnstone/DartFormatJetbrainsPlugin">DartFormatJetbrainsPlugin on GitHub</a><br/>
+        Problems and feature requests: <a href="https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues">GitHub Issues for DartFormatJetbrainsPlugin</a><br/>
+        <br/>
+        <b>External dart_format package:</b><br/>
+        Source code: <a href="https://github.com/eggnstone/DartFormat">dart_format on GitHub</a><br/>
+        Problems and feature requests: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues for dart_format</a><br/>
         ]]>
     </description>
     <extensions defaultExtensionNs="com.intellij">
