@@ -1,9 +1,7 @@
 TODO
 ====
-- force acceptance of beta disclaimer
 - option: stop when error encountered
-- update and auto-update for external dart_format
-- intro page
+- update and auto-update for external dart_format (https://pub.dartlang.org/packages/dart_format.json)
 - progress dialog
-- log file
 - go to error location
+- add versions (2) to reports

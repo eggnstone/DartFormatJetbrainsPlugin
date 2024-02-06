@@ -1,39 +1,62 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.*
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
+
+data class ReadLineResponse(val stdOut: String?, val stdErr: String?)
 
 class TimedReader
 {
     companion object
     {
-        fun readLine(process: Process, inputReader: StreamReader, timeoutInSeconds: Int, waitForName: String): String
+        fun readLine(process: Process, inputStreamReader: StreamReader, errorStreamReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse
         {
-            Logger.log("TimedReader.readLine()")
+            Logger.logDebug("TimedReader.readLine()")
 
             var waitedMillis = 0
             while (waitedMillis < timeoutInSeconds * 1000)
             {
-                val textFromInputStream = receiveLine(inputReader)
+                val textFromInputStream = receiveLine(inputStreamReader)
                 if (textFromInputStream != null)
-                    return textFromInputStream
+                    return ReadLineResponse(textFromInputStream, null)
+
+                val textFromErrorStream = receiveLine(errorStreamReader)
+                if (textFromErrorStream != null)
+                    return ReadLineResponse(null, textFromErrorStream)
 
                 if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
-                    val errorText = "Unexpected process exit while waiting for $waitForName."
-                    Logger.logError("TimedReader.readResponse: $errorText")
-                    throw DartFormatException(FailType.Error, ExceptionSourceType.Local, errorText)
+                    var errorText = "Unexpected process exit while waiting for $waitForName."
+                    errorText += receiveLines(inputStreamReader, "|StdOut: ") ?: ""
+                    errorText += receiveLines(errorStreamReader, "|StdErr: ") ?: ""
+                    throw DartFormatException.localError(errorText)
                 }
 
                 Thread.sleep(Constants.WAIT_INTERVAL_IN_MILLIS.toLong())
                 waitedMillis += Constants.WAIT_INTERVAL_IN_MILLIS
             }
 
-            Logger.log("TimedReader.readResponse: waitedMillis: $waitedMillis")
+            Logger.logDebug("TimedReader.readResponse: waitedMillis: $waitedMillis")
 
             val errorText = "Timeout while waiting for response."
             Logger.logError("TimedReader.readLine: $errorText")
-            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, errorText)
+            throw DartFormatException.localError(errorText)
+        }
+
+        fun receiveLines(streamReader: StreamReader, prefix: String): String?
+        {
+            var r = ""
+            while (true)
+            {
+                val s = receiveLine(streamReader) ?: break
+                Logger.logDebug("TimedReader.receiveLines: Received: ${StringTools.toDisplayString(s, 100)}.")
+                r += "$prefix$s"
+            }
+
+            return r.ifEmpty { null }
         }
 
         private fun receiveLine(streamReader: StreamReader): String?
@@ -42,8 +65,10 @@ class TimedReader
             if (availableBytes <= 0)
                 return null
 
-            Logger.log("TimedReader.receiveLine: Receiving: $availableBytes bytes.")
-            return streamReader.readLine()
+            Logger.logDebug("TimedReader.receiveLine: Receiving: $availableBytes bytes.")
+            val s = streamReader.readLine()
+            Logger.logDebug("TimedReader.receiveLine: Received: ${StringTools.toDisplayString(s, 100)}.")
+            return s
         }
     }
 }

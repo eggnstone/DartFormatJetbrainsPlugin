@@ -27,16 +27,19 @@ class FormatAction : AnAction()
 {
     companion object
     {
+        const val CLASS_NAME = "FormatAction"
         private const val DEBUG_FORMAT_ACTION = false
     }
 
     init
     {
-        Logger.log("FormatAction: init")
+        Logger.logDebug("FormatAction: init")
     }
 
     override fun actionPerformed(e: AnActionEvent)
     {
+        val methodName = "$CLASS_NAME.actionPerformed"
+
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
         var lastFileName: String? = null
 
@@ -49,7 +52,7 @@ class FormatAction : AnAction()
                 "Please enable your desired formatting options:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, NotificationInfo(project, subtitle))
+            NotificationTools.notifyWarning(message, NotificationInfo(project = project, subtitle = subtitle))
             return
         }
 
@@ -60,7 +63,7 @@ class FormatAction : AnAction()
                 "Please accept that this is a beta version and not everything works as it should:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, NotificationInfo(project, subtitle))
+            NotificationTools.notifyWarning(message, NotificationInfo(project = project, subtitle = subtitle))
             return
         }
 
@@ -74,26 +77,26 @@ class FormatAction : AnAction()
 
             if (selectedVirtualFiles == null)
             {
-                if (DEBUG_FORMAT_ACTION) Logger.log("No files selected.")
+                if (DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
             }
             else
             {
-                if (DEBUG_FORMAT_ACTION) Logger.log("${selectedVirtualFiles.size} selected files:")
+                if (DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
                 for (selectedVirtualFile in selectedVirtualFiles)
                 {
-                    if (DEBUG_FORMAT_ACTION) Logger.log("  Selected file: $selectedVirtualFile")
+                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
                     VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
                 }
             }
 
             var changedFiles = 0
             var encounteredError = false
-            if (DEBUG_FORMAT_ACTION) Logger.log("${finalVirtualFiles.size} final files:")
+            if (DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
-                    if (DEBUG_FORMAT_ACTION) Logger.log("  Final file: $finalVirtualFile")
-                    lastFileName = finalVirtualFile.path + " (FA1)"
+                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
+                    lastFileName = finalVirtualFile.path
                     val result = formatDartFile(finalVirtualFile, project)
 
                     if (result == FormatResultType.Error)
@@ -124,21 +127,19 @@ class FormatAction : AnAction()
                     else -> "$changedFiles files"
                 }
 
-                val lines = mutableListOf<String>()
-                lines.add("Formatting $finalVirtualFilesText took $diffTimeText.")
-                lines.add("$changedFilesText changed.")
-                NotificationTools.notifyInfo(lines, project)
+                val text = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
+                NotificationTools.notifyInfo(text, project)
             }
         }
         catch (e: Exception)
         {
-            NotificationTools.reportThrowable(e, project, lastFileName, "FA1")
+            NotificationTools.reportThrowable(e, project, fileName = lastFileName, origin = "$methodName/1")
         }
         catch (e: Error)
         {
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
-            NotificationTools.reportThrowable(e, project, lastFileName, "FA2")
+            NotificationTools.reportThrowable(e, project, fileName = lastFileName, origin = "$methodName/2")
         }
     }
 
@@ -160,12 +161,12 @@ class FormatAction : AnAction()
         }
         catch (e: Exception)
         {
-            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException.localError("${virtualFile.path}\n${e.message}", e)
         }
         catch (e: Error)
         {
             // necessary?
-            throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException.localError("${virtualFile.path}\n${e.message}", e)
         }
     }
 
@@ -175,8 +176,8 @@ class FormatAction : AnAction()
         {
             if (DEBUG_FORMAT_ACTION)
             {
-                Logger.log("formatDartFileByBinaryContent: $virtualFile")
-                Logger.log("  !virtualFile.isWritable")
+                Logger.logDebug("formatDartFileByBinaryContent: $virtualFile")
+                Logger.logDebug("  !virtualFile.isWritable")
             }
 
             return FormatResultType.NothingChanged
@@ -187,7 +188,7 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
+            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
@@ -196,7 +197,7 @@ class FormatAction : AnAction()
             virtualFile.setBinaryContent(outputBytes)
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
+        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 
@@ -206,8 +207,8 @@ class FormatAction : AnAction()
         {
             if (DEBUG_FORMAT_ACTION)
             {
-                Logger.log("formatDartFileByFileEditor: $fileEditor")
-                Logger.log("  fileEditor !is TextEditor")
+                Logger.logDebug("formatDartFileByFileEditor: $fileEditor")
+                Logger.logDebug("  fileEditor !is TextEditor")
             }
             return FormatResultType.NothingChanged
         }
@@ -219,15 +220,15 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, fileEditor.file.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.log("Nothing changed.")
+            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
         val fixedOutputText: String = if (formatResultText.contains("\r\n"))
         {
-            Logger.log("#################################################")
-            Logger.log("Why does the outputText contain wrong linebreaks?")
-            Logger.log("#################################################")
+            Logger.logDebug("#################################################")
+            Logger.logDebug("Why does the outputText contain wrong linebreaks?")
+            Logger.logDebug("#################################################")
             formatResultText.replace("\r\n", "\n")
         }
         else
@@ -237,26 +238,28 @@ class FormatAction : AnAction()
             document.setText(fixedOutputText)
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.log("Something changed.")
+        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 
     private fun formatOrReport(project: Project, inputText: String, fileName: String): String?
     {
+        val methodName = "$CLASS_NAME.formatOrReport"
+
         val formatResult = format(inputText, fileName)
 
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
-                NotificationTools.notifyError(formatResult.text, NotificationInfo(project))
+                NotificationTools.notifyError(formatResult.text, NotificationInfo(project = project, fileName = fileName, origin = "$methodName/1"))
             else
-                NotificationTools.reportThrowable(formatResult.throwable, project, fileName, "FA3")
+                NotificationTools.reportThrowable(formatResult.throwable, project, fileName = fileName, origin = "$methodName/2")
             return null
         }
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            NotificationTools.notifyWarning(formatResult.text, NotificationInfo(project))
+            NotificationTools.notifyWarning(formatResult.text, NotificationInfo(project = project, fileName = fileName, origin = "$methodName/3"))
             return null
         }
 
@@ -274,7 +277,7 @@ class FormatAction : AnAction()
             return FormatResult.error("Beta version not accepted.")
 
         val jsonConfig = config.toJson()
-        Logger.log("FormatAction.format: jsonConfig: $jsonConfig")
+        Logger.logDebug("FormatAction.format: jsonConfig: $jsonConfig")
 
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, fileName)
     }

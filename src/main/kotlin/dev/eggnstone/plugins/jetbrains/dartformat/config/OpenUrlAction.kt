@@ -10,7 +10,7 @@ class OpenUrlAction(private val uri: URI) : MouseListener
 {
     override fun mouseClicked(e: MouseEvent?)
     {
-        Logger.log("OpenUrlAction.mouseClicked: $e")
+        Logger.logDebug("OpenUrlAction.mouseClicked: $e")
         val desktop: Desktop = Desktop.getDesktop()
         desktop.browse(uri)
     }

@@ -7,12 +7,12 @@ class StartupActivity : com.intellij.openapi.startup.StartupActivity
 {
     init
     {
-        Logger.log("StartupActivity.init()")
+        Logger.logDebug("StartupActivity.init()")
     }
 
     override fun runActivity(project: Project)
     {
-        Logger.log("StartupActivity.runActivity()")
+        Logger.logDebug("StartupActivity.runActivity()")
         ExternalDartFormat.instance.init()
     }
 }

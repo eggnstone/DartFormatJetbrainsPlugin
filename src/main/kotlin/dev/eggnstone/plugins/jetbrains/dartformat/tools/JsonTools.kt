@@ -12,7 +12,19 @@ class JsonTools
 {
     companion object
     {
-        fun parse(json: String): JsonElement
+        fun parseOrNull(json: String): JsonElement?
+        {
+            return try
+            {
+                Json.parseToJsonElement(json)
+            }
+            catch (e: Exception)
+            {
+                null
+            }
+        }
+
+        /*fun parseOrThrow(json: String): JsonElement
         {
             try
             {
@@ -20,9 +32,9 @@ class JsonTools
             }
             catch (e: Exception)
             {
-                throw DartFormatException(FailType.Error, ExceptionSourceType.Local, "Failed to parse JSON/1: \"${toTransferString(json)}\"")
+                throw DartFormatException.localError("Failed to parse JSON/1: \"${toTransferString(json)}\"")
             }
-        }
+        }*/
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun toTransferString(json: String): String
@@ -32,7 +44,7 @@ class JsonTools
 
         fun parseDartFormatException(json: String): DartFormatException
         {
-            val jsonElement = parse(json)
+            val jsonElement = parseOrNull(json) ?: return DartFormatException.localError("Failed to parse JSON/2: \"${toTransferString(json)}\"")
 
             try
             {
@@ -45,7 +57,7 @@ class JsonTools
             }
             catch (e: Exception)
             {
-                return DartFormatException(FailType.Error, ExceptionSourceType.Local, "Failed to parse JSON/2: \"${toTransferString(json)}\"")
+                return DartFormatException.localError("Failed to parse JSON/3: \"${toTransferString(json)}\"")
             }
         }
 

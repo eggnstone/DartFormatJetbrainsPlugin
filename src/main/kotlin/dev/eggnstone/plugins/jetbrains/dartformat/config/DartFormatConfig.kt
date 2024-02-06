@@ -54,7 +54,7 @@ data class DartFormatConfig(
 
     fun hasNothingEnabled(): Boolean
     {
-        Logger.log("DartFormatConfig.hasNothingEnabled()")
+        Logger.logDebug("DartFormatConfig.hasNothingEnabled()")
 
         val adjustedDefaultConfig = DartFormatConfig()
 

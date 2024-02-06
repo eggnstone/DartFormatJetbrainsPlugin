@@ -1,6 +1,8 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -13,13 +15,31 @@ class Logger
         @Suppress("MemberVisibilityCanBePrivate")
         var isEnabled: Boolean = true
 
-        fun log(s: String)
+        fun logDebug(s: String)
         {
             if (!isEnabled)
                 return
 
-            println(s)
+            println("DEBUG: $s")
             logToFile("DEBUG: $s")
+        }
+
+        fun logInfo(s: String)
+        {
+            if (!isEnabled)
+                return
+
+            println("INFO:  $s")
+            logToFile("INFO:  $s")
+        }
+
+        fun logWarning(s: String)
+        {
+            if (!isEnabled)
+                return
+
+            println("WARN:  $s")
+            logToFile("WARN:  $s")
         }
 
         fun logError(s: String)
@@ -37,7 +57,10 @@ class Logger
                 if (!createLogFile())
                     return
 
-            logFile!!.appendText("$s\n")
+            val dateTimeFormatter  = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+            val timestamp = dateTimeFormatter.format(System.currentTimeMillis())
+
+            logFile!!.appendText("$timestamp $s\n")
         }
 
         private fun createLogFile(): Boolean

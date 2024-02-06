@@ -9,3 +9,12 @@ data class DartFormatException(
     val line: Int? = null,
     val column: Int? = null
 ) : Exception()
+{
+    companion object
+    {
+        fun localError(message: String, cause: Throwable? = null, line: Int? = null, column: Int? = null): DartFormatException
+        {
+            return DartFormatException(FailType.Error, ExceptionSourceType.Local, message, cause, line, column)
+        }
+    }
+}
