@@ -2,11 +2,13 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
-import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
+import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -55,8 +57,15 @@ class ExternalDartFormat
                 {
                     Logger.logDebug("$methodName: appClosing")
 
-                    NotificationTools.notifyInfo("Shutting down external dart_format ...", ProjectManager.getInstance().defaultProject)
-                    // TODO: timeout does not work
+                    NotificationTools.notifyInfo(NotificationInfo(
+                        content = null,
+                        fileName = null,
+                        links = null,
+                        origin = null,
+                        project = null,
+                        title = "Shutting down external dart_format ..."
+                    ))
+                    // TODO: do not shut down when start failed or process dead
                     try
                     {
                         runBlocking {
@@ -68,11 +77,25 @@ class ExternalDartFormat
                             }
                         }
 
-                        NotificationTools.notifyInfo("Shut down external dart_format.", ProjectManager.getInstance().defaultProject)
+                        NotificationTools.notifyInfo(NotificationInfo(
+                            content = null,
+                            fileName = null,
+                            links = null,
+                            origin = null,
+                            project = null,
+                            title = "Shut down external dart_format."
+                        ))
                     }
                     catch (e: TimeoutCancellationException)
                     {
-                        NotificationTools.notifyError("Timeout while waiting for external dart_format to shut down.", NotificationInfo())
+                        NotificationTools.notifyError(NotificationInfo(
+                            content = null,
+                            fileName = null,
+                            links = null,
+                            origin = null,
+                            project = null,
+                            title = "Timeout while waiting for external dart_format to shut down."
+                        ))
                     }
                 }
             })
@@ -82,7 +105,14 @@ class ExternalDartFormat
             else
                 ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
 
-            NotificationTools.notifyInfo("Starting external dart_format ...\nThis may take a few seconds.", ProjectManager.getInstance().defaultProject)
+            NotificationTools.notifyInfo(NotificationInfo(
+                content = null,
+                fileName = null,
+                links = null,
+                origin = null,
+                project = null,
+                title = "Starting external dart_format ...\nThis may take a few seconds."
+            ))
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             val process = withContext(Dispatchers.IO) {
                 try
@@ -91,7 +121,14 @@ class ExternalDartFormat
                 }
                 catch (e: Exception)
                 {
-                    NotificationTools.notifyError("Failed to start external dart_format: ${e.message}", NotificationInfo())
+                    NotificationTools.notifyError(NotificationInfo(
+                        content = null,
+                        fileName = null,
+                        links = null,
+                        origin = null,
+                        project = null,
+                        title = "Failed to start external dart_format: ${e.message}"
+                    ))
                     throw e
                 }
             }
@@ -99,7 +136,14 @@ class ExternalDartFormat
             if (process.isAlive)
             {
                 //Logger.log("$methodName: External dart_format started.")
-                NotificationTools.notifyInfo("External dart_format process is alive.\nWaiting for connection details ...", ProjectManager.getInstance().defaultProject)
+                NotificationTools.notifyInfo(NotificationInfo(
+                    content = null,
+                    fileName = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "External dart_format process is alive.\nWaiting for connection details ..."
+                ))
             }
             else
                 throw Exception("External dart_format process is dead.")
@@ -107,20 +151,43 @@ class ExternalDartFormat
             val inputStreamReader = StreamReader(process.inputStream)
             val errorStreamReader = StreamReader(process.errorStream)
             val readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
-            //Logger.logDebug("$methodName: $readLineResponse")
+            @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+            if (readLineResponse == null)
+                return
+
             val jsonEncodedResponse = readLineResponse.stdOut ?: readLineResponse.stdErr ?: "<no response>"
             val jsonResponse = JsonTools.parseOrNull(jsonEncodedResponse)
             if (jsonResponse == null)
             {
-                var s = ""
+                val title = "External dart_format: Expected connection details in JSON but received plain text."
+
+                var content = ""
                 if (readLineResponse.stdOut != null)
-                    s += "|StdOut: ${readLineResponse.stdOut}"
-                s += TimedReader.receiveLines(inputStreamReader, "|StdOut: ") ?: ""
+                    content += "\nStdOut: ${readLineResponse.stdOut}"
+                content += TimedReader.receiveLines(inputStreamReader, "\nStdOut: ") ?: ""
                 if (readLineResponse.stdErr != null)
-                    s += "|StdErr: ${readLineResponse.stdErr}"
-                s += TimedReader.receiveLines(errorStreamReader, "|StdErr: ") ?: ""
-                val message = "External dart_format: Expected connection details in JSON but received plain text.$s"
-                throw DartFormatException.localError(message)
+                    content += "\nStdErr: ${readLineResponse.stdErr}"
+                content += TimedReader.receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
+                content = content.trim()
+
+                val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+                val reportErrorLink = NotificationTools.createReportErrorLink(
+                    content = content.ifEmpty { null },
+                    gitHubRepo = "DartFormatJetbrainsPlugin",
+                    origin = null,
+                    stackTrace = null,
+                    title = title
+                )
+
+                NotificationTools.notifyError(NotificationInfo(
+                    content = content.ifEmpty { null },
+                    fileName = null,
+                    links = listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title
+                ))
+                return
             }
 
             val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
@@ -131,7 +198,14 @@ class ExternalDartFormat
             if (httpResponse.statusCode() != 200)
                 throw Exception("External dart_format: Requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
-            NotificationTools.notifyInfo("External dart_format is ready.", ProjectManager.getInstance().defaultProject)
+            NotificationTools.notifyInfo(NotificationInfo(
+                content = null,
+                fileName = null,
+                links = null,
+                origin = null,
+                project = null,
+                title = "External dart_format is ready."
+            ))
 
             while (true)
             {
@@ -144,8 +218,15 @@ class ExternalDartFormat
                     // TODO: fix
                     if (!alreadyNotifiedAboutExternalDartFormatProcessDeath)
                     {
-                        alreadyNotifiedAboutExternalDartFormatProcessDeath=true
-                        NotificationTools.notifyError("External dart_format process died.", NotificationInfo())
+                        alreadyNotifiedAboutExternalDartFormatProcessDeath = true
+                        NotificationTools.notifyError(NotificationInfo(
+                            content = null,
+                            fileName = null,
+                            links = null,
+                            origin = null,
+                            project = null,
+                            title = "External dart_format process died."
+                        ))
                     }
                 }
 
@@ -180,13 +261,23 @@ class ExternalDartFormat
         catch (e: Exception)
         {
             Logger.logError("$methodName: Exception: $e")
-            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject, fileName = lastFileName, origin = "$methodName/1")
+            NotificationTools.reportThrowable(
+                fileName = lastFileName,
+                origin = "$methodName/1",
+                project = null,
+                throwable = e
+            )
         }
         catch (e: Error)
         {
             // necessary?
             Logger.logError("$methodName: Error: $e")
-            NotificationTools.reportThrowable(e, ProjectManager.getInstance().defaultProject, fileName = lastFileName, origin = "$methodName/2")
+            NotificationTools.reportThrowable(
+                fileName = lastFileName,
+                origin = "$methodName/2",
+                project = null,
+                throwable = e
+            )
         }
     }
 

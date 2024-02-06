@@ -3,7 +3,9 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
 
 data class ReadLineResponse(val stdOut: String?, val stdErr: String?)
@@ -12,8 +14,11 @@ class TimedReader
 {
     companion object
     {
-        fun readLine(process: Process, inputStreamReader: StreamReader, errorStreamReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse
+        private const val CLASS_NAME = "TimedReader"
+
+        fun readLine(process: Process, inputStreamReader: StreamReader, errorStreamReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
         {
+            val methodName = "$CLASS_NAME.readLine"
             Logger.logDebug("TimedReader.readLine()")
 
             var waitedMillis = 0
@@ -29,10 +34,32 @@ class TimedReader
 
                 if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
-                    var errorText = "Unexpected process exit while waiting for $waitForName."
-                    errorText += receiveLines(inputStreamReader, "|StdOut: ") ?: ""
-                    errorText += receiveLines(errorStreamReader, "|StdErr: ") ?: ""
-                    throw DartFormatException.localError(errorText)
+                    val title = "Unexpected process exit while waiting for $waitForName."
+
+                    var content = ""
+                    content += receiveLines(inputStreamReader, "\nStdOut: ") ?: ""
+                    content += receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
+                    content = content.trim()
+
+                    val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+                    val reportErrorLink = NotificationTools.createReportErrorLink(
+                        content = content.ifEmpty { null },
+                        gitHubRepo = "DartFormatJetbrainsPlugin",
+                        origin = null,
+                        stackTrace = null,
+                        title = title
+                    )
+
+                    NotificationTools.notifyError(NotificationInfo(
+                        content = content.ifEmpty { null },
+                        fileName = null,
+                        links = listOf(checkInstallationInstructionsLink, reportErrorLink),
+                        origin = null,
+                        project = null,
+                        title = title
+                    ))
+
+                    return null
                 }
 
                 Thread.sleep(Constants.WAIT_INTERVAL_IN_MILLIS.toLong())

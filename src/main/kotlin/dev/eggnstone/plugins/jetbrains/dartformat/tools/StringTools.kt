@@ -6,16 +6,24 @@ class StringTools
     {
         fun toDisplayString(s: String, maxLength: Int = -1): String = "\"${toSafeString(s, maxLength)}\""
 
-        // TODO: use toPipedText for all logging?
-        fun toPipedText(s: String): String
+        // TODO: use toTextWithPipes for all logging?
+        fun toTextWithPipes(s: String): String
         {
-            val r = s
-                .replace("\n", "|")
-                .replace("\r", "|")
-                .replace("||", "|")
+            var r = s.replace("\n", "|").replace("\r", "|")
 
-            return if (r.endsWith("|")) r.substring(0, r.length - 1) else r
+            while (r.contains("||"))
+                r = r.replace("||", "|")
+
+            while (r.isNotEmpty() && r.startsWith("|"))
+                r = r.substring(1)
+
+            if (r.isNotEmpty() && r.endsWith("|"))
+                r = r.substring(0, r.length - 1)
+
+            return r
         }
+
+        fun toTextWithHtmlBreaks(s: String): String = toTextWithPipes(s).replace("|", "<br/>")
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun toSafeString(o: Any?, maxLength: Int = -1): String

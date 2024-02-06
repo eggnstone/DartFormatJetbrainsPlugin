@@ -12,13 +12,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
-import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
+import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
@@ -47,23 +45,37 @@ class FormatAction : AnAction()
 
         if (config.hasNothingEnabled())
         {
-            val subtitle = "No formatting option enabled"
-            val message = "<html><body>" +
+            val title = "No formatting option enabled"
+            val content = "<html><body>" +
                 "Please enable your desired formatting options:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, NotificationInfo(project = project, subtitle = subtitle))
+            NotificationTools.notifyWarning(NotificationInfo(
+                content = content,
+                fileName = null,
+                links = null,
+                origin = "$methodName/1",
+                project = project,
+                title = title
+            ))
             return
         }
 
         if (!config.acceptBeta)
         {
-            val subtitle = "Beta version not accepted"
-            val message = "<html><body>" +
+            val title = "Beta version not accepted"
+            val content = "<html><body>" +
                 "Please accept that this is a beta version and not everything works as it should:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
                 "</body></html>"
-            NotificationTools.notifyWarning(message, NotificationInfo(project = project, subtitle = subtitle))
+            NotificationTools.notifyWarning(NotificationInfo(
+                content = content,
+                fileName = null,
+                links = null,
+                origin = "$methodName/2",
+                project = project,
+                title = title
+            ))
             return
         }
 
@@ -127,19 +139,36 @@ class FormatAction : AnAction()
                     else -> "$changedFiles files"
                 }
 
-                val text = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
-                NotificationTools.notifyInfo(text, project)
+                val title = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
+                NotificationTools.notifyInfo(NotificationInfo(
+                    content = null,
+                    fileName = null,
+                    links = null,
+                    origin = "$methodName/3",
+                    project = project,
+                    title = title
+                ))
             }
         }
         catch (e: Exception)
         {
-            NotificationTools.reportThrowable(e, project, fileName = lastFileName, origin = "$methodName/1")
+            NotificationTools.reportThrowable(
+                fileName = lastFileName,
+                origin = "$methodName/1",
+                project = project,
+                throwable = e
+            )
         }
         catch (e: Error)
         {
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
-            NotificationTools.reportThrowable(e, project, fileName = lastFileName, origin = "$methodName/2")
+            NotificationTools.reportThrowable(
+                fileName = lastFileName,
+                origin = "$methodName/2",
+                project = project,
+                throwable = e
+            )
         }
     }
 
@@ -251,15 +280,36 @@ class FormatAction : AnAction()
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
-                NotificationTools.notifyError(formatResult.text, NotificationInfo(project = project, fileName = fileName, origin = "$methodName/1"))
+                NotificationTools.notifyError(NotificationInfo(
+                    content = null,
+                    fileName = fileName,
+                    links = null,
+                    origin = "$methodName/1",
+                    project = project,
+                    title = formatResult.text
+                ))
             else
-                NotificationTools.reportThrowable(formatResult.throwable, project, fileName = fileName, origin = "$methodName/2")
+                NotificationTools.reportThrowable(
+                    fileName = fileName,
+                    origin = "$methodName/2",
+                    project = project,
+                    throwable = formatResult.throwable
+                )
+
             return null
         }
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            NotificationTools.notifyWarning(formatResult.text, NotificationInfo(project = project, fileName = fileName, origin = "$methodName/3"))
+            NotificationTools.notifyWarning(NotificationInfo(
+                content = null,
+                fileName = fileName,
+                links = null,
+                origin = "$methodName/3",
+                project = project,
+                title = formatResult.text
+            ))
+
             return null
         }
 

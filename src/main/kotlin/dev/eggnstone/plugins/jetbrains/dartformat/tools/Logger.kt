@@ -1,7 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import java.io.File
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -57,7 +56,7 @@ class Logger
                 if (!createLogFile())
                     return
 
-            val dateTimeFormatter  = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
             val timestamp = dateTimeFormatter.format(System.currentTimeMillis())
 
             logFile!!.appendText("$timestamp $s\n")

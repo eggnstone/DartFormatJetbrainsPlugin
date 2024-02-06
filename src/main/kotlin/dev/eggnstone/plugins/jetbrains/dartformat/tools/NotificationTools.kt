@@ -10,6 +10,8 @@ import com.intellij.openapi.project.ProjectManager
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.data.LinkInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import org.intellij.markdown.html.urlEncode
 
 class NotificationTools
@@ -18,109 +20,153 @@ class NotificationTools
     {
         private const val DEBUG_NOTIFICATION_TOOLS = false
 
-        fun reportThrowable(throwable: Throwable, project: Project, fileName: String?, origin: String)
+        fun reportThrowable(
+            fileName: String?,
+            origin: String,
+            project: Project?,
+            throwable: Throwable
+        )
         {
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
                 val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
-                val text = optionalLocation + throwable.message
-                notifyWarning(text, NotificationInfo(project = project, fileName = fileName, origin = origin))
+                val title = optionalLocation + throwable.message
+                notifyWarning(NotificationInfo(
+                    content = null,
+                    fileName = fileName,
+                    links = null,
+                    origin = origin,
+                    project = project,
+                    title = title
+                ))
                 return
             }
 
             val message = if (throwable.message == null) "Unknown error" else throwable.message!!
             if (DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
 
-            var stacktrace: String? = null
+            var stackTrace: String? = null
             if (throwable !is DartFormatException || throwable.source == ExceptionSourceType.Local)
             {
-                stacktrace = throwable.stackTraceToString()
-                var pos = stacktrace.lastIndexOf("dev.eggnstone")
+                stackTrace = throwable.stackTraceToString()
+                var pos = stackTrace.lastIndexOf("dev.eggnstone")
                 if (pos >= 0)
                 {
-                    pos = stacktrace.indexOf("\n", pos)
+                    pos = stackTrace.indexOf("\n", pos)
                     if (pos >= 0)
-                        stacktrace = stacktrace.substring(0, pos - 1)
+                        stackTrace = stackTrace.substring(0, pos - 1)
                 }
             }
 
-            var cleanedMessage = message
-            cleanedMessage = cleanedMessage.replace("||", "|")
-            cleanedMessage = cleanedMessage.replace("\r", "|")
-            cleanedMessage = cleanedMessage.replace("||", "|")
-            cleanedMessage = cleanedMessage.trim()
-            if (cleanedMessage.endsWith("|"))
-                cleanedMessage = cleanedMessage.substring(0, cleanedMessage.length - 1)
+            val posPipe = message.indexOf("|")
+            val title = if (posPipe == -1) message else message.substring(0, posPipe)
+            var content: String? = null
+            if (posPipe >= 0)
+                content = message.substring(posPipe + 1).replace("|", "\n")
 
-            val posPipe = cleanedMessage.indexOf("|")
-            val title = if (posPipe == -1) cleanedMessage else cleanedMessage.substring(0, posPipe)
-            val subTitleWithPipes: String? = if (posPipe == -1) null else cleanedMessage.substring(posPipe + 1)
-            val subTitleWithNewLines = subTitleWithPipes?.replace("|", "\n")
-            val subTitleWithHtmlBreaks = subTitleWithNewLines?.replace("\n", "<br/>")
+            val gitHubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
+            val reportErrorLink = createReportErrorLink(
+                content = content,
+                gitHubRepo = gitHubRepo,
+                origin = origin,
+                stackTrace = stackTrace,
+                title = title
+            )
+            notifyError(NotificationInfo(
+                content = content,
+                fileName = fileName,
+                links = listOf(reportErrorLink),
+                origin = origin,
+                project = project,
+                title = title
+            ))
+        }
 
+        fun createReportErrorLink(
+            content: String?,
+            gitHubRepo: String,
+            origin: String?,
+            stackTrace: String?,
+            title: String
+        ): LinkInfo
+        {
             var body = "Please supply any additional information here, e.g. the source code that caused the error:\n\n"
-            if (subTitleWithNewLines != null)
-                body += "```\n$subTitleWithNewLines\n```\n"
-            if (stacktrace != null)
-                body += "```\n$stacktrace\n```\n"
-            body += "origin: $origin\n"
 
-            val githubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
-            var text = "You found an error. Please report it.<br/>&quot;$title&quot;"
-            if (subTitleWithHtmlBreaks != null)
-                text += "<br/>$subTitleWithHtmlBreaks"
+            if (content != null)
+                body += "```\n$content\n```\n"
 
-            val linkTitle = "Report error"
-            val linkUrl = "https://github.com/eggnstone/$githubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
+            if (stackTrace != null)
+                body += "```\n$stackTrace\n```\n"
 
-            notifyError(text, NotificationInfo(project = project, linkTitle = linkTitle, linkUrl = linkUrl, fileName = fileName, origin = origin))
+            if (origin != null)
+                body += "Origin: $origin\n"
+
+            val linkName = "Report error"
+            val linkUrl = "https://github.com/eggnstone/$gitHubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
+            return LinkInfo(linkName, linkUrl)
         }
 
-        fun notifyInfo(text: String, project: Project)
+        fun notifyInfo(notificationInfo: NotificationInfo)
         {
-            val textForLog = StringTools.toPipedText(text)
-            Logger.logInfo("Info-Notification: $textForLog")
-            notifyByToolWindowBalloon(text, NotificationType.INFORMATION, NotificationInfo(project = project))
+            Logger.logInfo("Info-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
+            if (notificationInfo.content != null)
+                Logger.logInfo("                   ${StringTools.toTextWithPipes(notificationInfo.content)}")
+
+            notifyByToolWindowBalloon(NotificationType.INFORMATION, notificationInfo)
         }
 
-        fun notifyWarning(text: String, notificationInfo: NotificationInfo)
+        fun notifyWarning(notificationInfo: NotificationInfo)
         {
-            val textForLog = StringTools.toPipedText(text)
-            Logger.logWarning("Warning-Notification: $textForLog")
-            notifyByToolWindowBalloon(text, NotificationType.WARNING, notificationInfo)
+            Logger.logWarning("Warning-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
+            if (notificationInfo.content != null)
+                Logger.logWarning("                      ${StringTools.toTextWithPipes(notificationInfo.content)}")
+
+            notifyByToolWindowBalloon(NotificationType.WARNING, notificationInfo)
         }
 
-        fun notifyError(text: String, notificationInfo: NotificationInfo)
+        fun notifyError(notificationInfo: NotificationInfo)
         {
-            val textForLog = StringTools.toPipedText(text)
-            Logger.logError("Error-Notification: $textForLog")
-            notifyByToolWindowBalloon(text, NotificationType.ERROR, notificationInfo)
+            Logger.logError("Error-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
+            if (notificationInfo.content != null)
+                Logger.logError("                    ${StringTools.toTextWithPipes(notificationInfo.content)}")
+
+            notifyByToolWindowBalloon(NotificationType.ERROR, notificationInfo)
         }
 
-        private fun notifyByToolWindowBalloon(text: String, type: NotificationType, notificationInfo: NotificationInfo)
+        private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo)
         {
-            val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
-            var finalText = text.replace("\n", "<br/>")
-            if (notificationInfo.fileName != null || notificationInfo.origin != null)
-                finalText += "<br/>"
-            if (notificationInfo.fileName != null)
-                finalText += "<br/>" + notificationInfo.fileName
-            if (notificationInfo.origin != null)
-                finalText += "<br/>Origin: " + notificationInfo.origin
-
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-            val notification: Notification = notificationGroup.createNotification("DartFormat", finalText, type)
-            notification.subtitle = notificationInfo.subtitle
+            var content = StringTools.toTextWithHtmlBreaks(notificationInfo.title)
+            if (notificationInfo.content != null)
+                content += "<br/><br/>" + StringTools.toTextWithHtmlBreaks(notificationInfo.content)
 
-            if (notificationInfo.linkTitle != null && notificationInfo.linkUrl != null)
-            {
-                val action = NotificationAction.createSimple(notificationInfo.linkTitle) {
-                    BrowserUtil.browse(notificationInfo.linkUrl)
+            if (notificationInfo.fileName != null || notificationInfo.origin != null)
+                content += "<br/>"
+
+            if (notificationInfo.fileName != null)
+                content += "<br/>File: " + notificationInfo.fileName
+
+            if (notificationInfo.origin != null)
+                content += "<br/>Origin: " + notificationInfo.origin
+
+            val notification: Notification = notificationGroup.createNotification(
+                title = "DartFormat",
+                content = content,
+                type = type)
+
+            if (notificationInfo.links != null)
+                for (link in notificationInfo.links)
+                {
+                    val action = NotificationAction.createSimple(link.name) {
+                        BrowserUtil.browse(link.url)
+                    }
+                    notification.addAction(action)
                 }
-                notification.addAction(action)
-            }
 
+            val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)
         }
+
+        fun createCheckInstallationInstructionsLink(): LinkInfo = LinkInfo("Check installation instructions", "https://pub.dev/packages/dart_format/install")
     }
 }
