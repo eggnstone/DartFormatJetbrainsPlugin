@@ -167,6 +167,10 @@ class NotificationTools
             notification.notify(finalProject)
         }
 
-        fun createCheckInstallationInstructionsLink(): LinkInfo = LinkInfo("Check installation instructions", "https://pub.dev/packages/dart_format/install")
+        fun createCheckInstallationInstructionsLink(): LinkInfo //
+            = LinkInfo("Check installation instructions", "https://pub.dev/packages/dart_format/install")
+
+        fun createUpdateExternalDartFormatLink(): LinkInfo //
+            = LinkInfo("Update external dart_format", "https://pub.dev/packages/dart_format/install")
     }
 }

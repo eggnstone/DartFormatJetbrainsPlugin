@@ -46,10 +46,10 @@ class FormatAction : AnAction()
         if (config.hasNothingEnabled())
         {
             val title = "No formatting option enabled"
-            val content = "<html><body>" +
+            val content = //"<html><body>" +
                 "Please enable your desired formatting options:" +
-                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
-                "</body></html>"
+                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" //+
+                //"</body></html>"
             NotificationTools.notifyWarning(NotificationInfo(
                 content = content,
                 fileName = null,

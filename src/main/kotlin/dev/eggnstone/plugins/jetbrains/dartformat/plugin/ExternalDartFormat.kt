@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ApplicationManager
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
@@ -191,7 +192,11 @@ class ExternalDartFormat
             }
 
             val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
-            Logger.logDebug("$methodName: baseUrl: $baseUrl")
+            val currentVersion = Version.parseOrNull(JsonTools.getString(jsonResponse, "CurrentVersion", ""))
+            val latestVersion = Version.parseOrNull(JsonTools.getString(jsonResponse, "LatestVersion", ""))
+            Logger.logDebug("$methodName: baseUrl:        $baseUrl")
+            Logger.logDebug("$methodName: currentVersion: $currentVersion")
+            Logger.logDebug("$methodName: latestVersion:  $latestVersion")
             dartFormatClient = DartFormatClient(baseUrl)
 
             val httpResponse = dartFormatClient!!.get("/status")
@@ -206,6 +211,21 @@ class ExternalDartFormat
                 project = null,
                 title = "External dart_format is ready."
             ))
+
+            if (currentVersion?.isOlderThan(latestVersion) == true)
+            {
+                val title = "A new version of external dart_format is available."
+                val content = "<pre>Current version: $currentVersion\nLatest version:  $latestVersion</pre>"
+                val updateLink = NotificationTools.createUpdateExternalDartFormatLink()
+                NotificationTools.notifyInfo(NotificationInfo(
+                    content = content,
+                    fileName = null,
+                    links = listOf(updateLink),
+                    origin = null,
+                    project = null,
+                    title = title
+                ))
+            }
 
             while (true)
             {
