@@ -284,7 +284,7 @@ class ExternalDartFormat
     fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
-        Logger.logDebug(methodName)
+        Logger.logDebug("$methodName()")
         val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, fileName = fileName)
 
         try

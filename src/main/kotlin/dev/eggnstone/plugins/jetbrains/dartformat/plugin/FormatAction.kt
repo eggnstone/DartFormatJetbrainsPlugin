@@ -144,7 +144,7 @@ class FormatAction : AnAction()
                     content = null,
                     fileName = null,
                     links = null,
-                    origin = "$methodName/3",
+                    origin = null,
                     project = project,
                     title = title
                 ))
@@ -154,7 +154,7 @@ class FormatAction : AnAction()
         {
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
-                origin = "$methodName/1",
+                origin = "$methodName/3",
                 project = project,
                 throwable = e
             )
@@ -165,7 +165,7 @@ class FormatAction : AnAction()
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
-                origin = "$methodName/2",
+                origin = "$methodName/4",
                 project = project,
                 throwable = e
             )
@@ -284,14 +284,14 @@ class FormatAction : AnAction()
                     content = null,
                     fileName = fileName,
                     links = null,
-                    origin = "$methodName/1",
+                    origin = "$methodName/1", // TODO: remove
                     project = project,
                     title = formatResult.text
                 ))
             else
                 NotificationTools.reportThrowable(
                     fileName = fileName,
-                    origin = "$methodName/2",
+                    origin = "$methodName/2", // TODO: remove
                     project = project,
                     throwable = formatResult.throwable
                 )
@@ -305,7 +305,7 @@ class FormatAction : AnAction()
                 content = null,
                 fileName = fileName,
                 links = null,
-                origin = "$methodName/3",
+                origin = "$methodName/3", // TODO: remove
                 project = project,
                 title = formatResult.text
             ))
@@ -327,7 +327,7 @@ class FormatAction : AnAction()
             return FormatResult.error("Beta version not accepted.")
 
         val jsonConfig = config.toJson()
-        Logger.logDebug("FormatAction.format: jsonConfig: $jsonConfig")
+        //Logger.logDebug("FormatAction.format: jsonConfig: $jsonConfig")
 
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, fileName)
     }

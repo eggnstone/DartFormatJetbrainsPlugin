@@ -1,7 +1,8 @@
 TODO
 ====
 - option: stop when error encountered
-- update and auto-update for external dart_format (https://pub.dartlang.org/packages/dart_format.json)
+- update and auto-update for dart_format (https://pub.dartlang.org/packages/dart_format.json)
 - progress dialog
 - go to error location
-- add versions (2) to reports
+- add plugin and dart_format versions to reports
+- report operating system details
