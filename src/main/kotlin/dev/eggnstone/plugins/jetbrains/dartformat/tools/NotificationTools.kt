@@ -140,7 +140,12 @@ class NotificationTools
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
             var content = StringTools.toTextWithHtmlBreaks(notificationInfo.title)
             if (notificationInfo.content != null)
-                content += "<br/><br/>" + StringTools.toTextWithHtmlBreaks(notificationInfo.content)
+            {
+                if (!notificationInfo.content.startsWith("<pre>"))
+                    content += "<br/><br/>"
+
+                content += StringTools.toTextWithHtmlBreaks(notificationInfo.content)
+            }
 
             if (notificationInfo.fileName != null || notificationInfo.origin != null)
             {
@@ -172,9 +177,6 @@ class NotificationTools
         }
 
         fun createCheckInstallationInstructionsLink(): LinkInfo //
-            = LinkInfo("Check installation instructions", "https://pub.dev/packages/dart_format/install")
-
-        fun createUpdateExternalDartFormatLink(): LinkInfo //
-            = LinkInfo("Update external dart_format", "https://pub.dev/packages/dart_format/install")
+            = LinkInfo("Installation instructions for dart_format", "https://pub.dev/packages/dart_format/install")
     }
 }

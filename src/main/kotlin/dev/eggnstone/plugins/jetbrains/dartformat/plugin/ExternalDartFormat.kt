@@ -110,11 +110,32 @@ class ExternalDartFormat
                 }
             })
 
-            val processBuilder: ProcessBuilder = if (OsTools.isWindows())
-                //ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
-            ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
-            else
-                ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
+            val externalDartFormatFilePath = OsTools.getExternalDartFormatFilePathOrException()
+            if (externalDartFormatFilePath !is String)
+            {
+                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePath is Throwable) externalDartFormatFilePath.message else externalDartFormatFilePath.toString()
+                val content = "Did you install the dart_format package?\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+                val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+                val reportErrorLink = NotificationTools.createReportErrorLink(
+                    content = null,
+                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                    origin = null,
+                    stackTrace = null,
+                    title = title
+                )
+                NotificationTools.notifyError(NotificationInfo(
+                    content = content,
+                    fileName = null,
+                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title
+                ))
+                return
+            }
+
+            val processBuilder = ProcessBuilder(externalDartFormatFilePath, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(NotificationInfo(
@@ -132,6 +153,8 @@ class ExternalDartFormat
             if (result !is Process)
             {
                 val title = "Failed to start external dart_format: " + if (result is Throwable) result.message else result.toString()
+                val content = "Did you install the dart_format package?\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
                 val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
@@ -141,7 +164,7 @@ class ExternalDartFormat
                     title = title
                 )
                 NotificationTools.notifyError(NotificationInfo(
-                    content = null,
+                    content = content,
                     fileName = null,
                     listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
@@ -190,6 +213,12 @@ class ExternalDartFormat
                 content += TimedReader.receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
                 content = content.trim()
 
+                if (content.isNotEmpty())
+                    content += "\n"
+
+                content += "Did you install the dart_format package?\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
                 val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = content.ifEmpty { null },
@@ -233,9 +262,10 @@ class ExternalDartFormat
 
             if (currentVersion?.isOlderThan(latestVersion) == true)
             {
-                val title = "A new version of external dart_format is available."
-                val content = "<pre>Current version: $currentVersion\nLatest version:  $latestVersion</pre>"
-                val updateLink = NotificationTools.createUpdateExternalDartFormatLink()
+                val title = "A new version of the dart_format package is available."
+                val content = "<pre>Current version: $currentVersion\nLatest version:  $latestVersion</pre>" +
+                    "Just execute this again:<pre>dart pub global activate dart_format</pre>"
+                val updateLink = NotificationTools.createCheckInstallationInstructionsLink()
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = content,
                     fileName = null,

@@ -41,6 +41,12 @@ class TimedReader
                     content += receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
                     content = content.trim()
 
+                    if (content.isNotEmpty())
+                        content += "\n"
+
+                    content += "Did you install the dart_format package?\n" +
+                        "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+
                     val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
                     val reportErrorLink = NotificationTools.createReportErrorLink(
                         content = content.ifEmpty { null },
