@@ -44,7 +44,7 @@ class TimedReader
                     val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
                     val reportErrorLink = NotificationTools.createReportErrorLink(
                         content = content.ifEmpty { null },
-                        gitHubRepo = "DartFormatJetbrainsPlugin",
+                        gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                         origin = null,
                         stackTrace = null,
                         title = title

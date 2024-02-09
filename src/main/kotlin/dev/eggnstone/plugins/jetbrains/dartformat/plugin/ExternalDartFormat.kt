@@ -89,23 +89,34 @@ class ExternalDartFormat
                     }
                     catch (e: TimeoutCancellationException)
                     {
+                        val title = "Timeout while waiting for external dart_format to shut down."
+                        val reportErrorLink = NotificationTools.createReportErrorLink(
+                            content = null,
+                            gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                            origin = null,
+                            stackTrace = null,
+                            title = title
+                        )
+
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
                             fileName = null,
-                            links = null,
+                            listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = "Timeout while waiting for external dart_format to shut down."
+                            title = title
                         ))
                     }
                 }
             })
 
             val processBuilder: ProcessBuilder = if (OsTools.isWindows())
-                ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
+                //ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
+            ProcessBuilder("cmd", "/c", "dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
             else
                 ProcessBuilder("dart_format", "--web", "--errors-as-json", "--log-to-temp-file")
 
+            Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
                 fileName = null,
@@ -114,29 +125,37 @@ class ExternalDartFormat
                 project = null,
                 title = "Starting external dart_format ...\nThis may take a few seconds."
             ))
-            Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
-            val process = withContext(Dispatchers.IO) {
-                try
-                {
-                    processBuilder.start()
-                }
-                catch (e: Exception)
-                {
-                    NotificationTools.notifyError(NotificationInfo(
-                        content = null,
-                        fileName = null,
-                        links = null,
-                        origin = null,
-                        project = null,
-                        title = "Failed to start external dart_format: ${e.message}"
-                    ))
-                    throw e
-                }
+
+            val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+
+            @Suppress("KotlinConstantConditions")
+            if (result !is Process)
+            {
+                val title = "Failed to start external dart_format: " + if (result is Throwable) result.message else result.toString()
+                val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+                val reportErrorLink = NotificationTools.createReportErrorLink(
+                    content = null,
+                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                    origin = null,
+                    stackTrace = null,
+                    title = title
+                )
+                NotificationTools.notifyError(NotificationInfo(
+                    content = null,
+                    fileName = null,
+                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title
+                ))
+                return
             }
+
+            @Suppress("USELESS_CAST")
+            val process = result as Process
 
             if (process.isAlive)
             {
-                //Logger.log("$methodName: External dart_format started.")
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
                     fileName = null,
@@ -174,7 +193,7 @@ class ExternalDartFormat
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
                 val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = content.ifEmpty { null },
-                    gitHubRepo = "DartFormatJetbrainsPlugin",
+                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                     origin = null,
                     stackTrace = null,
                     title = title
@@ -239,13 +258,21 @@ class ExternalDartFormat
                     if (!alreadyNotifiedAboutExternalDartFormatProcessDeath)
                     {
                         alreadyNotifiedAboutExternalDartFormatProcessDeath = true
+                        val title = "External dart_format process died."
+                        val reportErrorLink = NotificationTools.createReportErrorLink(
+                            content = null,
+                            gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                            origin = null,
+                            stackTrace = null,
+                            title = title
+                        )
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
                             fileName = null,
-                            links = null,
+                            listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = "External dart_format process died."
+                            title = title
                         ))
                     }
                 }
@@ -283,7 +310,7 @@ class ExternalDartFormat
             Logger.logError("$methodName: Exception: $e")
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
-                origin = "$methodName/1",
+                origin = "$methodName/Exception",
                 project = null,
                 throwable = e
             )
@@ -294,7 +321,7 @@ class ExternalDartFormat
             Logger.logError("$methodName: Error: $e")
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
-                origin = "$methodName/2",
+                origin = "$methodName/Error",
                 project = null,
                 throwable = e
             )

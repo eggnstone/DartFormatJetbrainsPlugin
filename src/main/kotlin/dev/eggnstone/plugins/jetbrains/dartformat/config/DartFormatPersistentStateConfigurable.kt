@@ -15,9 +15,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private val config: DartFormatConfig get() = DartFormatPersistentStateComponent.instance?.state ?: DartFormatConfig()
 
-    private var acceptBetaCheckbox = JCheckBox(//"<html><body>" +
+    private var acceptBetaCheckbox = JCheckBox( //"<html><body>" +
         "I accept that this is a beta version and not everything works as it should.<br/>" +
-        "I will be patient with the developer. :)" //+
+            "I will be patient with the developer. :)" //+
         //"</body></html>"
     )
 
@@ -121,9 +121,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     private fun createIntroLabel(): JLabel
     {
-        val label = JLabel(//"<html><body>" +
+        val label = JLabel( //"<html><body>" +
             "This plugin is a wrapper around my <a href=\"https://pub.dev/packages/dart_format\">dart_format</a> package on pub.dev.<br/>" +
-            "Please follow the <a href=\"https://pub.dev/packages/dart_format/install\">install instruction</a> there." //+
+                "Please follow the <a href=\"https://pub.dev/packages/dart_format/install\">install instruction</a> there." //+
             //"</body></html>"
         )
         // TODO:

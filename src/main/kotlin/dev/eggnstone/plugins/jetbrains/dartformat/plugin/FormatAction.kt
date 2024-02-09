@@ -11,6 +11,7 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
@@ -48,8 +49,8 @@ class FormatAction : AnAction()
             val title = "No formatting option enabled"
             val content = //"<html><body>" +
                 "Please enable your desired formatting options:" +
-                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" //+
-                //"</body></html>"
+                    "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" //+
+            //"</body></html>"
             NotificationTools.notifyWarning(NotificationInfo(
                 content = content,
                 fileName = null,
@@ -280,14 +281,23 @@ class FormatAction : AnAction()
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
+            {
+                val reportErrorLink = NotificationTools.createReportErrorLink(
+                    content = null,
+                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
+                    origin = "$methodName/1", // TODO: remove
+                    stackTrace = null,
+                    title = formatResult.text
+                )
                 NotificationTools.notifyError(NotificationInfo(
                     content = null,
                     fileName = fileName,
-                    links = null,
+                    listOf(reportErrorLink),
                     origin = "$methodName/1", // TODO: remove
                     project = project,
                     title = formatResult.text
                 ))
+            }
             else
                 NotificationTools.reportThrowable(
                     fileName = fileName,

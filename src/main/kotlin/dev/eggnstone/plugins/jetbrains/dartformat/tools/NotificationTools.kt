@@ -101,6 +101,8 @@ class NotificationTools
             if (origin != null)
                 body += "Origin: $origin\n"
 
+            body += "OS: ${System.getProperty("os.name")}\n"
+
             val linkName = "Report error"
             val linkUrl = "https://github.com/eggnstone/$gitHubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
             return LinkInfo(linkName, linkUrl)
@@ -141,13 +143,15 @@ class NotificationTools
                 content += "<br/><br/>" + StringTools.toTextWithHtmlBreaks(notificationInfo.content)
 
             if (notificationInfo.fileName != null || notificationInfo.origin != null)
+            {
                 content += "<br/>"
 
-            if (notificationInfo.fileName != null)
-                content += "<br/>File: " + notificationInfo.fileName
+                if (notificationInfo.fileName != null)
+                    content += "<br/>File: " + notificationInfo.fileName
 
-            if (notificationInfo.origin != null)
-                content += "<br/>Origin: " + notificationInfo.origin
+                if (notificationInfo.origin != null)
+                    content += "<br/>Origin: " + notificationInfo.origin
+            }
 
             val notification: Notification = notificationGroup.createNotification(
                 title = "DartFormat",

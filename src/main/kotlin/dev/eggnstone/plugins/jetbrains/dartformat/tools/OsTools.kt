@@ -4,10 +4,6 @@ class OsTools
 {
     companion object
     {
-        fun isWindows(): Boolean
-        {
-            val osName = System.getProperty("os.name").lowercase()
-            return osName.startsWith("windows")
-        }
+        fun isWindows() = System.getProperty("os.name").lowercase().startsWith("windows")
     }
 }
