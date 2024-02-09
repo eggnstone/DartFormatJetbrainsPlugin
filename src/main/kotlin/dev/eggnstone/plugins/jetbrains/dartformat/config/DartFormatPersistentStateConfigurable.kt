@@ -130,10 +130,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         if (Constants.DEBUG_SETTINGS_DIALOG)
             label.border = BorderFactory.createMatteBorder(1, 1, 1, 1, JBColor.RED)
 
-        //Logger.logDebug(" width: ${label.width}, height: ${label.height}, preferredSize: ${label.preferredSize}")
-        //label.preferredSize = Dimension(preferredWidth, label.preferredSize.height)
-        //Logger.logDebug(" width: ${label.width}, height: ${label.height}, preferredSize: ${label.preferredSize}")
-
         return label
     }
 

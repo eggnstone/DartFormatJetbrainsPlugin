@@ -47,10 +47,8 @@ class FormatAction : AnAction()
         if (config.hasNothingEnabled())
         {
             val title = "No formatting option enabled"
-            val content = //"<html><body>" +
-                "Please enable your desired formatting options:" +
-                    "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" //+
-            //"</body></html>"
+            val content = "Please enable your desired formatting options:" +
+                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>"
             NotificationTools.notifyWarning(NotificationInfo(
                 content = content,
                 fileName = null,
@@ -323,7 +321,6 @@ class FormatAction : AnAction()
             return null
         }
 
-        //Logger.log("formatOrReport: ${formatResult.text}")
         return formatResult.text
     }
 
@@ -337,8 +334,6 @@ class FormatAction : AnAction()
             return FormatResult.error("Beta version not accepted.")
 
         val jsonConfig = config.toJson()
-        //Logger.logDebug("FormatAction.format: jsonConfig: $jsonConfig")
-
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, fileName)
     }
 
