@@ -2,8 +2,11 @@ package dev.eggnstone.plugins.jetbrains.dartformat.config
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
+import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import java.awt.BorderLayout
+import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.FlowLayout
 import java.net.URI
@@ -15,10 +18,10 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private val config: DartFormatConfig get() = DartFormatPersistentStateComponent.instance?.state ?: DartFormatConfig()
 
-    private var acceptBetaCheckbox = JCheckBox( //"<html><body>" +
+    private var acceptBetaCheckbox = JCheckBox("<html><body>" +
         "I accept that this is a beta version and not everything works as it should.<br/>" +
-            "I will be patient with the developer. :)" //+
-        //"</body></html>"
+        "I will be patient with the developer. :-)" +
+        "</body></html>"
     )
 
     private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
@@ -94,7 +97,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
         sectionPanel = createAndAddSectionPanel("General", formBuilder)
         sectionPanel.add(createPanelAndAdd(acceptBetaCheckbox))
-        sectionPanel.add(createPanelAndAdd(createIntroLabel()))
+        sectionPanel.add(createPanelAndAdd(createIntroPanel()))
 
         sectionPanel = createAndAddSectionPanel("Line Breaks", formBuilder)
         sectionPanel.add(createPanelAndAdd(addNewLineBeforeOpeningBraceCheckbox))
@@ -119,25 +122,59 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return finalPanel
     }
 
-    private fun createIntroLabel(): JLabel
+    @Suppress("SameParameterValue")
+    private fun createHtmlLabel(s: String/*, preferredWidth: Int*/): JLabel
     {
-        val label = JLabel( //"<html><body>" +
-            "This plugin is a wrapper around my <a href=\"https://pub.dev/packages/dart_format\">dart_format</a> package on pub.dev.<br/>" +
-                "Please follow the <a href=\"https://pub.dev/packages/dart_format/install\">install instruction</a> there." //+
-            //"</body></html>"
+        val label = JLabel("<html><body>$s</body></html>")
+
+        if (Constants.DEBUG_SETTINGS_DIALOG)
+            label.border = BorderFactory.createMatteBorder(1, 1, 1, 1, JBColor.RED)
+
+        //Logger.logDebug(" width: ${label.width}, height: ${label.height}, preferredSize: ${label.preferredSize}")
+        //label.preferredSize = Dimension(preferredWidth, label.preferredSize.height)
+        //Logger.logDebug(" width: ${label.width}, height: ${label.height}, preferredSize: ${label.preferredSize}")
+
+        return label
+    }
+
+    private fun createIntroPanel(): JPanel
+    {
+        val panel = createPanelBoxLayoutYAxis()
+
+        val htmlLabel = createHtmlLabel(
+            "This plugin is a wrapper around my <code>dart_format</code> package on <code>pub.dev</code>.<br/>" +
+                "Please follow the install instruction there.<br/>" +
+                "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
         )
-        // TODO:
-        // - only open on links
-        // - display different cursor
-        label.addMouseListener(OpenUrlAction(URI.create("https://pub.dev/packages/dart_format/install")))
+        panel.add(htmlLabel)
+
+        panel.add(createLink("<code>dart_format</code> package on <code>pub.dev</code>", "https://pub.dev/packages/dart_format"))
+        panel.add(JPanel())
+        panel.add(createLink("Installation instructions on <code>pub.dev</code>", "https://pub.dev/packages/dart_format/install"))
+
+        // htmlLabel's width is not properly set, so we set it manually.
+        htmlLabel.preferredSize = Dimension(panel.preferredSize.width, htmlLabel.preferredSize.height)
+
+        return panel
+    }
+
+    private fun createLink(name: String, url: String): JLabel
+    {
+        val label = JLabel("<html><body><a href=\"$url\">$name</a></body></html>")
+        label.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+        label.addMouseListener(OpenUrlAction(URI.create(url)))
         return label
     }
 
     private fun createAndAddSectionPanel(name: String, formBuilder: FormBuilder): JPanel
     {
         val panel = createPanelBoxLayoutYAxis()
-        //panel.border = BorderFactory.createMatteBorder(4, 12, 20, 0, JBColor.RED)
-        panel.border = BorderFactory.createEmptyBorder(4, 12, 20, 0)
+
+        if (Constants.DEBUG_SETTINGS_DIALOG)
+            panel.border = BorderFactory.createMatteBorder(4, 12, 20, 0, JBColor.RED)
+        else
+            panel.border = BorderFactory.createEmptyBorder(4, 12, 20, 0)
+
         formBuilder.addComponent(createSection(name, panel))
         return panel
     }

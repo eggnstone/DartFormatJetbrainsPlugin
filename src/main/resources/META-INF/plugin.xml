@@ -8,9 +8,16 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.5:</b> Small bug fixes.<br/>
-        <b>Version 2.0.4:</b> Better error logging and reporting.<br/>
-        <b>Version 2.0.0:</b> Complete rewrite of the plugin. Now uses my dart_format package on pub.dev.<br/>
+        <b>Version 2.0.5</b><br/>
+        Better installation instructions for the <code>dart_format</code> package.<br/>
+        Added version check for the <code>dart_format</code> package.<br/>
+        Better error reporting.<br/>
+        <br/>
+        <b>Version 2.0.4</b><br/>
+        Better error logging and reporting.<br/>
+        <br/>
+        <b>Version 2.0.0</b><br/>
+        Complete rewrite of the plugin. Now uses my <code>dart_format</code> package on <code>pub.dev</code>.
         ]]>
     </change-notes>
     <depends>com.intellij.modules.platform</depends>
