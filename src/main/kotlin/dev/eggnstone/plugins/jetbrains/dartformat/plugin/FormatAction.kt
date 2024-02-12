@@ -310,13 +310,11 @@ class FormatAction : AnAction()
         logDebug("2 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
         logDebug("2 formatResultText:\n${StringTools.toDisplayString(formatResultText, 50)}")
 
-        //runBlocking {
-            withContext(Dispatchers.IO) {
-                ApplicationManager.getApplication().runWriteAction {
-                    document.setText("fixedOutputText")
-                }
+        withContext(Dispatchers.IO) {
+            ApplicationManager.getApplication().runWriteAction {
+                document.setText(fixedOutputText)
             }
-        //}
+        }
 
         logDebug("Something changed.")
         return FormatResultType.SomethingChanged
