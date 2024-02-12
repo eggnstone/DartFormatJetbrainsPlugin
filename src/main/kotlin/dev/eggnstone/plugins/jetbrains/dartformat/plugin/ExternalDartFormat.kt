@@ -358,7 +358,7 @@ class ExternalDartFormat
         }
     }
 
-    suspend fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
+    fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
         Logger.logDebug("$methodName()")
@@ -366,18 +366,22 @@ class ExternalDartFormat
 
         try
         {
-            withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
-                Logger.logDebug("$methodName: sending")
-                channel.send(formatJob)
-                Logger.logDebug("$methodName: sent.")
-                return@withTimeout "OK"
+            runBlocking {
+                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                    Logger.logDebug("$methodName: sending")
+                    channel.send(formatJob)
+                    Logger.logDebug("$methodName: sent.")
+                    return@withTimeout "OK"
+                }
             }
 
-            withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
-                Logger.logDebug("$methodName: joining")
-                formatJob.join()
-                Logger.logDebug("$methodName: joined")
-                return@withTimeout "OK"
+            runBlocking {
+                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                    Logger.logDebug("$methodName: joining")
+                    formatJob.join()
+                    Logger.logDebug("$methodName: joined")
+                    return@withTimeout "OK"
+                }
             }
         }
         catch (e: TimeoutCancellationException)
