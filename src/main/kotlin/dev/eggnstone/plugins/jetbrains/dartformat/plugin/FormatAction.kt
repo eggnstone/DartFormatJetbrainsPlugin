@@ -22,6 +22,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.data.VirtualFileEx
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -137,7 +138,7 @@ class FormatAction : AnAction()
                             logDebug("  File: ${virtualFileEx.virtualFile}")
                             lastFileName = virtualFileEx.virtualFile.path
 
-                            val result = formatDartFile(virtualFileEx, project)
+                            val result = runBlocking { formatDartFile(virtualFileEx, project) }
 
                             if (result == FormatResultType.Error)
                             {
@@ -219,7 +220,7 @@ class FormatAction : AnAction()
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
 
-    private fun formatDartFile(virtualFileEx: VirtualFileEx, project: Project): FormatResultType
+    private suspend fun formatDartFile(virtualFileEx: VirtualFileEx, project: Project): FormatResultType
     {
         try
         {
@@ -243,7 +244,7 @@ class FormatAction : AnAction()
         }
     }
 
-    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): FormatResultType
+    private suspend fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): FormatResultType
     {
         if (!virtualFile.isWritable)
         {
@@ -253,7 +254,7 @@ class FormatAction : AnAction()
             return FormatResultType.NothingChanged
         }
 
-        val inputBytes = virtualFile.inputStream.readAllBytes()
+        val inputBytes = withContext(Dispatchers.IO) { virtualFile.inputStream.readAllBytes() }
         val inputText = String(inputBytes)
         val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
@@ -262,12 +263,13 @@ class FormatAction : AnAction()
             return FormatResultType.NothingChanged
         }
 
+        logDebug("1 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
+        logDebug("1 formatResultText:\n${StringTools.toDisplayString(formatResultText, 50)}")
+
         val outputBytes = formatResultText.toByteArray()
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                ApplicationManager.getApplication().runWriteAction {
-                    virtualFile.setBinaryContent(outputBytes)
-                }
+        withContext(Dispatchers.IO) {
+            ApplicationManager.getApplication().runWriteAction {
+                virtualFile.setBinaryContent(outputBytes)
             }
         }
 
@@ -275,7 +277,7 @@ class FormatAction : AnAction()
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): FormatResultType
+    private suspend fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): FormatResultType
     {
         if (fileEditor !is TextEditor)
         {
@@ -305,19 +307,22 @@ class FormatAction : AnAction()
         else
             formatResultText
 
-        runBlocking {
+        logDebug("2 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
+        logDebug("2 formatResultText:\n${StringTools.toDisplayString(formatResultText, 50)}")
+
+        //runBlocking {
             withContext(Dispatchers.IO) {
                 ApplicationManager.getApplication().runWriteAction {
-                    document.setText(fixedOutputText)
+                    document.setText("fixedOutputText")
                 }
             }
-        }
+        //}
 
         logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatOrReport(project: Project, inputText: String, fileName: String): String?
+    private suspend fun formatOrReport(project: Project, inputText: String, fileName: String): String?
     {
         val methodName = "$CLASS_NAME.formatOrReport"
 
@@ -371,7 +376,7 @@ class FormatAction : AnAction()
         return formatResult.text
     }
 
-    private fun format(inputText: String, fileName: String): FormatResult
+    private suspend fun format(inputText: String, fileName: String): FormatResult
     {
         if (inputText.isEmpty())
             return FormatResult.ok("")
