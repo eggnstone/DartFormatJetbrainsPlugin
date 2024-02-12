@@ -42,7 +42,7 @@ class NotificationTools
             }
 
             val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-            if (Constants.DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
+            logError("throwable.message: $message")
 
             var stackTrace: String? = null
             if (throwable !is DartFormatException || throwable.source == ExceptionSourceType.Local)
@@ -177,5 +177,11 @@ class NotificationTools
 
         fun createCheckInstallationInstructionsLink(): LinkInfo //
             = LinkInfo("Installation instructions for dart_format", "https://pub.dev/packages/dart_format/install")
+
+        private fun logError(s: String)
+        {
+            if (Constants.DEBUG_NOTIFICATION_TOOLS)
+                Logger.logError(s)
+        }
     }
 }

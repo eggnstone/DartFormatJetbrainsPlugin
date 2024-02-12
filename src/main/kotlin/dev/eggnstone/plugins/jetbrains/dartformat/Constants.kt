@@ -4,6 +4,8 @@ class Constants
 {
     companion object
     {
+        const val DEBUG_FORMAT_ACTION = true
+        const val DEBUG_NOTIFICATION_TOOLS = false
         const val DEBUG_SETTINGS_DIALOG = false
 
         const val REPO_NAME_DART_FORMAT = "DartFormat"
