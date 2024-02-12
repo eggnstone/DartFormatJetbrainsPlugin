@@ -8,6 +8,7 @@ import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -17,9 +18,15 @@ import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.data.VirtualFileEx
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import java.awt.EventQueue
+import java.io.File
 import java.util.*
 
 class FormatAction : AnAction()
@@ -27,7 +34,6 @@ class FormatAction : AnAction()
     companion object
     {
         const val CLASS_NAME = "FormatAction"
-        private const val DEBUG_FORMAT_ACTION = false
     }
 
     init
@@ -82,43 +88,77 @@ class FormatAction : AnAction()
         {
             val startTime = Date()
 
-            val finalVirtualFiles = mutableSetOf<VirtualFile>()
-            val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
+            val virtualFiles = mutableSetOf<VirtualFile>()
+            val collectVirtualFilesIterator = CollectVirtualFilesIterator(virtualFiles)
             val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
             if (selectedVirtualFiles == null)
             {
-                if (DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
             }
             else
             {
-                if (DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
+                // TODO: show progress indicator?
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
                 for (selectedVirtualFile in selectedVirtualFiles)
                 {
-                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
                     VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
                 }
             }
 
             var changedFiles = 0
             var encounteredError = false
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${virtualFiles.size} files:")
+
+            // Accessing FileEditorManager.getSelectedEditor() inside ProgressManager.runProcessWithProgressSynchronously()
+            // throws an exception about the wrong thread: EventQueue.isDispatchThread()=false
+            // Therefore, we have to access it outside of this method.
+            val fileEditorManager = FileEditorManager.getInstance(project)
+            val virtualFilesEx = virtualFiles.map { VirtualFileEx(fileEditorManager, it) }
+
             CommandProcessor.getInstance().runUndoTransparentAction {
-                for (finalVirtualFile in finalVirtualFiles)
-                {
-                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
-                    lastFileName = finalVirtualFile.path
-                    val result = formatDartFile(finalVirtualFile, project)
-
-                    if (result == FormatResultType.Error)
+                val progressManager = ProgressManager.getInstance()
+                progressManager.runProcessWithProgressSynchronously(
                     {
-                        encounteredError = true
-                        break
-                    }
+                        Logger.logDebug("3 ${EventQueue.isDispatchThread()}")
+                        val indicator = progressManager.progressIndicator
+                        indicator.isIndeterminate = false
+                        indicator.text = "Formatting"
+                        indicator.fraction = 0.0
 
-                    if (result == FormatResultType.SomethingChanged)
-                        changedFiles++
-                }
+                        for ((index, virtualFileEx) in virtualFilesEx.withIndex())
+                        {
+                            var shortPath = virtualFileEx.virtualFile.path
+                            if (shortPath.startsWith(project.basePath!!))
+                                shortPath = "..." + shortPath.substring(project.basePath!!.length)
+                            indicator.text2 = shortPath.replace('/', File.separatorChar)
+
+                            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  File: ${virtualFileEx.virtualFile}")
+                            lastFileName = virtualFileEx.virtualFile.path
+
+                            val result = formatDartFile(virtualFileEx, project)
+
+                            if (result == FormatResultType.Error)
+                            {
+                                Logger.logError("Error formatting ${virtualFileEx.virtualFile}")
+                                encounteredError = true
+                                break
+                            }
+
+                            if (result == FormatResultType.SomethingChanged)
+                                changedFiles++
+
+                            if (indicator.isCanceled)
+                                break
+
+                            indicator.fraction = index / virtualFiles.size.toDouble()
+                        }
+                    },
+                    "DartFormat",
+                    true, // canBeCancelled
+                    project
+                )
             }
 
             if (!encounteredError)
@@ -127,9 +167,9 @@ class FormatAction : AnAction()
                 val diffTime = endTime.time - startTime.time
                 val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
 
-                var finalVirtualFilesText = "${finalVirtualFiles.size} file"
-                if (finalVirtualFiles.size != 1)
-                    finalVirtualFilesText += "s"
+                var virtualFilesText = "${virtualFiles.size} file"
+                if (virtualFiles.size != 1)
+                    virtualFilesText += "s"
 
                 val changedFilesText: String = when (changedFiles)
                 {
@@ -138,7 +178,7 @@ class FormatAction : AnAction()
                     else -> "$changedFiles files"
                 }
 
-                val title = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
+                val title = "Formatting $virtualFilesText took $diffTimeText.\n$changedFilesText changed."
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
                     fileName = null,
@@ -173,15 +213,14 @@ class FormatAction : AnAction()
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project): FormatResultType
+    private fun formatDartFile(virtualFileEx: VirtualFileEx, project: Project): FormatResultType
     {
         try
         {
-            val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
-            return if (fileEditor == null)
-                formatDartFileByBinaryContent(project, virtualFile)
+            return if (virtualFileEx.fileEditor == null)
+                formatDartFileByBinaryContent(project, virtualFileEx.virtualFile)
             else
-                formatDartFileByFileEditor(project, fileEditor)
+                formatDartFileByFileEditor(project, virtualFileEx.fileEditor)
         }
         catch (e: DartFormatException)
         {
@@ -189,12 +228,12 @@ class FormatAction : AnAction()
         }
         catch (e: Exception)
         {
-            throw DartFormatException.localError("${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException.localError("${virtualFileEx.virtualFile.path}\n${e.message}", e)
         }
         catch (e: Error)
         {
             // necessary?
-            throw DartFormatException.localError("${virtualFile.path}\n${e.message}", e)
+            throw DartFormatException.localError("ERROR ${virtualFileEx.virtualFile.path}\n${e.message}", e)
         }
     }
 
@@ -202,7 +241,7 @@ class FormatAction : AnAction()
     {
         if (!virtualFile.isWritable)
         {
-            if (DEBUG_FORMAT_ACTION)
+            if (Constants.DEBUG_FORMAT_ACTION)
             {
                 Logger.logDebug("formatDartFileByBinaryContent: $virtualFile")
                 Logger.logDebug("  !virtualFile.isWritable")
@@ -216,16 +255,20 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
         val outputBytes = formatResultText.toByteArray()
-        ApplicationManager.getApplication().runWriteAction {
-            virtualFile.setBinaryContent(outputBytes)
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                ApplicationManager.getApplication().runWriteAction {
+                    virtualFile.setBinaryContent(outputBytes)
+                }
+            }
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
+        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 
@@ -233,7 +276,7 @@ class FormatAction : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            if (DEBUG_FORMAT_ACTION)
+            if (Constants.DEBUG_FORMAT_ACTION)
             {
                 Logger.logDebug("formatDartFileByFileEditor: $fileEditor")
                 Logger.logDebug("  fileEditor !is TextEditor")
@@ -248,7 +291,7 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, fileEditor.file.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
@@ -262,11 +305,15 @@ class FormatAction : AnAction()
         else
             formatResultText
 
-        ApplicationManager.getApplication().runWriteAction {
-            document.setText(fixedOutputText)
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                ApplicationManager.getApplication().runWriteAction {
+                    document.setText(fixedOutputText)
+                }
+            }
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
+        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 

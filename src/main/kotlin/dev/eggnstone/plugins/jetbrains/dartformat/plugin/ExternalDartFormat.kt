@@ -337,7 +337,7 @@ class ExternalDartFormat
         }
         catch (e: Exception)
         {
-            Logger.logError("$methodName: Exception: $e")
+            Logger.logError("$methodName ${e.message}")
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
                 origin = "$methodName/Exception",
@@ -348,7 +348,7 @@ class ExternalDartFormat
         catch (e: Error)
         {
             // necessary?
-            Logger.logError("$methodName: Error: $e")
+            Logger.logError("ERROR $methodName ${e.message}")
             NotificationTools.reportThrowable(
                 fileName = lastFileName,
                 origin = "$methodName/Error",
@@ -414,7 +414,7 @@ class ExternalDartFormat
         catch (e: Error)
         {
             // necessary?
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwable("ERROR $methodName", e)
         }
     }
 
@@ -447,9 +447,7 @@ class ExternalDartFormat
                 return FormatResult.throwable(methodName, dartFormatException)
             }
 
-            val formattedText = withContext(Dispatchers.IO) {
-                httpResponse.entity.content.readAllBytes()
-            }.decodeToString()
+            val formattedText = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
 
             return FormatResult.ok(formattedText)
         }
@@ -460,7 +458,7 @@ class ExternalDartFormat
         catch (e: Error)
         {
             // necessary?
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwable("ERROR $methodName", e)
         }
     }
 }
