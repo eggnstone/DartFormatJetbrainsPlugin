@@ -21,7 +21,7 @@ class NotificationTools
     {
         fun reportThrowable(
             fileName: String?,
-            origin: String,
+            origin: String?,
             project: Project?,
             throwable: Throwable
         )

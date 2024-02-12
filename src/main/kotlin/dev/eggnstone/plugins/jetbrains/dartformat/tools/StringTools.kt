@@ -4,10 +4,17 @@ class StringTools
 {
     companion object
     {
-        fun toDisplayString(s: String, maxLength: Int = -1): String = "\"${toSafeString(s, maxLength)}\""
+        fun toDisplayString(s: String, maxLength: Int = -1): String //
+            = "\"${toSafeString(s, maxLength)}\""
+
+        fun toTextWithDelimiter(s: String, delimiter: String): String //
+            = s.split("\n", "\r", "|").filter { it.isNotEmpty() }.joinToString(delimiter)
 
         // TODO: use toTextWithPipes for all logging?
-        fun toTextWithPipes(s: String): String
+        fun toTextWithPipes(s: String): String //
+            = toTextWithDelimiter(s, "|")
+
+        /*fun toTextWithPipes(s: String): String
         {
             var r = s.replace("\n", "|").replace("\r", "|")
 
@@ -21,9 +28,10 @@ class StringTools
                 r = r.substring(0, r.length - 1)
 
             return r
-        }
+        }*/
 
-        fun toTextWithHtmlBreaks(s: String): String = toTextWithPipes(s).replace("|", "<br/>")
+        fun toTextWithHtmlBreaks(s: String): String //
+            = toTextWithDelimiter(s, "<br/>")
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun toSafeString(o: Any?, maxLength: Int = -1): String
@@ -38,6 +46,16 @@ class StringTools
                 r = "${r.substring(0, maxLength)}..."
 
             return r
+        }
+
+        fun getNumberedText(count: Int, singular: String, plural: String): String
+        {
+            return when (count)
+            {
+                0 -> "0 $plural"
+                1 -> "1 $singular"
+                else -> "$count $plural"
+            }
         }
     }
 }

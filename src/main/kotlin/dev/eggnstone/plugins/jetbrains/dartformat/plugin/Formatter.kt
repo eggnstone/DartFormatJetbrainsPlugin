@@ -1,10 +1,12 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -13,6 +15,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
+import dev.eggnstone.plugins.jetbrains.dartformat.data.Format2Info
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.VirtualFileEx
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -25,6 +28,7 @@ import kotlinx.coroutines.withContext
 import java.awt.EventQueue
 import java.io.File
 import java.util.*
+import kotlin.concurrent.thread
 
 class Formatter(private val project: Project, private val config: DartFormatConfig)
 {
@@ -33,9 +37,10 @@ class Formatter(private val project: Project, private val config: DartFormatConf
         const val CLASS_NAME = "Formatter"
     }
 
-    fun format(selectedVirtualFiles: Array<VirtualFile>?)
+    suspend fun format(selectedVirtualFiles: Array<VirtualFile>?)
     {
         val methodName = "$CLASS_NAME.format"
+        logDebug("$methodName(selectedVirtualFiles: ${selectedVirtualFiles?.size} items)")
 
         var lastFileName: String? = null
 
@@ -45,6 +50,83 @@ class Formatter(private val project: Project, private val config: DartFormatConf
 
             val virtualFiles = mutableSetOf<VirtualFile>()
             val collectVirtualFilesIterator = CollectVirtualFilesIterator(virtualFiles)
+
+            if (!selectedVirtualFiles.isNullOrEmpty())
+            {
+                logDebug("1")
+                val selectedVirtualFile = selectedVirtualFiles[0]
+                logDebug("Selected file: $selectedVirtualFile")
+                val virtualFileEx = VirtualFileEx(FileEditorManager.getInstance(project), selectedVirtualFile)
+                logDebug("  virtualFileEx.virtualFile: ${virtualFileEx.virtualFile}")
+                logDebug("  virtualFileEx.fileEditor:  ${virtualFileEx.fileEditor}")
+
+                val progressManager = ProgressManager.getInstance()
+
+                logInfo("runUndoTransparentAction / runProcessWithProgressSynchronously START")
+                logDebug("  isDispatchThread: " + EventQueue.isDispatchThread())
+                CommandProcessor.getInstance().runUndoTransparentAction {
+                    logDebug("  isDispatchThread: " + EventQueue.isDispatchThread())
+                    progressManager.runProcessWithProgressSynchronously(
+                        {
+                            logDebug("  isDispatchThread: " + EventQueue.isDispatchThread())
+                            logDebug("  Calling formatDartFile")
+                            val result: FormatResult = runBlocking { formatDartFile(virtualFileEx) }
+                            logDebug("  Called  formatDartFile")
+                            logDebug("  Calling writeDartFile")
+                            runBlocking {
+                                //withContext(Dispatchers.Main) {
+                                writeTextToVirtualFileEx(virtualFileEx, result)
+                            }
+                            logDebug("  Called  writeDartFile")
+                        },
+                        "runUndoTransparentAction / runProcessWithProgressSynchronously",
+                        true, // canBeCancelled
+                        project
+                    )
+                }
+                logInfo("runUndoTransparentAction / runProcessWithProgressSynchronously END")
+
+                /*logInfo("runUndoTransparentAction / runProcessWithProgressSynchronously START")
+                CommandProcessor.getInstance().runUndoTransparentAction {
+                    progressManager.runProcessWithProgressSynchronously(
+                        {
+                            logDebug("  Calling formatDartFile")
+                            val result: FormatResult = runBlocking { formatDartFile(virtualFileEx) }
+                            logDebug("  Called  formatDartFile")
+                            logDebug("  Calling writeDartFile")
+                            writeTextToVirtualFileEx(virtualFileEx, result)
+                            logDebug("  Called  writeDartFile")
+                        },
+                        "runUndoTransparentAction / runProcessWithProgressSynchronously",
+                        true, // canBeCancelled
+                        project
+                    )
+                }
+                logInfo("runUndoTransparentAction / runProcessWithProgressSynchronously END")*/
+
+                /*logInfo("runProcessWithProgressSynchronously / runUndoTransparentAction START")
+                progressManager.runProcessWithProgressSynchronously(
+                    {
+                        CommandProcessor.getInstance().runUndoTransparentAction {
+                            logDebug("  Calling formatDartFile")
+                            val result: FormatResult = runBlocking { formatDartFile(virtualFileEx) }
+                            logDebug("  Called  formatDartFile")
+                            logDebug("  Calling writeDartFile")
+                            writeTextToVirtualFileEx(virtualFileEx, result)
+                            logDebug("  Called  writeDartFile")
+                        }
+                    },
+                    "runProcessWithProgressSynchronously / runUndoTransparentAction",
+                    true, // canBeCancelled
+                    project
+                )
+                logInfo("runProcessWithProgressSynchronously / runUndoTransparentAction END")*/
+
+                return
+            }
+
+            logDebug("2 ----------------")
+            return
 
             if (selectedVirtualFiles == null)
             {
@@ -61,8 +143,6 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                 }
             }
 
-            var changedFiles = 0
-            var encounteredError = false
             logDebug("${virtualFiles.size} files:")
 
             // Accessing FileEditorManager.getSelectedEditor() inside ProgressManager.runProcessWithProgressSynchronously()
@@ -71,42 +151,13 @@ class Formatter(private val project: Project, private val config: DartFormatConf
             val fileEditorManager = FileEditorManager.getInstance(project)
             val virtualFilesEx = virtualFiles.map { VirtualFileEx(fileEditorManager, it) }
 
+            var format2Info: Format2Info? = null
+            val progressManager = ProgressManager.getInstance()
             CommandProcessor.getInstance().runUndoTransparentAction {
-                val progressManager = ProgressManager.getInstance()
                 progressManager.runProcessWithProgressSynchronously(
                     {
-                        Logger.logDebug("3 ${EventQueue.isDispatchThread()}")
-                        val indicator = progressManager.progressIndicator
-                        indicator.isIndeterminate = false
-                        indicator.text = "Formatting"
-                        indicator.fraction = 0.0
-
-                        for ((index, virtualFileEx) in virtualFilesEx.withIndex())
-                        {
-                            var shortPath = virtualFileEx.virtualFile.path
-                            if (shortPath.startsWith(project.basePath!!))
-                                shortPath = "..." + shortPath.substring(project.basePath!!.length)
-                            indicator.text2 = shortPath.replace('/', File.separatorChar)
-
-                            logDebug("  File: ${virtualFileEx.virtualFile}")
-                            lastFileName = virtualFileEx.virtualFile.path
-
-                            val result = runBlocking { formatDartFile(virtualFileEx) }
-
-                            if (result == FormatResultType.Error)
-                            {
-                                Logger.logError("Error formatting ${virtualFileEx.virtualFile}")
-                                encounteredError = true
-                                break
-                            }
-
-                            if (result == FormatResultType.SomethingChanged)
-                                changedFiles++
-
-                            if (indicator.isCanceled)
-                                break
-
-                            indicator.fraction = index / virtualFiles.size.toDouble()
+                        runBlocking {
+                            format2Info = format2(virtualFilesEx, progressManager.progressIndicator!!)
                         }
                     },
                     "DartFormat",
@@ -115,7 +166,10 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                 )
             }
 
-            if (!encounteredError)
+            val format2InfoNotNull = format2Info ?: throw DartFormatException.localError("format2Info == null")
+            lastFileName = format2InfoNotNull.lastFileName
+
+            if (!format2InfoNotNull.encounteredError)
             {
                 val endTime = Date()
                 val diffTime = endTime.time - startTime.time
@@ -125,13 +179,7 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                 if (virtualFiles.size != 1)
                     virtualFilesText += "s"
 
-                val changedFilesText: String = when (changedFiles)
-                {
-                    0 -> "Nothing"
-                    1 -> "1 file"
-                    else -> "$changedFiles files"
-                }
-
+                val changedFilesText = StringTools.getNumberedText(format2InfoNotNull.changedFiles, "file", "files")
                 val title = "Formatting $virtualFilesText took $diffTimeText.\n$changedFilesText changed."
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
@@ -165,7 +213,109 @@ class Formatter(private val project: Project, private val config: DartFormatConf
         }
     }
 
-    private suspend fun formatDartFile(virtualFileEx: VirtualFileEx): FormatResultType
+    private suspend fun writeTextToVirtualFileEx(virtualFileEx: VirtualFileEx, result: FormatResult)
+    {
+        if (virtualFileEx.fileEditor == null)
+            writeTextToVirtualFile(virtualFileEx.virtualFile, result)
+        else
+            writeTextToFileEditor(virtualFileEx.fileEditor, result)
+    }
+
+    private suspend fun writeTextToFileEditor(fileEditor: FileEditor, result: FormatResult)
+    {
+        if (fileEditor !is TextEditor)
+            throw DartFormatException.localError("fileEditor !is TextEditor")
+
+        /*logDebug("writeTextToFileEditor 1")
+        runWriteAction {
+            logDebug("writeTextToFileEditor runWriteAction")
+            runBlocking {
+                logDebug("writeTextToFileEditor runBlocking")
+                withContext(Dispatchers.IO) {
+                    logDebug("writeTextToFileEditor withContext")
+                    fileEditor.editor.document.setText(result.text)
+                    logDebug("writeTextToFileEditor DONE")
+                }
+            }
+        }*/
+
+        logDebug("writeTextToFileEditor 2")
+        runBlocking {
+            logDebug("writeTextToFileEditor runBlocking")
+            withContext(Dispatchers.IO) {
+                logDebug("writeTextToFileEditor withContext")
+                runWriteAction {
+                    logDebug("writeTextToFileEditor runWriteAction")
+                    fileEditor.editor.document.setText("/*${Date()}*/\n" + result.text)
+                    logDebug("writeTextToFileEditor DONE")
+                }
+            }
+        }
+
+        //runWriteAction { fileEditor.editor.document.setText(result.text) }
+    }
+
+    private fun writeTextToVirtualFile(virtualFile: VirtualFile, result: FormatResult)
+    {
+        logDebug("writeDartFileByBinaryContent: $virtualFile")
+        virtualFile.setBinaryContent(result.text.toByteArray())
+    }
+
+    private suspend fun format2(
+        virtualFilesEx: List<VirtualFileEx>,
+        progressIndicator: ProgressIndicator
+    ): Format2Info
+    {
+        val methodName = "$CLASS_NAME.format2"
+        logDebug("$methodName($virtualFilesEx)")
+
+        var lastFileName: String? = null
+        var changedFiles = 0
+        var encounteredError = false
+
+        Logger.logDebug("3 ${EventQueue.isDispatchThread()}")
+        progressIndicator.isIndeterminate = false
+        progressIndicator.text = "Formatting"
+        progressIndicator.fraction = 0.0
+
+        for ((index, virtualFileEx) in virtualFilesEx.withIndex())
+        {
+            var shortPath = virtualFileEx.virtualFile.path
+            if (shortPath.startsWith(project.basePath!!))
+                shortPath = "..." + shortPath.substring(project.basePath!!.length)
+            progressIndicator.text2 = shortPath.replace('/', File.separatorChar)
+
+            logDebug("  File: ${virtualFileEx.virtualFile}")
+            lastFileName = virtualFileEx.virtualFile.path
+
+            val result = formatDartFile(virtualFileEx)
+
+            //if (result == FormatResultType.Error)
+            if (result.resultType != ResultType.Ok)
+            {
+                Logger.logError("Error formatting ${virtualFileEx.virtualFile}")
+                encounteredError = true
+                break
+            }
+
+            // TODO
+            /*if (result == FormatResultType.SomethingChanged)
+                changedFiles++*/
+
+            if (progressIndicator.isCanceled)
+                break
+
+            progressIndicator.fraction = index / virtualFilesEx.size.toDouble()
+        }
+
+        return Format2Info(lastFileName, encounteredError, changedFiles)
+    }
+
+    // TODO: split
+    // 1. read text from file
+    // 2. format text
+    // 3. write text to file
+    private suspend fun formatDartFile(virtualFileEx: VirtualFileEx): FormatResult
     {
         try
         {
@@ -189,29 +339,45 @@ class Formatter(private val project: Project, private val config: DartFormatConf
         }
     }
 
-    private suspend fun formatDartFileByBinaryContent(virtualFile: VirtualFile): FormatResultType
+    private suspend fun formatDartFileByBinaryContent(virtualFile: VirtualFile): FormatResult
     {
+        val methodName = "$CLASS_NAME.formatDartFileByBinaryContent"
+        logDebug("$methodName($virtualFile)")
+
         if (!virtualFile.isWritable)
         {
             logDebug("formatDartFileByBinaryContent: $virtualFile")
             logDebug("  !virtualFile.isWritable")
 
-            return FormatResultType.NothingChanged
+            return FormatResult.error("virtualFile !isWritable")
+            //return FormatResultType.NothingChanged
         }
 
         val inputBytes = withContext(Dispatchers.IO) { virtualFile.inputStream.readAllBytes() }
         val inputText = String(inputBytes)
-        val formatResultText = formatTextOrReport(inputText, virtualFile.path) ?: return FormatResultType.Error
-        if (formatResultText == inputText)
+        return formatText(inputText, virtualFile.path)
+        val formatResult = formatText(inputText, virtualFile.path)
+        if (formatResult.resultType != ResultType.Ok)
+        {
+            reportFormatResult(virtualFile.path, formatResult)
+            return FormatResult.error("TODO")
+            //return FormatResultType.Error
+        }
+
+        if (formatResult.text == inputText)
         {
             logDebug("Nothing changed.")
-            return FormatResultType.NothingChanged
+            return FormatResult.error("TODO")
+            //return FormatResultType.NothingChanged
         }
 
         logDebug("1 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
-        logDebug("1 formatResultText:\n${StringTools.toDisplayString(formatResultText, 50)}")
+        logDebug("1 formatResultText:\n${StringTools.toDisplayString(formatResult.text, 50)}")
 
-        val outputBytes = formatResultText.toByteArray()
+        val outputBytes = formatResult.text.toByteArray()
+        ApplicationManager.getApplication().runWriteAction {
+            virtualFile.setBinaryContent(outputBytes)
+        }
         withContext(Dispatchers.IO) {
             ApplicationManager.getApplication().runWriteAction {
                 virtualFile.setBinaryContent(outputBytes)
@@ -219,58 +385,83 @@ class Formatter(private val project: Project, private val config: DartFormatConf
         }
 
         logDebug("Something changed.")
-        return FormatResultType.SomethingChanged
+        return FormatResult.error("TODO")
+        //return FormatResultType.SomethingChanged
     }
 
-    private suspend fun formatDartFileByFileEditor(fileEditor: FileEditor): FormatResultType
+    private suspend fun formatDartFileByFileEditor(fileEditor: FileEditor): FormatResult
     {
+        val methodName = "$CLASS_NAME.formatDartFileByFileEditor"
+        logDebug("$methodName($fileEditor)")
+
         if (fileEditor !is TextEditor)
+            throw DartFormatException.localError("fileEditor !is TextEditor")
+        /*if (fileEditor !is TextEditor)
         {
             logDebug("formatDartFileByFileEditor: $fileEditor")
             logDebug("  fileEditor !is TextEditor")
-            return FormatResultType.NothingChanged
-        }
+            //return FormatResultType.NothingChanged
+            return FormatResult.error("fileEditor !is TextEditor")
+        }*/
 
         val editor = fileEditor.editor
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatTextOrReport(inputText, fileEditor.file.path) ?: return FormatResultType.Error
-        if (formatResultText == inputText)
+
+        return formatText(inputText, fileEditor.file.path)
+        val formatResult = formatText(inputText, fileEditor.file.path)
+        if (formatResult.resultType != ResultType.Ok)
         {
-            logDebug("Nothing changed.")
-            return FormatResultType.NothingChanged
+            reportFormatResult(fileEditor.file.path, formatResult)
+            return FormatResult.error("TODO")
+            //return FormatResultType.Error
         }
 
-        val fixedOutputText: String = if (formatResultText.contains("\r\n"))
+        if (formatResult.text == inputText)
+        {
+            logDebug("Nothing changed.")
+            return FormatResult.error("TODO")
+            //return FormatResultType.NothingChanged
+        }
+
+        val fixedOutputText: String = if (formatResult.text.contains("\r\n"))
         {
             Logger.logDebug("#################################################")
             Logger.logDebug("Why does the outputText contain wrong linebreaks?")
             Logger.logDebug("#################################################")
-            formatResultText.replace("\r\n", "\n")
+            formatResult.text.replace("\r\n", "\n")
         }
         else
-            formatResultText
+            formatResult.text
 
-        logDebug("2 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
-        logDebug("2 formatResultText:\n${StringTools.toDisplayString(formatResultText, 50)}")
+        logDebug("2.1 inputText:\n${StringTools.toDisplayString(inputText, 50)}")
+        logDebug("2.2 formatResultText:\n${StringTools.toDisplayString(formatResult.text, 50)}")
 
-        withContext(Dispatchers.IO) {
+        /*     logDebug("2.3a")
+          ApplicationManager.getApplication().runWriteAction {
+             logDebug("2.3b")
+         }
+
+         ApplicationManager.getApplication().runWriteAction {
+             logDebug("2.4")
+             document.setText(fixedOutputText)
+             logDebug("2.5")
+         }*/
+
+        /*withContext(Dispatchers.IO) {
             ApplicationManager.getApplication().runWriteAction {
                 document.setText(fixedOutputText)
             }
-        }
+        }*/
 
         logDebug("Something changed.")
-        return FormatResultType.SomethingChanged
+        return FormatResult.error("TODO")
+        //return FormatResultType.SomethingChanged
     }
 
-    private suspend fun formatTextOrReport(inputText: String, fileName: String): String?
+    private fun reportFormatResult(fileName: String, formatResult: FormatResult)
     {
-        val methodName = "$CLASS_NAME.formatTextOrReport"
-
-        val formatResult = formatText(inputText, fileName)
-
         if (formatResult.resultType == ResultType.Error)
         {
             if (formatResult.throwable == null)
@@ -278,7 +469,7 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                 val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
-                    origin = "$methodName/1", // TODO: remove
+                    origin = null,
                     stackTrace = null,
                     title = formatResult.text
                 )
@@ -286,7 +477,7 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                     content = null,
                     fileName = fileName,
                     listOf(reportErrorLink),
-                    origin = "$methodName/2", // TODO: remove
+                    origin = null,
                     project = project,
                     title = formatResult.text
                 ))
@@ -294,12 +485,12 @@ class Formatter(private val project: Project, private val config: DartFormatConf
             else
                 NotificationTools.reportThrowable(
                     fileName = fileName,
-                    origin = "$methodName/3", // TODO: remove
+                    origin = null,
                     project = project,
                     throwable = formatResult.throwable
                 )
 
-            return null
+            return
         }
 
         if (formatResult.resultType == ResultType.Warning)
@@ -308,15 +499,15 @@ class Formatter(private val project: Project, private val config: DartFormatConf
                 content = null,
                 fileName = fileName,
                 links = null,
-                origin = "$methodName/4", // TODO: remove
+                origin = null,
                 project = project,
                 title = formatResult.text
             ))
 
-            return null
+            return
         }
 
-        return formatResult.text
+        return
     }
 
     private suspend fun formatText(inputText: String, fileName: String): FormatResult
@@ -335,5 +526,11 @@ class Formatter(private val project: Project, private val config: DartFormatConf
     {
         if (Constants.DEBUG_FORMATTER)
             Logger.logDebug(s)
+    }
+
+    private fun logInfo(s: String)
+    {
+        if (Constants.DEBUG_FORMATTER)
+            Logger.logInfo(s)
     }
 }

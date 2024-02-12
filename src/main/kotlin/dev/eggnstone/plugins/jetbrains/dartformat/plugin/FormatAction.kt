@@ -8,6 +8,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
+import kotlinx.coroutines.runBlocking
 
 class FormatAction : AnAction()
 {
@@ -20,7 +21,7 @@ class FormatAction : AnAction()
 
         val formatter = Formatter(project, config)
         val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-        formatter.format(selectedVirtualFiles)
+        runBlocking { formatter.format(selectedVirtualFiles) }
     }
 
     private fun checkConfig(project: Project, config: DartFormatConfig): Boolean
