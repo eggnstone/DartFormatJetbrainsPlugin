@@ -19,10 +19,10 @@ class TimedReader
         fun readLine(process: Process, inputStreamReader: StreamReader, errorStreamReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
         {
             val methodName = "$CLASS_NAME.readLine"
-            Logger.logDebug("TimedReader.readLine()")
+            Logger.logDebug("$methodName()")
 
             var waitedMillis = 0
-            while (waitedMillis < timeoutInSeconds * 1000)
+            while (timeoutInSeconds < 0 || waitedMillis < timeoutInSeconds * 1000)
             {
                 val textFromInputStream = receiveLine(inputStreamReader)
                 if (textFromInputStream != null)
@@ -72,10 +72,10 @@ class TimedReader
                 waitedMillis += Constants.WAIT_INTERVAL_IN_MILLIS
             }
 
-            Logger.logDebug("TimedReader.readResponse: waitedMillis: $waitedMillis")
+            Logger.logDebug("$methodName: waitedMillis: $waitedMillis")
 
             val errorText = "Timeout while waiting for response."
-            Logger.logError("TimedReader.readLine: $errorText")
+            Logger.logError("$methodName: $errorText")
             throw DartFormatException.localError(errorText)
         }
 
