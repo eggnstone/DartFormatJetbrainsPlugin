@@ -36,8 +36,8 @@
         Problems and feature requests: <a href="https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues">GitHub Issues for DartFormatJetbrainsPlugin</a><br/>
         <br/>
         <b>External dart_format package:</b><br/>
-        Source code: <a href="https://github.com/eggnstone/DartFormat">dart_format on GitHub</a><br/>
-        Problems and feature requests: <a href="https://github.com/eggnstone/DartFormat/issues">GitHub Issues for dart_format</a><br/>
+        Source code: <a href="https://github.com/eggnstone/dart_format/">dart_format on GitHub</a><br/>
+        Problems and feature requests: <a href="https://github.com/eggnstone/dart_format/issues">GitHub Issues for dart_format</a><br/>
         ]]>
     </description>
     <extensions defaultExtensionNs="com.intellij">
