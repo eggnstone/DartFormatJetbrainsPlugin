@@ -6,3 +6,4 @@ TODO
 - go to error location
 - add plugin and dart_format versions to reports
 - report operating system details
+- show error when data received on stdin

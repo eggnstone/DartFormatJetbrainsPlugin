@@ -11,6 +11,7 @@ class PluginTools
             if (virtualFile.extension != "dart")
                 return false
 
+            // TODO: paths starting with "."
             if (virtualFile.path.contains("/.dart_tool/") || virtualFile.path.contains("\\.dart_tool\\"))
                 return false
 

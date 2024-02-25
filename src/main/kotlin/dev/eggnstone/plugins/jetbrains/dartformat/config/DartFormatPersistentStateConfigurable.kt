@@ -144,6 +144,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         )
         panel.add(htmlLabel)
 
+        panel.add(JPanel())
         panel.add(createLink("<code>dart_format</code> package on <code>pub.dev</code>", "https://pub.dev/packages/dart_format"))
         panel.add(JPanel())
         panel.add(createLink("Installation instructions on <code>pub.dev</code>", "https://pub.dev/packages/dart_format/install"))

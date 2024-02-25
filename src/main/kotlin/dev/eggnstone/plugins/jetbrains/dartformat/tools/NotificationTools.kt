@@ -7,6 +7,7 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
@@ -18,8 +19,6 @@ class NotificationTools
 {
     companion object
     {
-        private const val DEBUG_NOTIFICATION_TOOLS = false
-
         fun reportThrowable(
             fileName: String?,
             origin: String,
@@ -43,7 +42,7 @@ class NotificationTools
             }
 
             val message = if (throwable.message == null) "Unknown error" else throwable.message!!
-            if (DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
+            if (Constants.DEBUG_NOTIFICATION_TOOLS) Logger.logError("throwable.message: $message")
 
             var stackTrace: String? = null
             if (throwable !is DartFormatException || throwable.source == ExceptionSourceType.Local)

@@ -27,7 +27,6 @@ class FormatAction : AnAction()
     companion object
     {
         const val CLASS_NAME = "FormatAction"
-        private const val DEBUG_FORMAT_ACTION = false
     }
 
     init
@@ -88,32 +87,47 @@ class FormatAction : AnAction()
 
             if (selectedVirtualFiles == null)
             {
-                if (DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
             }
             else
             {
-                if (DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
                 for (selectedVirtualFile in selectedVirtualFiles)
                 {
-                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
                     VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
                 }
             }
 
             var changedFiles = 0
             var encounteredError = false
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
                 {
-                    if (DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
                     lastFileName = finalVirtualFile.path
+                    val startTime2 = Date()
                     val result = formatDartFile(finalVirtualFile, project)
+                    val endTime2 = Date()
+                    val diffTime2 = endTime2.time - startTime2.time
+
+                    val seconds2 = diffTime2 / 1000.0
+                    if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
+                        NotificationTools.notifyInfo(NotificationInfo(
+                            content = null,
+                            fileName = null,
+                            links = null,
+                            origin = null,
+                            project = project,
+                            title = "Took ${seconds2}s to format $finalVirtualFile."
+                        ))
 
                     if (result == FormatResultType.Error)
                     {
                         encounteredError = true
-                        break
+                        if (Constants.CANCEL_PROCESSING_ON_ERROR)
+                            break
                     }
 
                     if (result == FormatResultType.SomethingChanged)
@@ -121,7 +135,7 @@ class FormatAction : AnAction()
                 }
             }
 
-            if (!encounteredError)
+            if (!encounteredError || !Constants.SHOW_TIMINGS_AFTER_ERROR)
             {
                 val endTime = Date()
                 val diffTime = endTime.time - startTime.time
@@ -202,7 +216,7 @@ class FormatAction : AnAction()
     {
         if (!virtualFile.isWritable)
         {
-            if (DEBUG_FORMAT_ACTION)
+            if (Constants.DEBUG_FORMAT_ACTION)
             {
                 Logger.logDebug("formatDartFileByBinaryContent: $virtualFile")
                 Logger.logDebug("  !virtualFile.isWritable")
@@ -216,7 +230,7 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
@@ -225,7 +239,7 @@ class FormatAction : AnAction()
             virtualFile.setBinaryContent(outputBytes)
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
+        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 
@@ -233,7 +247,7 @@ class FormatAction : AnAction()
     {
         if (fileEditor !is TextEditor)
         {
-            if (DEBUG_FORMAT_ACTION)
+            if (Constants.DEBUG_FORMAT_ACTION)
             {
                 Logger.logDebug("formatDartFileByFileEditor: $fileEditor")
                 Logger.logDebug("  fileEditor !is TextEditor")
@@ -248,7 +262,7 @@ class FormatAction : AnAction()
         val formatResultText = formatOrReport(project, inputText, fileEditor.file.path) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
-            if (DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
             return FormatResultType.NothingChanged
         }
 
@@ -266,7 +280,7 @@ class FormatAction : AnAction()
             document.setText(fixedOutputText)
         }
 
-        if (DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
+        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
         return FormatResultType.SomethingChanged
     }
 

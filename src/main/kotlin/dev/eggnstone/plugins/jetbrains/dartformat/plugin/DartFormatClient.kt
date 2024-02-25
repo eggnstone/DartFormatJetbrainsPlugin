@@ -27,9 +27,9 @@ class DartFormatClient(private val baseUrl: String)
         httpClient = HttpClient.newHttpClient()
 
         val requestConfig = RequestConfig.custom()
-            .setConnectTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
-            .setConnectionRequestTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000)
-            .setSocketTimeout(Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_RESPONSE_IN_SECONDS * 1000).build()
+            .setConnectTimeout(Constants.HTTP_CLIENT_CONNECT_TIMEOUT_IN_SECONDS * 1000)
+            .setConnectionRequestTimeout(Constants.HTTP_CLIENT_CONNECTION_REQUEST_TIMEOUT_IN_SECONDS * 1000)
+            .setSocketTimeout(Constants.HTTP_CLIENT_SOCKET_TIMEOUT_IN_SECONDS * 1000).build()
         closeableHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
     }
 
