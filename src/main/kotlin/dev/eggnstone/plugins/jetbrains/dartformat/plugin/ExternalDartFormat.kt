@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
@@ -47,7 +48,7 @@ class ExternalDartFormat
         val methodName = "$CLASS_NAME.run"
         Logger.logDebug("$methodName: START")
 
-        var lastFileName: String? = null
+        var lastVirtualFile: VirtualFile? = null
 
         try
         {
@@ -60,19 +61,20 @@ class ExternalDartFormat
 
                     NotificationTools.notifyInfo(NotificationInfo(
                         content = null,
-                        fileName = null,
                         links = null,
                         origin = null,
                         project = null,
-                        title = "Shutting down external dart_format ..."
+                        title = "Shutting down external dart_format ...",
+                        virtualFile = null
                     ))
+
                     // TODO: do not shut down when start failed or process dead
                     try
                     {
                         runBlocking {
-                            withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                            withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS * 1000L) {
                                 Logger.logDebug("$methodName: sending quit")
-                                channel.send(FormatJob(command = "Quit", inputText = null, config = null, fileName = null))
+                                channel.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null))
                                 Logger.logDebug("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
@@ -80,11 +82,11 @@ class ExternalDartFormat
 
                         NotificationTools.notifyInfo(NotificationInfo(
                             content = null,
-                            fileName = null,
                             links = null,
                             origin = null,
                             project = null,
-                            title = "Shut down external dart_format."
+                            title = "Shut down external dart_format.",
+                            virtualFile = null
                         ))
                     }
                     catch (e: TimeoutCancellationException)
@@ -100,54 +102,56 @@ class ExternalDartFormat
 
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
-                            fileName = null,
                             listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = title
+                            title = title,
+                            virtualFile = null
                         ))
                     }
                 }
             })
 
-            val externalDartFormatFilePath = OsTools.getExternalDartFormatFilePathOrException()
-            if (externalDartFormatFilePath !is String)
+            val externalDartFormatFilePathOrException = OsTools.getExternalDartFormatFilePathOrException()
+            if (externalDartFormatFilePathOrException !is String)
             {
-                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePath is Throwable) externalDartFormatFilePath.message else externalDartFormatFilePath.toString()
+                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePathOrException is Throwable) externalDartFormatFilePathOrException.message else externalDartFormatFilePathOrException.toString()
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                val reportErrorLink = NotificationTools.createReportErrorLink(
+                /*val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                     origin = null,
                     stackTrace = null,
                     title = title
-                )
+                )*/
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    fileName = null,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    listOf(checkInstallationInstructionsLink), //, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
 
-            val processBuilder = ProcessBuilder(externalDartFormatFilePath, "--web", "--errors-as-json", "--log-to-temp-file")
+            val processBuilder = ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
-                fileName = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "Starting external dart_format ...\nThis may take a few seconds."
+                title = "Starting external dart_format ...\nThis may take a few seconds.",
+                virtualFile = null
             ))
 
+            Logger.logDebug("5")
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+            Logger.logDebug("6")
 
             @Suppress("KotlinConstantConditions")
             if (result !is Process)
@@ -156,20 +160,20 @@ class ExternalDartFormat
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                val reportErrorLink = NotificationTools.createReportErrorLink(
+                /*val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                     origin = null,
                     stackTrace = null,
                     title = title
-                )
+                )*/
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    fileName = null,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    listOf(checkInstallationInstructionsLink), //, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
@@ -181,11 +185,11 @@ class ExternalDartFormat
             {
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
-                    fileName = null,
                     links = null,
                     origin = null,
                     project = null,
-                    title = "External dart_format process is alive.\nWaiting for connection details ..."
+                    title = "External dart_format process is alive.\nWaiting for connection details ...",
+                    virtualFile = null
                 ))
             }
             else
@@ -193,7 +197,26 @@ class ExternalDartFormat
 
             val inputStreamReader = StreamReader(process.inputStream)
             val errorStreamReader = StreamReader(process.errorStream)
-            val readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
+            var readLineResponse: ReadLineResponse?
+
+            while (true)
+            {
+                readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
+                if (readLineResponse == null)
+                    break
+
+                if (readLineResponse.stdErr != null)
+                    break
+
+                if (readLineResponse.stdOut != null)
+                {
+                    if (readLineResponse.stdOut!!.startsWith("{"))
+                        break
+                    else
+                        Logger.logDebug("Unexpected plain text: " + readLineResponse.stdOut!!)
+                }
+            }
+
             @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
             if (readLineResponse == null)
                 return
@@ -230,11 +253,11 @@ class ExternalDartFormat
 
                 NotificationTools.notifyError(NotificationInfo(
                     content = content.ifEmpty { null },
-                    fileName = null,
                     links = listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
@@ -253,11 +276,11 @@ class ExternalDartFormat
 
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
-                fileName = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "External dart_format is ready."
+                title = "External dart_format is ready." + jsonResponse,
+                virtualFile = null
             ))
 
             if (currentVersion?.isOlderThan(latestVersion) == true)
@@ -268,11 +291,11 @@ class ExternalDartFormat
                 val updateLink = NotificationTools.createCheckInstallationInstructionsLink()
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = content,
-                    fileName = null,
                     links = listOf(updateLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
             }
 
@@ -280,7 +303,7 @@ class ExternalDartFormat
             {
                 val formatJob = channel.receive()
                 Logger.logDebug("$methodName: Got new job: ${formatJob.command}")
-                lastFileName = formatJob.fileName
+                lastVirtualFile =  formatJob.virtualFile
 
                 if (!process.isAlive)
                 {
@@ -298,11 +321,11 @@ class ExternalDartFormat
                         )
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
-                            fileName = null,
                             listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = title
+                            title = title,
+                            virtualFile = null
                         ))
                     }
                 }
@@ -312,9 +335,9 @@ class ExternalDartFormat
                     Logger.logDebug("Calling format()")
                     formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!)
                     Logger.logDebug("Called format()")
-                    Logger.logDebug("Calling formatJob.complete()")
+                    Logger.logDebug("Calling formatJob.complete() 1")
                     formatJob.complete()
-                    Logger.logDebug("Called formatJob.complete()")
+                    Logger.logDebug("Called formatJob.complete() 1")
                     continue
                 }
 
@@ -323,9 +346,9 @@ class ExternalDartFormat
                     Logger.logDebug("Calling quit()")
                     formatJob.formatResult = quitExternalDartFormat()
                     Logger.logDebug("Called quit()")
-                    Logger.logDebug("Calling formatJob.complete()")
+                    Logger.logDebug("Calling formatJob.complete() 2")
                     formatJob.complete()
-                    Logger.logDebug("Called formatJob.complete()")
+                    Logger.logDebug("Called formatJob.complete() 2")
                     break
                 }
 
@@ -339,10 +362,10 @@ class ExternalDartFormat
         {
             Logger.logError("$methodName: Exception: $e")
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/Exception",
                 project = null,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
         catch (e: Error)
@@ -350,24 +373,24 @@ class ExternalDartFormat
             // necessary?
             Logger.logError("$methodName: Error: $e")
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/Error",
                 project = null,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
     }
 
-    fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
+    fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
         Logger.logDebug("$methodName()")
-        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, fileName = fileName)
+        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile)
 
         try
         {
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
                     Logger.logDebug("$methodName: sending")
                     channel.send(formatJob)
                     Logger.logDebug("$methodName: sent.")
@@ -376,7 +399,7 @@ class ExternalDartFormat
             }
 
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_JOIN_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
                     Logger.logDebug("$methodName: joining")
                     formatJob.join()
                     Logger.logDebug("$methodName: joined")
@@ -432,11 +455,13 @@ class ExternalDartFormat
             val httpResponse: CloseableHttpResponse
             try
             {
-                Logger.logDebug("$methodName: POST /format")
+                Logger.logDebug("$methodName: Calling POST /format")
                 httpResponse = dartFormatClient!!.post("/format", entity)
+                Logger.logDebug("$methodName: Called POST /format")
             }
             catch (e: SocketTimeoutException)
             {
+                Logger.logDebug("$methodName: While calling POST /format: $e")
                 return FormatResult.error("Failed to format via external dart_format: Timeout")
             }
 
@@ -447,10 +472,15 @@ class ExternalDartFormat
                 return FormatResult.throwable(methodName, dartFormatException)
             }
 
-            val formattedText = withContext(Dispatchers.IO) {
-                httpResponse.entity.content.readAllBytes()
-            }.decodeToString()
+            Logger.logDebug("3")
+            val result: Any = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
+            Logger.logDebug("4")
+            @Suppress("KotlinConstantConditions")
+            if (result !is String)
+                throw Exception("Expected String but got: $result")
 
+            @Suppress("USELESS_CAST")
+            val formattedText = result as String
             return FormatResult.ok(formattedText)
         }
         catch (e: Exception)

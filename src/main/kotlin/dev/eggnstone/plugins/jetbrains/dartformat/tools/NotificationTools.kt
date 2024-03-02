@@ -5,8 +5,11 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
@@ -20,10 +23,10 @@ class NotificationTools
     companion object
     {
         fun reportThrowable(
-            fileName: String?,
             origin: String,
             project: Project?,
-            throwable: Throwable
+            throwable: Throwable,
+            virtualFile: VirtualFile?
         )
         {
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
@@ -32,11 +35,11 @@ class NotificationTools
                 val title = optionalLocation + throwable.message
                 notifyWarning(NotificationInfo(
                     content = null,
-                    fileName = fileName,
                     links = null,
                     origin = origin,
                     project = project,
-                    title = title
+                    title = title,
+                    virtualFile = virtualFile
                 ))
                 return
             }
@@ -73,11 +76,11 @@ class NotificationTools
             )
             notifyError(NotificationInfo(
                 content = content,
-                fileName = fileName,
                 links = listOf(reportErrorLink),
                 origin = origin,
                 project = project,
-                title = title
+                title = title,
+                virtualFile = virtualFile,
             ))
         }
 
@@ -146,12 +149,12 @@ class NotificationTools
                 content += StringTools.toTextWithHtmlBreaks(notificationInfo.content)
             }
 
-            if (notificationInfo.fileName != null || notificationInfo.origin != null)
+            if (notificationInfo.virtualFile != null || notificationInfo.origin != null)
             {
                 content += "<br/>"
 
-                if (notificationInfo.fileName != null)
-                    content += "<br/>File: " + notificationInfo.fileName
+                if (notificationInfo.virtualFile != null)
+                    content += "<br/>File: " + notificationInfo.virtualFile.path
 
                 if (notificationInfo.origin != null)
                     content += "<br/>Origin: " + notificationInfo.origin
@@ -165,11 +168,23 @@ class NotificationTools
             if (notificationInfo.links != null)
                 for (link in notificationInfo.links)
                 {
-                    val action = NotificationAction.createSimple(link.name) {
-                        BrowserUtil.browse(link.url)
-                    }
+                    val action = NotificationAction.createSimple(link.name) { BrowserUtil.browse(link.url) }
                     notification.addAction(action)
                 }
+
+            if (Constants.SHOW_OPEN_FILE_IN_NOTIFICATION && notificationInfo.project != null && notificationInfo.virtualFile != null)
+            {
+                val action = NotificationAction.createSimple("OPEN FILE") {
+                    val openFileDescriptor = OpenFileDescriptor(
+                        notificationInfo.project,
+                        notificationInfo.virtualFile,
+                        9 - 1,
+                        11 - 1
+                    )
+                    FileEditorManager.getInstance(notificationInfo.project).openFileEditor(openFileDescriptor, true)
+                }
+                notification.addAction(action)
+            }
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)
