@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
@@ -26,7 +27,7 @@ class DartFormatClient(private val baseUrl: String)
     {
         @Suppress("HttpUrlsUsage")
         if (!baseUrl.startsWith("http://"))
-            throw Exception("DartFormatClient: expected URL but got: $baseUrl")
+            throw DartFormatException.localError("DartFormatClient: expected URL but got: $baseUrl")
 
         httpClient = HttpClient.newHttpClient()
 
@@ -64,7 +65,7 @@ class DartFormatClient(private val baseUrl: String)
         //Logger.logDebug("2")
         @Suppress("KotlinConstantConditions")
         if (result !is CloseableHttpResponse)
-            throw Exception("DartFormatClient.post: expected CloseableHttpResponse but got: $result")
+            throw DartFormatException.localError("DartFormatClient.post: expected CloseableHttpResponse but got: $result")
 
         @Suppress("USELESS_CAST")
         val response = result as CloseableHttpResponse

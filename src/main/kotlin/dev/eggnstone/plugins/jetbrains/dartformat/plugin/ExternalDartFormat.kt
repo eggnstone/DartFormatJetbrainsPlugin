@@ -4,6 +4,7 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
@@ -192,7 +193,7 @@ class ExternalDartFormat
                 ))
             }
             else
-                throw Exception("External dart_format process is dead.")
+                throw DartFormatException.localError("External dart_format process is dead.")
 
             val inputStreamReader = StreamReader(process.inputStream)
             val errorStreamReader = StreamReader(process.errorStream)
@@ -271,14 +272,17 @@ class ExternalDartFormat
 
             val httpResponse = dartFormatClient!!.get("/status")
             if (httpResponse.statusCode() != 200)
-                throw Exception("External dart_format: Requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
+                throw DartFormatException.localError("External dart_format: Requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
+            var titleReady = "External dart_format is ready."
+            if (Constants.DEBUG_CONNECTION)
+                titleReady += " $jsonResponse"
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "External dart_format is ready." + jsonResponse,
+                title = titleReady,
                 virtualFile = null
             ))
 
@@ -425,7 +429,7 @@ class ExternalDartFormat
         {
             val httpResponse = dartFormatClient!!.get("/quit")
             if (httpResponse.statusCode() != 200)
-                throw Exception("Failed to shut down external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
+                throw DartFormatException.localError("Failed to shut down external dart_format: ${httpResponse.statusCode()} ${httpResponse.body()}")
 
             return FormatResult.ok("")
         }
@@ -476,7 +480,7 @@ class ExternalDartFormat
             Logger.logDebug("4")
             @Suppress("KotlinConstantConditions")
             if (result !is String)
-                throw Exception("Expected String but got: $result")
+                throw DartFormatException.localError("Expected String but got: $result")
 
             @Suppress("USELESS_CAST")
             val formattedText = result as String
