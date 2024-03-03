@@ -1,4 +1,4 @@
-package dev.eggnstone.plugins.jetbrains.dartformat
+package dev.eggnstone.plugins.jetbrains.dartformat.enums
 
 enum class ExceptionSourceType
 {

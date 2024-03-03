@@ -1,8 +1,8 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
-import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExceptionSourceType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -23,18 +23,6 @@ class JsonTools
                 null
             }
         }
-
-        /*fun parseOrThrow(json: String): JsonElement
-        {
-            try
-            {
-                return Json.parseToJsonElement(json)
-            }
-            catch (e: Exception)
-            {
-                throw DartFormatException.localError("Failed to parse JSON/1: \"${toTransferString(json)}\"")
-            }
-        }*/
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun toTransferString(json: String): String

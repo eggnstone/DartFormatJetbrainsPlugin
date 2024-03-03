@@ -1,5 +1,8 @@
 package dev.eggnstone.plugins.jetbrains.dartformat
 
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExceptionSourceType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
+
 @kotlinx.serialization.Serializable
 data class DartFormatException(
     val type: FailType,
