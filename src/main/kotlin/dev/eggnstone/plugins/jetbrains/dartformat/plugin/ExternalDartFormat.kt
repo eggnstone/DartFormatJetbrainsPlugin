@@ -149,9 +149,7 @@ class ExternalDartFormat
                 virtualFile = null
             ))
 
-            Logger.logDebug("5")
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
-            Logger.logDebug("6")
 
             @Suppress("KotlinConstantConditions")
             if (result !is Process)

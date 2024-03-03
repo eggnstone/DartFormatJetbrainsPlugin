@@ -13,7 +13,7 @@ Like dartfmt.
 But better ;)  
 Because it's configurable.
 
-Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.
+Press `Ctrl`+`Alt`+`,` to format the current file / the currently selected folders and files.
 
 Download from JetBrains marketplace:  
 https://plugins.jetbrains.com/plugin/21003-dartformat
