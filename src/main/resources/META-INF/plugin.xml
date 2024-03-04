@@ -41,6 +41,9 @@
         <b>External dart_format package:</b><br/>
         Source code: <a href="https://github.com/eggnstone/dart_format/">dart_format on GitHub</a><br/>
         Problems and feature requests: <a href="https://github.com/eggnstone/dart_format/issues">GitHub Issues for dart_format</a><br/>
+        <br/>
+        Also available as a Visual Studio Code extension:<br/>
+        <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.dart-format">DartFormat at the Visual Studio Marketplace</a><br/>
         ]]>
     </description>
     <extensions defaultExtensionNs="com.intellij">
