@@ -42,6 +42,7 @@ bin/
 .DS_Store
 
 ### Manually added ###
+/.idea/copilot/chatSessions/
 /*.hprof
 *.old
 src/test/kotlin/integration/dataFiles/Temp*.dart
