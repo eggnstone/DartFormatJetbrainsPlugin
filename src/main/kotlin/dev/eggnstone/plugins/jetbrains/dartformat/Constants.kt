@@ -4,11 +4,16 @@ class Constants
 {
     companion object
     {
-        const val CANCEL_PROCESSING_ON_ERROR = true
+        private const val DEBUG = false
 
-        const val DEBUG_FORMAT_ACTION = false
-        const val DEBUG_NOTIFICATION_TOOLS = false
-        const val DEBUG_SETTINGS_DIALOG = false
+        const val CANCEL_PROCESSING_ON_ERROR = !DEBUG
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FORMAT_ACTION = DEBUG && false
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_NOTIFICATION_TOOLS = DEBUG && false
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_SETTINGS_DIALOG = DEBUG && false
 
         const val HTTP_CLIENT_CONNECT_TIMEOUT_IN_SECONDS = 5
         const val HTTP_CLIENT_CONNECTION_REQUEST_TIMEOUT_IN_SECONDS = 5

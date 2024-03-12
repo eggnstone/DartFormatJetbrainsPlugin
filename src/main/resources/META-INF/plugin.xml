@@ -9,7 +9,7 @@
     <change-notes>
         <![CDATA[
         <b>Version 2.0.6</b><br/>
-        TODO<br/>
+        Fixed path to external dart_format for macOS/Linux.<br/>
         <br/>
         <b>Version 2.0.5</b><br/>
         Better installation instructions for the <code>dart_format</code> package.<br/>
