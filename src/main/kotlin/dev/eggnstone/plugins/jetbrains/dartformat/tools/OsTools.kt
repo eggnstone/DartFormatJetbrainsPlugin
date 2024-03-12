@@ -39,16 +39,27 @@ class OsTools
                     externalDartFormatFilePath = envPubCache
 
                 externalDartFormatFilePath = "$externalDartFormatFilePath\\bin\\dart_format.bat"
+                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                if (File(externalDartFormatFilePath).exists())
+                    return externalDartFormatFilePath
             }
             else
             {
                 Logger.logDebug("  IsWindows: false (" + System.getProperty("os.name") + ")")
+
                 externalDartFormatFilePath = "~/.pub-cache/bin/dart_format.sh"
+                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                if (File(externalDartFormatFilePath).exists())
+                    return externalDartFormatFilePath
+
+                externalDartFormatFilePath = "~/.pub-cache/bin/dart_format"
+                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                if (File(externalDartFormatFilePath).exists())
+                    return externalDartFormatFilePath
+
+                externalDartFormatFilePath = "~/.pub-cache/bin/dart_format[.sh]"
             }
 
-            Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
-            if (File(externalDartFormatFilePath).exists())
-                return externalDartFormatFilePath
 
             return DartFormatException.localError(
                 "Cannot find the dart_format package:" +
