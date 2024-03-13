@@ -1,6 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import dev.eggnstone.plugins.jetbrains.dartformat.ResultType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ResultType
 
 class FormatResult(val resultType: ResultType, val text: String, val throwable: Throwable? = null)
 {

@@ -15,7 +15,7 @@ class TimedReader
     {
         private const val CLASS_NAME = "TimedReader"
 
-        fun readLine(process: Process, inputStreamReader: StreamReader, errorStreamReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
+        fun readLine(process: Process, stdOutReader: StreamReader, stdErrReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
         {
             val methodName = "$CLASS_NAME.readLine"
             Logger.logDebug("$methodName()")
@@ -23,21 +23,21 @@ class TimedReader
             var waitedMillis = 0
             while (timeoutInSeconds < 0 || waitedMillis < timeoutInSeconds * 1000)
             {
-                val textFromInputStream = receiveLine(inputStreamReader)
-                if (textFromInputStream != null)
-                    return ReadLineResponse(textFromInputStream, null)
+                val textFromStdOut = receiveLine(stdOutReader)
+                if (textFromStdOut != null)
+                    return ReadLineResponse(textFromStdOut, null)
 
-                val textFromErrorStream = receiveLine(errorStreamReader)
-                if (textFromErrorStream != null)
-                    return ReadLineResponse(null, textFromErrorStream)
+                val textFromStdErr = receiveLine(stdErrReader)
+                if (textFromStdErr != null)
+                    return ReadLineResponse(null, textFromStdErr)
 
                 if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
                     val title = "Unexpected process exit while waiting for $waitForName."
 
                     var content = ""
-                    content += receiveLines(inputStreamReader, "\nStdOut: ") ?: ""
-                    content += receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
+                    content += receiveLines(stdOutReader, "\nStdOut: ") ?: ""
+                    content += receiveLines(stdErrReader, "\nStdErr: ") ?: ""
                     content = content.trim()
 
                     if (content.isNotEmpty())

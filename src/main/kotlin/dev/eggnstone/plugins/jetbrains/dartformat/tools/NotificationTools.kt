@@ -12,8 +12,8 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
-import dev.eggnstone.plugins.jetbrains.dartformat.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExceptionSourceType
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.data.LinkInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.plugin.ExternalDartFormat
