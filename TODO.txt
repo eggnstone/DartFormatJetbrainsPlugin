@@ -1,9 +1,13 @@
 TODO
 ====
-- option: stop when error encountered
-- update and auto-update for dart_format (https://pub.dartlang.org/packages/dart_format.json)
+- make it an option: stop when error encountered
+- install and update and auto-update for dart_format (https://pub.dartlang.org/packages/dart_format.json)
 - progress dialog
 - go to error location
+- show error when data received on stdin
+- add link to VSCode extension
+
+DONE
+====
 - add plugin and dart_format versions to reports
 - report operating system details
-- show error when data received on stdin

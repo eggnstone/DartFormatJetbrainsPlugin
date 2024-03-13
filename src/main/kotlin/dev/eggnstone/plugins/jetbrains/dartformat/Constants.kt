@@ -4,6 +4,7 @@ class Constants
 {
     companion object
     {
+        // Main switch for debug. Should be "false" for production.
         private const val DEBUG = false
 
         const val CANCEL_PROCESSING_ON_ERROR = !DEBUG
