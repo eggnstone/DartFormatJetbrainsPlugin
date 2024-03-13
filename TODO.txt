@@ -5,9 +5,9 @@ TODO
 - progress dialog
 - go to error location
 - show error when data received on stdin
-- add link to VSCode extension
 
 DONE
 ====
 - add plugin and dart_format versions to reports
 - report operating system details
+- add link to VSCode extension

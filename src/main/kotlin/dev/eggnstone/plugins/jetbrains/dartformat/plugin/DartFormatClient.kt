@@ -50,7 +50,7 @@ class DartFormatClient(private val baseUrl: String)
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
     }
 
-    suspend fun post(path: String, entity: HttpEntity?): CloseableHttpResponse
+    suspend fun post(path: String, entity: HttpEntity): CloseableHttpResponse
     {
         val httpRequest = HttpPost("$baseUrl$path")
         httpRequest.entity = entity
