@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     id("java")
     id("org.jetbrains.intellij") version "1.13.2"
@@ -58,4 +60,14 @@ tasks {
 
 tasks.withType<Test> {
     exclude("**/*jetbrainsplugins*")
+}
+
+tasks.withType<ProcessResources>() {
+    doLast {
+        val propertiesFile = file("$buildDir/resources/main/version.properties")
+        propertiesFile.parentFile.mkdirs()
+        val properties = Properties()
+        properties.setProperty("version", rootProject.version.toString())
+        propertiesFile.writer().use { properties.store(it, null) }
+    }
 }

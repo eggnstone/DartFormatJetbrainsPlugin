@@ -13,6 +13,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
 import dev.eggnstone.plugins.jetbrains.dartformat.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.data.LinkInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.plugin.ExternalDartFormat
 import org.intellij.markdown.html.urlEncode
 
 class NotificationTools
@@ -101,6 +102,8 @@ class NotificationTools
                 body += "Origin: $origin\n"
 
             body += "OS: ${System.getProperty("os.name")}\n"
+            body += "Plugin version: ${VersionTools.getVersion()}\n"
+            body += "External dart_format version: ${ExternalDartFormat.instance.currentVersionText}\n"
 
             val linkName = "Report error"
             val linkUrl = "https://github.com/eggnstone/$gitHubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"
@@ -170,6 +173,17 @@ class NotificationTools
                     }
                     notification.addAction(action)
                 }
+
+            /*val dummyLink = NotificationTools.createReportErrorLink(
+                content = null,
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                origin = null,
+                stackTrace = null,
+                title = "DUMMY"
+            )
+            notification.addAction(NotificationAction.createSimple(dummyLink.name) {
+                BrowserUtil.browse(dummyLink.url)
+            })*/
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)

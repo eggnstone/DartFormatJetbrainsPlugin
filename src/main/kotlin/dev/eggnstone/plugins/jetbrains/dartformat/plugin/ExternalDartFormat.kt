@@ -25,10 +25,12 @@ class ExternalDartFormat
         val instance = ExternalDartFormat()
     }
 
+    private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
     private val channel = Channel<FormatJob>()
+    var currentVersionText = "<unknown version>"
+        private set
     private var dartFormatClient: DartFormatClient? = null
     private var mainJob: Job? = null
-    private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
 
     @OptIn(DelicateCoroutinesApi::class)
     fun init()
@@ -240,7 +242,8 @@ class ExternalDartFormat
             }
 
             val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
-            val currentVersion = Version.parseOrNull(JsonTools.getString(jsonResponse, "CurrentVersion", ""))
+            currentVersionText = JsonTools.getString(jsonResponse, "CurrentVersion", "")
+            val currentVersion = Version.parseOrNull(currentVersionText)
             val latestVersion = Version.parseOrNull(JsonTools.getString(jsonResponse, "LatestVersion", ""))
             Logger.logDebug("$methodName: baseUrl:        $baseUrl")
             Logger.logDebug("$methodName: currentVersion: $currentVersion")
