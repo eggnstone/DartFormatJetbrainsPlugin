@@ -5,6 +5,8 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -151,29 +153,33 @@ class NotificationTools
 
         private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
         {
-            var virtualFileForNotification = notificationInfo.virtualFile
-            var openLocationLinkInfo: LinkInfo? = null
-            var title = notificationInfo.title
-            if (line != null && column != null)
-            {
-                val location: String
-                if (virtualFileForNotification == null)
-                {
-                    location = "Line ${line}, Column ${column}\n"
-                }
-                else
-                {
-                    val shortFileName = getShortFilePath(virtualFileForNotification, notificationInfo.project)
-                    location = "Line ${line}, Column $column in $shortFileName\n"
-                    virtualFileForNotification = null
-                    openLocationLinkInfo = LinkInfo("Open location TODO FILE AND LOCATION", "TODO")
-                }
+            var actionForNotification: NotificationAction? = null
 
-                title = location + notificationInfo.title
+            var locationForNotification: String? = null
+            if (notificationInfo.virtualFile != null)
+                locationForNotification = getShortFilePath(notificationInfo.virtualFile, notificationInfo.project)
+
+            if (notificationInfo.project != null && notificationInfo.virtualFile != null)
+            {
+                val shortFileName = getShortFilePath(notificationInfo.virtualFile, notificationInfo.project)
+                locationForNotification = "Line ${line}, Column $column in $shortFileName"
+
+                val typeName = if (type == NotificationType.WARNING) "warning" else "error"
+                actionForNotification = NotificationAction.createSimple("Open $typeName location") {
+                    val openFileDescriptor = OpenFileDescriptor(
+                        notificationInfo.project,
+                        notificationInfo.virtualFile,
+                        if (line == null) -1 else line - 1,
+                        if (column == null) -1 else column - 1
+                    )
+
+                    // focusEditor = true
+                    FileEditorManager.getInstance(notificationInfo.project).openFileEditor(openFileDescriptor, true)
+                }
             }
 
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-            var content = StringTools.toTextWithHtmlBreaks(title)
+            var content = StringTools.toTextWithHtmlBreaks(notificationInfo.title)
             if (notificationInfo.content != null)
             {
                 if (!notificationInfo.content.startsWith("<pre>"))
@@ -182,12 +188,12 @@ class NotificationTools
                 content += StringTools.toTextWithHtmlBreaks(notificationInfo.content)
             }
 
-            if (virtualFileForNotification != null || notificationInfo.origin != null)
+            if (locationForNotification != null || notificationInfo.origin != null)
             {
                 content += "<br/>"
 
-                if (virtualFileForNotification != null)
-                    content += "<br/>File: " + getShortFilePath(virtualFileForNotification, notificationInfo.project)
+                if (locationForNotification != null)
+                    content += "<br/>Location: $locationForNotification"
 
                 if (notificationInfo.origin != null)
                     content += "<br/>Origin: " + notificationInfo.origin
@@ -207,10 +213,8 @@ class NotificationTools
                     notification.addAction(action)
                 }
 
-            if (openLocationLinkInfo != null)
-                notification.addAction(NotificationAction.createSimple(openLocationLinkInfo.name) {
-                    BrowserUtil.browse(openLocationLinkInfo.url)
-                })
+            if (actionForNotification != null)
+                notification.addAction(actionForNotification)
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)

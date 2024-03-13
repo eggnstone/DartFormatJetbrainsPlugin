@@ -135,7 +135,7 @@ class FormatAction : AnAction()
                 }
             }
 
-            if (!encounteredError || !Constants.SHOW_TIMINGS_AFTER_ERROR)
+            if (!encounteredError || Constants.SHOW_TIMINGS_EVEN_AFTER_ERROR)
             {
                 val endTime = Date()
                 val diffTime = endTime.time - startTime.time

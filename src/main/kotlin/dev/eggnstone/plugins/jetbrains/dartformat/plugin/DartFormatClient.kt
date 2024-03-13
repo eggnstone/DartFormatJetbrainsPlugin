@@ -1,7 +1,10 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.withContext
 import org.apache.http.HttpEntity
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.CloseableHttpResponse
@@ -12,6 +15,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.*
 
 class DartFormatClient(private val baseUrl: String)
 {
@@ -45,10 +49,22 @@ class DartFormatClient(private val baseUrl: String)
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).await()
     }
 
-    fun post(path: String, entity: HttpEntity?): CloseableHttpResponse
+    suspend fun post(path: String, entity: HttpEntity?): CloseableHttpResponse
     {
         val httpRequest = HttpPost("$baseUrl$path")
         httpRequest.entity = entity
-        return closeableHttpClient.execute(httpRequest, null)
+
+        val startTime = Date()
+        val result: Any = withContext(Dispatchers.IO) { closeableHttpClient.execute(httpRequest, null) }
+        val endTime = Date()
+        val diffTime = endTime.time - startTime.time
+        val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
+        Logger.logDebug("closeableHttpClient.execute took $diffTimeText")
+
+        @Suppress("KotlinConstantConditions")
+        if (result !is CloseableHttpResponse)
+            throw Exception("DartFormatClient.post: expected CloseableHttpResponse but got: ${result::class.java.typeName} $result")
+
+        return result
     }
 }

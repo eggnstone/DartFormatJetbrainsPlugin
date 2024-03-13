@@ -79,7 +79,7 @@ class ExternalDartFormat
                     try
                     {
                         runBlocking {
-                            withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                            withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS * 1000L) {
                                 Logger.logDebug("$methodName: sending quit")
                                 channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null))
                                 Logger.logDebug("$methodName: sent quit")
@@ -119,10 +119,10 @@ class ExternalDartFormat
                 }
             })
 
-            val externalDartFormatFilePath = OsTools.getExternalDartFormatFilePathOrException()
-            if (externalDartFormatFilePath !is String)
+            val externalDartFormatFilePathOrException = OsTools.getExternalDartFormatFilePathOrException()
+            if (externalDartFormatFilePathOrException !is String)
             {
-                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePath is Throwable) externalDartFormatFilePath.message else externalDartFormatFilePath.toString()
+                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePathOrException is Throwable) externalDartFormatFilePathOrException.message else externalDartFormatFilePathOrException.toString()
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
@@ -144,7 +144,7 @@ class ExternalDartFormat
                 return
             }
 
-            val processBuilder = ProcessBuilder(externalDartFormatFilePath, "--web", "--errors-as-json", "--log-to-temp-file")
+            val processBuilder = ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(NotificationInfo(
@@ -202,7 +202,26 @@ class ExternalDartFormat
 
             val inputStreamReader = StreamReader(process.inputStream)
             val errorStreamReader = StreamReader(process.errorStream)
-            val readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
+            var readLineResponse: ReadLineResponse?
+
+            while (true)
+            {
+                readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
+                if (readLineResponse == null)
+                    break
+
+                if (readLineResponse.stdErr != null)
+                    break
+
+                if (readLineResponse.stdOut != null)
+                {
+                    if (readLineResponse.stdOut!!.startsWith("{"))
+                        break
+                    else
+                        Logger.logDebug("Unexpected plain text: " + readLineResponse.stdOut!!)
+                }
+            }
+
             @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
             if (readLineResponse == null)
                 return
@@ -381,7 +400,7 @@ class ExternalDartFormat
         try
         {
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
                     Logger.logDebug("$methodName: sending")
                     channel!!.send(formatJob)
                     Logger.logDebug("$methodName: sent.")
@@ -390,7 +409,7 @@ class ExternalDartFormat
             }
 
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_JOIN_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
                     Logger.logDebug("$methodName: joining")
                     formatJob.join()
                     Logger.logDebug("$methodName: joined")
@@ -446,11 +465,13 @@ class ExternalDartFormat
             val httpResponse: CloseableHttpResponse
             try
             {
-                Logger.logDebug("$methodName: POST /format")
+                Logger.logDebug("$methodName: Calling POST /format")
                 httpResponse = dartFormatClient!!.post("/format", entity)
+                Logger.logDebug("$methodName: Called POST /format")
             }
             catch (e: SocketTimeoutException)
             {
+                Logger.logDebug("$methodName: While calling POST /format: $e")
                 return FormatResult.error("Failed to format via external dart_format: Timeout")
             }
 
@@ -461,11 +482,12 @@ class ExternalDartFormat
                 return FormatResult.throwable(methodName, dartFormatException)
             }
 
-            val formattedText = withContext(Dispatchers.IO) {
-                httpResponse.entity.content.readAllBytes()
-            }.decodeToString()
+            val result: Any = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
+            @Suppress("KotlinConstantConditions")
+            if (result !is String)
+                throw Exception("Expected String but got: ${result::class.java.typeName} $result")
 
-            return FormatResult.ok(formattedText)
+            return FormatResult.ok(result)
         }
         catch (e: Exception)
         {
