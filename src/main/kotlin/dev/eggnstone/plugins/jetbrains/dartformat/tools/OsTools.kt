@@ -12,7 +12,7 @@ class OsTools
 
         fun getExternalDartFormatFilePathOrException(): Any
         {
-            Logger.logDebug("OsTools.getExternalDartFormatFilePathOrThrow()")
+            Logger.logDebug("OsTools.getExternalDartFormatFilePathOrException()")
 
             var externalDartFormatFilePath: String?
 

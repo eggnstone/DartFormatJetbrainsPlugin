@@ -35,7 +35,7 @@
         But better ;)<br/>
         Because it's configurable.<br/>
         <br/>
-        Press <b>CTRL+ALT+Comma</b> to format the current file / the currently selected folders and files.<br/>
+        Press <code>Ctrl</code>+<code>Alt</code>+<code>,</code> to format the current file / the currently selected folders and files.<br/>
         <br/>
         <b>This plugin:</b><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormatJetbrainsPlugin">DartFormatJetbrainsPlugin on GitHub</a><br/>
