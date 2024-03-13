@@ -9,7 +9,7 @@
     <change-notes>
         <![CDATA[
         <b>Version 2.0.7</b><br/>
-        TODO<br/>
+        Added "open warning/error location" to notification when location is available.<br/>
         <br/>
         <b>Version 2.0.6</b><br/>
         Fixed path to external dart_format for Linux/macOS.<br/>
@@ -45,7 +45,7 @@
         Source code: <a href="https://github.com/eggnstone/dart_format/">dart_format on GitHub</a><br/>
         Problems and feature requests: <a href="https://github.com/eggnstone/dart_format/issues">GitHub Issues for dart_format</a><br/>
         <br/>
-        Also available as a Visual Studio Code extension:<br/>
+        <b>Also available as a Visual Studio Code extension:</b><br/>
         <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.dart-format">DartFormat at the Visual Studio Marketplace</a><br/>
         ]]>
     </description>

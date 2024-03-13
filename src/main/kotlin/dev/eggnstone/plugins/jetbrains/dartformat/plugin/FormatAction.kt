@@ -60,24 +60,6 @@ class FormatAction : AnAction()
             return
         }
 
-        if (!config.acceptBeta)
-        {
-            val title = "Beta version not accepted"
-            val content = "<html><body>" +
-                "Please accept that this is a beta version and not everything works as it should:" +
-                "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>" +
-                "</body></html>"
-            NotificationTools.notifyWarning(NotificationInfo(
-                content = content,
-                links = null,
-                origin = "$methodName/2",
-                project = project,
-                title = title,
-                virtualFile = null
-            ))
-            return
-        }
-
         try
         {
             val startTime = Date()
@@ -345,9 +327,6 @@ class FormatAction : AnAction()
             return FormatResult.ok("")
 
         val config = getConfig()
-        if (!config.acceptBeta)
-            return FormatResult.error("Beta version not accepted.")
-
         val jsonConfig = config.toJson()
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile)
     }

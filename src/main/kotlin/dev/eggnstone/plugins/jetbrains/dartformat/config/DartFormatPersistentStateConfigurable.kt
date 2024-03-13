@@ -18,12 +18,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private val config: DartFormatConfig get() = DartFormatPersistentStateComponent.instance?.state ?: DartFormatConfig()
 
-    private var acceptBetaCheckbox = JCheckBox("<html><body>" +
-        "I accept that this is a beta version and not everything works as it should.<br/>" +
-        "I will be patient with the developer. :-)" +
-        "</body></html>"
-    )
-
     private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
     private var addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")
     private var addNewLineAfterSemicolonCheckbox = JCheckBox("Add new line after semicolon")
@@ -61,8 +55,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun apply()
     {
         @Suppress("DuplicatedCode")
-        config.acceptBeta = acceptBetaCheckbox.isSelected
-
         config.addNewLineAfterOpeningBrace = addNewLineAfterOpeningBraceCheckbox.isSelected
         config.addNewLineAfterClosingBrace = addNewLineAfterClosingBraceCheckbox.isSelected
         config.addNewLineBeforeOpeningBrace = addNewLineBeforeOpeningBraceCheckbox.isSelected
@@ -96,7 +88,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         var sectionPanel: JPanel
 
         sectionPanel = createAndAddSectionPanel("General", formBuilder)
-        sectionPanel.add(createPanelAndAdd(acceptBetaCheckbox))
         sectionPanel.add(createPanelAndAdd(createIntroPanel()))
 
         sectionPanel = createAndAddSectionPanel("Line Breaks", formBuilder)
@@ -253,8 +244,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
     override fun isModified(): Boolean
     {
-        return config.acceptBeta != acceptBetaCheckbox.isSelected
-            || config.addNewLineAfterClosingBrace != addNewLineAfterClosingBraceCheckbox.isSelected
+        return config.addNewLineAfterClosingBrace != addNewLineAfterClosingBraceCheckbox.isSelected
             || config.addNewLineAfterOpeningBrace != addNewLineAfterOpeningBraceCheckbox.isSelected
             || config.addNewLineAfterSemicolon != addNewLineAfterSemicolonCheckbox.isSelected
             || config.addNewLineAtEndOfText != addNewLineAtEndOfTextCheckbox.isSelected
@@ -273,7 +263,6 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun reset()
     {
         @Suppress("DuplicatedCode")
-        acceptBetaCheckbox.isSelected = config.acceptBeta
         addNewLineAfterClosingBraceCheckbox.isSelected = config.addNewLineAfterClosingBrace
         addNewLineAfterOpeningBraceCheckbox.isSelected = config.addNewLineAfterOpeningBrace
         addNewLineAfterSemicolonCheckbox.isSelected = config.addNewLineAfterSemicolon

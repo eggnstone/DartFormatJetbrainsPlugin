@@ -3,7 +3,6 @@ package dev.eggnstone.plugins.jetbrains.dartformat.config
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 data class DartFormatConfig(
-    var acceptBeta: Boolean = ACCEPT_BETA_NONE,
     var addNewLineAfterClosingBrace: Boolean = ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE,
     var addNewLineAfterOpeningBrace: Boolean = ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE,
     var addNewLineAfterSemicolon: Boolean = ADD_NEW_LINE_AFTER_SEMICOLON_NONE,
@@ -19,7 +18,6 @@ data class DartFormatConfig(
 {
     companion object
     {
-        private const val ACCEPT_BETA_NONE = false
         private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE = false
         private const val ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE = false
         private const val ADD_NEW_LINE_AFTER_SEMICOLON_NONE = false
@@ -38,7 +36,6 @@ data class DartFormatConfig(
         val finalIndentationSpacesPerLevel = if (indentationIsEnabled) indentationSpacesPerLevel else -1
         val finalMaxEmptyLines = if (maxEmptyLinesIsEnabled) maxEmptyLines else -1
 
-        // ignore AcceptBeta
         return "{" +
             "\"AddNewLineAfterClosingBrace\": " + addNewLineAfterClosingBrace + "," +
             "\"AddNewLineAfterOpeningBrace\": " + addNewLineAfterOpeningBrace + "," +
@@ -59,7 +56,6 @@ data class DartFormatConfig(
         val adjustedDefaultConfig = DartFormatConfig()
 
         /*
-        Logger.log("  acceptBeta: ${this.acceptBeta} == ${adjustedDefaultConfig.acceptBeta}")
         Logger.log("  addedNewLineAfterClosingBrace: ${this.addNewLineAfterClosingBrace} == ${adjustedDefaultConfig.addNewLineAfterClosingBrace}")
         Logger.log("  addNewLineAfterOpeningBrace: ${this.addNewLineAfterOpeningBrace} == ${adjustedDefaultConfig.addNewLineAfterOpeningBrace}")
         Logger.log("  addNewLineAfterSemicolon: ${this.addNewLineAfterSemicolon} == ${adjustedDefaultConfig.addNewLineAfterSemicolon}")
@@ -73,7 +69,6 @@ data class DartFormatConfig(
         Logger.log("  removeTrailingCommas: ${this.removeTrailingCommas} == ${adjustedDefaultConfig.removeTrailingCommas}")
         */
 
-        adjustedDefaultConfig.acceptBeta = this.acceptBeta
         adjustedDefaultConfig.indentationSpacesPerLevel = this.indentationSpacesPerLevel
         adjustedDefaultConfig.maxEmptyLines = this.maxEmptyLines
 
