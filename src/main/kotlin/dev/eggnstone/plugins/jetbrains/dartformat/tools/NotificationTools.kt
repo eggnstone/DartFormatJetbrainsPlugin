@@ -29,12 +29,30 @@ class NotificationTools
         {
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
-                val optionalLocation = if (throwable.line != null && throwable.column != null) "Line ${throwable.line}, Column ${throwable.column}: " else ""
+                var fileNameForNotification = fileName
+                var optionalLocation = ""
+                var links: List<LinkInfo>? = null
+                if (throwable.line != null && throwable.column != null)
+                {
+                    optionalLocation = "Line ${throwable.line}, Column ${throwable.column}\n"
+                    if (fileName != null)
+                    {
+                        var shortFileName = fileName
+                        if (project != null && project.basePath != null && shortFileName.startsWith(project.basePath!!))
+                            shortFileName = shortFileName.substring(project.basePath!!.length)
+
+                        optionalLocation = "$shortFileName\n$optionalLocation"
+                        fileNameForNotification = null
+
+                        //links = listOf(LinkInfo("Open location", "TODO"))
+                    }
+                }
+
                 val title = optionalLocation + throwable.message
                 notifyWarning(NotificationInfo(
                     content = null,
-                    fileName = fileName,
-                    links = null,
+                    fileName = fileNameForNotification,
+                    links = links,
                     origin = origin,
                     project = project,
                     title = title
