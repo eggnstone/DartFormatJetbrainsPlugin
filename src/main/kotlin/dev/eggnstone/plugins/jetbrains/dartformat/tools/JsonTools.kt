@@ -24,7 +24,6 @@ class JsonTools
             }
         }
 
-
         @Suppress("MemberVisibilityCanBePrivate")
         fun toTransferString(json: String): String
         {

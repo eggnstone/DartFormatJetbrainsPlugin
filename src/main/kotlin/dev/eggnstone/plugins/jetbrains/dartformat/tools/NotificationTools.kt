@@ -27,7 +27,7 @@ class NotificationTools
             origin: String,
             project: Project?,
             throwable: Throwable,
-            virtualFile: VirtualFile?,
+            virtualFile: VirtualFile?
         )
         {
             val throwableLine = if (throwable is DartFormatException) throwable.line else null

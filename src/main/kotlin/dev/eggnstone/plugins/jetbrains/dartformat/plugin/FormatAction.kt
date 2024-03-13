@@ -115,7 +115,7 @@ class FormatAction : AnAction()
 
                     val seconds2 = diffTime2 / 1000.0
                     if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
-                        NotificationTools.notifyInfo(NotificationInfo(
+                        NotificationTools.notifyWarning(NotificationInfo(
                             content = null,
                             links = null,
                             origin = null,
