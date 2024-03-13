@@ -30,8 +30,8 @@ class NotificationTools
             virtualFile: VirtualFile?
         )
         {
-            val throwableLine = if (throwable is DartFormatException) throwable.line else null
-            val throwableColumn = if (throwable is DartFormatException) throwable.column else null
+            val throwableLine = if (throwable is DartFormatException && throwable.line != null) throwable.line else 0
+            val throwableColumn = if (throwable is DartFormatException && throwable.column != null) throwable.column else 0
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
                 notifyWarning(NotificationInfo(
@@ -125,7 +125,7 @@ class NotificationTools
             notifyByToolWindowBalloon(NotificationType.INFORMATION, notificationInfo)
         }
 
-        fun notifyWarning(notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
+        fun notifyWarning(notificationInfo: NotificationInfo, line: Int = 0, column: Int = 0)
         {
             Logger.logWarning("Warning-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
             if (notificationInfo.content != null)
@@ -134,7 +134,7 @@ class NotificationTools
             notifyByToolWindowBalloon(NotificationType.WARNING, notificationInfo, line, column)
         }
 
-        fun notifyError(notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
+        fun notifyError(notificationInfo: NotificationInfo, line: Int = 0, column: Int = 0)
         {
             Logger.logError("Error-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
             if (notificationInfo.content != null)
@@ -151,7 +151,7 @@ class NotificationTools
             return virtualFile.path.substring(project.basePath!!.length)
         }
 
-        private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
+        private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo, line: Int = 0, column: Int = 0)
         {
             var actionForNotification: NotificationAction? = null
 
@@ -169,8 +169,8 @@ class NotificationTools
                     val openFileDescriptor = OpenFileDescriptor(
                         notificationInfo.project,
                         notificationInfo.virtualFile,
-                        if (line == null) -1 else line - 1,
-                        if (column == null) -1 else column - 1
+                        line - 1,
+                        column - 1
                     )
 
                     // focusEditor = true
