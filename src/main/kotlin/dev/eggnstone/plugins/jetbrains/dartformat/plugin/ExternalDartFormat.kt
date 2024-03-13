@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
@@ -49,7 +50,7 @@ class ExternalDartFormat
         val methodName = "$CLASS_NAME.run"
         Logger.logDebug("$methodName: START")
 
-        var lastFileName: String? = null
+        var lastVirtualFile: VirtualFile? = null
 
         try
         {
@@ -62,11 +63,11 @@ class ExternalDartFormat
 
                     NotificationTools.notifyInfo(NotificationInfo(
                         content = null,
-                        fileName = null,
                         links = null,
                         origin = null,
                         project = null,
-                        title = "Shutting down external dart_format ..."
+                        title = "Shutting down external dart_format ...",
+                        virtualFile = null
                     ))
 
                     if (dartFormatClient == null || channel == null)
@@ -80,7 +81,7 @@ class ExternalDartFormat
                         runBlocking {
                             withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                                 Logger.logDebug("$methodName: sending quit")
-                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, fileName = null))
+                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null))
                                 Logger.logDebug("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
@@ -88,11 +89,11 @@ class ExternalDartFormat
 
                         NotificationTools.notifyInfo(NotificationInfo(
                             content = null,
-                            fileName = null,
                             links = null,
                             origin = null,
                             project = null,
-                            title = "Shut down external dart_format."
+                            title = "Shut down external dart_format.",
+                            virtualFile = null
                         ))
                     }
                     catch (e: TimeoutCancellationException)
@@ -108,11 +109,11 @@ class ExternalDartFormat
 
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
-                            fileName = null,
                             listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = title
+                            title = title,
+                            virtualFile = null
                         ))
                     }
                 }
@@ -134,11 +135,11 @@ class ExternalDartFormat
                 )
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    fileName = null,
                     listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
@@ -148,11 +149,11 @@ class ExternalDartFormat
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
-                fileName = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "Starting external dart_format ...\nThis may take a few seconds."
+                title = "Starting external dart_format ...\nThis may take a few seconds.",
+                virtualFile = null
             ))
 
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
@@ -173,11 +174,11 @@ class ExternalDartFormat
                 )
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    fileName = null,
                     listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
@@ -189,11 +190,11 @@ class ExternalDartFormat
             {
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
-                    fileName = null,
                     links = null,
                     origin = null,
                     project = null,
-                    title = "External dart_format process is alive.\nWaiting for connection details ..."
+                    title = "External dart_format process is alive.\nWaiting for connection details ...",
+                    virtualFile = null
                 ))
             }
             else
@@ -238,11 +239,11 @@ class ExternalDartFormat
 
                 NotificationTools.notifyError(NotificationInfo(
                     content = content.ifEmpty { null },
-                    fileName = null,
                     links = listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
                 return
             }
@@ -262,11 +263,11 @@ class ExternalDartFormat
 
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
-                fileName = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "External dart_format is ready."
+                title = "External dart_format is ready.",
+                virtualFile = null
             ))
 
             if (currentVersion?.isOlderThan(latestVersion) == true)
@@ -277,11 +278,11 @@ class ExternalDartFormat
                 val updateLink = NotificationTools.createCheckInstallationInstructionsLink()
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = content,
-                    fileName = null,
                     links = listOf(updateLink),
                     origin = null,
                     project = null,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
             }
 
@@ -289,7 +290,7 @@ class ExternalDartFormat
             {
                 val formatJob = channel!!.receive()
                 Logger.logDebug("$methodName: Got new job: ${formatJob.command}")
-                lastFileName = formatJob.fileName
+                lastVirtualFile = formatJob.virtualFile
 
                 if (!process.isAlive)
                 {
@@ -307,11 +308,11 @@ class ExternalDartFormat
                         )
                         NotificationTools.notifyError(NotificationInfo(
                             content = null,
-                            fileName = null,
                             listOf(reportErrorLink),
                             origin = null,
                             project = null,
-                            title = title
+                            title = title,
+                            virtualFile = null
                         ))
                     }
                 }
@@ -352,10 +353,10 @@ class ExternalDartFormat
         {
             Logger.logError("$methodName: Exception: $e")
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/Exception",
                 project = null,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
         catch (e: Error)
@@ -363,19 +364,19 @@ class ExternalDartFormat
             // necessary?
             Logger.logError("$methodName: Error: $e")
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/Error",
                 project = null,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
     }
 
-    fun formatViaChannel(inputText: String, config: String, fileName: String): FormatResult
+    fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
         Logger.logDebug("$methodName()")
-        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, fileName = fileName)
+        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile)
 
         try
         {

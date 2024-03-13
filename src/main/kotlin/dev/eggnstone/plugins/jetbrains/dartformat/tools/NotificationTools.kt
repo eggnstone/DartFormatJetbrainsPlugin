@@ -7,6 +7,7 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.ExceptionSourceType
@@ -21,42 +22,24 @@ class NotificationTools
     companion object
     {
         fun reportThrowable(
-            fileName: String?,
             origin: String,
             project: Project?,
-            throwable: Throwable
+            throwable: Throwable,
+            virtualFile: VirtualFile?,
         )
         {
+            val throwableLine = if (throwable is DartFormatException) throwable.line else null
+            val throwableColumn = if (throwable is DartFormatException) throwable.column else null
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
-                var fileNameForNotification = fileName
-                var optionalLocation = ""
-                var links: List<LinkInfo>? = null
-                if (throwable.line != null && throwable.column != null)
-                {
-                    optionalLocation = "Line ${throwable.line}, Column ${throwable.column}\n"
-                    if (fileName != null)
-                    {
-                        var shortFileName = fileName
-                        if (project != null && project.basePath != null && shortFileName.startsWith(project.basePath!!))
-                            shortFileName = shortFileName.substring(project.basePath!!.length)
-
-                        optionalLocation = "$shortFileName\n$optionalLocation"
-                        fileNameForNotification = null
-
-                        //links = listOf(LinkInfo("Open location", "TODO"))
-                    }
-                }
-
-                val title = optionalLocation + throwable.message
                 notifyWarning(NotificationInfo(
                     content = null,
-                    fileName = fileNameForNotification,
-                    links = links,
+                    links = null,
                     origin = origin,
                     project = project,
-                    title = title
-                ))
+                    title = throwable.message,
+                    virtualFile = virtualFile
+                ), throwableLine, throwableColumn)
                 return
             }
 
@@ -92,13 +75,16 @@ class NotificationTools
             )
             notifyError(NotificationInfo(
                 content = content,
-                fileName = fileName,
                 links = listOf(reportErrorLink),
                 origin = origin,
                 project = project,
-                title = title
-            ))
+                title = title,
+                virtualFile = virtualFile
+            ), throwableLine, throwableColumn)
         }
+
+        fun createCheckInstallationInstructionsLink(): LinkInfo //
+            = LinkInfo("Installation instructions for dart_format", "https://pub.dev/packages/dart_format/install")
 
         fun createReportErrorLink(
             content: String?,
@@ -137,28 +123,57 @@ class NotificationTools
             notifyByToolWindowBalloon(NotificationType.INFORMATION, notificationInfo)
         }
 
-        fun notifyWarning(notificationInfo: NotificationInfo)
+        fun notifyWarning(notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
         {
             Logger.logWarning("Warning-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
             if (notificationInfo.content != null)
                 Logger.logWarning("                      ${StringTools.toTextWithPipes(notificationInfo.content)}")
 
-            notifyByToolWindowBalloon(NotificationType.WARNING, notificationInfo)
+            notifyByToolWindowBalloon(NotificationType.WARNING, notificationInfo, line, column)
         }
 
-        fun notifyError(notificationInfo: NotificationInfo)
+        fun notifyError(notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
         {
             Logger.logError("Error-Notification: ${StringTools.toTextWithPipes(notificationInfo.title)}")
             if (notificationInfo.content != null)
                 Logger.logError("                    ${StringTools.toTextWithPipes(notificationInfo.content)}")
 
-            notifyByToolWindowBalloon(NotificationType.ERROR, notificationInfo)
+            notifyByToolWindowBalloon(NotificationType.ERROR, notificationInfo, line, column)
         }
 
-        private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo)
+        private fun getShortFilePath(virtualFile: VirtualFile, project: Project?): String
         {
+            if (project == null || project.basePath == null || !virtualFile.path.startsWith(project.basePath!!))
+                return virtualFile.path
+
+            return virtualFile.path.substring(project.basePath!!.length)
+        }
+
+        private fun notifyByToolWindowBalloon(type: NotificationType, notificationInfo: NotificationInfo, line: Int? = null, column: Int? = null)
+        {
+            var virtualFileForNotification = notificationInfo.virtualFile
+            var openLocationLinkInfo: LinkInfo? = null
+            var title = notificationInfo.title
+            if (line != null && column != null)
+            {
+                val location: String
+                if (virtualFileForNotification == null)
+                {
+                    location = "Line ${line}, Column ${column}\n"
+                }
+                else
+                {
+                    val shortFileName = getShortFilePath(virtualFileForNotification, notificationInfo.project)
+                    location = "Line ${line}, Column $column in $shortFileName\n"
+                    virtualFileForNotification = null
+                    openLocationLinkInfo = LinkInfo("Open location TODO FILE AND LOCATION", "TODO")
+                }
+
+                title = location + notificationInfo.title
+            }
+
             val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("DartFormat")
-            var content = StringTools.toTextWithHtmlBreaks(notificationInfo.title)
+            var content = StringTools.toTextWithHtmlBreaks(title)
             if (notificationInfo.content != null)
             {
                 if (!notificationInfo.content.startsWith("<pre>"))
@@ -167,12 +182,12 @@ class NotificationTools
                 content += StringTools.toTextWithHtmlBreaks(notificationInfo.content)
             }
 
-            if (notificationInfo.fileName != null || notificationInfo.origin != null)
+            if (virtualFileForNotification != null || notificationInfo.origin != null)
             {
                 content += "<br/>"
 
-                if (notificationInfo.fileName != null)
-                    content += "<br/>File: " + notificationInfo.fileName
+                if (virtualFileForNotification != null)
+                    content += "<br/>File: " + getShortFilePath(virtualFileForNotification, notificationInfo.project)
 
                 if (notificationInfo.origin != null)
                     content += "<br/>Origin: " + notificationInfo.origin
@@ -192,22 +207,13 @@ class NotificationTools
                     notification.addAction(action)
                 }
 
-            /*val dummyLink = NotificationTools.createReportErrorLink(
-                content = null,
-                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
-                origin = null,
-                stackTrace = null,
-                title = "DUMMY"
-            )
-            notification.addAction(NotificationAction.createSimple(dummyLink.name) {
-                BrowserUtil.browse(dummyLink.url)
-            })*/
+            if (openLocationLinkInfo != null)
+                notification.addAction(NotificationAction.createSimple(openLocationLinkInfo.name) {
+                    BrowserUtil.browse(openLocationLinkInfo.url)
+                })
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)
         }
-
-        fun createCheckInstallationInstructionsLink(): LinkInfo //
-            = LinkInfo("Installation instructions for dart_format", "https://pub.dev/packages/dart_format/install")
     }
 }

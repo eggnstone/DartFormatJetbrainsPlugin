@@ -39,7 +39,7 @@ class FormatAction : AnAction()
         val methodName = "$CLASS_NAME.actionPerformed"
 
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
-        var lastFileName: String? = null
+        var lastVirtualFile: VirtualFile? = null
 
         val config = getConfig()
 
@@ -50,11 +50,11 @@ class FormatAction : AnAction()
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>"
             NotificationTools.notifyWarning(NotificationInfo(
                 content = content,
-                fileName = null,
                 links = null,
                 origin = "$methodName/1",
                 project = project,
-                title = title
+                title = title,
+                virtualFile = null
             ))
             return
         }
@@ -68,11 +68,11 @@ class FormatAction : AnAction()
                 "</body></html>"
             NotificationTools.notifyWarning(NotificationInfo(
                 content = content,
-                fileName = null,
                 links = null,
                 origin = "$methodName/2",
                 project = project,
-                title = title
+                title = title,
+                virtualFile = null
             ))
             return
         }
@@ -106,7 +106,7 @@ class FormatAction : AnAction()
                 for (finalVirtualFile in finalVirtualFiles)
                 {
                     if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
-                    lastFileName = finalVirtualFile.path
+                    lastVirtualFile = finalVirtualFile
                     val startTime2 = Date()
                     val result = formatDartFile(finalVirtualFile, project)
                     val endTime2 = Date()
@@ -116,11 +116,11 @@ class FormatAction : AnAction()
                     if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
                         NotificationTools.notifyInfo(NotificationInfo(
                             content = null,
-                            fileName = null,
                             links = null,
                             origin = null,
                             project = project,
-                            title = "Took ${seconds2}s to format $finalVirtualFile."
+                            title = "Took ${seconds2}s to format $finalVirtualFile.",
+                            virtualFile = null
                         ))
 
                     if (result == FormatResultType.Error)
@@ -155,21 +155,21 @@ class FormatAction : AnAction()
                 val title = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
                 NotificationTools.notifyInfo(NotificationInfo(
                     content = null,
-                    fileName = null,
                     links = null,
                     origin = null,
                     project = project,
-                    title = title
+                    title = title,
+                    virtualFile = null
                 ))
             }
         }
         catch (e: Exception)
         {
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/3",
                 project = project,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
         catch (e: Error)
@@ -177,10 +177,10 @@ class FormatAction : AnAction()
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
             NotificationTools.reportThrowable(
-                fileName = lastFileName,
                 origin = "$methodName/4",
                 project = project,
-                throwable = e
+                throwable = e,
+                virtualFile = lastVirtualFile
             )
         }
     }
@@ -227,7 +227,7 @@ class FormatAction : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val formatResultText = formatOrReport(project, inputText, virtualFile.path) ?: return FormatResultType.Error
+        val formatResultText = formatOrReport(project, inputText, virtualFile) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
@@ -259,7 +259,7 @@ class FormatAction : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatOrReport(project, inputText, fileEditor.file.path) ?: return FormatResultType.Error
+        val formatResultText = formatOrReport(project, inputText, fileEditor.file) ?: return FormatResultType.Error
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
@@ -284,11 +284,11 @@ class FormatAction : AnAction()
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatOrReport(project: Project, inputText: String, fileName: String): String?
+    private fun formatOrReport(project: Project, inputText: String, virtualFile: VirtualFile): String?
     {
         val methodName = "$CLASS_NAME.formatOrReport"
 
-        val formatResult = format(inputText, fileName)
+        val formatResult = format(inputText, virtualFile)
 
         if (formatResult.resultType == ResultType.Error)
         {
@@ -303,19 +303,19 @@ class FormatAction : AnAction()
                 )
                 NotificationTools.notifyError(NotificationInfo(
                     content = null,
-                    fileName = fileName,
                     listOf(reportErrorLink),
                     origin = "$methodName/1", // TODO: remove
                     project = project,
-                    title = formatResult.text
+                    title = formatResult.text,
+                    virtualFile = virtualFile
                 ))
             }
             else
                 NotificationTools.reportThrowable(
-                    fileName = fileName,
                     origin = "$methodName/2", // TODO: remove
                     project = project,
-                    throwable = formatResult.throwable
+                    throwable = formatResult.throwable,
+                    virtualFile = virtualFile
                 )
 
             return null
@@ -325,11 +325,11 @@ class FormatAction : AnAction()
         {
             NotificationTools.notifyWarning(NotificationInfo(
                 content = null,
-                fileName = fileName,
                 links = null,
                 origin = "$methodName/3", // TODO: remove
                 project = project,
-                title = formatResult.text
+                title = formatResult.text,
+                virtualFile = virtualFile
             ))
 
             return null
@@ -338,7 +338,7 @@ class FormatAction : AnAction()
         return formatResult.text
     }
 
-    private fun format(inputText: String, fileName: String): FormatResult
+    private fun format(inputText: String, virtualFile: VirtualFile): FormatResult
     {
         if (inputText.isEmpty())
             return FormatResult.ok("")
@@ -348,7 +348,7 @@ class FormatAction : AnAction()
             return FormatResult.error("Beta version not accepted.")
 
         val jsonConfig = config.toJson()
-        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, fileName)
+        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile)
     }
 
     private fun getConfig(): DartFormatConfig
