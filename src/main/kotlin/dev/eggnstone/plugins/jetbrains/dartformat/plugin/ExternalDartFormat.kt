@@ -26,7 +26,7 @@ class ExternalDartFormat
     }
 
     private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
-    private val channel = Channel<FormatJob>()
+    private var channel: Channel<FormatJob>? = Channel()
     var currentVersionText = "<unknown version>"
         private set
     private var dartFormatClient: DartFormatClient? = null
@@ -68,13 +68,19 @@ class ExternalDartFormat
                         project = null,
                         title = "Shutting down external dart_format ..."
                     ))
-                    // TODO: do not shut down when start failed or process dead
+
+                    if (dartFormatClient == null || channel == null)
+                    {
+                        Logger.logDebug("$methodName: Not sending quit because dartFormatClient or channel is null.")
+                        return
+                    }
+
                     try
                     {
                         runBlocking {
                             withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                                 Logger.logDebug("$methodName: sending quit")
-                                channel.send(FormatJob(command = "Quit", inputText = null, config = null, fileName = null))
+                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, fileName = null))
                                 Logger.logDebug("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
@@ -281,7 +287,7 @@ class ExternalDartFormat
 
             while (true)
             {
-                val formatJob = channel.receive()
+                val formatJob = channel!!.receive()
                 Logger.logDebug("$methodName: Got new job: ${formatJob.command}")
                 lastFileName = formatJob.fileName
 
@@ -336,6 +342,10 @@ class ExternalDartFormat
                 formatJob.complete()
             }
 
+            dartFormatClient = null
+            channel!!.close()
+            channel = null
+
             Logger.logDebug("$methodName: END")
         }
         catch (e: Exception)
@@ -372,7 +382,7 @@ class ExternalDartFormat
             runBlocking {
                 withTimeout(Constants.WAIT_FOR_FORMAT_IN_SECONDS * 1000L) {
                     Logger.logDebug("$methodName: sending")
-                    channel.send(formatJob)
+                    channel!!.send(formatJob)
                     Logger.logDebug("$methodName: sent.")
                     return@withTimeout "OK"
                 }

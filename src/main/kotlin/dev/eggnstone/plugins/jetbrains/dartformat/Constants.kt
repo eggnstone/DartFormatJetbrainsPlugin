@@ -10,8 +10,10 @@ class Constants
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FORMAT_ACTION = DEBUG && false
+
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_NOTIFICATION_TOOLS = DEBUG && false
+
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_SETTINGS_DIALOG = DEBUG && false
 
