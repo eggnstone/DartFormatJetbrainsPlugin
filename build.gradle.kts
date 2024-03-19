@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.0.7"
+version = "2.0.8"
 
 repositories {
     mavenCentral()
@@ -44,7 +44,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("221")
-        untilBuild.set("233.*")
+        untilBuild.set("")
     }
 
     signPlugin {
