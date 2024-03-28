@@ -21,4 +21,4 @@ jobs:
       - uses: tiangolo/issue-manager@0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          config: '{"WaitingForReply": {"delay": 1209600}}'
+          config: '{"WaitingForReply": {"delay": 1209600}},{"WaitingForReply1": {"delay": 1}}'
