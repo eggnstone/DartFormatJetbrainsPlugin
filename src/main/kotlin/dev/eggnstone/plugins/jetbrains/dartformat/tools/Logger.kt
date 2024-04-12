@@ -71,7 +71,7 @@ class Logger
             val pid = ProcessHandle.current().pid()
 
             val logFileName = "DartFormatPlugin_${timestamp}_$pid.log"
-            val logFilePath = System.getenv("temp") + "/" + logFileName
+            val logFilePath = OsTools.getTempDirName() + "/" + logFileName
 
             try
             {

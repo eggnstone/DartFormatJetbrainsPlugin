@@ -66,5 +66,13 @@ class OsTools
                     " File does not exist at expected location: $externalDartFormatFilePath"
             )
         }
+
+        fun getTempDirName(): String
+        {
+            return if (isWindows())
+                System.getenv("TEMP") ?: "C:\\Temp"
+            else
+                System.getenv("TMPDIR") ?: "/tmp"
+        }
     }
 }
