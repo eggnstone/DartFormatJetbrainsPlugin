@@ -43,6 +43,7 @@ bin/
 
 ### Manually added ###
 /.idea/copilot/chatSessions/
-/*.hprof
+/.intellijPlatform/
+*.hprof
 *.old
 src/test/kotlin/integration/dataFiles/Temp*.dart

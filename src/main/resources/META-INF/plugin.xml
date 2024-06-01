@@ -8,6 +8,9 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.1.0</b><br/>
+        TODO<br/>
+        <br/>
         <b>Version 2.0.9</b><br/>
         Fixed issue with temp dir for Linux/macOS.<br/>
         <br/>

@@ -128,16 +128,16 @@ class ExternalDartFormat
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                val reportErrorLink = NotificationTools.createReportErrorLink(
+                /*val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                     origin = null,
                     stackTrace = null,
                     title = title
-                )
+                )*/
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    listOf(checkInstallationInstructionsLink/*, reportErrorLink*/),
                     origin = null,
                     project = null,
                     title = title,
@@ -167,16 +167,16 @@ class ExternalDartFormat
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                val reportErrorLink = NotificationTools.createReportErrorLink(
+                /*val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
                     origin = null,
                     stackTrace = null,
                     title = title
-                )
+                )*/
                 NotificationTools.notifyError(NotificationInfo(
                     content = content,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    listOf(checkInstallationInstructionsLink/*, reportErrorLink*/),
                     origin = null,
                     project = null,
                     title = title,
@@ -257,7 +257,6 @@ class ExternalDartFormat
                     stackTrace = null,
                     title = title
                 )
-
                 NotificationTools.notifyError(NotificationInfo(
                     content = content.ifEmpty { null },
                     links = listOf(checkInstallationInstructionsLink, reportErrorLink),
