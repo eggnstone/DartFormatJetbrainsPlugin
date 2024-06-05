@@ -12,7 +12,9 @@ Like dartfmt.
 But better ;)  
 Because it's configurable.
 
-Press `Ctrl`+`Alt`+`,` for Windows to format the current file / the currently selected folders and files. The MacOS action is `Command`+`Alt`+`,`
+To format the current file / the currently selected folders and files, press the following:  
+Under Windows: `Ctrl`+`Alt`+`,`  
+Under macOS: `Command`+`Alt`+`,`
 
 Download from JetBrains marketplace:  
 https://plugins.jetbrains.com/plugin/21003-dartformat
