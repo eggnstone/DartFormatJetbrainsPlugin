@@ -63,14 +63,16 @@ class ExternalDartFormat
                 {
                     Logger.logDebug("$methodName: appClosing")
 
-                    NotificationTools.notifyInfo(NotificationInfo(
-                        content = null,
-                        links = null,
-                        origin = null,
-                        project = null,
-                        title = "Shutting down external dart_format ...",
-                        virtualFile = null
-                    ))
+                    NotificationTools.notifyInfo(
+                        NotificationInfo(
+                            content = null,
+                            links = null,
+                            origin = null,
+                            project = null,
+                            title = "Shutting down external dart_format ...",
+                            virtualFile = null
+                        )
+                    )
 
                     if (dartFormatClient == null || channel == null)
                     {
@@ -89,14 +91,16 @@ class ExternalDartFormat
                             }
                         }
 
-                        NotificationTools.notifyInfo(NotificationInfo(
-                            content = null,
-                            links = null,
-                            origin = null,
-                            project = null,
-                            title = "Shut down external dart_format.",
-                            virtualFile = null
-                        ))
+                        NotificationTools.notifyInfo(
+                            NotificationInfo(
+                                content = null,
+                                links = null,
+                                origin = null,
+                                project = null,
+                                title = "Shut down external dart_format.",
+                                virtualFile = null
+                            )
+                        )
                     }
                     catch (e: TimeoutCancellationException)
                     {
@@ -109,14 +113,16 @@ class ExternalDartFormat
                             title = title
                         )
 
-                        NotificationTools.notifyError(NotificationInfo(
-                            content = null,
-                            listOf(reportErrorLink),
-                            origin = null,
-                            project = null,
-                            title = title,
-                            virtualFile = null
-                        ))
+                        NotificationTools.notifyError(
+                            NotificationInfo(
+                                content = null,
+                                listOf(reportErrorLink),
+                                origin = null,
+                                project = null,
+                                title = title,
+                                virtualFile = null
+                            )
+                        )
                     }
                 }
             })
@@ -135,28 +141,44 @@ class ExternalDartFormat
                     stackTrace = null,
                     title = title
                 )
-                NotificationTools.notifyError(NotificationInfo(
-                    content = content,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
-                    origin = null,
-                    project = null,
-                    title = title,
-                    virtualFile = null
-                ))
+
+                var showReportErrorLink = true
+                if (externalDartFormatFilePathOrException is DartFormatException
+                    && externalDartFormatFilePathOrException.message.contains("Cannot find the dart_format package: File does not exist at expected location:")
+                )
+                    showReportErrorLink = false
+
+                val links = if (showReportErrorLink) listOf(checkInstallationInstructionsLink, reportErrorLink) else listOf(checkInstallationInstructionsLink)
+
+                NotificationTools.notifyError(
+                    NotificationInfo(
+                        content = content,
+                        links,
+                        origin = null,
+                        project = null,
+                        title = title,
+                        virtualFile = null
+                    )
+                )
                 return
             }
 
-            val processBuilder = ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
+            val processBuilder = if (OsTools.isWindows())
+                ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
+            else
+                ProcessBuilder("/bin/sh", externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
-            NotificationTools.notifyInfo(NotificationInfo(
-                content = null,
-                links = null,
-                origin = null,
-                project = null,
-                title = "Starting external dart_format ...\nThis may take a few seconds.",
-                virtualFile = null
-            ))
+            NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "Starting external dart_format ...\nThis may take a few seconds.",
+                    virtualFile = null
+                )
+            )
 
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
 
@@ -174,14 +196,16 @@ class ExternalDartFormat
                     stackTrace = null,
                     title = title
                 )
-                NotificationTools.notifyError(NotificationInfo(
-                    content = content,
-                    listOf(checkInstallationInstructionsLink, reportErrorLink),
-                    origin = null,
-                    project = null,
-                    title = title,
-                    virtualFile = null
-                ))
+                NotificationTools.notifyError(
+                    NotificationInfo(
+                        content = content,
+                        listOf(checkInstallationInstructionsLink, reportErrorLink),
+                        origin = null,
+                        project = null,
+                        title = title,
+                        virtualFile = null
+                    )
+                )
                 return
             }
 
@@ -190,14 +214,16 @@ class ExternalDartFormat
 
             if (process.isAlive)
             {
-                NotificationTools.notifyInfo(NotificationInfo(
-                    content = null,
-                    links = null,
-                    origin = null,
-                    project = null,
-                    title = "External dart_format process is alive.\nWaiting for connection details ...",
-                    virtualFile = null
-                ))
+                NotificationTools.notifyInfo(
+                    NotificationInfo(
+                        content = null,
+                        links = null,
+                        origin = null,
+                        project = null,
+                        title = "External dart_format process is alive.\nWaiting for connection details ...",
+                        virtualFile = null
+                    )
+                )
             }
             else
                 throw DartFormatException.localError("External dart_format process is dead.")
@@ -258,14 +284,16 @@ class ExternalDartFormat
                     title = title
                 )
 
-                NotificationTools.notifyError(NotificationInfo(
-                    content = content.ifEmpty { null },
-                    links = listOf(checkInstallationInstructionsLink, reportErrorLink),
-                    origin = null,
-                    project = null,
-                    title = title,
-                    virtualFile = null
-                ))
+                NotificationTools.notifyError(
+                    NotificationInfo(
+                        content = content.ifEmpty { null },
+                        links = listOf(checkInstallationInstructionsLink, reportErrorLink),
+                        origin = null,
+                        project = null,
+                        title = title,
+                        virtualFile = null
+                    )
+                )
                 return
             }
 
@@ -285,14 +313,16 @@ class ExternalDartFormat
             var titleReady = "External dart_format is ready."
             if (Constants.DEBUG_CONNECTION)
                 titleReady += " $jsonResponse"
-            NotificationTools.notifyInfo(NotificationInfo(
-                content = null,
-                links = null,
-                origin = null,
-                project = null,
-                title = titleReady,
-                virtualFile = null
-            ))
+            NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = titleReady,
+                    virtualFile = null
+                )
+            )
 
             if (currentVersion?.isOlderThan(latestVersion) == true)
             {
@@ -300,14 +330,16 @@ class ExternalDartFormat
                 val content = "<pre>Current version: $currentVersion\nLatest version:  $latestVersion</pre>" +
                     "Just execute this again:<pre>dart pub global activate dart_format</pre>"
                 val updateLink = NotificationTools.createCheckInstallationInstructionsLink()
-                NotificationTools.notifyInfo(NotificationInfo(
-                    content = content,
-                    links = listOf(updateLink),
-                    origin = null,
-                    project = null,
-                    title = title,
-                    virtualFile = null
-                ))
+                NotificationTools.notifyInfo(
+                    NotificationInfo(
+                        content = content,
+                        links = listOf(updateLink),
+                        origin = null,
+                        project = null,
+                        title = title,
+                        virtualFile = null
+                    )
+                )
             }
 
             while (true)
@@ -330,14 +362,16 @@ class ExternalDartFormat
                             stackTrace = null,
                             title = title
                         )
-                        NotificationTools.notifyError(NotificationInfo(
-                            content = null,
-                            listOf(reportErrorLink),
-                            origin = null,
-                            project = null,
-                            title = title,
-                            virtualFile = null
-                        ))
+                        NotificationTools.notifyError(
+                            NotificationInfo(
+                                content = null,
+                                listOf(reportErrorLink),
+                                origin = null,
+                                project = null,
+                                title = title,
+                                virtualFile = null
+                            )
+                        )
                     }
                 }
 

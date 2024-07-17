@@ -60,7 +60,6 @@ class OsTools
                 externalDartFormatFilePath = "~/.pub-cache/bin/dart_format[.sh]"
             }
 
-
             return DartFormatException.localError(
                 "Cannot find the dart_format package:" +
                     " File does not exist at expected location: $externalDartFormatFilePath"

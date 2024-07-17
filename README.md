@@ -2,9 +2,9 @@
 
 ## Plugin for JetBrains (Android Studio, IntelliJ IDEA, ...)
 
-[![Build](https://github.com/eggnstone/DartFormatJetbrainsPlugin/actions/workflows/gradle.yaml/badge.svg)](https://github.com/eggnstone/DartFormatJetbrainsPlugin/actions)
-[![GitHub Issues](https://img.shields.io/github/issues/eggnstone/DartFormatJetbrainsPlugin.svg)](https://github.com/eggnstone/DartFormatJetbrainsPlugin/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/eggnstone/DartFormatJetbrainsPlugin.svg)](https://github.com/eggnstone/DartFormatJetbrainsPlugin/stargazers)
+[![Build](https://github.com/eggnstone/DartFormatJetBrainsPlugin/actions/workflows/gradle.yaml/badge.svg)](https://github.com/eggnstone/DartFormatJetBrainsPlugin/actions)
+[![GitHub Issues](https://img.shields.io/github/issues/eggnstone/DartFormatJetBrainsPlugin.svg)](https://github.com/eggnstone/DartFormatJetBrainsPlugin/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/eggnstone/DartFormatJetBrainsPlugin.svg)](https://github.com/eggnstone/DartFormatJetBrainsPlugin/stargazers)
 
 **A formatter for Dart.**
 

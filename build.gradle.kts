@@ -1,32 +1,20 @@
-import java.util.*
-
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.13.2"
-    //id("org.jetbrains.intellij") version "1.17.0" => Unsupported class file major version 63
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.kotlin.jvm") version "1.9.24"
+    id("org.jetbrains.intellij") version "1.17.3"
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.0.9"
+version = "2.0.10"
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-}
-
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.1.4")
-
-    //version.set("2023.3.3")
-    // Module was compiled with an incompatible version of Kotlin.
-    // The binary version of its metadata is 1.9.0, expected version is 1.7.1.
-
+    version.set("2023.2.6")
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(/* Plugin Dependencies */))
@@ -35,16 +23,16 @@ intellij {
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
 
     patchPluginXml {
-        sinceBuild.set("221")
-        untilBuild.set("")
+        sinceBuild.set("232")
+        untilBuild.set("242.*")
     }
 
     signPlugin {
@@ -55,19 +43,5 @@ tasks {
 
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
-    }
-}
-
-tasks.withType<Test> {
-    exclude("**/*jetbrainsplugins*")
-}
-
-tasks.withType<ProcessResources>() {
-    doLast {
-        val propertiesFile = file("$buildDir/resources/main/version.properties")
-        propertiesFile.parentFile.mkdirs()
-        val properties = Properties()
-        properties.setProperty("version", rootProject.version.toString())
-        propertiesFile.writer().use { properties.store(it, null) }
     }
 }

@@ -67,7 +67,7 @@ class NotificationTools
             if (posPipe >= 0)
                 content = message.substring(posPipe + 1).replace("|", "\n")
 
-            val gitHubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetbrainsPlugin"
+            val gitHubRepo = if (throwable is DartFormatException && throwable.source == ExceptionSourceType.Remote) "dart_format" else "DartFormatJetBrainsPlugin"
             val reportErrorLink = createReportErrorLink(
                 content = content,
                 gitHubRepo = gitHubRepo,
