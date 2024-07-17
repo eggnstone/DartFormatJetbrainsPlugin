@@ -3,16 +3,16 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 import com.intellij.openapi.project.Project
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
-class StartupActivity : com.intellij.openapi.startup.StartupActivity
+class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
 {
     init
     {
-        Logger.logDebug("StartupActivity.init()")
+        Logger.logDebug("ProjectActivity.init()")
     }
 
-    override fun runActivity(project: Project)
+    override suspend fun execute(project: Project)
     {
-        Logger.logDebug("StartupActivity.runActivity()")
+        Logger.logDebug("ProjectActivity.execute()")
         ExternalDartFormat.instance.init()
     }
 }

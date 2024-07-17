@@ -8,7 +8,7 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.10</b><br/>
+        <b>Version 2.0.11</b><br/>
         Trying to fix start problem on Linux/macOS.<br/>
         <br/>
         <b>Version 2.0.9</b><br/>
@@ -66,7 +66,7 @@
         </applicationConfigurable>
         <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
         <notificationGroup id="DartFormat" displayType="BALLOON"/>
-        <postStartupActivity implementation="dev.eggnstone.plugins.jetbrains.dartformat.plugin.StartupActivity"/>
+        <postStartupActivity implementation="dev.eggnstone.plugins.jetbrains.dartformat.plugin.ProjectActivity"/>
     </extensions>
     <!--
     Cannot change package anymore:

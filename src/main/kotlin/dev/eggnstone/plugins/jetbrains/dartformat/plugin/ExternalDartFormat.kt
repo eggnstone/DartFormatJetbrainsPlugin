@@ -163,10 +163,11 @@ class ExternalDartFormat
                 return
             }
 
-            val processBuilder = if (OsTools.isWindows())
+            val processBuilder = ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
+            /*val processBuilder = if (OsTools.isWindows())
                 ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
             else
-                ProcessBuilder("/bin/sh", externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
+                ProcessBuilder("/bin/sh", externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")*/
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(

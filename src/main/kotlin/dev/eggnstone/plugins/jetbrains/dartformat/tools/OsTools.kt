@@ -19,11 +19,12 @@ class OsTools
             if (isWindows())
             {
                 Logger.logDebug("  IsWindows: true (" + System.getProperty("os.name") + ")")
+                Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
 
                 val envPubCache = System.getenv("PUB_CACHE")
-                Logger.logDebug("  %PUB_CACHE%:    $envPubCache")
                 val envLocalAppData = System.getenv("LOCALAPPDATA")
-                Logger.logDebug("  %LOCALAPPDATA%: $envLocalAppData")
+                Logger.logDebug("  %PUB_CACHE%:                       $envPubCache")
+                Logger.logDebug("  %LOCALAPPDATA%:                    $envLocalAppData")
 
                 if (envPubCache == null)
                 {
@@ -39,21 +40,27 @@ class OsTools
                     externalDartFormatFilePath = envPubCache
 
                 externalDartFormatFilePath = "$externalDartFormatFilePath\\bin\\dart_format.bat"
-                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
             }
             else
             {
                 Logger.logDebug("  IsWindows: false (" + System.getProperty("os.name") + ")")
+                Logger.logDebug("  System.getProperty(java.io.tmpdir)  " + System.getProperty("java.io.tmpdir"))
 
-                externalDartFormatFilePath = "~/.pub-cache/bin/dart_format.sh"
-                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                val home = System.getProperty("user.home")
+                Logger.logDebug("  System.getProperty(user.home):      $home")
+                Logger.logDebug("  home/.pub-cache/bin/dart_format:    " + File("$home/.pub-cache/bin/dart_format").exists())
+                Logger.logDebug("  home/.pub-cache/bin/dart_format.sh: " + File("$home/.pub-cache/bin/dart_format.sh").exists())
+
+                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format.sh"
+                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
 
-                externalDartFormatFilePath = "~/.pub-cache/bin/dart_format"
-                Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format"
+                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
 
@@ -68,10 +75,7 @@ class OsTools
 
         fun getTempDirName(): String
         {
-            return if (isWindows())
-                System.getenv("TEMP") ?: "C:\\Temp"
-            else
-                System.getenv("TMPDIR") ?: "/tmp"
+            return System.getProperty("java.io.tmpdir")
         }
     }
 }
