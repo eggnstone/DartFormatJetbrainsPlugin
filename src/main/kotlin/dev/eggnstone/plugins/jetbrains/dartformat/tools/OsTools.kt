@@ -18,7 +18,7 @@ class OsTools
 
             if (isWindows())
             {
-                Logger.logDebug("  IsWindows: true (" + System.getProperty("os.name") + ")")
+                Logger.logDebug("  IsWindows:                         true (" + System.getProperty("os.name") + ")")
                 Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
 
                 val envPubCache = System.getenv("PUB_CACHE")
@@ -31,7 +31,7 @@ class OsTools
                     if (envLocalAppData == null)
                         return DartFormatException.localError(
                             "Cannot find the dart_format package:" +
-                                " Neither PUB_CACHE or LOCALAPPDATA environment variable are set."
+                                " Neither PUB_CACHE nor LOCALAPPDATA environment variable are set."
                         )
 
                     externalDartFormatFilePath = "$envLocalAppData\\Pub\\Cache"
@@ -40,27 +40,22 @@ class OsTools
                     externalDartFormatFilePath = envPubCache
 
                 externalDartFormatFilePath = "$externalDartFormatFilePath\\bin\\dart_format.bat"
-                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
             }
             else
             {
-                Logger.logDebug("  IsWindows: false (" + System.getProperty("os.name") + ")")
-                Logger.logDebug("  System.getProperty(java.io.tmpdir)  " + System.getProperty("java.io.tmpdir"))
+                Logger.logDebug("  IsWindows:                         false (" + System.getProperty("os.name") + ")")
+                Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
 
                 val home = System.getProperty("user.home")
-                Logger.logDebug("  System.getProperty(user.home):      $home")
-                Logger.logDebug("  home/.pub-cache/bin/dart_format:    " + File("$home/.pub-cache/bin/dart_format").exists())
-                Logger.logDebug("  home/.pub-cache/bin/dart_format.sh: " + File("$home/.pub-cache/bin/dart_format.sh").exists())
+                Logger.logDebug("  System.getProperty(user.home):     $home")
 
-                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format.sh"
-                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format"
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
 
-                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format"
-                //Logger.logDebug("  externalDartFormatFilePath: $externalDartFormatFilePath")
+                externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format.sh"
                 if (File(externalDartFormatFilePath).exists())
                     return externalDartFormatFilePath
 
