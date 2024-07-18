@@ -10,17 +10,23 @@ class OsTools
         @Suppress("MemberVisibilityCanBePrivate")
         fun isWindows() = System.getProperty("os.name").lowercase().startsWith("windows")
 
-        fun getExternalDartFormatFilePathOrException(): Any
+        fun getExternalDartFormatFilePathOrException(): ExternalDartFormatInfo
         {
             Logger.logDebug("OsTools.getExternalDartFormatFilePathOrException()")
+
+            Logger.logDebug("  IsWindows:                         " + isWindows() + " (" + System.getProperty("os.name") + ")")
+            Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
+
+            if (ProcessHandle.current().info().command().isPresent)
+                Logger.logDebug("  ProcessHandle.command:             " + ProcessHandle.current().info().command().get())
+
+            if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
+                Logger.logDebug("  ProcessHandle.parent.command:      " + ProcessHandle.current().parent().get().info().command().get())
 
             var externalDartFormatFilePath: String?
 
             if (isWindows())
             {
-                Logger.logDebug("  IsWindows:                         true (" + System.getProperty("os.name") + ")")
-                Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
-
                 val envPubCache = System.getenv("PUB_CACHE")
                 val envLocalAppData = System.getenv("LOCALAPPDATA")
                 Logger.logDebug("  %PUB_CACHE%:                       $envPubCache")
@@ -29,9 +35,11 @@ class OsTools
                 if (envPubCache == null)
                 {
                     if (envLocalAppData == null)
-                        return DartFormatException.localError(
-                            "Cannot find the dart_format package:" +
-                                " Neither PUB_CACHE nor LOCALAPPDATA environment variable are set."
+                        return ExternalDartFormatInfo.exception(
+                            DartFormatException.localError(
+                                "Cannot find the dart_format package:" +
+                                    " Neither PUB_CACHE nor LOCALAPPDATA environment variable are set."
+                            )
                         )
 
                     externalDartFormatFilePath = "$envLocalAppData\\Pub\\Cache"
@@ -41,30 +49,49 @@ class OsTools
 
                 externalDartFormatFilePath = "$externalDartFormatFilePath\\bin\\dart_format.bat"
                 if (File(externalDartFormatFilePath).exists())
-                    return externalDartFormatFilePath
+                    return ExternalDartFormatInfo.normal(externalDartFormatFilePath)
             }
             else
             {
-                Logger.logDebug("  IsWindows:                         false (" + System.getProperty("os.name") + ")")
-                Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
+                var shell: String? = null
+                if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
+                {
+                    val parentCommand = ProcessHandle.current().parent().get().info().command().get()
+                    if (parentCommand.endsWith("/bash"))
+                        shell = parentCommand
+                    else if (parentCommand.endsWith("/sh"))
+                        shell = parentCommand
+                    else if (parentCommand.endsWith("/zsh"))
+                        shell = parentCommand
+                }
+
+                Logger.logDebug("  Shell:                             " + (shell ?: "<none>"))
 
                 val home = System.getProperty("user.home")
                 Logger.logDebug("  System.getProperty(user.home):     $home")
 
                 externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format"
                 if (File(externalDartFormatFilePath).exists())
-                    return externalDartFormatFilePath
+                    return if (shell == null)
+                        ExternalDartFormatInfo.normal(externalDartFormatFilePath)
+                    else
+                        ExternalDartFormatInfo.withAdditionalParam(shell, externalDartFormatFilePath)
 
                 externalDartFormatFilePath = "$home/.pub-cache/bin/dart_format.sh"
                 if (File(externalDartFormatFilePath).exists())
-                    return externalDartFormatFilePath
+                    return if (shell == null)
+                        ExternalDartFormatInfo.normal(externalDartFormatFilePath)
+                    else
+                        ExternalDartFormatInfo.withAdditionalParam(shell, externalDartFormatFilePath)
 
                 externalDartFormatFilePath = "~/.pub-cache/bin/dart_format[.sh]"
             }
 
-            return DartFormatException.localError(
-                "Cannot find the dart_format package:" +
-                    " File does not exist at expected location: $externalDartFormatFilePath"
+            return ExternalDartFormatInfo.exception(
+                DartFormatException.localError(
+                    "Cannot find the dart_format package:" +
+                        " File does not exist at expected location: $externalDartFormatFilePath"
+                )
             )
         }
 

@@ -124,10 +124,11 @@ class ExternalDartFormat
                 }
             })
 
-            val externalDartFormatFilePathOrException = OsTools.getExternalDartFormatFilePathOrException()
-            if (externalDartFormatFilePathOrException !is String)
+            val externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
+            if (externalDartFormatInfo.localError != null)
             {
-                val title = "Failed to start external dart_format: " + if (externalDartFormatFilePathOrException is Throwable) externalDartFormatFilePathOrException.message else externalDartFormatFilePathOrException.toString()
+                //val title = "Failed to start external dart_format: " + if (externalDartFormatFilePathOrException is Throwable) externalDartFormatFilePathOrException.message else externalDartFormatFilePathOrException.toString()
+                val title = "Failed to start external dart_format: " + externalDartFormatInfo.localError.message
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
@@ -140,9 +141,10 @@ class ExternalDartFormat
                 )
 
                 var showReportErrorLink = true
-                if (externalDartFormatFilePathOrException is DartFormatException
+                /*if (externalDartFormatFilePathOrException is DartFormatException
                     && externalDartFormatFilePathOrException.message.contains("Cannot find the dart_format package: File does not exist at expected location:")
-                )
+                )*/
+                if (externalDartFormatInfo.localError.message.contains("Cannot find the dart_format package: File does not exist at expected location:"))
                     showReportErrorLink = false
 
                 val links = if (showReportErrorLink) listOf(checkInstallationInstructionsLink, reportErrorLink) else listOf(checkInstallationInstructionsLink)
@@ -160,11 +162,10 @@ class ExternalDartFormat
                 return
             }
 
-            val processBuilder = ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
-            /*val processBuilder = if (OsTools.isWindows())
-                ProcessBuilder(externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")
+            val processBuilder: ProcessBuilder = if (externalDartFormatInfo.additionalParam == null)
+                ProcessBuilder(externalDartFormatInfo.executable, "--web", "--errors-as-json", "--log-to-temp-file")
             else
-                ProcessBuilder("/bin/sh", externalDartFormatFilePathOrException, "--web", "--errors-as-json", "--log-to-temp-file")*/
+                ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             NotificationTools.notifyInfo(
