@@ -127,7 +127,6 @@ class ExternalDartFormat
             val externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
             if (externalDartFormatInfo.localError != null)
             {
-                //val title = "Failed to start external dart_format: " + if (externalDartFormatFilePathOrException is Throwable) externalDartFormatFilePathOrException.message else externalDartFormatFilePathOrException.toString()
                 val title = "Failed to start external dart_format: " + externalDartFormatInfo.localError.message
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
@@ -141,14 +140,10 @@ class ExternalDartFormat
                 )
 
                 var showReportErrorLink = true
-                /*if (externalDartFormatFilePathOrException is DartFormatException
-                    && externalDartFormatFilePathOrException.message.contains("Cannot find the dart_format package: File does not exist at expected location:")
-                )*/
                 if (externalDartFormatInfo.localError.message.contains("Cannot find the dart_format package: File does not exist at expected location:"))
                     showReportErrorLink = false
 
                 val links = if (showReportErrorLink) listOf(checkInstallationInstructionsLink, reportErrorLink) else listOf(checkInstallationInstructionsLink)
-
                 NotificationTools.notifyError(
                     NotificationInfo(
                         content = content,
@@ -159,6 +154,7 @@ class ExternalDartFormat
                         virtualFile = null
                     )
                 )
+
                 return
             }
 

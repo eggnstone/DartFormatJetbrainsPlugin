@@ -57,11 +57,7 @@ class OsTools
                 if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
                 {
                     val parentCommand = ProcessHandle.current().parent().get().info().command().get()
-                    if (parentCommand.endsWith("/bash"))
-                        shell = parentCommand
-                    else if (parentCommand.endsWith("/sh"))
-                        shell = parentCommand
-                    else if (parentCommand.endsWith("/zsh"))
+                    if (parentCommand.endsWith("sh"))
                         shell = parentCommand
                 }
 
