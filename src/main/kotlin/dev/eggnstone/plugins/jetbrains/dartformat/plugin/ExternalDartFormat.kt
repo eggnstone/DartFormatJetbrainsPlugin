@@ -9,10 +9,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.JsonTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -259,7 +256,8 @@ class ExternalDartFormat
             val jsonResponse = JsonTools.parseOrNull(jsonEncodedResponse)
             if (jsonResponse == null)
             {
-                val title = "External dart_format: Expected connection details in JSON but received plain text."
+                val title = "External dart_format: Expected connection details in JSON but received plain text: " +
+                    StringTools.toDisplayString(jsonEncodedResponse, 200)
 
                 var content = ""
                 if (readLineResponse.stdOut != null)

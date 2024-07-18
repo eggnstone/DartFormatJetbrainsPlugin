@@ -8,8 +8,8 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.11</b><br/>
-        Trying to fix start problem on Linux/macOS.<br/>
+        <b>Version 2.0.12</b><br/>
+        Fixing start problem on Linux/macOS.<br/>
         <br/>
         <b>Version 2.0.9</b><br/>
         Fixed issue with temp dir for Linux/macOS.<br/>
