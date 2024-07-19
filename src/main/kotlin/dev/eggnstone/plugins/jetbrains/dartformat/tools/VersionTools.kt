@@ -1,7 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
-import java.io.InputStream
-import java.util.*
+import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.extensions.PluginId
 
 class VersionTools
 {
@@ -9,14 +9,10 @@ class VersionTools
     {
         fun getVersion(): String
         {
-            val inputStream: InputStream? = this::class.java.getResourceAsStream("/version.properties")
-            @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
-            if (inputStream == null)
-                return "<unknown version>"
+            val id = PluginId.getId("com.eggnstone.jetbrainsplugins.DartFormat")
+            val pluginDescriptor = PluginManagerCore.getPlugin(id)
 
-            val properties = Properties()
-            properties.load(inputStream)
-            return properties.getProperty("version", "<unknown version>")
+            return pluginDescriptor?.version ?: "<unknown version>"
         }
     }
 }
