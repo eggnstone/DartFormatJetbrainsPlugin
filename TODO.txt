@@ -5,6 +5,7 @@ TODO
 - progress dialog
 - go to error location
 - show error when data received on stdin
+- fix "Expected connection details in JSON but received plain text. StdErr: Checking Dart SDK version... StdErr: Downloading Dart SDK from Flutter engine"
 
 DONE
 ====
