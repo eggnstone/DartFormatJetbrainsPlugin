@@ -44,7 +44,9 @@
         But better ;)<br/>
         Because it's configurable.<br/>
         <br/>
-        Press <code>Ctrl</code>+<code>Alt</code>+<code>,</code> to format the current file / the currently selected folders and files.<br/>
+        To format the current file / the currently selected folders and files, press the following:<br/>
+        Under Windows: <code>Ctrl</code>+<code>Alt</code>+<code>,</code><br/>
+        Under macOS: <code>Command</code>+<code>Alt</code>+<code>,</code><br/>
         <br/>
         <b>This plugin:</b><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin">DartFormatJetBrainsPlugin on GitHub</a><br/>
@@ -54,8 +56,8 @@
         Source code: <a href="https://github.com/eggnstone/dart_format/">dart_format on GitHub</a><br/>
         Problems and feature requests: <a href="https://github.com/eggnstone/dart_format/issues">GitHub Issues for dart_format</a><br/>
         <br/>
-        <b>Also available as a Visual Studio Code extension:</b><br/>
-        <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.dart-format">DartFormat at the Visual Studio Marketplace</a><br/>
+        <b>Also available for Visual Studio Code:</b><br/>
+        <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.DartFormat">DartFormat at the Visual Studio Marketplace</a><br/>
         ]]>
     </description>
     <extensions defaultExtensionNs="com.intellij">
