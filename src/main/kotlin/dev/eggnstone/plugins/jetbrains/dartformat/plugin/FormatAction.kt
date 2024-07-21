@@ -16,6 +16,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.FormatResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
@@ -270,6 +271,30 @@ class FormatAction : AnAction()
     private fun formatOrReport(project: Project, inputText: String, virtualFile: VirtualFile): String?
     {
         val methodName = "$CLASS_NAME.formatOrReport"
+
+        if (ExternalDartFormat.instance.state != ExternalDartFormatState.STARTED)
+        {
+            ExternalDartFormat.instance.notifyWhenReady = true
+            val message = when(ExternalDartFormat.instance.state)
+            {
+                ExternalDartFormatState.FAILED_TO_START -> "external dart_format failed to start."
+                ExternalDartFormatState.NOT_STARTED -> "external dart_format hasn't started yet."
+                ExternalDartFormatState.STARTING -> "external dart_format is still starting."
+                ExternalDartFormatState.STOPPED -> "external dart_format has stopped."
+                ExternalDartFormatState.STOPPING -> "external dart_format is stopping."
+                else -> "of an unknown state of external dart_format."
+            }
+
+            NotificationTools.notifyInfo(NotificationInfo(
+                content = null,
+                links = null,
+                origin = null,
+                project = project,
+                title = "Cannot format because $message",
+                virtualFile = null
+            ))
+            return null
+        }
 
         val formatResult = format(inputText, virtualFile)
 

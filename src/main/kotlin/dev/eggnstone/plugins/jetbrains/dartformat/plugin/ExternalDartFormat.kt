@@ -9,6 +9,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
 import kotlinx.coroutines.*
@@ -25,10 +26,16 @@ class ExternalDartFormat
         val instance = ExternalDartFormat()
     }
 
-    private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
-    private var channel: Channel<FormatJob>? = Channel()
     var currentVersionText = "<unknown version>"
         private set
+
+    var notifyWhenReady = false
+
+    var state: ExternalDartFormatState = ExternalDartFormatState.NOT_STARTED
+        private set
+
+    private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
+    private var channel: Channel<FormatJob>? = Channel()
     private var dartFormatClient: DartFormatClient? = null
     private var mainJob: Job? = null
 
@@ -49,6 +56,14 @@ class ExternalDartFormat
         val methodName = "$CLASS_NAME.run"
         Logger.logDebug("$methodName: START")
 
+        if (state != ExternalDartFormatState.NOT_STARTED)
+        {
+            Logger.logError("$methodName: Already tried starting.")
+            return
+        }
+
+        state = ExternalDartFormatState.STARTING
+
         var lastVirtualFile: VirtualFile? = null
 
         try
@@ -59,6 +74,7 @@ class ExternalDartFormat
                 override fun appClosing()
                 {
                     Logger.logDebug("$methodName: appClosing")
+                    state = ExternalDartFormatState.STOPPING
 
                     NotificationTools.notifyInfo(
                         NotificationInfo(
@@ -74,6 +90,7 @@ class ExternalDartFormat
                     if (dartFormatClient == null || channel == null)
                     {
                         Logger.logDebug("$methodName: Not sending quit because dartFormatClient or channel is null.")
+                        state = ExternalDartFormatState.STOPPED
                         return
                     }
 
@@ -121,6 +138,8 @@ class ExternalDartFormat
                             )
                         )
                     }
+
+                    state = ExternalDartFormatState.STOPPED
                 }
             })
 
@@ -155,6 +174,7 @@ class ExternalDartFormat
                     )
                 )
 
+                state = ExternalDartFormatState.FAILED_TO_START
                 return
             }
 
@@ -164,7 +184,7 @@ class ExternalDartFormat
                 ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
-            NotificationTools.notifyInfo(
+            /*NotificationTools.notifyInfo(
                 NotificationInfo(
                     content = null,
                     links = null,
@@ -173,7 +193,7 @@ class ExternalDartFormat
                     title = "Starting external dart_format ...\nThis may take a few seconds.",
                     virtualFile = null
                 )
-            )
+            )*/
 
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
 
@@ -201,6 +221,7 @@ class ExternalDartFormat
                         virtualFile = null
                     )
                 )
+                state = ExternalDartFormatState.FAILED_TO_START
                 return
             }
 
@@ -209,7 +230,7 @@ class ExternalDartFormat
 
             if (process.isAlive)
             {
-                NotificationTools.notifyInfo(
+                /*NotificationTools.notifyInfo(
                     NotificationInfo(
                         content = null,
                         links = null,
@@ -218,10 +239,13 @@ class ExternalDartFormat
                         title = "External dart_format process is alive.\nWaiting for connection details ...",
                         virtualFile = null
                     )
-                )
+                )*/
             }
             else
+            {
+                state = ExternalDartFormatState.FAILED_TO_START
                 throw DartFormatException.localError("External dart_format process is dead.")
+            }
 
             val inputStreamReader = StreamReader(process.inputStream)
             val errorStreamReader = StreamReader(process.errorStream)
@@ -247,7 +271,10 @@ class ExternalDartFormat
 
             @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
             if (readLineResponse == null)
+            {
+                state = ExternalDartFormatState.FAILED_TO_START
                 return
+            }
 
             val jsonEncodedResponse = readLineResponse.stdOut ?: readLineResponse.stdErr ?: "<no response>"
             val jsonResponse = JsonTools.parseOrNull(jsonEncodedResponse)
@@ -290,6 +317,7 @@ class ExternalDartFormat
                         virtualFile = null
                     )
                 )
+                state = ExternalDartFormatState.FAILED_TO_START
                 return
             }
 
@@ -304,21 +332,28 @@ class ExternalDartFormat
 
             val httpResponse = dartFormatClient!!.get("/status")
             if (httpResponse.statusCode() != 200)
+            {
+                state = ExternalDartFormatState.FAILED_TO_START
                 throw DartFormatException.localError("External dart_format: Requested status but got: ${httpResponse.statusCode()} ${httpResponse.body()}")
+            }
 
-            var titleReady = "External dart_format is ready."
-            if (Constants.DEBUG_CONNECTION)
-                titleReady += " $jsonResponse"
-            NotificationTools.notifyInfo(
-                NotificationInfo(
-                    content = null,
-                    links = null,
-                    origin = null,
-                    project = null,
-                    title = titleReady,
-                    virtualFile = null
+            state = ExternalDartFormatState.STARTED
+            if (notifyWhenReady)
+            {
+                var titleReady = "External dart_format is ready now."
+                if (Constants.DEBUG_CONNECTION)
+                    titleReady += " $jsonResponse"
+                NotificationTools.notifyInfo(
+                    NotificationInfo(
+                        content = null,
+                        links = null,
+                        origin = null,
+                        project = null,
+                        title = titleReady,
+                        virtualFile = null
+                    )
                 )
-            )
+            }
 
             if (currentVersion?.isOlderThan(latestVersion) == true)
             {
