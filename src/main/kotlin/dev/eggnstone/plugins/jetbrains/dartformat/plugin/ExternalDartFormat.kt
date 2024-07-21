@@ -374,7 +374,7 @@ class ExternalDartFormat
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
                     Logger.logDebug("Calling format()")
-                    formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!)
+                    formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!, filePath = formatJob.virtualFile!!.path)
                     Logger.logDebug("Called format()")
                     Logger.logDebug("Calling formatJob.complete()")
                     formatJob.complete()
@@ -486,7 +486,7 @@ class ExternalDartFormat
         }
     }
 
-    private suspend fun formatViaExternalDartFormat(inputText: String, config: String): FormatResult
+    private suspend fun formatViaExternalDartFormat(inputText: String, config: String, filePath: String): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaExternalDartFormat"
 
@@ -500,7 +500,7 @@ class ExternalDartFormat
             val httpResponse: CloseableHttpResponse
             try
             {
-                Logger.logDebug("$methodName: Calling POST /format")
+                Logger.logDebug("$methodName: Calling POST /format ($filePath)")
                 httpResponse = dartFormatClient!!.post("/format", entity)
                 Logger.logDebug("$methodName: Called POST /format")
             }
