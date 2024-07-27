@@ -33,7 +33,7 @@ class FormatAction : AnAction()
 
     init
     {
-        Logger.logDebug("FormatAction: init")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("FormatAction: init")
     }
 
     override fun actionPerformed(e: AnActionEvent)
@@ -275,22 +275,24 @@ class FormatAction : AnAction()
         if (ExternalDartFormat.instance.state != ExternalDartFormatState.STARTED)
         {
             ExternalDartFormat.instance.notifyWhenReady = true
-            val message = when(ExternalDartFormat.instance.state)
+            var message = "Cannot format because " + when(ExternalDartFormat.instance.state)
             {
                 ExternalDartFormatState.FAILED_TO_START -> "external dart_format failed to start."
                 ExternalDartFormatState.NOT_STARTED -> "external dart_format hasn't started yet."
-                ExternalDartFormatState.STARTING -> "external dart_format is still starting."
                 ExternalDartFormatState.STOPPED -> "external dart_format has stopped."
                 ExternalDartFormatState.STOPPING -> "external dart_format is stopping."
                 else -> "of an unknown state of external dart_format."
             }
+
+            if (ExternalDartFormat.instance.state == ExternalDartFormatState.STARTING)
+                message = "Cannot format yet because external dart_format is still starting."
 
             NotificationTools.notifyInfo(NotificationInfo(
                 content = null,
                 links = null,
                 origin = null,
                 project = project,
-                title = "Cannot format because $message",
+                title = message,
                 virtualFile = null
             ))
             return null
@@ -337,6 +339,28 @@ class FormatAction : AnAction()
                 origin = "$methodName/3", // TODO: remove
                 project = project,
                 title = formatResult.text,
+                virtualFile = virtualFile
+            ))
+
+            return null
+        }
+
+        if (formatResult.text.isEmpty())
+        {
+            val title = "Result from external dart_format is empty."
+            val reportErrorLink = NotificationTools.createReportErrorLink(
+                content = null,
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
+                origin = "$methodName/4", // TODO: remove
+                stackTrace = null,
+                title = title
+            )
+            NotificationTools.notifyError(NotificationInfo(
+                content = null,
+                listOf(reportErrorLink),
+                origin = "$methodName/4", // TODO: remove
+                project = project,
+                title = title,
                 virtualFile = virtualFile
             ))
 

@@ -1,7 +1,5 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
-
 data class DartFormatConfig(
     var addNewLineAfterClosingBrace: Boolean = ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE,
     var addNewLineAfterOpeningBrace: Boolean = ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE,
@@ -51,7 +49,7 @@ data class DartFormatConfig(
 
     fun hasNothingEnabled(): Boolean
     {
-        Logger.logDebug("DartFormatConfig.hasNothingEnabled()")
+        //if (Constants.LOG_VERBOSE) Logger.logVerbose("DartFormatConfig.hasNothingEnabled()")
 
         val adjustedDefaultConfig = DartFormatConfig()
 

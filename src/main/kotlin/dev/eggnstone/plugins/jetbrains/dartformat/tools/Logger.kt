@@ -14,6 +14,15 @@ class Logger
         @Suppress("MemberVisibilityCanBePrivate")
         var isEnabled: Boolean = true
 
+        fun logVerbose(s: String)
+        {
+            if (!isEnabled)
+                return
+
+            println("VERB:  $s")
+            logToFile("VERB:  $s")
+        }
+
         fun logDebug(s: String)
         {
             if (!isEnabled)

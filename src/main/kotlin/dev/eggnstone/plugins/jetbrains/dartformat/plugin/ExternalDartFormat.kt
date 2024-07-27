@@ -43,7 +43,7 @@ class ExternalDartFormat
     fun init()
     {
         val methodName = "$CLASS_NAME.init"
-        Logger.logDebug("$methodName()")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
 
         if (mainJob != null)
             return
@@ -54,7 +54,7 @@ class ExternalDartFormat
     private suspend fun run()
     {
         val methodName = "$CLASS_NAME.run"
-        Logger.logDebug("$methodName: START")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: START")
 
         if (state != ExternalDartFormatState.NOT_STARTED)
         {
@@ -73,7 +73,7 @@ class ExternalDartFormat
             {
                 override fun appClosing()
                 {
-                    Logger.logDebug("$methodName: appClosing")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName/appClosing")
                     state = ExternalDartFormatState.STOPPING
 
                     NotificationTools.notifyInfo(
@@ -98,9 +98,9 @@ class ExternalDartFormat
                     {
                         runBlocking {
                             withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS * 1000L) {
-                                Logger.logDebug("$methodName: sending quit")
+                                Logger.logDebug("$methodName: Sending quit")
                                 channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null))
-                                Logger.logDebug("$methodName: sent quit")
+                                if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
                         }
@@ -376,7 +376,7 @@ class ExternalDartFormat
             while (true)
             {
                 val formatJob = channel!!.receive()
-                Logger.logDebug("$methodName: Got new job: ${formatJob.command}")
+                if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Got new job: ${formatJob.command}")
                 lastVirtualFile = formatJob.virtualFile
 
                 if (!process.isAlive)
@@ -408,23 +408,23 @@ class ExternalDartFormat
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
-                    Logger.logDebug("Calling format()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling format()")
                     formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!, filePath = formatJob.virtualFile!!.path)
-                    Logger.logDebug("Called format()")
-                    Logger.logDebug("Calling formatJob.complete()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called format()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling formatJob.complete()")
                     formatJob.complete()
-                    Logger.logDebug("Called formatJob.complete()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called formatJob.complete()")
                     continue
                 }
 
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "quit")
                 {
-                    Logger.logDebug("Calling quit()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling quit()")
                     formatJob.formatResult = quitExternalDartFormat()
-                    Logger.logDebug("Called quit()")
-                    Logger.logDebug("Calling formatJob.complete()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called quit()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling formatJob.complete()")
                     formatJob.complete()
-                    Logger.logDebug("Called formatJob.complete()")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called formatJob.complete()")
                     break
                 }
 
@@ -436,7 +436,7 @@ class ExternalDartFormat
             channel!!.close()
             channel = null
 
-            Logger.logDebug("$methodName: END")
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: END")
         }
         catch (e: Exception)
         {
@@ -464,25 +464,25 @@ class ExternalDartFormat
     fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
-        Logger.logDebug("$methodName()")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
         val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile)
 
         try
         {
             runBlocking {
                 withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
-                    Logger.logDebug("$methodName: sending")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sending")
                     channel!!.send(formatJob)
-                    Logger.logDebug("$methodName: sent.")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent.")
                     return@withTimeout "OK"
                 }
             }
 
             runBlocking {
                 withTimeout(Constants.WAIT_FOR_JOIN_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
-                    Logger.logDebug("$methodName: joining")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: joining")
                     formatJob.join()
-                    Logger.logDebug("$methodName: joined")
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: joined")
                     return@withTimeout "OK"
                 }
             }
@@ -537,7 +537,7 @@ class ExternalDartFormat
             {
                 Logger.logDebug("$methodName: Calling POST /format ($filePath)")
                 httpResponse = dartFormatClient!!.post("/format", entity)
-                Logger.logDebug("$methodName: Called POST /format")
+                if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called POST /format")
             }
             catch (e: SocketTimeoutException)
             {
@@ -545,6 +545,7 @@ class ExternalDartFormat
                 return FormatResult.error("Failed to format via external dart_format: Timeout")
             }
 
+            @Suppress("UastIncorrectHttpHeaderInspection")
             val dartFormatExceptionJson = httpResponse.getFirstHeader("X-DartFormat-Exception")
             if (dartFormatExceptionJson != null)
             {

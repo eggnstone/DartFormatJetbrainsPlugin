@@ -60,7 +60,7 @@ class DartFormatClient(private val baseUrl: String)
         val endTime = Date()
         val diffTime = endTime.time - startTime.time
         val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
-        Logger.logDebug("closeableHttpClient.execute took $diffTimeText")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("closeableHttpClient.execute took $diffTimeText")
 
         @Suppress("KotlinConstantConditions")
         if (result !is CloseableHttpResponse)

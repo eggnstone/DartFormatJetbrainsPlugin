@@ -162,17 +162,29 @@ class NotificationTools
             if (notificationInfo.project != null && notificationInfo.virtualFile != null)
             {
                 val shortFileName = getShortFilePath(notificationInfo.virtualFile, notificationInfo.project)
-                locationForNotification = "Line ${line}, Column $column in $shortFileName"
 
-                val typeName = if (type == NotificationType.WARNING) "warning" else "error"
-                actionForNotification = NotificationAction.createSimple("Open $typeName location") {
-                    val openFileDescriptor = OpenFileDescriptor(
+                val openFileDescriptor: OpenFileDescriptor
+                if (line > 0 && column > 0)
+                {
+                    locationForNotification = "Line ${line}, Column $column in $shortFileName"
+                    openFileDescriptor = OpenFileDescriptor(
                         notificationInfo.project,
                         notificationInfo.virtualFile,
                         line - 1,
                         column - 1
                     )
+                }
+                else
+                {
+                    locationForNotification = "In $shortFileName"
+                    openFileDescriptor = OpenFileDescriptor(
+                        notificationInfo.project,
+                        notificationInfo.virtualFile
+                    )
+                }
 
+                val typeName = if (type == NotificationType.WARNING) "warning" else "error"
+                actionForNotification = NotificationAction.createSimple("Open $typeName location") {
                     // focusEditor = true
                     FileEditorManager.getInstance(notificationInfo.project).openFileEditor(openFileDescriptor, true)
                 }

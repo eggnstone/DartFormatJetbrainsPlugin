@@ -18,7 +18,7 @@ class TimedReader
         fun readLine(process: Process, stdOutReader: StreamReader, stdErrReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
         {
             val methodName = "$CLASS_NAME.readLine"
-            Logger.logDebug("$methodName()")
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
 
             var waitedMillis = 0
             while (timeoutInSeconds < 0 || waitedMillis < timeoutInSeconds * 1000)
@@ -84,7 +84,7 @@ class TimedReader
             while (true)
             {
                 val s = receiveLine(streamReader) ?: break
-                Logger.logDebug("TimedReader.receiveLines: Received: ${StringTools.toDisplayString(s, 100)}.")
+                if (Constants.LOG_VERBOSE) Logger.logVerbose("TimedReader.receiveLines: Received: ${StringTools.toDisplayString(s, 100)}.")
                 r += "$prefix$s"
             }
 
@@ -97,9 +97,9 @@ class TimedReader
             if (availableBytes <= 0)
                 return null
 
-            Logger.logDebug("TimedReader.receiveLine: Receiving: $availableBytes bytes.")
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("TimedReader.receiveLine: Receiving: $availableBytes bytes.")
             val s = streamReader.readLine()
-            Logger.logDebug("TimedReader.receiveLine: Received: ${StringTools.toDisplayString(s, 100)}.")
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("TimedReader.receiveLine: Received: ${StringTools.toDisplayString(s, 100)}.")
             return s
         }
     }

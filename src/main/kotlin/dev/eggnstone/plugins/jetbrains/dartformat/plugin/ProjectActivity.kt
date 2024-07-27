@@ -7,12 +7,12 @@ class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
 {
     init
     {
-        Logger.logDebug("ProjectActivity.init()")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("ProjectActivity.init()")
     }
 
     override suspend fun execute(project: Project)
     {
-        Logger.logDebug("ProjectActivity.execute()")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("ProjectActivity.execute()")
         ExternalDartFormat.instance.init()
     }
 }

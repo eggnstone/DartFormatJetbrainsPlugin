@@ -7,6 +7,8 @@ class Constants
         // Main switch for debug. Should be "false" for production.
         private const val DEBUG = false
 
+        const val LOG_VERBOSE = false
+
         const val CANCEL_PROCESSING_ON_ERROR = !DEBUG
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
