@@ -298,7 +298,7 @@ class FormatAction : AnAction()
             return null
         }
 
-        val formatResult = format(inputText, virtualFile)
+        val formatResult = format(inputText, virtualFile, project)
 
         if (formatResult.resultType == ResultType.Error)
         {
@@ -370,14 +370,14 @@ class FormatAction : AnAction()
         return formatResult.text
     }
 
-    private fun format(inputText: String, virtualFile: VirtualFile): FormatResult
+    private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult
     {
         if (inputText.isEmpty())
             return FormatResult.ok("")
 
         val config = getConfig()
         val jsonConfig = config.toJson()
-        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile)
+        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
     }
 
     private fun getConfig(): DartFormatConfig

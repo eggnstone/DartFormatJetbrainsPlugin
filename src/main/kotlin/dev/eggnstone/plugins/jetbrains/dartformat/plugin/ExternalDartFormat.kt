@@ -2,6 +2,7 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
@@ -99,7 +100,7 @@ class ExternalDartFormat
                         runBlocking {
                             withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS * 1000L) {
                                 Logger.logDebug("$methodName: Sending quit")
-                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null))
+                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null, project = null))
                                 if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
@@ -409,7 +410,8 @@ class ExternalDartFormat
                 if (formatJob.command.toLowerCasePreservingASCIIRules() == "format")
                 {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling format()")
-                    formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!, filePath = formatJob.virtualFile!!.path)
+                    val filePath = NotificationTools.getShortFilePath(formatJob.virtualFile!!, formatJob.project)
+                    formatJob.formatResult = formatViaExternalDartFormat(config = formatJob.config!!, inputText = formatJob.inputText!!, filePath = filePath)
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called format()")
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling formatJob.complete()")
                     formatJob.complete()
@@ -461,11 +463,11 @@ class ExternalDartFormat
         }
     }
 
-    fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile): FormatResult
+    fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile, project: Project): FormatResult
     {
         val methodName = "$CLASS_NAME.formatViaChannel"
         if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
-        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile)
+        val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile, project = project)
 
         try
         {

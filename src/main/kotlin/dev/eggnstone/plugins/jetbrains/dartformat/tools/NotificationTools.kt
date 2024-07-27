@@ -143,7 +143,7 @@ class NotificationTools
             notifyByToolWindowBalloon(NotificationType.ERROR, notificationInfo, line, column)
         }
 
-        private fun getShortFilePath(virtualFile: VirtualFile, project: Project?): String
+        internal fun getShortFilePath(virtualFile: VirtualFile, project: Project?): String
         {
             if (project == null || project.basePath == null || !virtualFile.path.startsWith(project.basePath!!))
                 return virtualFile.path
