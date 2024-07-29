@@ -16,6 +16,7 @@ import io.ktor.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.entity.ContentType
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import java.net.SocketTimeoutException
 
@@ -531,7 +532,9 @@ class ExternalDartFormat
         {
             val multipartEntityBuilder = MultipartEntityBuilder.create()
             multipartEntityBuilder.addTextBody("Config", config)
-            multipartEntityBuilder.addTextBody("Text", inputText)
+            // If content type is not set, charset=ISO-8859-1 may be used and special chars like "€" are not transmitted correctly.
+            val contentType = ContentType.create("text/plain", Charsets.UTF_8)
+            multipartEntityBuilder.addTextBody("Text", inputText, contentType)
             val entity = multipartEntityBuilder.build()
 
             val httpResponse: CloseableHttpResponse
