@@ -298,6 +298,9 @@ class FormatAction : AnAction()
             return null
         }
 
+        if (inputText.isEmpty())
+            return inputText
+
         val formatResult = format(inputText, virtualFile, project)
 
         if (formatResult.resultType == ResultType.Error)
