@@ -8,6 +8,7 @@ TODO
 - fix "Expected connection details in JSON but received plain text. StdErr: Checking Dart SDK version... StdErr: Downloading Dart SDK from Flutter engine"
 - check for process death while processing
 - Notification inside the editor like original including hint to open settings
+- Add setting for how many warnings to show (currently 1)
 
 DONE
 ====
