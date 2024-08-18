@@ -34,14 +34,16 @@ class NotificationTools
             val throwableColumn = if (throwable is DartFormatException && throwable.column != null) throwable.column else 0
             if (throwable is DartFormatException && throwable.type == FailType.Warning)
             {
-                notifyWarning(NotificationInfo(
-                    content = null,
-                    links = null,
-                    origin = origin,
-                    project = project,
-                    title = throwable.message,
-                    virtualFile = virtualFile
-                ), throwableLine, throwableColumn)
+                notifyWarning(
+                    NotificationInfo(
+                        content = null,
+                        links = null,
+                        origin = origin,
+                        project = project,
+                        title = throwable.message,
+                        virtualFile = virtualFile
+                    ), throwableLine, throwableColumn
+                )
                 return
             }
 
@@ -75,14 +77,16 @@ class NotificationTools
                 stackTrace = stackTrace,
                 title = title
             )
-            notifyError(NotificationInfo(
-                content = content,
-                links = listOf(reportErrorLink),
-                origin = origin,
-                project = project,
-                title = title,
-                virtualFile = virtualFile
-            ), throwableLine, throwableColumn)
+            notifyError(
+                NotificationInfo(
+                    content = content,
+                    links = listOf(reportErrorLink),
+                    origin = origin,
+                    project = project,
+                    title = title,
+                    virtualFile = virtualFile
+                ), throwableLine, throwableColumn
+            )
         }
 
         fun createCheckInstallationInstructionsLink(): LinkInfo //
@@ -176,7 +180,7 @@ class NotificationTools
                 }
                 else
                 {
-                    locationForNotification = "In $shortFileName"
+                    locationForNotification = shortFileName
                     openFileDescriptor = OpenFileDescriptor(
                         notificationInfo.project,
                         notificationInfo.virtualFile
@@ -214,7 +218,8 @@ class NotificationTools
             val notification: Notification = notificationGroup.createNotification(
                 title = "DartFormat",
                 content = content,
-                type = type)
+                type = type
+            )
 
             if (notificationInfo.links != null)
                 for (link in notificationInfo.links)

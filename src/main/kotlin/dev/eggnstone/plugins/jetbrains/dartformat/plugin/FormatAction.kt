@@ -15,6 +15,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
+import dev.eggnstone.plugins.jetbrains.dartformat.data.FormatOrReportResult
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.FormatResultType
@@ -50,14 +51,16 @@ class FormatAction : AnAction()
             val title = "No formatting option enabled"
             val content = "Please enable your desired formatting options:" +
                 "<pre>File -&gt; Settings -&gt; Other Settings -&gt; DartFormat</pre>"
-            NotificationTools.notifyWarning(NotificationInfo(
-                content = content,
-                links = null,
-                origin = "$methodName/1",
-                project = project,
-                title = title,
-                virtualFile = null
-            ))
+            NotificationTools.notifyWarning(
+                NotificationInfo(
+                    content = content,
+                    links = null,
+                    origin = "$methodName/1",
+                    project = project,
+                    title = title,
+                    virtualFile = null
+                )
+            )
             return
         }
 
@@ -83,8 +86,9 @@ class FormatAction : AnAction()
                 }
             }
 
-            var changedFiles = 0
-            var encounteredError = false
+            var changedCount = 0
+            var warningCount = 0
+            var errorCount = 0
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
                 for (finalVirtualFile in finalVirtualFiles)
@@ -92,34 +96,37 @@ class FormatAction : AnAction()
                     if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
                     lastVirtualFile = finalVirtualFile
                     val startTime2 = Date()
-                    val result = formatDartFile(finalVirtualFile, project)
+                    val result = formatDartFile(finalVirtualFile, project, warningCount == 0)
                     val endTime2 = Date()
                     val diffTime2 = endTime2.time - startTime2.time
-
                     val seconds2 = diffTime2 / 1000.0
                     if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
-                        NotificationTools.notifyWarning(NotificationInfo(
-                            content = null,
-                            links = null,
-                            origin = null,
-                            project = project,
-                            title = "Took ${seconds2}s to format $finalVirtualFile.",
-                            virtualFile = null
-                        ))
+                        NotificationTools.notifyWarning(
+                            NotificationInfo(
+                                content = null,
+                                links = null,
+                                origin = null,
+                                project = project,
+                                title = "Took ${seconds2}s to format $finalVirtualFile.",
+                                virtualFile = null
+                            )
+                        )
 
                     if (result == FormatResultType.Error)
                     {
-                        encounteredError = true
-                        if (Constants.CANCEL_PROCESSING_ON_ERROR)
-                            break
+                        errorCount++
+                        break
                     }
 
+                    if (result == FormatResultType.Warning)
+                        warningCount++
+
                     if (result == FormatResultType.SomethingChanged)
-                        changedFiles++
+                        changedCount++
                 }
             }
 
-            if (!encounteredError || Constants.SHOW_TIMINGS_EVEN_AFTER_ERROR)
+            if (errorCount == 0 || Constants.SHOW_TIMINGS_EVEN_AFTER_ERROR)
             {
                 val endTime = Date()
                 val diffTime = endTime.time - startTime.time
@@ -129,22 +136,39 @@ class FormatAction : AnAction()
                 if (finalVirtualFiles.size != 1)
                     finalVirtualFilesText += "s"
 
-                val changedFilesText: String = when (changedFiles)
+                val changedFilesText: String = when (changedCount)
                 {
                     0 -> "Nothing"
                     1 -> "1 file"
-                    else -> "$changedFiles files"
+                    else -> "$changedCount files"
                 }
 
-                val title = "Formatting $finalVirtualFilesText took $diffTimeText.\n$changedFilesText changed."
-                NotificationTools.notifyInfo(NotificationInfo(
-                    content = null,
-                    links = null,
-                    origin = null,
-                    project = project,
-                    title = title,
-                    virtualFile = null
-                ))
+                val warningsText: String? = when (warningCount)
+                {
+                    0 -> null
+                    1 -> "1 warning"
+                    else -> "$warningCount warnings"
+                }
+
+                var title = "Formatting $finalVirtualFilesText took $diffTimeText."
+
+                if (errorCount > 0)
+                    title += "\nAn error occurred." + errorCount
+
+                if (warningsText != null)
+                    title += "\n$warningsText encountered."
+
+                title += "\n$changedFilesText changed."
+                NotificationTools.notifyInfo(
+                    NotificationInfo(
+                        content = null,
+                        links = null,
+                        origin = null,
+                        project = project,
+                        title = title,
+                        virtualFile = null
+                    )
+                )
             }
         }
         catch (e: Exception)
@@ -171,15 +195,15 @@ class FormatAction : AnAction()
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project): FormatResultType
+    private fun formatDartFile(virtualFile: VirtualFile, project: Project, notifyWarnings: Boolean): FormatResultType
     {
         try
         {
             val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
             return if (fileEditor == null)
-                formatDartFileByBinaryContent(project, virtualFile)
+                formatDartFileByBinaryContent(project, virtualFile, notifyWarnings)
             else
-                formatDartFileByFileEditor(project, fileEditor)
+                formatDartFileByFileEditor(project, fileEditor, notifyWarnings)
         }
         catch (e: DartFormatException)
         {
@@ -196,7 +220,7 @@ class FormatAction : AnAction()
         }
     }
 
-    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile): FormatResultType
+    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile, notifyWarnings: Boolean): FormatResultType
     {
         if (!virtualFile.isWritable)
         {
@@ -211,7 +235,12 @@ class FormatAction : AnAction()
 
         val inputBytes = virtualFile.inputStream.readAllBytes()
         val inputText = String(inputBytes)
-        val formatResultText = formatOrReport(project, inputText, virtualFile) ?: return FormatResultType.Error
+        val formatOrReportResult = formatOrReport(project, inputText, virtualFile, notifyWarnings)
+        val formatResultText = formatOrReportResult.text
+        @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression", "DuplicatedCode")
+        if (formatResultText == null)
+            return if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error
+
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
@@ -227,7 +256,7 @@ class FormatAction : AnAction()
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor): FormatResultType
+    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor, notifyWarnings: Boolean): FormatResultType
     {
         if (fileEditor !is TextEditor)
         {
@@ -243,7 +272,12 @@ class FormatAction : AnAction()
 
         val document = editor.document
         val inputText = document.text
-        val formatResultText = formatOrReport(project, inputText, fileEditor.file) ?: return FormatResultType.Error
+        val formatOrReportResult = formatOrReport(project, inputText, fileEditor.file, notifyWarnings)
+        val formatResultText = formatOrReportResult.text
+        @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+        if (formatResultText == null)
+            return if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error
+
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
@@ -268,14 +302,14 @@ class FormatAction : AnAction()
         return FormatResultType.SomethingChanged
     }
 
-    private fun formatOrReport(project: Project, inputText: String, virtualFile: VirtualFile): String?
+    private fun formatOrReport(project: Project, inputText: String, virtualFile: VirtualFile, notifyWarnings: Boolean): FormatOrReportResult
     {
         val methodName = "$CLASS_NAME.formatOrReport"
 
         if (ExternalDartFormat.instance.state != ExternalDartFormatState.STARTED)
         {
             ExternalDartFormat.instance.notifyWhenReady = true
-            var message = "Cannot format because " + when(ExternalDartFormat.instance.state)
+            var message = "Cannot format because " + when (ExternalDartFormat.instance.state)
             {
                 ExternalDartFormatState.FAILED_TO_START -> "external dart_format failed to start."
                 ExternalDartFormatState.NOT_STARTED -> "external dart_format hasn't started yet."
@@ -287,19 +321,22 @@ class FormatAction : AnAction()
             if (ExternalDartFormat.instance.state == ExternalDartFormatState.STARTING)
                 message = "Cannot format yet because external dart_format is still starting."
 
-            NotificationTools.notifyInfo(NotificationInfo(
-                content = null,
-                links = null,
-                origin = null,
-                project = project,
-                title = message,
-                virtualFile = null
-            ))
-            return null
+            NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = project,
+                    title = message,
+                    virtualFile = null
+                )
+            )
+
+            return FormatOrReportResult(null, false)
         }
 
         if (inputText.isEmpty())
-            return inputText
+            return FormatOrReportResult(inputText, false)
 
         val formatResult = format(inputText, virtualFile, project)
 
@@ -314,14 +351,16 @@ class FormatAction : AnAction()
                     stackTrace = null,
                     title = formatResult.text
                 )
-                NotificationTools.notifyError(NotificationInfo(
-                    content = null,
-                    listOf(reportErrorLink),
-                    origin = "$methodName/1", // TODO: remove
-                    project = project,
-                    title = formatResult.text,
-                    virtualFile = virtualFile
-                ))
+                NotificationTools.notifyError(
+                    NotificationInfo(
+                        content = null,
+                        listOf(reportErrorLink),
+                        origin = "$methodName/1", // TODO: remove
+                        project = project,
+                        title = formatResult.text,
+                        virtualFile = virtualFile
+                    )
+                )
             }
             else
                 NotificationTools.reportThrowable(
@@ -331,21 +370,24 @@ class FormatAction : AnAction()
                     virtualFile = virtualFile
                 )
 
-            return null
+            return FormatOrReportResult(null, false)
         }
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            NotificationTools.notifyWarning(NotificationInfo(
-                content = null,
-                links = null,
-                origin = "$methodName/3", // TODO: remove
-                project = project,
-                title = formatResult.text,
-                virtualFile = virtualFile
-            ))
+            if (notifyWarnings)
+                NotificationTools.notifyWarning(
+                    NotificationInfo(
+                        content = null,
+                        links = null,
+                        origin = "$methodName/3", // TODO: remove
+                        project = project,
+                        title = formatResult.text,
+                        virtualFile = virtualFile
+                    )
+                )
 
-            return null
+            return FormatOrReportResult(null, true)
         }
 
         if (formatResult.text.isEmpty())
@@ -358,19 +400,21 @@ class FormatAction : AnAction()
                 stackTrace = null,
                 title = title
             )
-            NotificationTools.notifyError(NotificationInfo(
-                content = null,
-                listOf(reportErrorLink),
-                origin = "$methodName/4", // TODO: remove
-                project = project,
-                title = title,
-                virtualFile = virtualFile
-            ))
+            NotificationTools.notifyError(
+                NotificationInfo(
+                    content = null,
+                    listOf(reportErrorLink),
+                    origin = "$methodName/4", // TODO: remove
+                    project = project,
+                    title = title,
+                    virtualFile = virtualFile
+                )
+            )
 
-            return null
+            return FormatOrReportResult(null, false)
         }
 
-        return formatResult.text
+        return FormatOrReportResult(formatResult.text, false)
     }
 
     private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult

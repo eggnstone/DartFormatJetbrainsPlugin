@@ -9,8 +9,6 @@ class Constants
 
         const val LOG_VERBOSE = false
 
-        const val CANCEL_PROCESSING_ON_ERROR = !DEBUG
-
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONNECTION = DEBUG && false
 

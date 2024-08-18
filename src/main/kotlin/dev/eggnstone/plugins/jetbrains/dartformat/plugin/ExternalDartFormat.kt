@@ -11,6 +11,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
+import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
 import kotlinx.coroutines.*
@@ -515,12 +516,12 @@ class ExternalDartFormat
         }
         catch (e: Exception)
         {
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwableError(methodName, e)
         }
         catch (e: Error)
         {
             // necessary?
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwableError(methodName, e)
         }
     }
 
@@ -555,7 +556,10 @@ class ExternalDartFormat
             if (dartFormatExceptionJson != null)
             {
                 val dartFormatException = JsonTools.parseDartFormatException(dartFormatExceptionJson.value)
-                return FormatResult.throwable(methodName, dartFormatException)
+                return if (dartFormatException.type == FailType.Warning)
+                    FormatResult.throwableWarning(methodName, dartFormatException)
+                else
+                    FormatResult.throwableError(methodName, dartFormatException)
             }
 
             val result: Any = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
@@ -567,12 +571,12 @@ class ExternalDartFormat
         }
         catch (e: Exception)
         {
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwableError(methodName, e)
         }
         catch (e: Error)
         {
             // necessary?
-            return FormatResult.throwable(methodName, e)
+            return FormatResult.throwableError(methodName, e)
         }
     }
 }

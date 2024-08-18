@@ -21,7 +21,8 @@ class PluginTools
                 || virtualFile.name.endsWith(".pb.dart")
                 || virtualFile.name.endsWith(".pbenum.dart")
                 || virtualFile.name.endsWith(".pbjson.dart")
-                || virtualFile.name.endsWith(".pbserver.dart"))
+                || virtualFile.name.endsWith(".pbserver.dart")
+            )
                 return false
 
             return true

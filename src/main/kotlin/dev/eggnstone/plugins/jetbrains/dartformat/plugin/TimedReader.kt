@@ -55,14 +55,16 @@ class TimedReader
                         title = title
                     )
 
-                    NotificationTools.notifyError(NotificationInfo(
-                        content = content.ifEmpty { null },
-                        links = listOf(checkInstallationInstructionsLink, reportErrorLink),
-                        origin = null,
-                        project = null,
-                        title = title,
-                        virtualFile = null
-                    ))
+                    NotificationTools.notifyError(
+                        NotificationInfo(
+                            content = content.ifEmpty { null },
+                            links = listOf(checkInstallationInstructionsLink, reportErrorLink),
+                            origin = null,
+                            project = null,
+                            title = title,
+                            virtualFile = null
+                        )
+                    )
 
                     return null
                 }

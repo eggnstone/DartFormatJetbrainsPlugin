@@ -4,5 +4,6 @@ enum class FormatResultType
 {
     Error,
     NothingChanged,
-    SomethingChanged
+    SomethingChanged,
+    Warning
 }

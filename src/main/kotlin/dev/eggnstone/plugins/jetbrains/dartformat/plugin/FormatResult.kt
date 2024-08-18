@@ -11,9 +11,14 @@ class FormatResult(val resultType: ResultType, val text: String, val throwable: 
             return FormatResult(resultType = ResultType.Error, text = s)
         }
 
-        fun throwable(s: String, e: Throwable): FormatResult
+        fun throwableError(s: String, e: Throwable): FormatResult
         {
             return FormatResult(resultType = ResultType.Error, text = s, throwable = e)
+        }
+
+        fun throwableWarning(s: String, e: Throwable): FormatResult
+        {
+            return FormatResult(resultType = ResultType.Warning, text = s, throwable = e)
         }
 
         fun ok(s: String): FormatResult
