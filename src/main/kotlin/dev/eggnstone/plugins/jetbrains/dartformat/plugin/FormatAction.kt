@@ -375,6 +375,10 @@ class FormatAction : AnAction()
 
         if (formatResult.resultType == ResultType.Warning)
         {
+            var title = formatResult.text
+            if (formatResult.throwable != null && formatResult.throwable is DartFormatException)
+                title = formatResult.throwable.message
+
             if (notifyWarnings)
                 NotificationTools.notifyWarning(
                     NotificationInfo(
@@ -382,7 +386,7 @@ class FormatAction : AnAction()
                         links = null,
                         origin = "$methodName/3", // TODO: remove
                         project = project,
-                        title = formatResult.text,
+                        title = title,
                         virtualFile = virtualFile
                     )
                 )
