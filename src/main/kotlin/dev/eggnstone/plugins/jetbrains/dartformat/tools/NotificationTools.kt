@@ -106,7 +106,10 @@ class NotificationTools
                 body += "```\n$content\n```\n"
 
             if (stackTrace != null)
-                body += "```\n$stackTrace\n```\n"
+            {
+                val shortStackTrace = if (stackTrace.length <= Constants.MAX_STACK_TRACE_LENGTH) stackTrace else stackTrace.substring(0, Constants.MAX_STACK_TRACE_LENGTH - 3) + "..."
+                body += "```\n$shortStackTrace\n```\n"
+            }
 
             if (origin != null)
                 body += "Origin: $origin\n"

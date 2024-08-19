@@ -24,6 +24,8 @@ class Constants
         const val HTTP_CLIENT_CONNECT_TIMEOUT_IN_SECONDS = 5
         const val HTTP_CLIENT_CONNECTION_REQUEST_TIMEOUT_IN_SECONDS = 5
 
+        const val MAX_STACK_TRACE_LENGTH = 5000
+
         const val REPO_NAME_DART_FORMAT = "DartFormat"
         const val REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN = "DartFormatJetBrainsPlugin"
 
