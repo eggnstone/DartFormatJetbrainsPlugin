@@ -79,7 +79,7 @@ class ExternalDartFormat
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName/appClosing")
                     state = ExternalDartFormatState.STOPPING
 
-                    NotificationTools.notifyInfo(
+                    /*NotificationTools.notifyInfo(
                         NotificationInfo(
                             content = null,
                             links = null,
@@ -88,7 +88,7 @@ class ExternalDartFormat
                             title = "Shutting down external dart_format ...",
                             virtualFile = null
                         )
-                    )
+                    )*/
 
                     if (dartFormatClient == null || channel == null)
                     {
@@ -108,7 +108,7 @@ class ExternalDartFormat
                             }
                         }
 
-                        NotificationTools.notifyInfo(
+                        /*NotificationTools.notifyInfo(
                             NotificationInfo(
                                 content = null,
                                 links = null,
@@ -117,7 +117,7 @@ class ExternalDartFormat
                                 title = "Shut down external dart_format.",
                                 virtualFile = null
                             )
-                        )
+                        )*/
                     }
                     catch (e: TimeoutCancellationException)
                     {
