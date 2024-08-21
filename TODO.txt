@@ -13,7 +13,6 @@ TODO
 - Hint: press <hotkey> to format ...
 - "Change shortcut action" in settings
 - Install/update action
-- Don't send empty text, test result for empty text
 - Welcome message
 - First format message with settings action
 
@@ -22,3 +21,4 @@ DONE
 - add plugin and dart_format versions to reports
 - report operating system details
 - add link to VSCode extension
+- Don't send empty text, test result for empty text
