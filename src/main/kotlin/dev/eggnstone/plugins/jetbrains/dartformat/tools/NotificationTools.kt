@@ -214,8 +214,8 @@ class NotificationTools
                 if (locationForNotification != null)
                     content += "<br/>Location: $locationForNotification"
 
-                /*if (notificationInfo.origin != null)
-                    content += "<br/>Origin: " + notificationInfo.origin*/
+                if (Constants.DEBUG && notificationInfo.origin != null)
+                    content += "<br/>Origin: " + notificationInfo.origin
             }
 
             val notification: Notification = notificationGroup.createNotification(

@@ -105,7 +105,7 @@ class FormatAction : AnAction()
                             NotificationInfo(
                                 content = null,
                                 links = null,
-                                origin = null,
+                                origin = "$methodName/2",
                                 project = project,
                                 title = "Took ${seconds2}s to format $finalVirtualFile.",
                                 virtualFile = null
@@ -163,7 +163,7 @@ class FormatAction : AnAction()
                     NotificationInfo(
                         content = null,
                         links = null,
-                        origin = null,
+                        origin = "$methodName/3",
                         project = project,
                         title = title,
                         virtualFile = null
@@ -174,7 +174,7 @@ class FormatAction : AnAction()
         catch (e: Exception)
         {
             NotificationTools.reportThrowable(
-                origin = "$methodName/3",
+                origin = "$methodName/4",
                 project = project,
                 throwable = e,
                 virtualFile = lastVirtualFile
@@ -185,7 +185,7 @@ class FormatAction : AnAction()
             // catch errors, too, in order to report all problems, e.g.:
             // - java.lang.AssertionError: Wrong line separators: '...\r\n...'
             NotificationTools.reportThrowable(
-                origin = "$methodName/4",
+                origin = "$methodName/5",
                 project = project,
                 throwable = e,
                 virtualFile = lastVirtualFile
@@ -325,7 +325,7 @@ class FormatAction : AnAction()
                 NotificationInfo(
                     content = null,
                     links = null,
-                    origin = null,
+                    origin = "$methodName/1",
                     project = project,
                     title = message,
                     virtualFile = null
@@ -347,7 +347,7 @@ class FormatAction : AnAction()
                 val reportErrorLink = NotificationTools.createReportErrorLink(
                     content = null,
                     gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
-                    origin = "$methodName/1", // TODO: remove
+                    origin = "$methodName/2",
                     stackTrace = null,
                     title = formatResult.text
                 )
@@ -355,7 +355,7 @@ class FormatAction : AnAction()
                     NotificationInfo(
                         content = null,
                         listOf(reportErrorLink),
-                        origin = "$methodName/1", // TODO: remove
+                        origin = "$methodName/3",
                         project = project,
                         title = formatResult.text,
                         virtualFile = virtualFile
@@ -364,7 +364,7 @@ class FormatAction : AnAction()
             }
             else
                 NotificationTools.reportThrowable(
-                    origin = "$methodName/2", // TODO: remove
+                    origin = "$methodName/4",
                     project = project,
                     throwable = formatResult.throwable,
                     virtualFile = virtualFile
@@ -375,21 +375,25 @@ class FormatAction : AnAction()
 
         if (formatResult.resultType == ResultType.Warning)
         {
-            var title = formatResult.text
-            if (formatResult.throwable != null && formatResult.throwable is DartFormatException)
-                title = formatResult.throwable.message
-
             if (notifyWarnings)
-                NotificationTools.notifyWarning(
-                    NotificationInfo(
-                        content = null,
-                        links = null,
-                        origin = "$methodName/3", // TODO: remove
+                if (formatResult.throwable == null)
+                    NotificationTools.notifyWarning(
+                        NotificationInfo(
+                            content = null,
+                            links = null,
+                            origin = "$methodName/5",
+                            project = project,
+                            title = formatResult.text,
+                            virtualFile = virtualFile
+                        )
+                    )
+                else
+                    NotificationTools.reportThrowable(
+                        origin = "$methodName/6",
                         project = project,
-                        title = title,
+                        throwable = formatResult.throwable,
                         virtualFile = virtualFile
                     )
-                )
 
             return FormatOrReportResult(null, true)
         }
@@ -400,7 +404,7 @@ class FormatAction : AnAction()
             val reportErrorLink = NotificationTools.createReportErrorLink(
                 content = null,
                 gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
-                origin = "$methodName/4", // TODO: remove
+                origin = "$methodName/7",
                 stackTrace = null,
                 title = title
             )
@@ -408,7 +412,7 @@ class FormatAction : AnAction()
                 NotificationInfo(
                     content = null,
                     listOf(reportErrorLink),
-                    origin = "$methodName/4", // TODO: remove
+                    origin = "$methodName/8",
                     project = project,
                     title = title,
                     virtualFile = virtualFile
