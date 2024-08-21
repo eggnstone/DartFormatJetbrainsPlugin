@@ -5,7 +5,7 @@ class Constants
     companion object
     {
         // Main switch for debug. Should be "false" for production.
-        const val DEBUG = true
+        const val DEBUG = false
 
         const val LOG_VERBOSE = false
 
