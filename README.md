@@ -16,5 +16,14 @@ To format the current file / the currently selected folders and files, press the
 Under Windows: `Ctrl`+`Alt`+`,`  
 Under macOS: `Command`+`Alt`+`,`
 
-Download from JetBrains marketplace:  
-https://plugins.jetbrains.com/plugin/21003-dartformat
+**Download the plugin from JetBrains marketplace:**  
+https://plugins.jetbrains.com/plugin/21003-dartformat  
+Source code: https://github.com/eggnstone/DartFormatJetbrainsPlugin
+
+**Also available for Visual Studio Code:**  
+https://marketplace.visualstudio.com/items?itemName=eggnstone.DartFormat    
+Source code: https://github.com/eggnstone/DartFormatVSCodePlugin 
+
+**External dart_format package:**  
+https://pub.dev/packages/dart_format  
+Source code: https://github.com/eggnstone/dart_format
