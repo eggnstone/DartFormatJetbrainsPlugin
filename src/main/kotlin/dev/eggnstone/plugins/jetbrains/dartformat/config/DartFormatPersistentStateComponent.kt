@@ -7,7 +7,7 @@ import com.intellij.openapi.components.Storage
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 @State(
-    name = "DartFormatPersistentStateComponent",
+    name = "DartFormatPersistentStateComponent", // TODO: rename because it appears in "export settings" dialog
     storages = [Storage("DartFormatPlugin.xml")]
 )
 class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatConfig>
