@@ -4,32 +4,34 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 @State(
-    name = "DartFormatPersistentStateComponent", // TODO: rename because it appears in "export settings" dialog
+    name = "DartFormat",
     storages = [Storage("DartFormatPlugin.xml")]
 )
-class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatConfig>
+class DartFormatPersistentStateComponentV2 : PersistentStateComponent<DartFormatConfig>
 {
     companion object
     {
-        val instance: DartFormatPersistentStateComponent?
+        val instance: DartFormatPersistentStateComponentV2?
             get()
             {
                 return try
                 {
-                    ApplicationManager.getApplication().getService(DartFormatPersistentStateComponent::class.java)
+                    if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatPersistentStateComponentV2.instance")
+                    ApplicationManager.getApplication().getService(DartFormatPersistentStateComponentV2::class.java)
                 }
                 catch (e: Exception)
                 {
-                    Logger.logError("DartFormatPersistentStateComponent.instance: $e")
+                    Logger.logError("DartFormatPersistentStateComponentV2.instance: $e")
                     null
                 }
             }
     }
 
-    private var dartFormatConfig = DartFormatConfig()
+    private var dartFormatConfig = DartFormatConfig.default(version = 2)
 
     override fun getState(): DartFormatConfig
     {
@@ -40,12 +42,13 @@ class DartFormatPersistentStateComponent : PersistentStateComponent<DartFormatCo
     {
         try
         {
+            if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatPersistentStateComponentV2.loadState")
             dartFormatConfig = state
         }
         catch (e: Exception)
         {
-            Logger.logError("DartFormatPersistentStateComponent.loadState: $e")
-            dartFormatConfig = DartFormatConfig()
+            Logger.logError("DartFormatPersistentStateComponentV2.loadState: $e")
+            dartFormatConfig = DartFormatConfig.default(version = 2)
         }
     }
 }

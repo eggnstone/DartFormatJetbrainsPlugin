@@ -283,8 +283,9 @@ class ExternalDartFormat
             val jsonResponse = JsonTools.parseOrNull(jsonEncodedResponse)
             if (jsonResponse == null)
             {
+                val cleanedResponse = jsonEncodedResponse.replace("\r\n", "\n")
                 val title = "External dart_format: Expected connection details in JSON but received plain text: " +
-                    StringTools.toDisplayString(jsonEncodedResponse, 200)
+                    StringTools.toDisplayString(cleanedResponse, 200)
 
                 var content = ""
                 if (readLineResponse.stdOut != null)

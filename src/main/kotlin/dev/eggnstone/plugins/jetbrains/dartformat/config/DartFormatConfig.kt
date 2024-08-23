@@ -1,21 +1,64 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DartFormatConfig(
-    var addNewLineAfterClosingBrace: Boolean = ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE,
-    var addNewLineAfterOpeningBrace: Boolean = ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE,
-    var addNewLineAfterSemicolon: Boolean = ADD_NEW_LINE_AFTER_SEMICOLON_NONE,
-    var addNewLineAtEndOfText: Boolean = ADD_NEW_LINE_AT_END_OF_TEXT_NONE,
-    var addNewLineBeforeClosingBrace: Boolean = ADD_NEW_LINE_BEFORE_CLOSING_BRACE_NONE,
-    var addNewLineBeforeOpeningBrace: Boolean = ADD_NEW_LINE_BEFORE_OPENING_BRACE_NONE,
-    var indentationIsEnabled: Boolean = INDENTATION_IS_ENABLED_NONE,
-    var indentationSpacesPerLevel: Int = INDENTATION_SPACES_PER_LEVEL_NONE,
-    var maxEmptyLines: Int = MAX_EMPTY_LINES_NONE,
-    var maxEmptyLinesIsEnabled: Boolean = MAX_EMPTY_LINES_IS_ENABLED_NONE,
-    var removeTrailingCommas: Boolean = REMOVE_TRAILING_COMMAS_NONE
+    var addNewLineAfterClosingBrace: Boolean,
+    var addNewLineAfterOpeningBrace: Boolean,
+    var addNewLineAfterSemicolon: Boolean,
+    var addNewLineAtEndOfText: Boolean,
+    var addNewLineBeforeClosingBrace: Boolean,
+    var addNewLineBeforeOpeningBrace: Boolean,
+    var indentationIsEnabled: Boolean,
+    var indentationSpacesPerLevel: Int,
+    var maxEmptyLines: Int,
+    var maxEmptyLinesIsEnabled: Boolean,
+    var removeTrailingCommas: Boolean,
+    var version: Int? = null
 )
 {
     companion object
     {
+        fun none(version: Int): DartFormatConfig
+        {
+            return DartFormatConfig(
+                addNewLineAfterClosingBrace = ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE,
+                addNewLineAfterOpeningBrace = ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE,
+                addNewLineAfterSemicolon = ADD_NEW_LINE_AFTER_SEMICOLON_NONE,
+                addNewLineAtEndOfText = ADD_NEW_LINE_AT_END_OF_TEXT_NONE,
+                addNewLineBeforeClosingBrace = ADD_NEW_LINE_BEFORE_CLOSING_BRACE_NONE,
+                addNewLineBeforeOpeningBrace = ADD_NEW_LINE_BEFORE_OPENING_BRACE_NONE,
+                indentationIsEnabled = INDENTATION_IS_ENABLED_NONE,
+                indentationSpacesPerLevel = INDENTATION_SPACES_PER_LEVEL_ALL,
+                maxEmptyLines = MAX_EMPTY_LINES_ALL,
+                maxEmptyLinesIsEnabled = MAX_EMPTY_LINES_IS_ENABLED_NONE,
+                removeTrailingCommas = REMOVE_TRAILING_COMMAS_NONE,
+                version = version
+            )
+        }
+
+        fun default(version: Int): DartFormatConfig
+        {
+            return DartFormatConfig(
+                addNewLineAfterClosingBrace = ADD_NEW_LINE_AFTER_CLOSING_BRACE_DEFAULT,
+                addNewLineAfterOpeningBrace = ADD_NEW_LINE_AFTER_OPENING_BRACE_DEFAULT,
+                addNewLineAfterSemicolon = ADD_NEW_LINE_AFTER_SEMICOLON_DEFAULT,
+                addNewLineAtEndOfText = ADD_NEW_LINE_AT_END_OF_TEXT_DEFAULT,
+                addNewLineBeforeClosingBrace = ADD_NEW_LINE_BEFORE_CLOSING_BRACE_DEFAULT,
+                addNewLineBeforeOpeningBrace = ADD_NEW_LINE_BEFORE_OPENING_BRACE_DEFAULT,
+                indentationIsEnabled = INDENTATION_IS_ENABLED_DEFAULT,
+                indentationSpacesPerLevel = INDENTATION_SPACES_PER_LEVEL_ALL,
+                maxEmptyLines = MAX_EMPTY_LINES_ALL,
+                maxEmptyLinesIsEnabled = MAX_EMPTY_LINES_IS_ENABLED_DEFAULT,
+                removeTrailingCommas = REMOVE_TRAILING_COMMAS_DEFAULT,
+                version = version
+            )
+        }
+
+        private const val INDENTATION_SPACES_PER_LEVEL_ALL = 4
+        private const val MAX_EMPTY_LINES_ALL = 1
+
         private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE = false
         private const val ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE = false
         private const val ADD_NEW_LINE_AFTER_SEMICOLON_NONE = false
@@ -23,10 +66,18 @@ data class DartFormatConfig(
         private const val ADD_NEW_LINE_BEFORE_CLOSING_BRACE_NONE = false
         private const val ADD_NEW_LINE_BEFORE_OPENING_BRACE_NONE = false
         private const val INDENTATION_IS_ENABLED_NONE = false
-        private const val INDENTATION_SPACES_PER_LEVEL_NONE = 4
         private const val MAX_EMPTY_LINES_IS_ENABLED_NONE = false
-        private const val MAX_EMPTY_LINES_NONE = 1
         private const val REMOVE_TRAILING_COMMAS_NONE = false
+
+        private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_DEFAULT = true
+        private const val ADD_NEW_LINE_AFTER_OPENING_BRACE_DEFAULT = true
+        private const val ADD_NEW_LINE_AFTER_SEMICOLON_DEFAULT = true
+        private const val ADD_NEW_LINE_AT_END_OF_TEXT_DEFAULT = true
+        private const val ADD_NEW_LINE_BEFORE_CLOSING_BRACE_DEFAULT = true
+        private const val ADD_NEW_LINE_BEFORE_OPENING_BRACE_DEFAULT = true
+        private const val INDENTATION_IS_ENABLED_DEFAULT = true
+        private const val MAX_EMPTY_LINES_IS_ENABLED_DEFAULT = true
+        private const val REMOVE_TRAILING_COMMAS_DEFAULT = true
     }
 
     fun toJson(): String
@@ -51,7 +102,7 @@ data class DartFormatConfig(
     {
         //if (Constants.LOG_VERBOSE) Logger.logVerbose("DartFormatConfig.hasNothingEnabled()")
 
-        val adjustedDefaultConfig = DartFormatConfig()
+        val adjustedDefaultConfig = none(version = 0)
 
         /*
         Logger.log("  addedNewLineAfterClosingBrace: ${this.addNewLineAfterClosingBrace} == ${adjustedDefaultConfig.addNewLineAfterClosingBrace}")
@@ -69,6 +120,7 @@ data class DartFormatConfig(
 
         adjustedDefaultConfig.indentationSpacesPerLevel = this.indentationSpacesPerLevel
         adjustedDefaultConfig.maxEmptyLines = this.maxEmptyLines
+        adjustedDefaultConfig.version = this.version
 
         return this == adjustedDefaultConfig
     }

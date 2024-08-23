@@ -5,10 +5,13 @@ class Constants
     companion object
     {
         // Main switch for debug. Should be "false" for production.
-        const val DEBUG = false
+        const val DEBUG = true
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val LOG_VERBOSE = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_CONFIG = DEBUG && true
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONNECTION = DEBUG && false

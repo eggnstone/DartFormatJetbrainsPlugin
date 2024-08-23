@@ -16,7 +16,41 @@ import javax.swing.text.NumberFormatter
 
 class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
-    private val config: DartFormatConfig get() = DartFormatPersistentStateComponent.instance?.state ?: DartFormatConfig()
+    private val config: DartFormatConfig get() = DartFormatConfigGetter.get()
+
+    /*companion object
+    {
+        fun getConfig(): DartFormatConfig
+        {
+            if (DartFormatPersistentStateComponentV2.instance != null)
+            {
+                if (Constants.DEBUG_CONFIG) Logger.logDebug("FormatAction.getConfig: using existing V2")
+
+                try
+                {
+                    val x: DartFormatConfig = DartFormatPersistentStateComponentV2.instance!!.state
+                    if (Constants.DEBUG_CONFIG) Logger.logDebug(x.toJson())
+                    val json = Json.encodeToString(x)
+                    if (Constants.DEBUG_CONFIG) Logger.logDebug(json)
+                }
+                catch (e: Exception)
+                {
+                    Logger.logError("DartFormatPersistentStateConfigurable.getConfig: $e")
+                }
+
+                return DartFormatPersistentStateComponentV2.instance!!.state
+            }
+
+            if (DartFormatPersistentStateComponentV1.instance != null)
+            {
+                if (Constants.DEBUG_CONFIG) Logger.logDebug("FormatAction.getConfig: using existing V1")
+                return DartFormatPersistentStateComponentV1.instance!!.state
+            }
+
+            if (Constants.DEBUG_CONFIG) Logger.logDebug("FormatAction.getConfig: using new V2")
+            return DartFormatConfig.default(version = 2)
+        }
+    }*/
 
     private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
     private var addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")

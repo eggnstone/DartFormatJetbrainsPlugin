@@ -1,7 +1,10 @@
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.24"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
     id("org.jetbrains.intellij") version "1.17.3"
+    //kotlin("jvm") version "1.9.24" // or your current Kotlin version
+    //kotlin("plugin.serialization") version "1.9.24" // or your current Kotlin version
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
@@ -45,3 +48,9 @@ tasks {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
 }
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0") // or the latest version
+}
+
+apply(plugin = "kotlinx-serialization")
