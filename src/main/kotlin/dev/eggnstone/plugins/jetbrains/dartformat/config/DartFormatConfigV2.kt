@@ -32,10 +32,11 @@ data class DartFormatConfigV2(
         private const val ADD_NEW_LINE_BEFORE_CLOSING_BRACE_DEFAULT = true
         private const val ADD_NEW_LINE_BEFORE_OPENING_BRACE_DEFAULT = true
         private const val INDENTATION_IS_ENABLED_DEFAULT = true
-        private const val INDENTATION_SPACES_PER_LEVEL_DEFAULT = 4
-        private const val MAX_EMPTY_LINES_DEFAULT = 1
         private const val MAX_EMPTY_LINES_IS_ENABLED_DEFAULT = true
         private const val REMOVE_TRAILING_COMMAS_DEFAULT = true
+
+        private const val INDENTATION_SPACES_PER_LEVEL_DEFAULT = 4
+        private const val MAX_EMPTY_LINES_DEFAULT = 1
     }
 
     fun toJson(): String
@@ -58,27 +59,14 @@ data class DartFormatConfigV2(
 
     fun hasNothingEnabled(): Boolean
     {
-        //if (Constants.LOG_VERBOSE) Logger.logVerbose("DartFormatConfig.hasNothingEnabled()")
-
-        val adjustedDefaultConfig = DartFormatConfigV2()
-
-        /*
-        Logger.log("  addedNewLineAfterClosingBrace: ${this.addNewLineAfterClosingBrace} == ${adjustedDefaultConfig.addNewLineAfterClosingBrace}")
-        Logger.log("  addNewLineAfterOpeningBrace: ${this.addNewLineAfterOpeningBrace} == ${adjustedDefaultConfig.addNewLineAfterOpeningBrace}")
-        Logger.log("  addNewLineAfterSemicolon: ${this.addNewLineAfterSemicolon} == ${adjustedDefaultConfig.addNewLineAfterSemicolon}")
-        Logger.log("  addNewLineAtEndOfText: ${this.addNewLineAtEndOfText} == ${adjustedDefaultConfig.addNewLineAtEndOfText}")
-        Logger.log("  addNewLineBeforeClosingBrace: ${this.addNewLineBeforeClosingBrace} == ${adjustedDefaultConfig.addNewLineBeforeClosingBrace}")
-        Logger.log("  addNewLineBeforeOpeningBrace: ${this.addNewLineBeforeOpeningBrace} == ${adjustedDefaultConfig.addNewLineBeforeOpeningBrace}")
-        Logger.log("  indentationIsEnabled: ${this.indentationIsEnabled} == ${adjustedDefaultConfig.indentationIsEnabled}")
-        Logger.log("  indentationSpacesPerLevel: ${this.indentationSpacesPerLevel} == ${adjustedDefaultConfig.indentationSpacesPerLevel}")
-        Logger.log("  maxEmptyLines: ${this.maxEmptyLines} == ${adjustedDefaultConfig.maxEmptyLines}")
-        Logger.log("  maxEmptyLinesIsEnabled: ${this.maxEmptyLinesIsEnabled} == ${adjustedDefaultConfig.maxEmptyLinesIsEnabled}")
-        Logger.log("  removeTrailingCommas: ${this.removeTrailingCommas} == ${adjustedDefaultConfig.removeTrailingCommas}")
-        */
-
-        adjustedDefaultConfig.indentationSpacesPerLevel = this.indentationSpacesPerLevel
-        adjustedDefaultConfig.maxEmptyLines = this.maxEmptyLines
-
-        return this == adjustedDefaultConfig
+        return !addNewLineAfterClosingBrace &&
+            !addNewLineAfterOpeningBrace &&
+            !addNewLineAfterSemicolon &&
+            !addNewLineAtEndOfText &&
+            !addNewLineBeforeClosingBrace &&
+            !addNewLineBeforeOpeningBrace &&
+            !indentationIsEnabled &&
+            !maxEmptyLinesIsEnabled &&
+            !removeTrailingCommas
     }
 }
