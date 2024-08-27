@@ -16,7 +16,7 @@ import javax.swing.text.NumberFormatter
 
 class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
-    private val config: DartFormatConfig get() = DartFormatPersistentStateComponent.instance?.state ?: DartFormatConfig()
+    private val config: DartFormatConfigV2 get() = DartFormatConfigGetter.get()
 
     private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
     private var addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")

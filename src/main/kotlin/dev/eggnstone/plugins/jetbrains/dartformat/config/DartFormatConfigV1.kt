@@ -1,6 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
-data class DartFormatConfig(
+data class DartFormatConfigV1(
     var addNewLineAfterClosingBrace: Boolean = ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE,
     var addNewLineAfterOpeningBrace: Boolean = ADD_NEW_LINE_AFTER_OPENING_BRACE_NONE,
     var addNewLineAfterSemicolon: Boolean = ADD_NEW_LINE_AFTER_SEMICOLON_NONE,
@@ -14,6 +14,15 @@ data class DartFormatConfig(
     var removeTrailingCommas: Boolean = REMOVE_TRAILING_COMMAS_NONE
 )
 {
+    private var _loaded: Boolean? = null
+
+    fun getLoadedTransient(): Boolean? = _loaded
+
+    fun setLoaded(b: Boolean?)
+    {
+        _loaded = b
+    }
+
     companion object
     {
         private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_NONE = false
@@ -51,7 +60,7 @@ data class DartFormatConfig(
     {
         //if (Constants.LOG_VERBOSE) Logger.logVerbose("DartFormatConfig.hasNothingEnabled()")
 
-        val adjustedDefaultConfig = DartFormatConfig()
+        val adjustedDefaultConfig = DartFormatConfigV1()
 
         /*
         Logger.log("  addedNewLineAfterClosingBrace: ${this.addNewLineAfterClosingBrace} == ${adjustedDefaultConfig.addNewLineAfterClosingBrace}")

@@ -72,7 +72,8 @@
                 id="dev.eggnstone.plugins.jetbrains.dartformat.DartFormatSettings"
                 instance="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable">
         </applicationConfigurable>
-        <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent"/>
+        <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponentV1"/>
+        <applicationService serviceImplementation="dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponentV2"/>
         <notificationGroup id="DartFormat" displayType="BALLOON"/>
         <postStartupActivity implementation="dev.eggnstone.plugins.jetbrains.dartformat.plugin.ProjectActivity"/>
     </extensions>

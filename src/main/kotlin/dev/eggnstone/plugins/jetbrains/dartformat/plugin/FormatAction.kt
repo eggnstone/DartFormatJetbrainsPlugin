@@ -13,8 +13,7 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfig
-import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateComponent
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfigGetter
 import dev.eggnstone.plugins.jetbrains.dartformat.data.FormatOrReportResult
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
@@ -44,7 +43,7 @@ class FormatAction : AnAction()
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
         var lastVirtualFile: VirtualFile? = null
 
-        val config = getConfig()
+        val config = DartFormatConfigGetter.get()
 
         if (config.hasNothingEnabled())
         {
@@ -430,16 +429,8 @@ class FormatAction : AnAction()
         if (inputText.isEmpty())
             return FormatResult.ok("")
 
-        val config = getConfig()
+        val config = DartFormatConfigGetter.get()
         val jsonConfig = config.toJson()
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
-    }
-
-    private fun getConfig(): DartFormatConfig
-    {
-        if (DartFormatPersistentStateComponent.instance == null)
-            return DartFormatConfig()
-
-        return DartFormatPersistentStateComponent.instance!!.state
     }
 }
