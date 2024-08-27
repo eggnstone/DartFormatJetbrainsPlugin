@@ -11,6 +11,9 @@ class Constants
         const val LOG_VERBOSE = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_CONFIG = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONNECTION = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")

@@ -1,5 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
+import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 class DartFormatConfigUpdater
@@ -8,7 +9,7 @@ class DartFormatConfigUpdater
     {
         fun updateV1toV2(oldConfig: DartFormatConfigV1): DartFormatConfigV2
         {
-            Logger.logDebug("DartFormatConfigUpdater.updateV1toV2: updating V1 to V2")
+            if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatConfigUpdater.updateV1toV2: updating V1 to V2")
             return DartFormatConfigV2(
                 addNewLineAfterClosingBrace = oldConfig.addNewLineAfterClosingBrace,
                 addNewLineAfterOpeningBrace = oldConfig.addNewLineAfterOpeningBrace,

@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 @State(
     name = "DartFormat",
@@ -28,14 +27,12 @@ class DartFormatPersistentStateComponentV2 : PersistentStateComponent<DartFormat
     override fun noStateLoaded()
     {
         super.noStateLoaded()
-        Logger.logDebug("DartFormatPersistentStateComponentV2.noStateLoaded")
         dartFormatConfig = DartFormatConfigV2()
         dartFormatConfig.setLoaded(false)
     }
 
     override fun loadState(state: DartFormatConfigV2)
     {
-        Logger.logDebug("DartFormatPersistentStateComponentV2.loadState")
         dartFormatConfig = state
         dartFormatConfig.setLoaded(true)
     }
