@@ -244,7 +244,8 @@ class NotificationTools
                         else -> Runnable { BrowserUtil.browse(link.url) }
                     }
 
-                    val action = NotificationAction.createSimple(link.name, runnable)
+                    val safeLinkName = link.name.replace("_", "&_")
+                    val action = NotificationAction.createSimple(safeLinkName, runnable)
                     notification.addAction(action)
                 }
 

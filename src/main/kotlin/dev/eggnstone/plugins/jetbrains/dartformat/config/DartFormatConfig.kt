@@ -12,8 +12,11 @@ data class DartFormatConfig(
     var maxEmptyLines: Int = MAX_EMPTY_LINES_DEFAULT,
     var maxEmptyLinesIsEnabled: Boolean = MAX_EMPTY_LINES_IS_ENABLED_DEFAULT,
     var removeTrailingCommas: Boolean = REMOVE_TRAILING_COMMAS_DEFAULT,
-    var majorVersion : Int? = null,
-    var minorVersion : Int? = null
+    //
+    var currentVersionText: String? = null,
+    var latestVersionText: String? = null,
+    var majorVersion: Int? = null,
+    var minorVersion: Int? = null
 )
 {
     private var _loaded: Boolean? = null

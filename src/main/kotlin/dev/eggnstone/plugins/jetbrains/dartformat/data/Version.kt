@@ -16,8 +16,11 @@ data class Version(val major: Int, val minor: Int, val patch: Int)
             return Version(major, minor, patch)
         }
 
-        fun parseOrNull(s: String): Version?
+        fun parseOrNull(s: String?): Version?
         {
+            if (s == null)
+                return null
+
             return try
             {
                 parse(s)

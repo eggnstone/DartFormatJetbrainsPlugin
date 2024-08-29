@@ -8,6 +8,7 @@ import com.intellij.util.io.awaitExit
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfigGetter
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
@@ -148,10 +149,38 @@ class ExternalDartFormat
             })
 
             var externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
-            if (externalDartFormatInfo.localError != null)
+
+            var shouldUpdate = false
+            var shouldInstall = externalDartFormatInfo.localError != null
+            if (shouldInstall)
+            {
+                if (Constants.LOG_VERBOSE) Logger.logVerbose("Will try to install because no installation found.")
+            }
+            else
+            {
+                if (Constants.LOG_VERBOSE) Logger.logVerbose(
+                    "Checking versions from the last time we ran:" +
+                        " Current version: ${DartFormatConfigGetter.get().currentVersionText}" +
+                        " Latest version: ${DartFormatConfigGetter.get().latestVersionText}"
+                )
+                val currentVersion = Version.parseOrNull(DartFormatConfigGetter.get().currentVersionText)
+                val latestVersion = Version.parseOrNull(DartFormatConfigGetter.get().latestVersionText)
+                if (currentVersion != null && latestVersion != null && currentVersion.isOlderThan(latestVersion))
+                {
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("Will try to update because of outdated version.")
+                    shouldInstall = true
+                    shouldUpdate = true
+                }
+                else
+                {
+                    if (Constants.LOG_VERBOSE) Logger.logVerbose("Not updating now because version was up-to-date the last time we checked.")
+                }
+            }
+
+            if (shouldInstall)
             {
                 state = ExternalDartFormatState.INSTALLING
-                if (!tryInstall())
+                if (!tryInstall(shouldUpdate))
                 {
 
                     state = ExternalDartFormatState.FAILED_TO_INSTALL
@@ -341,10 +370,22 @@ class ExternalDartFormat
                 return
             }
 
+            if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "Got connection details: $jsonResponse",
+                    virtualFile = null
+                )
+            )
+
             val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
             currentVersionText = JsonTools.getString(jsonResponse, "CurrentVersion", "")
             val currentVersion = Version.parseOrNull(currentVersionText)
-            val latestVersion = Version.parseOrNull(JsonTools.getString(jsonResponse, "LatestVersion", ""))
+            val latestVersionText = JsonTools.getString(jsonResponse, "LatestVersion", "")
+            val latestVersion = Version.parseOrNull(latestVersionText)
             Logger.logDebug("$methodName: baseUrl:        $baseUrl")
             Logger.logDebug("$methodName: currentVersion: $currentVersion")
             Logger.logDebug("$methodName: latestVersion:  $latestVersion")
@@ -375,16 +416,19 @@ class ExternalDartFormat
                 )
             }
 
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("Saving current version: $currentVersionText")
+            DartFormatConfigGetter.get().currentVersionText = currentVersionText
+
             if (currentVersion?.isOlderThan(latestVersion) == true)
             {
-                val title = "A new version of the dart_format package is available."
-                val content = "<pre>Current version: $currentVersion\nLatest version:  $latestVersion</pre>" +
-                    "Just execute this again:<pre>dart pub global activate dart_format</pre>"
-                val updateLink = NotificationTools.createCheckInstallationInstructionsLink()
+                if (Constants.LOG_VERBOSE) Logger.logVerbose("Saving latest version: $latestVersionText")
+                DartFormatConfigGetter.get().latestVersionText = latestVersionText
+
+                val title = "A new version of the dart_format package is available and will be installed during the next start."
                 NotificationTools.notifyInfo(
                     NotificationInfo(
-                        content = content,
-                        links = listOf(updateLink),
+                        content = null,
+                        links = null,
                         origin = null,
                         project = null,
                         title = title,
@@ -482,8 +526,13 @@ class ExternalDartFormat
         }
     }
 
-    private suspend fun tryInstall(): Boolean
+    private suspend fun tryInstall(shouldUpdate: Boolean): Boolean
     {
+        val actionEdLower = if (shouldUpdate) "updated" else "installed"
+        val actionErUpper = if (shouldUpdate) "Updater" else "Installer"
+        val actionIngUpper = if (shouldUpdate) "Updating" else "Installing"
+        val actionLower = if (shouldUpdate) "update" else "install"
+
         val installExternalDartFormatInfo = OsTools.getInstallExternalDartFormatFilePathOrException()
         if (installExternalDartFormatInfo.localError != null)
             throw DartFormatException.localError("Unexpected error: ${installExternalDartFormatInfo.localError.message}")
@@ -495,14 +544,14 @@ class ExternalDartFormat
         else
             ProcessBuilder(installExternalDartFormatInfo.executable, installExternalDartFormatInfo.additionalParam, installExternalDartFormatInfo.additionalParam2, "pub", "global", "activate", "dart_format")
 
-        Logger.logDebug("Installing external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
+        Logger.logDebug("$actionIngUpper external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
         NotificationTools.notifyInfo(
             NotificationInfo(
                 content = null,
                 links = null,
                 origin = null,
                 project = null,
-                title = "Installing external dart_format ...\nThis may take a few seconds.",
+                title = "$actionIngUpper external dart_format ...\nThis may take a few seconds.",
                 virtualFile = null
             )
         )
@@ -512,8 +561,8 @@ class ExternalDartFormat
         @Suppress("KotlinConstantConditions")
         if (result !is Process)
         {
-            val title = "Failed to install external dart_format: " + if (result is Throwable) result.message else result.toString()
-            val content = "You can try to install it manually.\n" +
+            val title = "Failed to $actionLower external dart_format: " + if (result is Throwable) result.message else result.toString()
+            val content = "You can try to $actionLower it manually.\n" +
                 "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
             val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
             val reportErrorLink = NotificationTools.createReportErrorLink(
@@ -548,7 +597,7 @@ class ExternalDartFormat
                     links = null,
                     origin = null,
                     project = null,
-                    title = "Installer for external dart_format process is alive.\nWaiting for process to finish ...",
+                    title = "$actionErUpper for external dart_format process is alive.\nWaiting for process to finish ...",
                     virtualFile = null
                 )
             )
@@ -556,11 +605,11 @@ class ExternalDartFormat
         else
         {
             state = ExternalDartFormatState.FAILED_TO_INSTALL
-            throw DartFormatException.localError("Installer for external dart_format process is dead.")
+            throw DartFormatException.localError("$actionErUpper for external dart_format process is dead.")
         }
 
         val exitCode = process.awaitExit()
-        Logger.logDebug("Exit code: $exitCode")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("Exit code: $exitCode")
 
         if (exitCode != 0)
         {
@@ -570,7 +619,7 @@ class ExternalDartFormat
                     links = null,
                     origin = null,
                     project = null,
-                    title = "Failed to install external dart_format.",
+                    title = "Failed to $actionLower external dart_format.",
                     virtualFile = null
                 )
             )
@@ -584,7 +633,7 @@ class ExternalDartFormat
                 links = null,
                 origin = null,
                 project = null,
-                title = "Successfully installed external dart_format.",
+                title = "Successfully $actionEdLower external dart_format.",
                 virtualFile = null
             )
         )
