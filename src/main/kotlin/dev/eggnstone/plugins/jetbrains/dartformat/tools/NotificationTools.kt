@@ -7,11 +7,13 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable
 import dev.eggnstone.plugins.jetbrains.dartformat.data.LinkInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExceptionSourceType
@@ -227,9 +229,22 @@ class NotificationTools
             if (notificationInfo.links != null)
                 for (link in notificationInfo.links)
                 {
-                    val action = NotificationAction.createSimple(link.name) {
-                        BrowserUtil.browse(link.url)
+                    val runnable: Runnable = when (link.url)
+                    {
+                        "action://openSettings" -> Runnable {
+                            val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
+                            ShowSettingsUtil.getInstance().showSettingsDialog(
+                                finalProject,
+                                DartFormatPersistentStateConfigurable::class.java
+                            )
+                        }
+                        "action://installExternalDartFormat" -> Runnable {
+                            // TODO
+                        }
+                        else -> Runnable { BrowserUtil.browse(link.url) }
                     }
+
+                    val action = NotificationAction.createSimple(link.name, runnable)
                     notification.addAction(action)
                 }
 
@@ -238,6 +253,11 @@ class NotificationTools
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)
+        }
+
+        fun createOpenSettingsLink(title: String): LinkInfo
+        {
+            return LinkInfo(title, "action://openSettings")
         }
     }
 }
