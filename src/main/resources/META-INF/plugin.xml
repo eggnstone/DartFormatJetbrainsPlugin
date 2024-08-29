@@ -9,7 +9,7 @@
     <change-notes>
         <![CDATA[
         <b>Version 2.0.17</b><br/>
-        TODO<br/>
+        Automatically installing+updating the <code>dart_format</code> package now.<br/>
         <br/>
         <b>Version 2.0.16</b><br/>
         Fixed handling of UTF. Better notifications.<br/>
@@ -38,7 +38,7 @@
         Better error logging and reporting.<br/>
         <br/>
         <b>Version 2.0.0</b><br/>
-        Complete rewrite of the plugin. Now uses my <code>dart_format</code> package on <code>pub.dev</code>.
+        Complete rewrite of the plugin. Now uses the <code>dart_format</code> package on <code>pub.dev</code>.
         ]]>
     </change-notes>
     <depends>com.intellij.modules.platform</depends>
