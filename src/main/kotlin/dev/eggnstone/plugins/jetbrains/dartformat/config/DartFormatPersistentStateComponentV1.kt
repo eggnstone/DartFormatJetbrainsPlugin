@@ -9,7 +9,7 @@ import com.intellij.openapi.components.Storage
     name = "DartFormatPersistentStateComponent",
     storages = [Storage("DartFormatPlugin.xml")]
 )
-class DartFormatPersistentStateComponentV1 : PersistentStateComponent<DartFormatConfigV1>
+class DartFormatPersistentStateComponentV1 : PersistentStateComponent<DartFormatConfig>
 {
     companion object
     {
@@ -20,26 +20,26 @@ class DartFormatPersistentStateComponentV1 : PersistentStateComponent<DartFormat
             }
     }
 
-    private var dartFormatConfig = DartFormatConfigV1()
+    private var dartFormatConfig : DartFormatConfig? = null
 
-    override fun getState(): DartFormatConfigV1 = dartFormatConfig
+    override fun getState(): DartFormatConfig = dartFormatConfig!!
 
     override fun noStateLoaded()
     {
         super.noStateLoaded()
-        dartFormatConfig = DartFormatConfigV1()
-        dartFormatConfig.setLoaded(false)
+        dartFormatConfig = DartFormatConfig()
+        dartFormatConfig!!.setLoaded(false)
     }
 
-    override fun loadState(state: DartFormatConfigV1)
+    override fun loadState(state: DartFormatConfig)
     {
         dartFormatConfig = state
-        dartFormatConfig.setLoaded(true)
+        dartFormatConfig!!.setLoaded(true)
     }
 
     fun clearState()
     {
-        dartFormatConfig = DartFormatConfigV1()
-        dartFormatConfig.setLoaded(null)
+        dartFormatConfig = DartFormatConfig()
+        dartFormatConfig!!.setLoaded(null)
     }
 }

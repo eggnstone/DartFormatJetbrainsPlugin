@@ -7,10 +7,10 @@ class DartFormatConfigUpdater
 {
     companion object
     {
-        fun updateV1toV2(oldConfig: DartFormatConfigV1): DartFormatConfigV2
+        fun updateV1toV2(oldConfig: DartFormatConfig): DartFormatConfig
         {
             if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatConfigUpdater.updateV1toV2: updating V1 to V2")
-            return DartFormatConfigV2(
+            return DartFormatConfig(
                 addNewLineAfterClosingBrace = oldConfig.addNewLineAfterClosingBrace,
                 addNewLineAfterOpeningBrace = oldConfig.addNewLineAfterOpeningBrace,
                 addNewLineAfterSemicolon = oldConfig.addNewLineAfterSemicolon,
@@ -21,7 +21,9 @@ class DartFormatConfigUpdater
                 indentationSpacesPerLevel = oldConfig.indentationSpacesPerLevel,
                 maxEmptyLines = oldConfig.maxEmptyLines,
                 maxEmptyLinesIsEnabled = oldConfig.maxEmptyLinesIsEnabled,
-                removeTrailingCommas = oldConfig.removeTrailingCommas
+                removeTrailingCommas = oldConfig.removeTrailingCommas,
+                majorVersion = DartFormatConfig.CURRENT_MAJOR_VERSION,
+                minorVersion = DartFormatConfig.CURRENT_MINOR_VERSION
             )
         }
     }

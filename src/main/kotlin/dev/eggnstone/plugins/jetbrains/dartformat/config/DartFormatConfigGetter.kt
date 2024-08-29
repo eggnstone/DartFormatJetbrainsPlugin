@@ -7,7 +7,7 @@ class DartFormatConfigGetter
 {
     companion object
     {
-        fun get(): DartFormatConfigV2
+        fun get(): DartFormatConfig
         {
             if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatConfigGetter.get()")
 
@@ -41,7 +41,7 @@ class DartFormatConfigGetter
             }
 
             if (Constants.DEBUG_CONFIG) Logger.logDebug("DartFormatConfigGetter.get returning new V2")
-            DartFormatPersistentStateComponentV2.instance!!.loadState(DartFormatConfigV2())
+            DartFormatPersistentStateComponentV2.instance!!.loadState(DartFormatConfig.current())
             return DartFormatPersistentStateComponentV2.instance!!.state
         }
     }

@@ -1,6 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
-data class DartFormatConfigV2(
+data class DartFormatConfig(
     var addNewLineAfterClosingBrace: Boolean = ADD_NEW_LINE_AFTER_CLOSING_BRACE_DEFAULT,
     var addNewLineAfterOpeningBrace: Boolean = ADD_NEW_LINE_AFTER_OPENING_BRACE_DEFAULT,
     var addNewLineAfterSemicolon: Boolean = ADD_NEW_LINE_AFTER_SEMICOLON_DEFAULT,
@@ -12,6 +12,8 @@ data class DartFormatConfigV2(
     var maxEmptyLines: Int = MAX_EMPTY_LINES_DEFAULT,
     var maxEmptyLinesIsEnabled: Boolean = MAX_EMPTY_LINES_IS_ENABLED_DEFAULT,
     var removeTrailingCommas: Boolean = REMOVE_TRAILING_COMMAS_DEFAULT,
+    var majorVersion : Int? = null,
+    var minorVersion : Int? = null
 )
 {
     private var _loaded: Boolean? = null
@@ -25,15 +27,23 @@ data class DartFormatConfigV2(
 
     companion object
     {
-        private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_DEFAULT = true
-        private const val ADD_NEW_LINE_AFTER_OPENING_BRACE_DEFAULT = true
-        private const val ADD_NEW_LINE_AFTER_SEMICOLON_DEFAULT = true
-        private const val ADD_NEW_LINE_AT_END_OF_TEXT_DEFAULT = true
-        private const val ADD_NEW_LINE_BEFORE_CLOSING_BRACE_DEFAULT = true
-        private const val ADD_NEW_LINE_BEFORE_OPENING_BRACE_DEFAULT = true
-        private const val INDENTATION_IS_ENABLED_DEFAULT = true
-        private const val MAX_EMPTY_LINES_IS_ENABLED_DEFAULT = true
-        private const val REMOVE_TRAILING_COMMAS_DEFAULT = true
+        fun current(): DartFormatConfig
+        {
+            return DartFormatConfig(majorVersion = CURRENT_MAJOR_VERSION, minorVersion = CURRENT_MINOR_VERSION)
+        }
+
+        const val CURRENT_MAJOR_VERSION: Int = 2
+        const val CURRENT_MINOR_VERSION: Int = 0
+
+        private const val ADD_NEW_LINE_AFTER_CLOSING_BRACE_DEFAULT = false
+        private const val ADD_NEW_LINE_AFTER_OPENING_BRACE_DEFAULT = false
+        private const val ADD_NEW_LINE_AFTER_SEMICOLON_DEFAULT = false
+        private const val ADD_NEW_LINE_AT_END_OF_TEXT_DEFAULT = false
+        private const val ADD_NEW_LINE_BEFORE_CLOSING_BRACE_DEFAULT = false
+        private const val ADD_NEW_LINE_BEFORE_OPENING_BRACE_DEFAULT = false
+        private const val INDENTATION_IS_ENABLED_DEFAULT = false
+        private const val MAX_EMPTY_LINES_IS_ENABLED_DEFAULT = false
+        private const val REMOVE_TRAILING_COMMAS_DEFAULT = false
 
         private const val INDENTATION_SPACES_PER_LEVEL_DEFAULT = 4
         private const val MAX_EMPTY_LINES_DEFAULT = 1
