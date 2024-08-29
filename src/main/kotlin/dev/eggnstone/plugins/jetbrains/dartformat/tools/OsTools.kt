@@ -15,13 +15,7 @@ class OsTools
             Logger.logDebug("OsTools.getExternalDartFormatFilePathOrException()")
 
             Logger.logDebug("  IsWindows:                         " + isWindows() + " (" + System.getProperty("os.name") + ")")
-            Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
-
-            if (ProcessHandle.current().info().command().isPresent)
-                Logger.logDebug("  ProcessHandle.command:             " + ProcessHandle.current().info().command().get())
-
-            if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
-                Logger.logDebug("  ProcessHandle.parent.command:      " + ProcessHandle.current().parent().get().info().command().get())
+            //Logger.logDebug("  System.getProperty(java.io.tmpdir) " + System.getProperty("java.io.tmpdir"))
 
             var externalDartFormatFilePath: String?
 
@@ -49,10 +43,16 @@ class OsTools
 
                 externalDartFormatFilePath = "$externalDartFormatFilePath\\bin\\dart_format.bat"
                 if (File(externalDartFormatFilePath).exists())
-                    return ExternalDartFormatInfo.normal(externalDartFormatFilePath)
+                    return ExternalDartFormatInfo.withAdditionalParams("cmd", "/c", externalDartFormatFilePath)
             }
             else
             {
+                if (ProcessHandle.current().info().command().isPresent)
+                    Logger.logDebug("  ProcessHandle.command:             " + ProcessHandle.current().info().command().get())
+
+                if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
+                    Logger.logDebug("  ProcessHandle.parent.command:      " + ProcessHandle.current().parent().get().info().command().get())
+
                 var shell: String? = null
                 if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
                 {
@@ -89,6 +89,36 @@ class OsTools
                         " File does not exist at expected location: $externalDartFormatFilePath"
                 )
             )
+        }
+
+        fun getInstallExternalDartFormatFilePathOrException(): ExternalDartFormatInfo
+        {
+            Logger.logDebug("OsTools.getInstallExternalDartFormatFilePathOrException()")
+            Logger.logDebug("  IsWindows:                         " + isWindows() + " (" + System.getProperty("os.name") + ")")
+
+            if (isWindows())
+                return ExternalDartFormatInfo.withAdditionalParams("cmd", "/c", "dart.bat")
+
+            if (ProcessHandle.current().info().command().isPresent)
+                Logger.logDebug("  ProcessHandle.command:             " + ProcessHandle.current().info().command().get())
+
+            if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
+                Logger.logDebug("  ProcessHandle.parent.command:      " + ProcessHandle.current().parent().get().info().command().get())
+
+            var shell: String? = null
+            if (ProcessHandle.current().parent().isPresent && ProcessHandle.current().parent().get().info().command().isPresent)
+            {
+                val parentCommand = ProcessHandle.current().parent().get().info().command().get()
+                if (parentCommand.endsWith("sh"))
+                    shell = parentCommand
+            }
+
+            Logger.logDebug("  Shell:                             " + (shell ?: "<none>"))
+
+            return if (shell == null)
+                ExternalDartFormatInfo.normal("dart")
+            else
+                ExternalDartFormatInfo.withAdditionalParam(shell, "dart")
         }
 
         fun getTempDirName(): String

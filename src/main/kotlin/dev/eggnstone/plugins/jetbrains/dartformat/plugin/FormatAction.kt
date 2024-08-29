@@ -151,7 +151,7 @@ class FormatAction : AnAction()
                 var title = "Formatting $finalVirtualFilesText took $diffTimeText."
 
                 if (errorCount > 0)
-                    title += "\nAn error occurred." + errorCount
+                    title += "\nAn error occurred." //+ errorCount
 
                 if (warningsText != null)
                     title += "\n$warningsText encountered."
@@ -307,34 +307,49 @@ class FormatAction : AnAction()
         if (ExternalDartFormat.instance.state != ExternalDartFormatState.STARTED)
         {
             ExternalDartFormat.instance.notifyWhenReady = true
-            var message = "Cannot format because " + when (ExternalDartFormat.instance.state)
+            var message = when (ExternalDartFormat.instance.state)
             {
-                ExternalDartFormatState.FAILED_TO_START -> "external dart_format failed to start."
-                ExternalDartFormatState.NOT_STARTED -> "external dart_format hasn't started yet."
-                ExternalDartFormatState.STOPPED -> "external dart_format has stopped."
-                ExternalDartFormatState.STOPPING -> "external dart_format is stopping."
-                else -> "of an unknown state of external dart_format."
+                ExternalDartFormatState.FAILED_TO_INSTALL -> "failed to install"
+                ExternalDartFormatState.FAILED_TO_START -> "failed to start"
+                ExternalDartFormatState.INSTALLING -> "is still installing"
+                ExternalDartFormatState.NOT_STARTED -> "hasn't started yet"
+                ExternalDartFormatState.STARTED -> throw IllegalStateException("External dart_format should not be started.")
+                ExternalDartFormatState.STARTING -> "is still starting"
+                ExternalDartFormatState.STOPPED -> "has stopped"
+                ExternalDartFormatState.STOPPING -> "is stopping"
+                ExternalDartFormatState.UPDATING -> "is still updating"
             }
 
-            if (ExternalDartFormat.instance.state == ExternalDartFormatState.STARTING)
-                message = "Cannot format yet because external dart_format is still starting."
+            message = if (ExternalDartFormat.instance.state == ExternalDartFormatState.INSTALLING
+                || ExternalDartFormat.instance.state == ExternalDartFormatState.STARTING
+                || ExternalDartFormat.instance.state == ExternalDartFormatState.UPDATING
+            )
+                "Cannot format yet because external dart_format $message."
+            else
+                "Cannot format because external dart_format $message."
 
-            NotificationTools.notifyInfo(
-                NotificationInfo(
-                    content = null,
-                    links = null,
-                    origin = "$methodName/1",
-                    project = project,
-                    title = message,
-                    virtualFile = null
-                )
+            val hasFatalError = (ExternalDartFormat.instance.state == ExternalDartFormatState.FAILED_TO_INSTALL
+                || ExternalDartFormat.instance.state == ExternalDartFormatState.FAILED_TO_START)
+
+            val info = NotificationInfo(
+                content = null,
+                links = null,
+                origin = "$methodName/1",
+                project = project,
+                title = message,
+                virtualFile = null
             )
 
-            return FormatOrReportResult(null, false)
+            if (hasFatalError)
+                NotificationTools.notifyError(info)
+            else
+                NotificationTools.notifyInfo(info)
+
+            return FormatOrReportResult(null, false, hasFatalError)
         }
 
         if (inputText.isEmpty())
-            return FormatOrReportResult(inputText, false)
+            return FormatOrReportResult(inputText, hasWarning = false, hasFatalError = false)
 
         val formatResult = format(inputText, virtualFile, project)
 
@@ -368,7 +383,7 @@ class FormatAction : AnAction()
                     virtualFile = virtualFile
                 )
 
-            return FormatOrReportResult(null, false)
+            return FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
         }
 
         if (formatResult.resultType == ResultType.Warning)
@@ -393,7 +408,7 @@ class FormatAction : AnAction()
                         virtualFile = virtualFile
                     )
 
-            return FormatOrReportResult(null, true)
+            return FormatOrReportResult(null, hasWarning = true, hasFatalError = false)
         }
 
         if (formatResult.text.isEmpty())
@@ -417,10 +432,10 @@ class FormatAction : AnAction()
                 )
             )
 
-            return FormatOrReportResult(null, false)
+            return FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
         }
 
-        return FormatOrReportResult(formatResult.text, false)
+        return FormatOrReportResult(formatResult.text, hasWarning = false, hasFatalError = false)
     }
 
     private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult

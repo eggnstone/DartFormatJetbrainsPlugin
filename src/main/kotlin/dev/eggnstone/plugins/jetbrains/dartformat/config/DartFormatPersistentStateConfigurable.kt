@@ -21,7 +21,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
     private var addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")
     private var addNewLineAfterSemicolonCheckbox = JCheckBox("Add new line after semicolon")
-    private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the text")
+    private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
     private var addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
     private var addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
 
@@ -87,8 +87,8 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         @Suppress("JoinDeclarationAndAssignment")
         var sectionPanel: JPanel
 
-        sectionPanel = createAndAddSectionPanel("General", formBuilder)
-        sectionPanel.add(createPanelAndAdd(createIntroPanel()))
+        /*sectionPanel = createAndAddSectionPanel("General", formBuilder)
+        sectionPanel.add(createPanelAndAdd(createIntroPanel()))*/
 
         sectionPanel = createAndAddSectionPanel("Line Breaks", formBuilder)
         sectionPanel.add(createPanelAndAdd(addNewLineBeforeOpeningBraceCheckbox))
@@ -129,7 +129,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         val panel = createPanelBoxLayoutYAxis()
 
         val htmlLabel = createHtmlLabel(
-            "This plugin is a wrapper around my <code>dart_format</code> package on <code>pub.dev</code>.<br/>" +
+            "This plugin is a wrapper around the <code>dart_format</code> package on <code>pub.dev</code>.<br/>" +
                 "Please follow the install instruction there.<br/>" +
                 "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
         )

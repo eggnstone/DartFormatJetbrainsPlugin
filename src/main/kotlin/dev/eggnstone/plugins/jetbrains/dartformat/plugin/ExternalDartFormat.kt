@@ -4,6 +4,7 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.awaitExit
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
@@ -79,7 +80,7 @@ class ExternalDartFormat
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName/appClosing")
                     state = ExternalDartFormatState.STOPPING
 
-                    /*NotificationTools.notifyInfo(
+                    if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                         NotificationInfo(
                             content = null,
                             links = null,
@@ -88,7 +89,7 @@ class ExternalDartFormat
                             title = "Shutting down external dart_format ...",
                             virtualFile = null
                         )
-                    )*/
+                    )
 
                     if (dartFormatClient == null || channel == null)
                     {
@@ -108,7 +109,7 @@ class ExternalDartFormat
                             }
                         }
 
-                        /*NotificationTools.notifyInfo(
+                        if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                             NotificationInfo(
                                 content = null,
                                 links = null,
@@ -117,7 +118,7 @@ class ExternalDartFormat
                                 title = "Shut down external dart_format.",
                                 virtualFile = null
                             )
-                        )*/
+                        )
                     }
                     catch (e: TimeoutCancellationException)
                     {
@@ -146,10 +147,24 @@ class ExternalDartFormat
                 }
             })
 
-            val externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
+            var externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
             if (externalDartFormatInfo.localError != null)
             {
-                val title = "Failed to start external dart_format: " + externalDartFormatInfo.localError.message
+                state = ExternalDartFormatState.INSTALLING
+                if (!tryInstall())
+                {
+
+                    state = ExternalDartFormatState.FAILED_TO_INSTALL
+                    return
+                }
+
+                state = ExternalDartFormatState.STARTING
+                externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
+            }
+
+            if (externalDartFormatInfo.localError != null)
+            {
+                val title = "Failed to find external dart_format: " + externalDartFormatInfo.localError!!.message
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
@@ -162,7 +177,7 @@ class ExternalDartFormat
                 )
 
                 var showReportErrorLink = true
-                if (externalDartFormatInfo.localError.message.contains("Cannot find the dart_format package: File does not exist at expected location:"))
+                if (externalDartFormatInfo.localError!!.message.contains("Cannot find the dart_format package: File does not exist at expected location:"))
                     showReportErrorLink = false
 
                 val links = if (showReportErrorLink) listOf(checkInstallationInstructionsLink, reportErrorLink) else listOf(checkInstallationInstructionsLink)
@@ -183,11 +198,13 @@ class ExternalDartFormat
 
             val processBuilder: ProcessBuilder = if (externalDartFormatInfo.additionalParam == null)
                 ProcessBuilder(externalDartFormatInfo.executable, "--web", "--errors-as-json", "--log-to-temp-file")
-            else
+            else if (externalDartFormatInfo.additionalParam2 == null)
                 ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, "--web", "--errors-as-json", "--log-to-temp-file")
+            else
+                ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, externalDartFormatInfo.additionalParam2, "--web", "--errors-as-json", "--log-to-temp-file")
 
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
-            /*NotificationTools.notifyInfo(
+            if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                 NotificationInfo(
                     content = null,
                     links = null,
@@ -196,7 +213,7 @@ class ExternalDartFormat
                     title = "Starting external dart_format ...\nThis may take a few seconds.",
                     virtualFile = null
                 )
-            )*/
+            )
 
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
 
@@ -233,7 +250,7 @@ class ExternalDartFormat
 
             if (process.isAlive)
             {
-                /*NotificationTools.notifyInfo(
+                if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                     NotificationInfo(
                         content = null,
                         links = null,
@@ -242,7 +259,7 @@ class ExternalDartFormat
                         title = "External dart_format process is alive.\nWaiting for connection details ...",
                         virtualFile = null
                     )
-                )*/
+                )
             }
             else
             {
@@ -463,6 +480,116 @@ class ExternalDartFormat
                 virtualFile = lastVirtualFile
             )
         }
+    }
+
+    private suspend fun tryInstall(): Boolean
+    {
+        val installExternalDartFormatInfo = OsTools.getInstallExternalDartFormatFilePathOrException()
+        if (installExternalDartFormatInfo.localError != null)
+            throw DartFormatException.localError("Unexpected error: ${installExternalDartFormatInfo.localError.message}")
+
+        val processBuilder: ProcessBuilder = if (installExternalDartFormatInfo.additionalParam == null)
+            ProcessBuilder(installExternalDartFormatInfo.executable, "pub", "global", "activate", "dart_format")
+        else if (installExternalDartFormatInfo.additionalParam2 == null)
+            ProcessBuilder(installExternalDartFormatInfo.executable, installExternalDartFormatInfo.additionalParam, "pub", "global", "activate", "dart_format")
+        else
+            ProcessBuilder(installExternalDartFormatInfo.executable, installExternalDartFormatInfo.additionalParam, installExternalDartFormatInfo.additionalParam2, "pub", "global", "activate", "dart_format")
+
+        Logger.logDebug("Installing external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
+        NotificationTools.notifyInfo(
+            NotificationInfo(
+                content = null,
+                links = null,
+                origin = null,
+                project = null,
+                title = "Installing external dart_format ...\nThis may take a few seconds.",
+                virtualFile = null
+            )
+        )
+
+        val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+
+        @Suppress("KotlinConstantConditions")
+        if (result !is Process)
+        {
+            val title = "Failed to install external dart_format: " + if (result is Throwable) result.message else result.toString()
+            val content = "You can try to install it manually.\n" +
+                "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+            val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+            val reportErrorLink = NotificationTools.createReportErrorLink(
+                content = null,
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                origin = null,
+                stackTrace = null,
+                title = title
+            )
+            NotificationTools.notifyError(
+                NotificationInfo(
+                    content = content,
+                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title,
+                    virtualFile = null
+                )
+            )
+            state = ExternalDartFormatState.FAILED_TO_INSTALL
+            return false
+        }
+
+        @Suppress("USELESS_CAST")
+        val process = result as Process
+
+        if (process.isAlive)
+        {
+            if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "Installer for external dart_format process is alive.\nWaiting for process to finish ...",
+                    virtualFile = null
+                )
+            )
+        }
+        else
+        {
+            state = ExternalDartFormatState.FAILED_TO_INSTALL
+            throw DartFormatException.localError("Installer for external dart_format process is dead.")
+        }
+
+        val exitCode = process.awaitExit()
+        Logger.logDebug("Exit code: $exitCode")
+
+        if (exitCode != 0)
+        {
+            if (Constants.DEBUG_CONNECTION) NotificationTools.notifyError(
+                NotificationInfo(
+                    content = null,
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "Failed to install external dart_format.",
+                    virtualFile = null
+                )
+            )
+
+            return false
+        }
+
+        NotificationTools.notifyInfo(
+            NotificationInfo(
+                content = null,
+                links = null,
+                origin = null,
+                project = null,
+                title = "Successfully installed external dart_format.",
+                virtualFile = null
+            )
+        )
+
+        return true
     }
 
     fun formatViaChannel(inputText: String, config: String, virtualFile: VirtualFile, project: Project): FormatResult
