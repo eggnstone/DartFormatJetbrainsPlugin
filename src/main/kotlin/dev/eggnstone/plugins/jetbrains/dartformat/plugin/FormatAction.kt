@@ -48,9 +48,7 @@ class FormatAction : AnAction()
         if (config.hasNothingEnabled())
         {
             val title = "No formatting options enabled."
-            val openSettingsLink = NotificationTools.createOpenSettingsLink(
-                title = "Open DartFormat settings"
-            )
+            val openSettingsLink = NotificationTools.createOpenSettingsLink()
             NotificationTools.notifyWarning(
                 NotificationInfo(
                     content = null,

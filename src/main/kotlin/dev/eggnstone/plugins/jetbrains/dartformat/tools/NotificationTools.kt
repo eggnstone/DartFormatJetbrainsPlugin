@@ -255,9 +255,9 @@ class NotificationTools
             notification.notify(finalProject)
         }
 
-        fun createOpenSettingsLink(title: String): LinkInfo
+        fun createOpenSettingsLink(): LinkInfo
         {
-            return LinkInfo(title, "action://openSettings")
+            return LinkInfo("Open DartFormat settings", "action://openSettings")
         }
     }
 }
