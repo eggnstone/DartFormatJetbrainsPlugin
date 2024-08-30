@@ -311,6 +311,7 @@ class FormatAction : AnAction()
             {
                 ExternalDartFormatState.FAILED_TO_INSTALL -> "failed to install"
                 ExternalDartFormatState.FAILED_TO_START -> "failed to start"
+                ExternalDartFormatState.FAILED_TO_UPDATE -> "failed to update"
                 ExternalDartFormatState.INSTALLING -> "is still installing"
                 ExternalDartFormatState.NOT_STARTED -> "hasn't started yet"
                 ExternalDartFormatState.STARTED -> throw IllegalStateException("External dart_format should not be started.")

@@ -179,11 +179,10 @@ class ExternalDartFormat
 
             if (shouldInstall)
             {
-                state = ExternalDartFormatState.INSTALLING
+                state = if (shouldUpdate) ExternalDartFormatState.UPDATING else ExternalDartFormatState.INSTALLING
                 if (!tryInstall(shouldUpdate))
                 {
-
-                    state = ExternalDartFormatState.FAILED_TO_INSTALL
+                    state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
                     return
                 }
 
@@ -535,7 +534,10 @@ class ExternalDartFormat
 
         val installExternalDartFormatInfo = OsTools.getInstallExternalDartFormatFilePathOrException()
         if (installExternalDartFormatInfo.localError != null)
+        {
+            state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
             throw DartFormatException.localError("Unexpected error: ${installExternalDartFormatInfo.localError.message}")
+        }
 
         val processBuilder: ProcessBuilder = if (installExternalDartFormatInfo.additionalParam == null)
             ProcessBuilder(installExternalDartFormatInfo.executable, "pub", "global", "activate", "dart_format")
@@ -582,7 +584,6 @@ class ExternalDartFormat
                     virtualFile = null
                 )
             )
-            state = ExternalDartFormatState.FAILED_TO_INSTALL
             return false
         }
 
@@ -604,7 +605,7 @@ class ExternalDartFormat
         }
         else
         {
-            state = ExternalDartFormatState.FAILED_TO_INSTALL
+            state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
             throw DartFormatException.localError("$actionErUpper for external dart_format process is dead.")
         }
 
