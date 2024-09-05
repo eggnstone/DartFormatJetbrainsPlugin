@@ -22,7 +22,7 @@ Source code: https://github.com/eggnstone/DartFormatJetbrainsPlugin
 
 **Also available for Visual Studio Code:**  
 https://marketplace.visualstudio.com/items?itemName=eggnstone.DartFormat    
-Source code: https://github.com/eggnstone/DartFormatVSCodePlugin 
+Source code: https://github.com/eggnstone/DartFormatVSCodePlugin
 
 **External dart_format package:**  
 https://pub.dev/packages/dart_format  

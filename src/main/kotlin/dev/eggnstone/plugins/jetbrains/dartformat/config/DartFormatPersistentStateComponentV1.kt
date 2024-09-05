@@ -20,7 +20,7 @@ class DartFormatPersistentStateComponentV1 : PersistentStateComponent<DartFormat
             }
     }
 
-    private var dartFormatConfig : DartFormatConfig? = null
+    private var dartFormatConfig: DartFormatConfig? = null
 
     override fun getState(): DartFormatConfig = dartFormatConfig!!
 

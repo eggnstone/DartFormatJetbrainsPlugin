@@ -238,9 +238,6 @@ class NotificationTools
                                 DartFormatPersistentStateConfigurable::class.java
                             )
                         }
-                        "action://installExternalDartFormat" -> Runnable {
-                            // TODO
-                        }
                         else -> Runnable { BrowserUtil.browse(link.url) }
                     }
 

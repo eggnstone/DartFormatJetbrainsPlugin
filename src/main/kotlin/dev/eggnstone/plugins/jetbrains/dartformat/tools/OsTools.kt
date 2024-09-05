@@ -5,8 +5,8 @@ class OsTools
     val envHome: String?
     val envLocalAppData: String?
     val envPubCache: String?
-    val envShell: String?
-    val envShellParam: String?
+    val envShell: String
+    val envShellParam: String
     val isWindows: Boolean
 
     companion object

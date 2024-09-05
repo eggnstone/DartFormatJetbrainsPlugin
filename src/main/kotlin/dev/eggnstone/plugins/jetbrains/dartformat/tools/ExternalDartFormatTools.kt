@@ -35,14 +35,14 @@ class ExternalDartFormatTools
             }
             else
             {
-                if (OsTools.instance.envShell == null)
+                if (OsTools.instance.envShell.isEmpty())
                     return ProcessInfoOrException.exception(
                         DartFormatException.localError(
                             "Cannot execute dart: SHELL environment variable is not set."
                         )
                     )
 
-                if (OsTools.instance.envHome == null)
+                if (OsTools.instance.envHome.isNullOrEmpty())
                     return ProcessInfoOrException.exception(
                         DartFormatException.localError(
                             "Cannot execute dart_format: HOME environment variable is not set."
@@ -56,7 +56,7 @@ class ExternalDartFormatTools
             if (File(externalDartFormatExecutable).exists())
             {
                 val command = "$externalDartFormatExecutable --web --errors-as-json --log-to-temp-file"
-                return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell!!, OsTools.instance.envShellParam!!, command))
+                return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
             }
 
             return ProcessInfoOrException.exception(
@@ -75,7 +75,7 @@ class ExternalDartFormatTools
             }
             else
             {
-                if (OsTools.instance.envShell == null)
+                if (OsTools.instance.envShell.isEmpty())
                     return ProcessInfoOrException.exception(
                         DartFormatException.localError(
                             "Cannot execute dart: SHELL environment variable is not set."
@@ -86,7 +86,7 @@ class ExternalDartFormatTools
             }
 
             val command = "$dartExecutable pub global activate dart_format"
-            return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell!!, OsTools.instance.envShellParam!!, command))
+            return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
         }
     }
 }
