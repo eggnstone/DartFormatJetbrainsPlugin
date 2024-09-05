@@ -14,6 +14,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
 import kotlinx.coroutines.*
@@ -148,7 +149,7 @@ class ExternalDartFormat
                 }
             })
 
-            var externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
+            var externalDartFormatInfo = ExternalDartFormatTools.getExternalDartFormatInfo()
 
             var shouldUpdate = false
             var shouldInstall = externalDartFormatInfo.localError != null
@@ -187,7 +188,7 @@ class ExternalDartFormat
                 }
 
                 state = ExternalDartFormatState.STARTING
-                externalDartFormatInfo = OsTools.getExternalDartFormatFilePathOrException()
+                externalDartFormatInfo = ExternalDartFormatTools.getExternalDartFormatInfo()
             }
 
             if (externalDartFormatInfo.localError != null)
@@ -224,13 +225,7 @@ class ExternalDartFormat
                 return
             }
 
-            val processBuilder: ProcessBuilder = if (externalDartFormatInfo.additionalParam == null)
-                ProcessBuilder(externalDartFormatInfo.executable, "--web", "--errors-as-json", "--log-to-temp-file")
-            else if (externalDartFormatInfo.additionalParam2 == null)
-                ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, "--web", "--errors-as-json", "--log-to-temp-file")
-            else
-                ProcessBuilder(externalDartFormatInfo.executable, externalDartFormatInfo.additionalParam, externalDartFormatInfo.additionalParam2, "--web", "--errors-as-json", "--log-to-temp-file")
-
+            val processBuilder = ProcessTools.createProcessBuilder(externalDartFormatInfo.processBuilderInfo!!)
             Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
             if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                 NotificationInfo(
@@ -243,7 +238,9 @@ class ExternalDartFormat
                 )
             )
 
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("External dart_format: Process starting ...")
             val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("External dart_format: Process started.")
 
             @Suppress("KotlinConstantConditions")
             if (result !is Process)
@@ -532,19 +529,14 @@ class ExternalDartFormat
         val actionIngUpper = if (shouldUpdate) "Updating" else "Installing"
         val actionLower = if (shouldUpdate) "update" else "install"
 
-        val installExternalDartFormatInfo = OsTools.getInstallExternalDartFormatFilePathOrException()
+        val installExternalDartFormatInfo = ExternalDartFormatTools.getInstallExternalDartFormatInfo()
         if (installExternalDartFormatInfo.localError != null)
         {
             state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
             throw DartFormatException.localError("Unexpected error: ${installExternalDartFormatInfo.localError.message}")
         }
 
-        val processBuilder: ProcessBuilder = if (installExternalDartFormatInfo.additionalParam == null)
-            ProcessBuilder(installExternalDartFormatInfo.executable, "pub", "global", "activate", "dart_format")
-        else if (installExternalDartFormatInfo.additionalParam2 == null)
-            ProcessBuilder(installExternalDartFormatInfo.executable, installExternalDartFormatInfo.additionalParam, "pub", "global", "activate", "dart_format")
-        else
-            ProcessBuilder(installExternalDartFormatInfo.executable, installExternalDartFormatInfo.additionalParam, installExternalDartFormatInfo.additionalParam2, "pub", "global", "activate", "dart_format")
+        val processBuilder = ProcessTools.createProcessBuilder(installExternalDartFormatInfo.processBuilderInfo!!)
 
         Logger.logDebug("$actionIngUpper external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
         NotificationTools.notifyInfo(
@@ -558,7 +550,9 @@ class ExternalDartFormat
             )
         )
 
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process starting ...")
         val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process started.")
 
         @Suppress("KotlinConstantConditions")
         if (result !is Process)
@@ -609,12 +603,23 @@ class ExternalDartFormat
             throw DartFormatException.localError("$actionErUpper for external dart_format process is dead.")
         }
 
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Waiting for process to finish ...")
         val exitCode = process.awaitExit()
-        if (Constants.LOG_VERBOSE) Logger.logVerbose("Exit code: $exitCode")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process finished. Exit code: $exitCode")
 
-        if (exitCode != 0)
+        if (exitCode == 0)
         {
-            if (Constants.DEBUG_CONNECTION) NotificationTools.notifyError(
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process finished. Exit code: $exitCode")
+        }
+        else
+        {
+            Logger.logDebug("$actionIngUpper external dart_format: Process finished. Exit code: $exitCode")
+            val stdOut: String = withContext(Dispatchers.IO) { process.inputStream.readAllBytes().decodeToString() }
+            val stdErr: String = withContext(Dispatchers.IO) { process.errorStream.readAllBytes().decodeToString() }
+            Logger.logDebug(if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}")
+            Logger.logDebug(if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
+
+            NotificationTools.notifyError(
                 NotificationInfo(
                     content = null,
                     links = null,

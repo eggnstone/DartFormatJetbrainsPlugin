@@ -8,6 +8,9 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.18</b><br/>
+        Fixing start problems on Linux/macOS.<br/>
+        <br/>
         <b>Version 2.0.17</b><br/>
         Automatically installing+updating the <code>dart_format</code> package now.<br/>
         <br/>
