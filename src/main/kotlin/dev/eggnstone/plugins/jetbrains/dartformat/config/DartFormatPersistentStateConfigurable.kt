@@ -24,6 +24,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
     private var addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
     private var addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
+    private var fixSpacesCheckbox = JCheckBox("Fix spaces (experimental)")
 
     private var indentationIsEnabledCheckbox = JCheckBox("Indent")
     private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
@@ -55,12 +56,13 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     override fun apply()
     {
         @Suppress("DuplicatedCode")
-        config.addNewLineAfterOpeningBrace = addNewLineAfterOpeningBraceCheckbox.isSelected
         config.addNewLineAfterClosingBrace = addNewLineAfterClosingBraceCheckbox.isSelected
-        config.addNewLineBeforeOpeningBrace = addNewLineBeforeOpeningBraceCheckbox.isSelected
-        config.addNewLineBeforeClosingBrace = addNewLineBeforeClosingBraceCheckbox.isSelected
+        config.addNewLineAfterOpeningBrace = addNewLineAfterOpeningBraceCheckbox.isSelected
         config.addNewLineAfterSemicolon = addNewLineAfterSemicolonCheckbox.isSelected
         config.addNewLineAtEndOfText = addNewLineAtEndOfTextCheckbox.isSelected
+        config.addNewLineBeforeClosingBrace = addNewLineBeforeClosingBraceCheckbox.isSelected
+        config.addNewLineBeforeOpeningBrace = addNewLineBeforeOpeningBraceCheckbox.isSelected
+        config.fixSpaces = fixSpacesCheckbox.isSelected
 
         config.indentationIsEnabled = indentationIsEnabledCheckbox.isSelected
         indentationSpacesPerLevelField.text.toIntOrNull()?.let {
@@ -97,6 +99,9 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         sectionPanel.add(createPanelAndAdd(addNewLineAfterClosingBraceCheckbox))
         sectionPanel.add(createPanelAndAdd(addNewLineAfterSemicolonCheckbox))
         sectionPanel.add(createPanelAndAdd(addNewLineAtEndOfTextCheckbox))
+
+        sectionPanel = createAndAddSectionPanel("Spaces", formBuilder)
+        sectionPanel.add(createPanelAndAdd(fixSpacesCheckbox))
 
         sectionPanel = createAndAddSectionPanel("Removals", formBuilder)
         sectionPanel.add(createPanelAndAdd(removeTrailingCommasCheckbox))
@@ -250,6 +255,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             || config.addNewLineAtEndOfText != addNewLineAtEndOfTextCheckbox.isSelected
             || config.addNewLineBeforeClosingBrace != addNewLineBeforeClosingBraceCheckbox.isSelected
             || config.addNewLineBeforeOpeningBrace != addNewLineBeforeOpeningBraceCheckbox.isSelected
+            || config.fixSpaces != fixSpacesCheckbox.isSelected
             || config.indentationIsEnabled != indentationIsEnabledCheckbox.isSelected
             || config.indentationSpacesPerLevel != indentationSpacesPerLevelField.text.toIntOrNull()
             || config.maxEmptyLines != maxEmptyLinesField.text.toIntOrNull()
@@ -269,6 +275,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         addNewLineAtEndOfTextCheckbox.isSelected = config.addNewLineAtEndOfText
         addNewLineBeforeClosingBraceCheckbox.isSelected = config.addNewLineBeforeClosingBrace
         addNewLineBeforeOpeningBraceCheckbox.isSelected = config.addNewLineBeforeOpeningBrace
+        fixSpacesCheckbox.isSelected = config.fixSpaces
         indentationIsEnabledCheckbox.isSelected = config.indentationIsEnabled
         indentationSpacesPerLevelField.text = config.indentationSpacesPerLevel.toString()
         maxEmptyLinesField.text = config.maxEmptyLines.toString()

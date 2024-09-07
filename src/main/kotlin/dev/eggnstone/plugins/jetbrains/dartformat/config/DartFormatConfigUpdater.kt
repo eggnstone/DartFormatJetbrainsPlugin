@@ -23,7 +23,8 @@ class DartFormatConfigUpdater
                 maxEmptyLinesIsEnabled = oldConfig.maxEmptyLinesIsEnabled,
                 removeTrailingCommas = oldConfig.removeTrailingCommas,
                 majorVersion = DartFormatConfig.CURRENT_MAJOR_VERSION,
-                minorVersion = DartFormatConfig.CURRENT_MINOR_VERSION
+                minorVersion = DartFormatConfig.CURRENT_MINOR_VERSION,
+                patchVersion = DartFormatConfig.CURRENT_PATCH_VERSION
             )
         }
     }

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.0.18"
+version = "2.0.19"
 
 repositories {
     mavenCentral()

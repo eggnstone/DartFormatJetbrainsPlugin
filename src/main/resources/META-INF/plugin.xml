@@ -8,6 +8,9 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.19</b><br/>
+        Adding "fix spaces" (experimental).<br/>
+        <br/>
         <b>Version 2.0.18</b><br/>
         Fixing start problems on Linux/macOS.<br/>
         <br/>
