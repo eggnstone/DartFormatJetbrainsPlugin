@@ -24,7 +24,32 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
     private var addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
     private var addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
-    private var fixSpacesCheckbox = JCheckBox("Fix spaces (experimental)")
+    private var fixSpacesCheckbox = JCheckBox("Fix spaces (EXPERIMENTAL)")
+
+    private var fontFamily = fixSpacesCheckbox.font.family
+    private var fontSize = fixSpacesCheckbox.font.size
+    private var codeBackground = if (fixSpacesCheckbox.background.red == 0) "#666" else if (fixSpacesCheckbox.background.red < 128) "#000" else "#fff"
+
+    private var fixSpacesTextPane = JTextPane()
+        .also {
+            it.contentType = "text/html"
+            it.text = "<html><body>" +
+                "<div style='font-family: " + fontFamily + "; font-size: " + fontSize + "pt;'>" +
+                //"Examples:" +
+                //"<br/>Red: " + fixSpacesCheckbox.background.red + ", Green: " + fixSpacesCheckbox.background.green + ", Blue: " + fixSpacesCheckbox.background.blue + "<br/>" +
+                //"<div style='margin-top: 4px;'>" +
+                //"For example <code style='font-size: 12pt; background: " + codeBackground + ";'>if(a&lt;b)</code>" +
+                //" > " +
+                //"<code style='font-size: 12pt; background: " + codeBackground + ";'>if (a &lt; b)</code>" +
+                //"</div>" +
+                //"<div style='margin-top: 4px;'>" +
+                "For example &nbsp; <code style='font-size: 12pt; background: " + codeBackground + ";'>for(int i=0;i&lt;10;i++)</code>" +
+                " &nbsp; > &nbsp; " +
+                "<code style='font-size: 12pt; background: " + codeBackground + ";'>for (int i = 0; i &lt; 10; i++)</code>" +
+                //"</div>" +
+                "</div>" +
+                "</body></html>"
+        }
 
     private var indentationIsEnabledCheckbox = JCheckBox("Indent")
     private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
@@ -80,7 +105,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         //config.removeLineBreaksAfterArrows = removeLineBreaksAfterArrowsCheckbox.isSelected
     }
 
-    private fun createPanelAndAdd(checkbox: JComponent): JPanel = createPanelFlowLayoutLeading().apply { add(checkbox) }
+    private fun createPanelAndAdd(jComponent: JComponent): JPanel = createPanelFlowLayoutLeading().apply { add(jComponent) }
 
     override fun createComponent(): JComponent
     {
@@ -102,6 +127,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 
         sectionPanel = createAndAddSectionPanel("Spaces", formBuilder)
         sectionPanel.add(createPanelAndAdd(fixSpacesCheckbox))
+        sectionPanel.add(createIndentedPanelAndAdd(25, fixSpacesTextPane))
 
         sectionPanel = createAndAddSectionPanel("Removals", formBuilder)
         sectionPanel.add(createPanelAndAdd(removeTrailingCommasCheckbox))
@@ -169,6 +195,19 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             panel.border = BorderFactory.createEmptyBorder(4, 12, 20, 0)
 
         formBuilder.addComponent(createSection(name, panel))
+        return panel
+    }
+
+    private fun createIndentedPanelAndAdd(indent: Int, jComponent: JComponent): JPanel
+    {
+        val panel = createPanelBoxLayoutYAxis()
+
+        if (Constants.DEBUG_SETTINGS_DIALOG)
+            panel.border = BorderFactory.createMatteBorder(0, indent, 0, 0, JBColor.GREEN)
+        else
+            panel.border = BorderFactory.createEmptyBorder(0, indent, 0, 0)
+
+        panel.add(jComponent)
         return panel
     }
 
