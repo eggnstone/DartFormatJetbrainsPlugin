@@ -8,11 +8,14 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.20</b><br/>
+        Fixed startup problems on Windows.<br/>
+        <br/>
         <b>Version 2.0.19</b><br/>
         Adding "fix spaces" (experimental).<br/>
         <br/>
         <b>Version 2.0.18</b><br/>
-        Fixing start problems on Linux/macOS.<br/>
+        Fixed startup problems on Linux/macOS.<br/>
         <br/>
         <b>Version 2.0.17</b><br/>
         Automatically installing+updating the <code>dart_format</code> package now.<br/>
@@ -21,7 +24,7 @@
         Fixed handling of UTF. Better notifications.<br/>
         <br/>
         <b>Version 2.0.15</b><br/>
-        Fixing start problems on Linux/macOS and better notifications.<br/>
+        Fixed startup problems on Linux/macOS and better notifications.<br/>
         <br/>
         <b>Version 2.0.9</b><br/>
         Fixed issue with temp dir for Linux/macOS.<br/>

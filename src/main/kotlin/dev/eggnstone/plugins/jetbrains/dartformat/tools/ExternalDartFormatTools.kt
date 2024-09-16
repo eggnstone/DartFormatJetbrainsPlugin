@@ -55,7 +55,7 @@ class ExternalDartFormatTools
 
             if (File(externalDartFormatExecutable).exists())
             {
-                val command = "$externalDartFormatExecutable --web --errors-as-json --log-to-temp-file"
+                val command = "\"$externalDartFormatExecutable\" --web --errors-as-json --log-to-temp-file"
                 return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
             }
 
