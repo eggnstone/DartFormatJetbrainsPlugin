@@ -40,7 +40,7 @@ class FormatAction : AnAction()
     {
         val methodName = "$CLASS_NAME.actionPerformed"
 
-        val project = e.getRequiredData(CommonDataKeys.PROJECT)
+        val project = e.getData(CommonDataKeys.PROJECT) ?: return
         var lastVirtualFile: VirtualFile? = null
 
         val config = DartFormatConfigGetter.get()
