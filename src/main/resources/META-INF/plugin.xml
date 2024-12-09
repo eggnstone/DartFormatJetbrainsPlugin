@@ -9,7 +9,7 @@
     <change-notes>
         <![CDATA[
         <b>Version 2.0.22</b><br/>
-        TODO<br/>
+        Better error reporting when Dart executable not found.<br/>
         <br/>
         <b>Version 2.0.21</b><br/>
         Updated IntelliJ compatibility.<br/>

@@ -368,7 +368,7 @@ class FormatAction : AnAction()
                 NotificationTools.notifyError(
                     NotificationInfo(
                         content = null,
-                        listOf(reportErrorLink),
+                        links = listOf(reportErrorLink),
                         origin = "$methodName/3",
                         project = project,
                         title = formatResult.text,
@@ -425,7 +425,7 @@ class FormatAction : AnAction()
             NotificationTools.notifyError(
                 NotificationInfo(
                     content = null,
-                    listOf(reportErrorLink),
+                    links = listOf(reportErrorLink),
                     origin = "$methodName/8",
                     project = project,
                     title = title,
