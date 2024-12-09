@@ -113,12 +113,13 @@ class NotificationTools
                 body += "```\n$shortStackTrace\n```\n"
             }
 
+            body += "```"
             if (origin != null)
                 body += "Origin: $origin\n"
-
             body += "OS: ${System.getProperty("os.name")}\n"
             body += "Plugin version: ${VersionTools.getVersion()}\n"
             body += "External dart_format version: ${ExternalDartFormat.instance.currentVersionText}\n"
+            body += "```"
 
             val linkName = "Report error"
             val linkUrl = "https://github.com/eggnstone/$gitHubRepo/issues/new?title=${urlEncode(title)}&body=${urlEncode(body)}"

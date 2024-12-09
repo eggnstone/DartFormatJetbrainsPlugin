@@ -85,6 +85,7 @@ class ExternalDartFormatTools
                 dartExecutable = "dart"
             }
 
+            //val command = "$dartExecutable"+"x pub global activate dart_format"
             val command = "$dartExecutable pub global activate dart_format"
             return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
         }

@@ -584,6 +584,8 @@ class ExternalDartFormat
         @Suppress("USELESS_CAST")
         val process = result as Process
 
+        //process.awaitExit()
+
         if (process.isAlive)
         {
             if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
@@ -599,8 +601,51 @@ class ExternalDartFormat
         }
         else
         {
-            state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
-            throw DartFormatException.localError("$actionErUpper for external dart_format process is dead.")
+            val exitCode = try
+            {
+                process.awaitExit()
+            }
+            catch (e: Exception)
+            {
+                -1
+            }
+
+            Logger.logDebug("$actionErUpper for external dart_format process is dead. ExitCode: $exitCode")
+            val stdOut: String = withContext(Dispatchers.IO) { process.inputStream.readAllBytes().decodeToString() }
+            val stdErr: String = withContext(Dispatchers.IO) { process.errorStream.readAllBytes().decodeToString() }
+            Logger.logDebug(if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}")
+            Logger.logDebug(if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
+
+            val title = "Failed to $actionLower external dart_format. Dead process. ExitCode: $exitCode"
+            val content = "You can try to $actionLower it manually.\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+            val reportContent =
+                (if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}") + "\n\n" +
+                (if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
+            val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+            val reportErrorLink = NotificationTools.createReportErrorLink(
+                content = reportContent,
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                origin = null,
+                stackTrace = null,
+                title = title
+            )
+
+            NotificationTools.notifyError(
+                NotificationInfo(
+                    content = content,
+                    listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title,
+                    virtualFile = null
+                )
+            )
+
+            return false
+
+            /*state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
+            throw DartFormatException.localError("$actionErUpper for external dart_format process is dead. ExitCode: $exitCode")*/
         }
 
         if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Waiting for process to finish ...")
@@ -609,7 +654,7 @@ class ExternalDartFormat
 
         if (exitCode == 0)
         {
-            if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process finished. Exit code: $exitCode")
+            if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process finished.")
         }
         else
         {
@@ -619,13 +664,28 @@ class ExternalDartFormat
             Logger.logDebug(if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}")
             Logger.logDebug(if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
 
+            val title = "Failed to $actionLower external dart_format. Abnormal exit. ExitCode: $exitCode"
+            val content = "You can try to $actionLower it manually.\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+            val reportContent =
+                    (if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}") + "\n\n" +
+                    (if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
+            val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+            val reportErrorLink = NotificationTools.createReportErrorLink(
+                content = reportContent,
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                origin = null,
+                stackTrace = null,
+                title = title
+            )
+
             NotificationTools.notifyError(
                 NotificationInfo(
-                    content = null,
-                    links = null,
+                    content = content,
+                    listOf(checkInstallationInstructionsLink, reportErrorLink),
                     origin = null,
                     project = null,
-                    title = "Failed to $actionLower external dart_format.",
+                    title = title,
                     virtualFile = null
                 )
             )
