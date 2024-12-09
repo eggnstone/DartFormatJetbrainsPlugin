@@ -636,12 +636,14 @@ class ExternalDartFormat
 
             val title = "Failed to $actionLower external dart_format. Dart executable not found. ExitCode: $exitCode"
             val content = "Could not find the Dart executable \"" + dartExecutable + "\".\n" +
-                    "Please make sure that Dart is installed and callable from the commandline."
+                    "Please make sure that Dart is installed and callable from the commandline.\n" +
+                    " \n" + // The space is necessary to force an empty line.
+                    "If you installed Dart via Flutter then see the instructions below."
 
             NotificationTools.notifyError(
                 NotificationInfo(
                     content = content,
-                    links = null,
+                    links = NotificationTools.createUpdateFlutterPathLinks(),
                     origin = null,
                     project = null,
                     title = title,

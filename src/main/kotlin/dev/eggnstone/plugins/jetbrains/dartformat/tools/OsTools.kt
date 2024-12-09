@@ -8,6 +8,7 @@ class OsTools
     val envShell: String
     val envShellParam: String
     val isWindows: Boolean
+    val osName: String
 
     companion object
     {
@@ -23,8 +24,9 @@ class OsTools
     {
         Logger.logDebug("OsTools()")
 
-        isWindows = System.getProperty("os.name").lowercase().startsWith("windows")
-        Logger.logDebug("  IsWindows:      " + isWindows + " (" + System.getProperty("os.name") + ")")
+        osName = System.getProperty("os.name")
+        isWindows = osName.lowercase().startsWith("windows")
+        Logger.logDebug("  IsWindows:      " + isWindows + " (" + osName + ")")
 
         Logger.logDebug("  TempDir:        ${getTempDirName()}")
 

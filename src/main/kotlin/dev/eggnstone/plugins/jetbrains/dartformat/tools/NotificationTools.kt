@@ -116,7 +116,7 @@ class NotificationTools
             body += "```"
             if (origin != null)
                 body += "Origin: $origin\n"
-            body += "OS: ${System.getProperty("os.name")}\n"
+            body += "OS: ${OsTools.instance.osName}\n"
             body += "Plugin version: ${VersionTools.getVersion()}\n"
             body += "External dart_format version: ${ExternalDartFormat.instance.currentVersionText}\n"
             body += "```"
@@ -257,6 +257,32 @@ class NotificationTools
         fun createOpenSettingsLink(): LinkInfo
         {
             return LinkInfo("Open DartFormat settings", "action://openSettings")
+        }
+
+        fun createUpdateFlutterPathLinks(): List<LinkInfo>
+        {
+            val list = mutableListOf<LinkInfo>()
+
+            val osNameLower = OsTools.instance.osName.lowercase()
+
+            val instructionsLinux = "https://docs.flutter.dev/get-started/install/linux/android#add-flutter-to-your-path"
+            val instructionsMacOs = "https://docs.flutter.dev/get-started/install/macos/mobile-ios#add-flutter-to-your-path"
+            val instructionsWindows = "https://docs.flutter.dev/get-started/install/windows/mobile#update-your-windows-path-variable"
+
+            if (osNameLower.contains("linux"))
+                list.add(LinkInfo("Instructions for Linux", instructionsLinux))
+            else if (osNameLower.contains("mac os"))
+                list.add(LinkInfo("Instructions for macOS", instructionsMacOs))
+            else if (osNameLower.contains("windows"))
+                list.add(LinkInfo("Instructions for Windows", instructionsWindows))
+            else
+            {
+                list.add(LinkInfo("Linux", instructionsLinux))
+                list.add(LinkInfo("macOS", instructionsMacOs))
+                list.add(LinkInfo("Windows", instructionsWindows))
+            }
+
+            return list
         }
     }
 }
