@@ -8,6 +8,10 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.24</b><br/>
+        <br/>
+        <b>"Fix spaces" now not experimental anymore.</b><br/>
+        <br/>
         <b>Version 2.0.23</b><br/>
         Better error reporting when Dart executable not found.<br/>
         <br/>

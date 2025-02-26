@@ -24,7 +24,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
     private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
     private var addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
     private var addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
-    private var fixSpacesCheckbox = JCheckBox("Fix spaces (EXPERIMENTAL)")
+    private var fixSpacesCheckbox = JCheckBox("Fix spaces")
 
     private var fontFamily = fixSpacesCheckbox.font.family
     private var fontSize = fixSpacesCheckbox.font.size
