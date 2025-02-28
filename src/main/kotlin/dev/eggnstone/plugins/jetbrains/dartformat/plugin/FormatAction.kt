@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfigGetter
-import dev.eggnstone.plugins.jetbrains.dartformat.data.DataContextWithFiles
 import dev.eggnstone.plugins.jetbrains.dartformat.data.FormatOrReportResult
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
@@ -20,7 +19,6 @@ import dev.eggnstone.plugins.jetbrains.dartformat.enums.FormatResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
-import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
 
@@ -130,10 +128,10 @@ class FormatAction
                     if (finalVirtualNonDartFiles.isNotEmpty())
                     {
                         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
-                        val dataContext2 = DataContextWithFiles(e.dataContext, finalVirtualNonDartFiles.toTypedArray())
-                        val e2 = AnActionEvent.createFromDataContext(e.place, null, dataContext2)
+                        val dataContext2 = DataContext { dataId -> if (dataId == "virtualFileArray") finalVirtualNonDartFiles.toTypedArray() else getDataOrLogError(e, dataId) }
+                        val anActionEvent2: AnActionEvent = AnActionEvent.createFromDataContext(e.place, null, dataContext2)
                         val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
-                        reformatAction.actionPerformed(e2)
+                        reformatAction.actionPerformed(anActionEvent2)
                     }
                 }
                 else
@@ -218,6 +216,18 @@ class FormatAction
                 virtualFile = lastVirtualDartFile
             )
         }
+    }
+
+    private fun getDataOrLogError(e: AnActionEvent, key: String): Any?
+    {
+        if (key == CommonDataKeys.EDITOR.name)
+            return e.getData(CommonDataKeys.EDITOR)
+
+        if (key == CommonDataKeys.PROJECT.name)
+            return e.getData(CommonDataKeys.PROJECT)
+
+        Logger.logError("$CLASS_NAME.getDataOrLogError: Unhandled key: $key")
+        return null
     }
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)

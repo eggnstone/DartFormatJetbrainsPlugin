@@ -20,9 +20,6 @@ class Constants
         const val DEBUG_CONNECTION = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-        const val DEBUG_DATA_CONTEXT_WITH_FILES = DEBUG && false
-
-        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FORMAT_ACTION = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
