@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -128,10 +129,9 @@ class FormatAction
                     if (finalVirtualNonDartFiles.isNotEmpty())
                     {
                         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
-                        val dataContext2 = DataContext { dataId -> if (dataId == "virtualFileArray") finalVirtualNonDartFiles.toTypedArray() else getDataOrLogError(e, dataId) }
-                        val anActionEvent2: AnActionEvent = AnActionEvent.createFromDataContext(e.place, null, dataContext2)
+                        val dataContext2 = DataContext { dataId -> if (dataId == "virtualFileArray") finalVirtualNonDartFiles.toTypedArray() else e.dataContext.getData(dataId) }
                         val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
-                        reformatAction.actionPerformed(anActionEvent2)
+                        ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
                     }
                 }
                 else
@@ -216,18 +216,6 @@ class FormatAction
                 virtualFile = lastVirtualDartFile
             )
         }
-    }
-
-    private fun getDataOrLogError(e: AnActionEvent, key: String): Any?
-    {
-        if (key == CommonDataKeys.EDITOR.name)
-            return e.getData(CommonDataKeys.EDITOR)
-
-        if (key == CommonDataKeys.PROJECT.name)
-            return e.getData(CommonDataKeys.PROJECT)
-
-        Logger.logError("$CLASS_NAME.getDataOrLogError: Unhandled key: $key")
-        return null
     }
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
