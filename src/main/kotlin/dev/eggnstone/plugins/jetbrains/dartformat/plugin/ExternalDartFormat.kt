@@ -296,21 +296,54 @@ class ExternalDartFormat
             val errorStreamReader = StreamReader(process.errorStream)
             var readLineResponse: ReadLineResponse?
 
+            var stdErrLines: String? = null
+            var stdOutLines: String? = null
             while (true)
             {
                 readLineResponse = TimedReader.readLine(process, inputStreamReader, errorStreamReader, Constants.WAIT_FOR_EXTERNAL_DART_FORMAT_START_IN_SECONDS, "connection details from external dart_format")
                 if (readLineResponse == null)
                     break
 
-                if (readLineResponse.stdErr != null)
-                    break
-
-                if (readLineResponse.stdOut != null)
+                val stdErrLine = readLineResponse.stdErr
+                if (stdErrLine != null)
                 {
-                    if (readLineResponse.stdOut!!.startsWith("{"))
+                    //Logger.logDebug("StdErr: $stdErrLine")
+                    if (stdErrLines == null)
+                        stdErrLines = stdErrLine
+                    else
+                        stdErrLines += "\n" + stdErrLine
+                }
+
+                val stdOutLine = readLineResponse.stdOut
+                if (stdOutLine != null)
+                {
+                    //Logger.logDebug("StdOut: $stdOutLine")
+                    if (stdOutLines == null)
+                        stdOutLines = stdErrLine
+                    else
+                        stdOutLines += "\n" + stdOutLine
+
+                    if (stdOutLine.startsWith("{"))
                         break
                     else
-                        Logger.logDebug("Unexpected plain text: " + readLineResponse.stdOut!!)
+                        Logger.logDebug("Unexpected plain text: $stdOutLine")
+                }
+            }
+
+            if (stdErrLines != null || stdOutLines != null)
+            {
+                Logger.logDebug("####################")
+
+                if (stdErrLines != null)
+                {
+                    Logger.logDebug("StdErr:\n$stdErrLines")
+                    Logger.logDebug("####################")
+                }
+
+                if (stdOutLines != null)
+                {
+                    Logger.logDebug("StdOut:\n$stdOutLines")
+                    Logger.logDebug("####################")
                 }
             }
 
@@ -329,12 +362,12 @@ class ExternalDartFormat
                     StringTools.toDisplayString(jsonEncodedResponse, 200)
 
                 var content = ""
-                if (readLineResponse.stdOut != null)
-                    content += "\nStdOut: ${readLineResponse.stdOut}"
-                content += TimedReader.receiveLines(inputStreamReader, "\nStdOut: ") ?: ""
-                if (readLineResponse.stdErr != null)
-                    content += "\nStdErr: ${readLineResponse.stdErr}"
-                content += TimedReader.receiveLines(errorStreamReader, "\nStdErr: ") ?: ""
+                if (stdOutLines != null)
+                    content += "\nStdOut1:\n$stdOutLines"
+                content += TimedReader.receiveLines(inputStreamReader, "\nStdOut2:\n") ?: ""
+                if (stdErrLines != null)
+                    content += "\nStdErr1:\n$stdErrLines"
+                content += TimedReader.receiveLines(errorStreamReader, "\nStdErr2:\n") ?: ""
                 content = content.trim()
 
                 if (content.isNotEmpty())
@@ -636,9 +669,9 @@ class ExternalDartFormat
 
             val title = "Failed to $actionLower external dart_format. Dart executable not found. ExitCode: $exitCode"
             val content = "Could not find the Dart executable \"" + dartExecutable + "\".\n" +
-                    "Please make sure that Dart is installed and callable from the commandline.\n" +
-                    " \n" + // The space is necessary to force an empty line.
-                    "If you installed Dart via Flutter then see the instructions below."
+                "Please make sure that Dart is installed and callable from the commandline.\n" +
+                " \n" + // The space is necessary to force an empty line.
+                "If you installed Dart via Flutter then see the instructions below."
 
             NotificationTools.notifyError(
                 NotificationInfo(
@@ -657,13 +690,12 @@ class ExternalDartFormat
         {
             Logger.logDebug("$actionIngUpper external dart_format: Process finished. Exit code: $exitCode")
 
-
             val processState = if (processWasAlive) "Abnormal exit" else "Dead process"
             val title = "Failed to $actionLower external dart_format. $processState. ExitCode: $exitCode"
             val content = "You can try to $actionLower it manually.\n" +
-                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+                "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
             val reportContent =
-                    (if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}") + "\n\n" +
+                (if (stdOut.isEmpty()) "StdOut: <empty>" else "StdOut:\n${stdOut.trim()}") + "\n\n" +
                     (if (stdErr.isEmpty()) "StdErr: <empty>" else "StdErr:\n${stdErr.trim()}")
             val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
             val reportErrorLink = NotificationTools.createReportErrorLink(
