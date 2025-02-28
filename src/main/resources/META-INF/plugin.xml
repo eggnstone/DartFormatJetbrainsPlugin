@@ -25,10 +25,14 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.25</b><br/>
+        <br/>
+        TODO
+        <br/>
         <b>Version 2.0.24</b><br/>
         <br/>
-        <b>Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.</b><br/>
-        <b>"Fix spaces" now not experimental anymore.</b><br/>
+        Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.<br/>
+        "Fix spaces" now not experimental anymore.<br/>
         <br/>
         <b>Version 2.0.23</b><br/>
         Better error reporting when Dart executable not found.<br/>
