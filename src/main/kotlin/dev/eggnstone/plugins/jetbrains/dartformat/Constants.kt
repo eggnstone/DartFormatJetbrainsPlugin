@@ -11,10 +11,16 @@ class Constants
         const val LOG_VERBOSE = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_COLLECT_VIRTUAL_FILES_ITERATOR = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONFIG = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONNECTION = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_DATA_CONTEXT_WITH_FILES = DEBUG && false
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FORMAT_ACTION = DEBUG && false

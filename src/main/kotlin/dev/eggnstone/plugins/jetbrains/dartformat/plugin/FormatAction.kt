@@ -1,8 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -14,6 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatConfigGetter
+import dev.eggnstone.plugins.jetbrains.dartformat.data.DataContextWithFiles
 import dev.eggnstone.plugins.jetbrains.dartformat.data.FormatOrReportResult
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
@@ -21,10 +20,11 @@ import dev.eggnstone.plugins.jetbrains.dartformat.enums.FormatResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ResultType
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.OsTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.PluginTools
 import java.util.*
 
-class FormatAction : AnAction()
+class FormatAction
 {
     companion object
     {
@@ -33,15 +33,15 @@ class FormatAction : AnAction()
 
     init
     {
-        if (Constants.LOG_VERBOSE) Logger.logVerbose("FormatAction: init")
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.init()")
     }
 
-    override fun actionPerformed(e: AnActionEvent)
+    fun actionPerformed(e: AnActionEvent, useBuiltInFormatter: Boolean)
     {
         val methodName = "$CLASS_NAME.actionPerformed"
 
         val project = e.getData(CommonDataKeys.PROJECT) ?: return
-        var lastVirtualFile: VirtualFile? = null
+        var lastVirtualDartFile: VirtualFile? = null
 
         val config = DartFormatConfigGetter.get()
 
@@ -66,8 +66,9 @@ class FormatAction : AnAction()
         {
             val startTime = Date()
 
-            val finalVirtualFiles = mutableSetOf<VirtualFile>()
-            val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualFiles)
+            val finalVirtualDartFiles = mutableSetOf<VirtualFile>()
+            val finalVirtualNonDartFiles = mutableSetOf<VirtualFile>()
+            val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualDartFiles, finalVirtualNonDartFiles)
             val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
             if (selectedVirtualFiles == null)
@@ -80,21 +81,22 @@ class FormatAction : AnAction()
                 for (selectedVirtualFile in selectedVirtualFiles)
                 {
                     if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
-                    VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, this::filterDartFiles, collectVirtualFilesIterator)
+                    val filter = if (useBuiltInFormatter) null else this::filterDartFiles
+                    VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, filter, collectVirtualFilesIterator)
                 }
             }
 
             var changedCount = 0
             var warningCount = 0
             var errorCount = 0
-            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${finalVirtualFiles.size} final files:")
             CommandProcessor.getInstance().runUndoTransparentAction {
-                for (finalVirtualFile in finalVirtualFiles)
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualDartFiles.size} final dart files:")
+                for (finalVirtualDartFile in finalVirtualDartFiles)
                 {
-                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Final file: $finalVirtualFile")
-                    lastVirtualFile = finalVirtualFile
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("    Final dart file: $finalVirtualDartFile")
+                    lastVirtualDartFile = finalVirtualDartFile
                     val startTime2 = Date()
-                    val result = formatDartFile(finalVirtualFile, project, warningCount == 0)
+                    val result = formatDartFile(finalVirtualDartFile, project, warningCount == 0)
                     val endTime2 = Date()
                     val diffTime2 = endTime2.time - startTime2.time
                     val seconds2 = diffTime2 / 1000.0
@@ -105,7 +107,7 @@ class FormatAction : AnAction()
                                 links = null,
                                 origin = "$methodName/2",
                                 project = project,
-                                title = "Took ${seconds2}s to format $finalVirtualFile.",
+                                title = "Took ${seconds2}s to format $finalVirtualDartFile.",
                                 virtualFile = null
                             )
                         )
@@ -122,17 +124,44 @@ class FormatAction : AnAction()
                     if (result == FormatResultType.SomethingChanged)
                         changedCount++
                 }
+
+                if (useBuiltInFormatter)
+                {
+                    if (finalVirtualNonDartFiles.isNotEmpty())
+                    {
+                        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
+                        val dataContext2 = DataContextWithFiles(e.dataContext, finalVirtualNonDartFiles.toTypedArray())
+                        val e2 = AnActionEvent.createFromDataContext(e.place, null, dataContext2)
+                        val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
+                        reformatAction.actionPerformed(e2)
+                    }
+                }
+                else
+                {
+                    val title = "You can use the default shortcut now: " + if (OsTools.instance.isWindows) "Ctrl+Alt+L" else "Command+Alt+L"
+                    NotificationTools.notifyInfo(
+                        NotificationInfo(
+                            content = null,
+                            links = null,
+                            origin = null,
+                            project = project,
+                            title = title,
+                            virtualFile = null
+                        )
+                    )
+                }
             }
 
-            if (errorCount == 0 || Constants.SHOW_TIMINGS_EVEN_AFTER_ERROR)
+            val showNotification = !useBuiltInFormatter || finalVirtualDartFiles.isNotEmpty()
+            if (showNotification && (errorCount == 0 || Constants.SHOW_TIMINGS_EVEN_AFTER_ERROR))
             {
                 val endTime = Date()
                 val diffTime = endTime.time - startTime.time
                 val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
 
-                var finalVirtualFilesText = "${finalVirtualFiles.size} file"
-                if (finalVirtualFiles.size != 1)
-                    finalVirtualFilesText += "s"
+                var finalVirtualDartFilesText = "${finalVirtualDartFiles.size} file"
+                if (finalVirtualDartFiles.size != 1)
+                    finalVirtualDartFilesText += "s"
 
                 val changedFilesText: String = when (changedCount)
                 {
@@ -148,7 +177,7 @@ class FormatAction : AnAction()
                     else -> "$warningCount warnings"
                 }
 
-                var title = "Formatting $finalVirtualFilesText took $diffTimeText."
+                var title = "Formatting $finalVirtualDartFilesText took $diffTimeText."
 
                 if (errorCount > 0)
                     title += "\nAn error occurred." //+ errorCount
@@ -175,7 +204,7 @@ class FormatAction : AnAction()
                 origin = "$methodName/4",
                 project = project,
                 throwable = e,
-                virtualFile = lastVirtualFile
+                virtualFile = lastVirtualDartFile
             )
         }
         catch (e: Error)
@@ -186,12 +215,22 @@ class FormatAction : AnAction()
                 origin = "$methodName/5",
                 project = project,
                 throwable = e,
-                virtualFile = lastVirtualFile
+                virtualFile = lastVirtualDartFile
             )
         }
     }
 
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
+
+    private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult
+    {
+        if (inputText.isEmpty())
+            return FormatResult.ok("")
+
+        val config = DartFormatConfigGetter.get()
+        val jsonConfig = config.toJson()
+        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
+    }
 
     private fun formatDartFile(virtualFile: VirtualFile, project: Project, notifyWarnings: Boolean): FormatResultType
     {
@@ -437,15 +476,5 @@ class FormatAction : AnAction()
         }
 
         return FormatOrReportResult(formatResult.text, hasWarning = false, hasFatalError = false)
-    }
-
-    private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult
-    {
-        if (inputText.isEmpty())
-            return FormatResult.ok("")
-
-        val config = DartFormatConfigGetter.get()
-        val jsonConfig = config.toJson()
-        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
     }
 }

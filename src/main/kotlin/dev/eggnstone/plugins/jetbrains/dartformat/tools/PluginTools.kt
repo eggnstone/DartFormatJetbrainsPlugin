@@ -27,5 +27,7 @@ class PluginTools
 
             return true
         }
+
+        fun isNonDartFile(virtualFile: VirtualFile): Boolean = !virtualFile.isDirectory && virtualFile.extension != "dart"
     }
 }

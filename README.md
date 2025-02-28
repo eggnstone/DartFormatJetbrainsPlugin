@@ -12,9 +12,10 @@ Like dartfmt.
 But better ;)  
 Because it's configurable.
 
-To format the current file / the currently selected folders and files, press the following:  
-Under Windows: `Ctrl`+`Alt`+`,`  
-Under macOS: `Command`+`Alt`+`,`
+To format the active file / the currently selected folders and files, press the following:  
+`Ctrl/Command`+`Alt`+`,` to format only Dart files  
+`Ctrl/Command`+`Alt`+`L` to format all file types*  
+\* uses the built-in formatter for non-Dart files
 
 **Download the plugin from JetBrains marketplace:**  
 https://plugins.jetbrains.com/plugin/21003-dartformat  

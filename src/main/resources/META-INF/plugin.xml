@@ -1,15 +1,26 @@
 <idea-plugin require-restart="true">
     <actions>
         <action
-                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatAction"
-                id="dev.eggnstone.plugins.jetbrains.dartformat.Format">
+                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatViaKeyboardCommaAction"
+                id="dev.eggnstone.plugins.jetbrains.dartformat.FormatViaKeyboardComma"
+                text="Reformat Code (using DartFormat)"
+                icon="/pluginIcon.svg"
+        >
             <keyboard-shortcut first-keystroke="control alt COMMA" keymap="$default"/>
+        </action>
+        <action
+                class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatViaKeyboardLAction"
+                id="dev.eggnstone.plugins.jetbrains.dartformat.FormatViaKeyboardL"
+                text="Reformat Code (using DartFormat)"
+                icon="/icons/DartFormat.svg">
+            <keyboard-shortcut first-keystroke="control alt L" keymap="$default"/>
         </action>
     </actions>
     <change-notes>
         <![CDATA[
         <b>Version 2.0.24</b><br/>
         <br/>
+        <b>Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.</b><br/>
         <b>"Fix spaces" now not experimental anymore.</b><br/>
         <br/>
         <b>Version 2.0.23</b><br/>
@@ -70,8 +81,9 @@
         Because it's configurable.<br/>
         <br/>
         To format the current file / the currently selected folders and files, press the following:<br/>
-        Under Windows: <code>Ctrl</code>+<code>Alt</code>+<code>,</code><br/>
-        Under macOS: <code>Command</code>+<code>Alt</code>+<code>,</code><br/>
+        <code>Ctrl/Command</code>+<code>Alt</code>+<code>,</code> to format only Dart files<br/>
+        <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code> to format all file types*<br/>
+        * uses the built-in formatter for non-Dart files<br/>
         <br/>
         <b>This plugin:</b><br/>
         Source code: <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin">DartFormatJetBrainsPlugin on GitHub</a><br/>
