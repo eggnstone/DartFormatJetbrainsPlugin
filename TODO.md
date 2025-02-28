@@ -16,12 +16,13 @@
 - Expand patterns of files to ignore
 - Make ignore patterns editable
 - Project based configs
-- icon in shortcut
+- Update screenshots (fixe spaces)
 
 # DONE
-- add plugin and dart_format versions to reports
-- report operating system details
-- add link to VSCode extension
+- Add plugin and dart_format versions to reports
+- Report operating system details
+- Add link to VSCode extension
 - Don't send empty text, test result for empty text
-- install and update and auto-update for dart_format (https://pub.dartlang.org/packages/dart_format.json)
-- go to error location
+- Install and update and auto-update for dart_format (https://pub.dartlang.org/packages/dart_format.json)
+- Go to error location
+- Icon in shortcut
