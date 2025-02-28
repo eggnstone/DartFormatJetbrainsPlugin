@@ -138,7 +138,7 @@ class FormatAction
                 }
                 else
                 {
-                    val title = "You can use the default shortcut now: " + if (OsTools.instance.isWindows) "Ctrl+Alt+L" else "Command+Alt+L"
+                    /*val title = "You can use the default shortcut now: " + if (OsTools.instance.isWindows) "Ctrl+Alt+L" else "Command+Alt+L"
                     NotificationTools.notifyInfo(
                         NotificationInfo(
                             content = null,
@@ -148,7 +148,7 @@ class FormatAction
                             title = title,
                             virtualFile = null
                         )
-                    )
+                    )*/
                 }
             }
 

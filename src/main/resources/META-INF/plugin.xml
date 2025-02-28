@@ -3,17 +3,24 @@
         <action
                 class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatViaKeyboardCommaAction"
                 id="dev.eggnstone.plugins.jetbrains.dartformat.FormatViaKeyboardComma"
-                text="Reformat Code (using DartFormat)"
-                icon="/pluginIcon.svg"
-        >
+                icon="DartFormatIcons.DartFormat"
+                text="Reformat Code (Dart files only)">
+            <add-to-group
+                    relative-to-action="ReformatCode"
+                    anchor="after"
+                    group-id="CodeFormatGroup"/>
             <keyboard-shortcut first-keystroke="control alt COMMA" keymap="$default"/>
         </action>
         <action
                 class="dev.eggnstone.plugins.jetbrains.dartformat.plugin.FormatViaKeyboardLAction"
                 id="dev.eggnstone.plugins.jetbrains.dartformat.FormatViaKeyboardL"
-                text="Reformat Code (using DartFormat)"
-                icon="/icons/DartFormat.svg">
-            <keyboard-shortcut first-keystroke="control alt L" keymap="$default"/>
+                icon="DartFormatIcons.DartFormat"
+                text="Reformat Code (All files types)">
+            <add-to-group
+                    relative-to-action="ReformatCode"
+                    anchor="after"
+                    group-id="CodeFormatGroup"/>
+            <keyboard-shortcut first-keystroke="control alt L" keymap="$default" replace-all="true"/>
         </action>
     </actions>
     <change-notes>
