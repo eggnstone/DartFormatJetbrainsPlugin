@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.0.26"
+version = "2.0.27"
 
 repositories {
     mavenCentral()
@@ -14,7 +14,7 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.3")
+    version.set("2023.3.8")
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(/* Plugin Dependencies */))

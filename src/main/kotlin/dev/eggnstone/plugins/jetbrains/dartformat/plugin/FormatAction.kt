@@ -28,6 +28,23 @@ class FormatAction
     companion object
     {
         const val CLASS_NAME = "FormatAction"
+
+        fun getDataWithVirtualFiles(e: AnActionEvent, key: String, virtualFiles: Array<VirtualFile>): Any?
+        {
+            //Logger.logVerbose("FormatAction.getDataWithVirtualFiles: $key")
+
+            return when (key)
+            {
+                "editor" -> e.getData(CommonDataKeys.EDITOR)
+                "project" -> e.getData(CommonDataKeys.PROJECT)
+                "virtualFileArray" -> virtualFiles
+                else ->
+                {
+                    //Logger.logError("FormatAction.getDataWithVirtualFiles: $key")
+                    null
+                }
+            }
+        }
     }
 
     init
@@ -129,24 +146,10 @@ class FormatAction
                     if (finalVirtualNonDartFiles.isNotEmpty())
                     {
                         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
-                        val dataContext2 = DataContext { dataId -> if (dataId == "virtualFileArray") finalVirtualNonDartFiles.toTypedArray() else e.dataContext.getData(dataId) }
+                        val dataContext2 = DataContext { dataId -> getDataWithVirtualFiles(e, dataId, finalVirtualNonDartFiles.toTypedArray()) }
                         val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
                         ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
                     }
-                }
-                else
-                {
-                    /*val title = "You can use the default shortcut now: " + if (OsTools.instance.isWindows) "Ctrl+Alt+L" else "Command+Alt+L"
-                    NotificationTools.notifyInfo(
-                        NotificationInfo(
-                            content = null,
-                            links = null,
-                            origin = null,
-                            project = project,
-                            title = title,
-                            virtualFile = null
-                        )
-                    )*/
                 }
             }
 

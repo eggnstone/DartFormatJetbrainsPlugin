@@ -25,7 +25,7 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.26</b><br/>
+        <b>Version 2.0.27</b><br/>
         <br/>
         Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.<br/>
         "Fix spaces" now not experimental anymore.<br/>
