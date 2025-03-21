@@ -26,9 +26,9 @@ class FormatResult(val resultType: ResultType, val text: String, val throwable: 
             return FormatResult(resultType = ResultType.Ok, text = s)
         }
 
-        fun warning(s: String): FormatResult
+        /*fun warning(s: String): FormatResult
         {
             return FormatResult(resultType = ResultType.Warning, text = s)
-        }
+        }*/
     }
 }

@@ -617,7 +617,7 @@ class ExternalDartFormat
         @Suppress("USELESS_CAST")
         val process = result as Process
 
-        var exitCode = -1
+        var exitCode: Int
         val processWasAlive = process.isAlive
         if (processWasAlive)
         {

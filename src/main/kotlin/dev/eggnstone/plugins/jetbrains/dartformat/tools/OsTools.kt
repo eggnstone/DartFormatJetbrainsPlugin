@@ -26,7 +26,7 @@ class OsTools
 
         osName = System.getProperty("os.name")
         isWindows = osName.lowercase().startsWith("windows")
-        Logger.logDebug("  IsWindows:      " + isWindows + " (" + osName + ")")
+        Logger.logDebug("  IsWindows:      $isWindows ($osName)")
 
         Logger.logDebug("  TempDir:        ${getTempDirName()}")
 

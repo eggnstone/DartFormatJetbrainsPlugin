@@ -31,17 +31,27 @@ class FormatAction
 
         fun getDataWithVirtualFiles(e: AnActionEvent, key: String, virtualFiles: Array<VirtualFile>): Any?
         {
-            //Logger.logVerbose("FormatAction.getDataWithVirtualFiles: $key")
+            //Logger.logVerbose("$CLASS_NAME.getDataWithVirtualFiles: $key")
 
             return when (key)
             {
+                "contextComponent" -> e.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
                 "editor" -> e.getData(CommonDataKeys.EDITOR)
+                "host.editor" -> e.getData(CommonDataKeys.HOST_EDITOR)
                 "project" -> e.getData(CommonDataKeys.PROJECT)
+                "TOOL_WINDOW" -> e.getData(PlatformDataKeys.TOOL_WINDOW)
                 "virtualFileArray" -> virtualFiles
+
+                "external.system.view" ->
+                {
+                    Logger.logError("$CLASS_NAME.getDataWithVirtualFiles: $key")
+                    return null
+                }
+
                 else ->
                 {
-                    //Logger.logError("FormatAction.getDataWithVirtualFiles: $key")
-                    null
+                    Logger.logError("$CLASS_NAME.getDataWithVirtualFiles: $key")
+                    return null
                 }
             }
         }
@@ -148,7 +158,24 @@ class FormatAction
                         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
                         val dataContext2 = DataContext { dataId -> getDataWithVirtualFiles(e, dataId, finalVirtualNonDartFiles.toTypedArray()) }
                         val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
-                        ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
+
+                        //Logger.logVerbose("Before invokeAction")
+                        try
+                        {
+                            //ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
+                            val e2:AnActionEvent = AnActionEvent.createEvent(dataContext2, e.presentation, ActionPlaces.UNKNOWN, e.uiKind, e.inputEvent)
+                            ActionUtil.invokeAction(reformatAction, e2, null)
+                            //Logger.logVerbose("After invokeAction 1")
+                        }
+                        catch (ex: Exception)
+                        {
+                            Logger.logError("Exception in ${CLASS_NAME}.actionPerformed(): $ex")
+                        }
+                        catch (t: Throwable)
+                        {
+                            Logger.logError("Throwable in ${CLASS_NAME}.actionPerformed(): $t")
+                        }
+                        //Logger.logVerbose("After invokeAction 2")
                     }
                 }
             }

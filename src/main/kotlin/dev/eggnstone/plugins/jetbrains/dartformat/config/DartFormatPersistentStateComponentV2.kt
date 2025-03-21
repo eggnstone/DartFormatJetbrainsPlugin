@@ -37,9 +37,9 @@ class DartFormatPersistentStateComponentV2 : PersistentStateComponent<DartFormat
         dartFormatConfig!!.setLoaded(true)
     }
 
-    fun clearState()
+    /*fun clearState()
     {
         dartFormatConfig = DartFormatConfig()
         dartFormatConfig!!.setLoaded(null)
-    }
+    }*/
 }

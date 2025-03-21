@@ -1,6 +1,9 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionPromoter
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataContext
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
@@ -19,12 +22,11 @@ class FormatViaKeyboardLAction : AnAction(), ActionPromoter
     override fun actionPerformed(e: AnActionEvent)
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.actionPerformed()")
+
         FormatAction().actionPerformed(e, useBuiltInFormatter = true)
-        //val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
-        //reformatAction.actionPerformed(e)
     }
 
-    override fun promote(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>?
+    override fun promote(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.promote()")
 
@@ -37,7 +39,7 @@ class FormatViaKeyboardLAction : AnAction(), ActionPromoter
         return fixedActions
     }
 
-    override fun suppress(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>?
+    override fun suppress(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.suppress()")
 

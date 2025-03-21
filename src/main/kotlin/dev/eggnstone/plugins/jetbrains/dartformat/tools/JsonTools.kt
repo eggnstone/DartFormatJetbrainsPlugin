@@ -54,6 +54,7 @@ class JsonTools
             return jsonElement.jsonObject[key]?.jsonPrimitive?.content ?: default
         }
 
+        @Suppress("MemberVisibilityCanBePrivate")
         fun getInt(jsonElement: JsonElement, key: String, default: Int): Int
         {
             return jsonElement.jsonObject[key]?.jsonPrimitive?.content?.toInt() ?: default

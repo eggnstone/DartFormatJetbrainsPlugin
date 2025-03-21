@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.net.URI
 
+@Suppress("unused")
 class OpenUrlAction(private val uri: URI) : MouseListener
 {
     override fun mouseClicked(e: MouseEvent?)

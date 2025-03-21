@@ -6,6 +6,7 @@ data class Version(val major: Int, val minor: Int, val patch: Int)
 
     companion object
     {
+        @Suppress("MemberVisibilityCanBePrivate")
         fun parse(s: String): Version
         {
             val parts = s.split(".")
@@ -38,17 +39,17 @@ data class Version(val major: Int, val minor: Int, val patch: Int)
             return false
 
         if (major < otherVersion.major)
-            return true;
+            return true
 
         if (major > otherVersion.major)
-            return false;
+            return false
 
         if (minor < otherVersion.minor)
-            return true;
+            return true
 
         if (minor > otherVersion.minor)
-            return false;
+            return false
 
-        return patch < otherVersion.patch;
+        return patch < otherVersion.patch
     }
 }

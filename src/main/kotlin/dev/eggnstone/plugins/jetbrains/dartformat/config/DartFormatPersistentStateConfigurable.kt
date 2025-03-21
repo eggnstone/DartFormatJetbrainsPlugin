@@ -6,10 +6,8 @@ import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import java.awt.BorderLayout
-import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.FlowLayout
-import java.net.URI
 import java.text.NumberFormat
 import javax.swing.*
 import javax.swing.text.NumberFormatter
@@ -144,8 +142,8 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return finalPanel
     }
 
-    @Suppress("SameParameterValue")
-    private fun createHtmlLabel(s: String/*, preferredWidth: Int*/): JLabel
+    /*@Suppress("SameParameterValue")
+    private fun createHtmlLabel(s: String*//*, preferredWidth: Int*//*): JLabel
     {
         val label = JLabel("<html><body>$s</body></html>")
 
@@ -153,15 +151,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             label.border = BorderFactory.createMatteBorder(1, 1, 1, 1, JBColor.RED)
 
         return label
-    }
+    }*/
 
-    private fun createIntroPanel(): JPanel
+    /*private fun createIntroPanel(): JPanel
     {
         val panel = createPanelBoxLayoutYAxis()
 
         val htmlLabel = createHtmlLabel(
             "This plugin is a wrapper around the <code>dart_format</code> package on <code>pub.dev</code>.<br/>" +
-                "Please follow the install instruction there.<br/>" +
+                "Please follow the installation instruction there.<br/>" +
                 "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
         )
         panel.add(htmlLabel)
@@ -175,15 +173,15 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         htmlLabel.preferredSize = Dimension(panel.preferredSize.width, htmlLabel.preferredSize.height)
 
         return panel
-    }
+    }*/
 
-    private fun createLink(name: String, url: String): JLabel
+    /*private fun createLink(name: String, url: String): JLabel
     {
         val label = JLabel("<html><body><a href=\"$url\">$name</a></body></html>")
         label.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
         label.addMouseListener(OpenUrlAction(URI.create(url)))
         return label
-    }
+    }*/
 
     private fun createAndAddSectionPanel(name: String, formBuilder: FormBuilder): JPanel
     {
@@ -198,7 +196,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         return panel
     }
 
-    private fun createIndentedPanelAndAdd(indent: Int, jComponent: JComponent): JPanel
+    private fun createIndentedPanelAndAdd(@Suppress("SameParameterValue") indent: Int, jComponent: JComponent): JPanel
     {
         val panel = createPanelBoxLayoutYAxis()
 
