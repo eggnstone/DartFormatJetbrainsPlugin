@@ -319,7 +319,7 @@ class ExternalDartFormat
                 {
                     //Logger.logDebug("StdOut: $stdOutLine")
                     if (stdOutLines == null)
-                        stdOutLines = stdErrLine
+                        stdOutLines = stdOutLine
                     else
                         stdOutLines += "\n" + stdOutLine
 
