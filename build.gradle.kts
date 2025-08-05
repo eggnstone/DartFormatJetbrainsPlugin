@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.24"
+    id("org.jetbrains.kotlin.jvm") version "2.2.0"
     id("org.jetbrains.intellij") version "1.17.3"
 }
 
@@ -9,6 +9,12 @@ version = "2.0.32"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-coroutines/maven") }
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
+    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -27,7 +33,9 @@ tasks {
         targetCompatibility = "17"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     patchPluginXml {
