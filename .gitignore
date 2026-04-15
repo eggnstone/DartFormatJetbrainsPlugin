@@ -42,5 +42,7 @@ bin/
 .DS_Store
 
 ### Manually added ###
+.kotlin/
+
 .claude/settings.local.json
 .idea/workspace.xml

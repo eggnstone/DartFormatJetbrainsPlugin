@@ -38,7 +38,20 @@ class TimedReader
                     var content = ""
                     content += receiveLines(stdOutReader, "\nStdOut: ") ?: ""
                     content += receiveLines(stdErrReader, "\nStdErr: ") ?: ""
+
+                    // available() can return 0 right after process exit even when bytes remain
+                    // in the pipe. Drain to EOF so we actually surface stderr from crashed shims.
+                    val tailStdOut = try { stdOutReader.drainToEof() } catch (_: Throwable) { "" }
+                    if (tailStdOut.isNotEmpty())
+                        content += "\nStdOut: ${tailStdOut.trimEnd()}"
+
+                    val tailStdErr = try { stdErrReader.drainToEof() } catch (_: Throwable) { "" }
+                    if (tailStdErr.isNotEmpty())
+                        content += "\nStdErr: ${tailStdErr.trimEnd()}"
+
+                    content += "\nExitCode: ${process.exitValue()}"
                     content = content.trim()
+                    Logger.logError("$methodName: $title\n$content")
 
                     if (content.isNotEmpty())
                         content += "\n"
