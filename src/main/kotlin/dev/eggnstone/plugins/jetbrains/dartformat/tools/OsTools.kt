@@ -52,7 +52,10 @@ class OsTools
 
             envLocalAppData = null
             envPubCache = null
-            envShellParam = "-c"
+            // Login shell (-lc) so ~/.zprofile, ~/.bash_profile, ~/.profile are sourced.
+            // Without this, PATH set in those files is not inherited, and the dart_format
+            // shim fails at "dart: not found" when launched from the IDE.
+            envShellParam = "-lc"
         }
     }
 }
