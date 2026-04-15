@@ -26,6 +26,10 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.33</b><br/>
+        <br/>
+        Trying to fix "Unexpected process exit while waiting for connection details from external dart_format."<br/>
+        <br/>
         <b>Version 2.0.32</b><br/>
         <br/>
         Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.<br/>
