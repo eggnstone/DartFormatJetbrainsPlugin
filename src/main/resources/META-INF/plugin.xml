@@ -26,7 +26,7 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.0.33</b><br/>
+        <b>Version 2.0.34</b><br/>
         <br/>
         Trying to fix "Unexpected process exit while waiting for connection details from external dart_format."<br/>
         <br/>

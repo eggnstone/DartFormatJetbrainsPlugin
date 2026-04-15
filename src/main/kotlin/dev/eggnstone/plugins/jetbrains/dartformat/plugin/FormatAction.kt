@@ -164,7 +164,8 @@ class FormatAction
                         {
                             //ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
                             val e2:AnActionEvent = AnActionEvent.createEvent(dataContext2, e.presentation, ActionPlaces.UNKNOWN, e.uiKind, e.inputEvent)
-                            ActionUtil.performAction(reformatAction, e2)
+                            @Suppress("DEPRECATION")
+                            ActionUtil.invokeAction(reformatAction, e2, null)
                             //Logger.logVerbose("After invokeAction 1")
                         }
                         catch (ex: Exception)
