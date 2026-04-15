@@ -1,19 +1,19 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.2.0"
+    id("org.jetbrains.kotlin.jvm") version "2.0.21"
     id("org.jetbrains.intellij") version "1.17.3"
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.0.34"
+version = "2.0.35"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21")
     
     testImplementation("junit:junit:4.13.2")
 }

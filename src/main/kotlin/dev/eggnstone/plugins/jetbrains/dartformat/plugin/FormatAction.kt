@@ -45,13 +45,13 @@ class FormatAction
                 "external.system.view" ->
                 {
                     Logger.logError("$CLASS_NAME.getDataWithVirtualFiles: $key")
-                    return null
+                    null
                 }
 
                 else ->
                 {
                     Logger.logError("$CLASS_NAME.getDataWithVirtualFiles: $key")
-                    return null
+                    null
                 }
             }
         }
@@ -164,7 +164,6 @@ class FormatAction
                         {
                             //ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
                             val e2:AnActionEvent = AnActionEvent.createEvent(dataContext2, e.presentation, ActionPlaces.UNKNOWN, e.uiKind, e.inputEvent)
-                            @Suppress("DEPRECATION")
                             ActionUtil.invokeAction(reformatAction, e2, null)
                             //Logger.logVerbose("After invokeAction 1")
                         }
