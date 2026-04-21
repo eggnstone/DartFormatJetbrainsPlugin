@@ -42,7 +42,9 @@ bin/
 .DS_Store
 
 ### Manually added ###
-.kotlin/
+/.intellijPlatform/
+/.kotlin/
+/intellij-platform-plugin-template-main/
 
 .claude/settings.local.json
 .idea/workspace.xml

@@ -11,16 +11,17 @@ class PluginTools
             if (virtualFile.extension != "dart")
                 return false
 
-            // TODO: paths containing "generated"
+            var normalizedPath = virtualFile.path.toLowerCase().replace("\\", "/")
 
             // TODO: paths starting with "."
-            if (virtualFile.path.contains("/.dart_tool/") || virtualFile.path.contains("\\.dart_tool\\"))
+
+            if (normalizedPath.contains("/.dart_tool/"))
+                return false
+
+            if (normalizedPath.contains("/generated/"))
                 return false
 
             if (virtualFile.name == "firebase_options.dart")
-                return false
-
-            if (virtualFile.name.startsWith("app_localizations"))
                 return false
 
             if (virtualFile.name.endsWith(".freezed.dart")
