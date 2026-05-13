@@ -11,7 +11,7 @@ class PluginTools
             if (virtualFile.extension != "dart")
                 return false
 
-            var normalizedPath = virtualFile.path.toLowerCase().replace("\\", "/")
+            val normalizedPath = virtualFile.path.lowercase().replace("\\", "/")
 
             // TODO: paths starting with "."
 

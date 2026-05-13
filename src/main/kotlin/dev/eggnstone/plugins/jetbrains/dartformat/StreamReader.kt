@@ -6,7 +6,7 @@ class StreamReader(private val inputStream: InputStream)
 {
     fun readLine(): String
     {
-        var s = ""
+        val sb = StringBuilder()
 
         while (true)
         {
@@ -18,10 +18,10 @@ class StreamReader(private val inputStream: InputStream)
             if (c == '\n'.code)
                 break
 
-            s += c.toChar()
+            sb.append(c.toChar())
         }
 
-        return s
+        return sb.toString()
     }
 
     fun available(): Int

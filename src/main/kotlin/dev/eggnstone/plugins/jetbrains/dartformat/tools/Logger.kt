@@ -1,7 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import java.io.File
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -12,6 +11,7 @@ class Logger
         // Computed at class load. Direct System.getProperty (not OsTools) to avoid a circular
         // companion-init: OsTools.Companion.<init> creates OsTools.instance, whose init {} calls Logger.logDebug.
         val logFilePath: String = computeLogFilePath()
+        private val timestampFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         private var logFile: File? = null
 
         @Suppress("MemberVisibilityCanBePrivate")
@@ -64,30 +64,25 @@ class Logger
 
         private fun logToFile(s: String)
         {
-            if (logFile == null)
-                if (!createLogFile())
-                    return
-
-            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-            val timestamp = dateTimeFormatter.format(System.currentTimeMillis())
-
-            logFile!!.appendText("$timestamp $s\n")
+            val file = logFile ?: createLogFile() ?: return
+            val timestamp = timestampFormatter.format(LocalDateTime.now())
+            file.appendText("$timestamp $s\n")
         }
 
-        private fun createLogFile(): Boolean
+        private fun createLogFile(): File?
         {
-            try
+            return try
             {
-                logFile = File(logFilePath)
-                logFile!!.createNewFile()
-                return true
+                val newFile = File(logFilePath)
+                newFile.createNewFile()
+                logFile = newFile
+                newFile
             }
             catch (e: Exception)
             {
-                logFile = null
                 println("ERROR: logFilePath: $logFilePath")
                 println("$e")
-                return false
+                null
             }
         }
 
