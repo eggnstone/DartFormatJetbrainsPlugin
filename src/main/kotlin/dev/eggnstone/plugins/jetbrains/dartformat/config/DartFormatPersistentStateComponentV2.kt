@@ -20,26 +20,21 @@ class DartFormatPersistentStateComponentV2 : PersistentStateComponent<DartFormat
             }
     }
 
-    private var dartFormatConfig: DartFormatConfig? = null
+    // lateinit so a stray getState() before loadState()/noStateLoaded() fails with a clear
+    // UninitializedPropertyAccessException instead of an opaque NPE. In practice IntelliJ always
+    // calls one of those first, but the previous nullable + !! made the contract fragile.
+    private lateinit var dartFormatConfig: DartFormatConfig
 
-    override fun getState(): DartFormatConfig = dartFormatConfig!!
+    override fun getState(): DartFormatConfig = dartFormatConfig
 
     override fun noStateLoaded()
     {
         super.noStateLoaded()
-        dartFormatConfig = DartFormatConfig.current()
-        dartFormatConfig!!.setLoaded(false)
+        dartFormatConfig = DartFormatConfig.current().apply { setLoaded(false) }
     }
 
     override fun loadState(state: DartFormatConfig)
     {
-        dartFormatConfig = state
-        dartFormatConfig!!.setLoaded(true)
+        dartFormatConfig = state.apply { setLoaded(true) }
     }
-
-    /*fun clearState()
-    {
-        dartFormatConfig = DartFormatConfig()
-        dartFormatConfig!!.setLoaded(null)
-    }*/
 }
