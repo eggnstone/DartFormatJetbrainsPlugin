@@ -8,13 +8,23 @@ import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 
 class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
 {
+    companion object
+    {
+        // Companion init runs once at class-load time. Removing "ReformatCode" from the
+        // CodeFormatGroup is a global mutation that only needs to happen once per IDE session;
+        // putting it here avoids repeating it on every project open (the instance init { } block
+        // does run every time IntelliJ constructs a new ProjectActivity).
+        init
+        {
+            val actionManager = ActionManager.getInstance()
+            val actionGroup: DefaultActionGroup = actionManager.getAction("CodeFormatGroup") as DefaultActionGroup
+            actionGroup.remove(actionManager.getAction("ReformatCode"))
+        }
+    }
+
     init
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("ProjectActivity.init()")
-
-        val actionManager = ActionManager.getInstance()
-        val actionGroup: DefaultActionGroup = actionManager.getAction("CodeFormatGroup") as DefaultActionGroup
-        actionGroup.remove(actionManager.getAction("ReformatCode"))
     }
 
     override suspend fun execute(project: Project)
