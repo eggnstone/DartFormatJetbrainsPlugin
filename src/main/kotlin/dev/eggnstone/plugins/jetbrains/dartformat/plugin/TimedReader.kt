@@ -9,6 +9,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.StringTools
+import java.util.concurrent.TimeUnit
 
 class TimedReader
 {
@@ -39,65 +40,13 @@ class TimedReader
                 if (textFromStdErr != null)
                     return ReadLineResponse(null, textFromStdErr)
 
-                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
+                if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), TimeUnit.MILLISECONDS))
                 {
-                    val precedingStdOut = receiveLines(stdOutReader, "\nStdOut: ") ?: ""
-                    val precedingStdErr = receiveLines(stdErrReader, "\nStdErr: ") ?: ""
-
-                    // available() can return 0 right after process exit even when bytes remain
-                    // in the pipe. Drain to EOF so we actually surface stderr from crashed shims.
-                    val tailStdOut = try { stdOutReader.drainToEof() } catch (_: Throwable) { "" }
-                    val tailStdErr = try { stdErrReader.drainToEof() } catch (_: Throwable) { "" }
-                    val exitCode = process.exitValue()
-
+                    val exitInfo = captureExit(process, stdOutReader, stdErrReader)
                     if (onExit != null)
-                    {
-                        val combinedStdOut = combineExitText(precedingStdOut, tailStdOut)
-                        val combinedStdErr = combineExitText(precedingStdErr, tailStdErr)
-                        onExit(ProcessExitInfo(combinedStdOut, combinedStdErr, exitCode))
-                        return null
-                    }
-
-                    val title = "Unexpected process exit while waiting for $waitForName."
-
-                    var content = ""
-                    content += precedingStdOut
-                    content += precedingStdErr
-                    if (tailStdOut.isNotEmpty())
-                        content += "\nStdOut: ${tailStdOut.trimEnd()}"
-                    if (tailStdErr.isNotEmpty())
-                        content += "\nStdErr: ${tailStdErr.trimEnd()}"
-
-                    content += "\nExitCode: $exitCode"
-                    content = content.trim()
-                    Logger.logError("$methodName: $title\n$content")
-
-                    if (content.isNotEmpty())
-                        content += "\n"
-
-                    content += "Did you install the dart_format package?\n" +
-                        "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
-
-                    val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                    val reportErrorLink = NotificationTools.createReportErrorLink(
-                        content = content.ifEmpty { null },
-                        gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
-                        origin = null,
-                        stackTrace = null,
-                        title = title
-                    )
-
-                    NotificationTools.notifyError(
-                        NotificationInfo(
-                            content = content.ifEmpty { null },
-                            links = listOf(checkInstallationInstructionsLink, reportErrorLink),
-                            origin = null,
-                            project = null,
-                            title = title,
-                            virtualFile = null
-                        )
-                    )
-
+                        onExit(exitInfo)
+                    else
+                        notifyUnexpectedProcessExit(waitForName, exitInfo)
                     return null
                 }
 
@@ -114,15 +63,66 @@ class TimedReader
 
         fun receiveLines(streamReader: StreamReader, prefix: String): String?
         {
-            var r = ""
+            val sb = StringBuilder()
             while (true)
             {
                 val s = receiveLine(streamReader) ?: break
                 if (Constants.LOG_VERBOSE) Logger.logVerbose("TimedReader.receiveLines: Received: ${StringTools.toDisplayString(s, 100)}.")
-                r += "$prefix$s"
+                sb.append(prefix).append(s)
             }
 
-            return r.ifEmpty { null }
+            return if (sb.isEmpty()) null else sb.toString()
+        }
+
+        // available() can return 0 right after process exit even when bytes remain in the pipe.
+        // Drain to EOF so we actually surface stderr from crashed shims.
+        private fun captureExit(process: Process, stdOutReader: StreamReader, stdErrReader: StreamReader): ProcessExitInfo
+        {
+            val precedingStdOut = receiveLines(stdOutReader, "\nStdOut: ") ?: ""
+            val precedingStdErr = receiveLines(stdErrReader, "\nStdErr: ") ?: ""
+            val tailStdOut = try { stdOutReader.drainToEof() } catch (_: Throwable) { "" }
+            val tailStdErr = try { stdErrReader.drainToEof() } catch (_: Throwable) { "" }
+            return ProcessExitInfo(
+                stdOutTail = combineExitText(precedingStdOut, tailStdOut),
+                stdErrTail = combineExitText(precedingStdErr, tailStdErr),
+                exitCode = process.exitValue()
+            )
+        }
+
+        fun notifyUnexpectedProcessExit(waitForName: String, exitInfo: ProcessExitInfo)
+        {
+            val title = "Unexpected process exit while waiting for $waitForName."
+
+            val content = buildString {
+                if (exitInfo.stdOutTail.isNotEmpty()) append("\nStdOut: ").append(exitInfo.stdOutTail)
+                if (exitInfo.stdErrTail.isNotEmpty()) append("\nStdErr: ").append(exitInfo.stdErrTail)
+                append("\nExitCode: ").append(exitInfo.exitCode)
+            }.trim()
+            Logger.logError("$CLASS_NAME.notifyUnexpectedProcessExit: $title\n$content")
+
+            val finalContent = (if (content.isEmpty()) "" else "$content\n") +
+                "Did you install the dart_format package?\n" +
+                "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+
+            val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
+            val reportErrorLink = NotificationTools.createReportErrorLink(
+                content = finalContent.ifEmpty { null },
+                gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
+                origin = null,
+                stackTrace = null,
+                title = title
+            )
+
+            NotificationTools.notifyError(
+                NotificationInfo(
+                    content = finalContent.ifEmpty { null },
+                    links = listOf(checkInstallationInstructionsLink, reportErrorLink),
+                    origin = null,
+                    project = null,
+                    title = title,
+                    virtualFile = null
+                )
+            )
         }
 
         private fun combineExitText(preceding: String, tail: String): String
