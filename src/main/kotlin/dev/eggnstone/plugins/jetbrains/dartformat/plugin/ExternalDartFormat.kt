@@ -26,6 +26,7 @@ import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.entity.ContentType
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import java.net.SocketTimeoutException
+import kotlin.time.Duration.Companion.seconds
 
 class ExternalDartFormat
 {
@@ -107,7 +108,7 @@ class ExternalDartFormat
                     try
                     {
                         runBlocking {
-                            withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS * 1000L) {
+                            withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS.seconds) {
                                 Logger.logDebug("$methodName: Sending quit")
                                 channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null, project = null))
                                 if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent quit")
@@ -126,7 +127,7 @@ class ExternalDartFormat
                             )
                         )
                     }
-                    catch (e: TimeoutCancellationException)
+                    catch (_: TimeoutCancellationException)
                     {
                         val title = "Timeout while waiting for external dart_format to shut down."
                         val reportErrorLink = NotificationTools.createReportErrorLink(
@@ -799,7 +800,7 @@ class ExternalDartFormat
             {
                 process.awaitExit()
             }
-            catch (e: Exception)
+            catch (_: Exception)
             {
                 -1
             }
@@ -900,7 +901,7 @@ class ExternalDartFormat
         try
         {
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS.seconds) {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sending")
                     channel!!.send(formatJob)
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent.")
@@ -909,7 +910,7 @@ class ExternalDartFormat
             }
 
             runBlocking {
-                withTimeout(Constants.WAIT_FOR_JOIN_JOB_FORMAT_COMMAND_IN_SECONDS * 1000L) {
+                withTimeout(Constants.WAIT_FOR_JOIN_JOB_FORMAT_COMMAND_IN_SECONDS.seconds) {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: joining")
                     formatJob.join()
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: joined")
@@ -917,7 +918,7 @@ class ExternalDartFormat
                 }
             }
         }
-        catch (e: TimeoutCancellationException)
+        catch (_: TimeoutCancellationException)
         {
             formatJob.cancel()
             val errorText = "Timeout while waiting for external dart_format."
