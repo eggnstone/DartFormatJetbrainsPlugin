@@ -47,4 +47,5 @@ bin/
 /intellij-platform-plugin-template-main/
 
 .claude/settings.local.json
+.idea/misc.xml
 .idea/workspace.xml
