@@ -49,3 +49,4 @@ bin/
 .claude/settings.local.json
 .idea/misc.xml
 .idea/workspace.xml
+todo-nudge.md

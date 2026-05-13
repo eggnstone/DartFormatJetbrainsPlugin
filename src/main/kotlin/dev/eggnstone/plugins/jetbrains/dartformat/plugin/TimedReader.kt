@@ -4,6 +4,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.StreamReader
 import dev.eggnstone.plugins.jetbrains.dartformat.data.NotificationInfo
+import dev.eggnstone.plugins.jetbrains.dartformat.data.ProcessExitInfo
 import dev.eggnstone.plugins.jetbrains.dartformat.data.ReadLineResponse
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
@@ -15,7 +16,14 @@ class TimedReader
     {
         private const val CLASS_NAME = "TimedReader"
 
-        fun readLine(process: Process, stdOutReader: StreamReader, stdErrReader: StreamReader, timeoutInSeconds: Int, waitForName: String): ReadLineResponse?
+        fun readLine(
+            process: Process,
+            stdOutReader: StreamReader,
+            stdErrReader: StreamReader,
+            timeoutInSeconds: Int,
+            waitForName: String,
+            onExit: ((ProcessExitInfo) -> Unit)? = null
+        ): ReadLineResponse?
         {
             val methodName = "$CLASS_NAME.readLine"
             if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
@@ -33,23 +41,34 @@ class TimedReader
 
                 if (process.waitFor(Constants.WAIT_INTERVAL_IN_MILLIS.toLong(), java.util.concurrent.TimeUnit.MILLISECONDS))
                 {
-                    val title = "Unexpected process exit while waiting for $waitForName."
-
-                    var content = ""
-                    content += receiveLines(stdOutReader, "\nStdOut: ") ?: ""
-                    content += receiveLines(stdErrReader, "\nStdErr: ") ?: ""
+                    val precedingStdOut = receiveLines(stdOutReader, "\nStdOut: ") ?: ""
+                    val precedingStdErr = receiveLines(stdErrReader, "\nStdErr: ") ?: ""
 
                     // available() can return 0 right after process exit even when bytes remain
                     // in the pipe. Drain to EOF so we actually surface stderr from crashed shims.
                     val tailStdOut = try { stdOutReader.drainToEof() } catch (_: Throwable) { "" }
+                    val tailStdErr = try { stdErrReader.drainToEof() } catch (_: Throwable) { "" }
+                    val exitCode = process.exitValue()
+
+                    if (onExit != null)
+                    {
+                        val combinedStdOut = combineExitText(precedingStdOut, tailStdOut)
+                        val combinedStdErr = combineExitText(precedingStdErr, tailStdErr)
+                        onExit(ProcessExitInfo(combinedStdOut, combinedStdErr, exitCode))
+                        return null
+                    }
+
+                    val title = "Unexpected process exit while waiting for $waitForName."
+
+                    var content = ""
+                    content += precedingStdOut
+                    content += precedingStdErr
                     if (tailStdOut.isNotEmpty())
                         content += "\nStdOut: ${tailStdOut.trimEnd()}"
-
-                    val tailStdErr = try { stdErrReader.drainToEof() } catch (_: Throwable) { "" }
                     if (tailStdErr.isNotEmpty())
                         content += "\nStdErr: ${tailStdErr.trimEnd()}"
 
-                    content += "\nExitCode: ${process.exitValue()}"
+                    content += "\nExitCode: $exitCode"
                     content = content.trim()
                     Logger.logError("$methodName: $title\n$content")
 
@@ -104,6 +123,12 @@ class TimedReader
             }
 
             return r.ifEmpty { null }
+        }
+
+        private fun combineExitText(preceding: String, tail: String): String
+        {
+            val trimmedTail = tail.trimEnd()
+            return if (trimmedTail.isEmpty()) preceding.trim() else (preceding + "\n" + trimmedTail).trim()
         }
 
         private fun receiveLine(streamReader: StreamReader): String?

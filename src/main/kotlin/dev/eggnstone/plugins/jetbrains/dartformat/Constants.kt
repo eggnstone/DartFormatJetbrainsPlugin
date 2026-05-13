@@ -19,6 +19,17 @@ class Constants
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_CONNECTION = DEBUG && false
 
+        // Simulates "Can't load Kernel binary: Invalid kernel binary format version." after each
+        // dart_format start, so the auto-recovery branch and its single-shot loop guard can both
+        // be observed in one IDE session.
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FAKE_KERNEL_MISMATCH = DEBUG && false
+
+        // Pretends a newer dart_format version is available, so the auto-update branch fires on
+        // first iteration, and the loop guard skips it on the second.
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FAKE_NEW_VERSION = DEBUG && false
+
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FORMAT_ACTION = DEBUG && false
 

@@ -12,7 +12,7 @@ class VersionTools
             val id = PluginId.getId("com.eggnstone.jetbrainsplugins.DartFormat")
             val pluginDescriptor = PluginManagerCore.getPlugin(id)
 
-            return pluginDescriptor?.version ?: "<unknown version>"
+            return pluginDescriptor?.version ?: "(unknown version)"
         }
     }
 }

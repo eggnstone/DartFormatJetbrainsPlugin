@@ -26,6 +26,14 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.0.37</b><br/>
+        <br/>
+        Auto-recovery after a Dart SDK upgrade: when <code>dart_format</code> fails to start with <code>"Can't load Kernel binary: Invalid kernel binary format version."</code> or <code>"Invalid SDK hash"</code>, the plugin now re-runs <code>dart pub global activate dart_format</code> once and retries automatically. Previously this required a manual re-activation.<br/>
+        <br/>
+        Auto-update: when a newer <code>dart_format</code> is available on pub.dev, the plugin now installs it immediately instead of waiting for the next IDE start.<br/>
+        <br/>
+        Both behaviors are single-shot per IDE session so a misconfigured environment cannot loop.<br/>
+        <br/>
         <b>Version 2.0.36</b><br/>
         <br/>
         Linux/macOS: PATH set in <code>~/.zshrc</code> / <code>~/.bashrc</code> is now picked up when the plugin starts <code>dart_format</code>. Previously only login-profile files (<code>~/.zprofile</code> / <code>~/.bash_profile</code> / <code>~/.profile</code>) were sourced, which missed where most modern setups put the <code>dart</code> / <code>flutter</code> PATH addition.<br/>
