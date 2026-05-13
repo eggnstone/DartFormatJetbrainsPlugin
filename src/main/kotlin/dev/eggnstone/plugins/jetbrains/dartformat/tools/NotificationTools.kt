@@ -123,7 +123,7 @@ class NotificationTools
                 body += "Origin: $origin\n"
             body += "OS: ${OsTools.instance.osName}\n"
             body += "Plugin version: ${VersionTools.getVersion()}\n"
-            body += "External dart_format version: ${ExternalDartFormat.instance.currentVersionText}\n"
+            body += "External dart_format version: ${ExternalDartFormat.getInstance().currentVersionText}\n"
             body += "Log path: ${logFile.parent}\n"
             body += "Log file: ${logFile.name}\n"
             body += "```"

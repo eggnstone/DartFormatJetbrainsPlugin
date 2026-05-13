@@ -20,6 +20,8 @@ class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
     override suspend fun execute(project: Project)
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("ProjectActivity.execute()")
-        ExternalDartFormat.instance.init()
+        // Touch the service so its constructor runs and launches run() on the injected scope.
+        // The cast-to-Unit silences the unused-return warning for the side-effecting call.
+        ExternalDartFormat.getInstance()
     }
 }

@@ -2,6 +2,8 @@ package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
@@ -22,12 +24,18 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlin.time.Duration.Companion.seconds
 
-class ExternalDartFormat
+// Registered automatically via @Service; no plugin.xml entry required. The platform injects
+// a CoroutineScope that is cancelled when the plugin unloads, so the dart_format coroutine
+// stops cleanly on update/disable instead of leaking past the plugin's lifetime (which was
+// the previous GlobalScope.launch behavior).
+@Service(Service.Level.APP)
+class ExternalDartFormat(private val coroutineScope: CoroutineScope)
 {
     companion object
     {
         const val CLASS_NAME = "ExternalDartFormat"
-        val instance = ExternalDartFormat()
+
+        fun getInstance(): ExternalDartFormat = ApplicationManager.getApplication().service()
     }
 
     @Volatile
@@ -59,19 +67,10 @@ class ExternalDartFormat
     @Volatile
     private var lastVirtualFile: VirtualFile? = null
 
-    @Volatile
-    private var mainJob: Job? = null
-
-    @OptIn(DelicateCoroutinesApi::class)
-    fun init()
+    init
     {
-        val methodName = "$CLASS_NAME.init"
-        if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
-
-        if (mainJob != null)
-            return
-
-        mainJob = GlobalScope.launch { run() }
+        if (Constants.LOG_VERBOSE) Logger.logVerbose("$CLASS_NAME: launching run() on service scope")
+        coroutineScope.launch { run() }
     }
 
     private suspend fun run()

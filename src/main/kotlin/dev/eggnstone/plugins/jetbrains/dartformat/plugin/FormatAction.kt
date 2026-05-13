@@ -354,7 +354,7 @@ class FormatAction
 
         val config = DartFormatConfigGetter.get()
         val jsonConfig = config.toJson()
-        return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
+        return ExternalDartFormat.getInstance().formatViaChannel(inputText, jsonConfig, virtualFile, project)
     }
 
     // Returns the result type plus an optional deferred write closure. The closure must be invoked
@@ -465,10 +465,10 @@ class FormatAction
     {
         val methodName = "$CLASS_NAME.formatOrReport"
 
-        if (ExternalDartFormat.instance.state != ExternalDartFormatState.STARTED)
+        if (ExternalDartFormat.getInstance().state != ExternalDartFormatState.STARTED)
         {
-            ExternalDartFormat.instance.notifyWhenReady = true
-            var message = when (ExternalDartFormat.instance.state)
+            ExternalDartFormat.getInstance().notifyWhenReady = true
+            var message = when (ExternalDartFormat.getInstance().state)
             {
                 ExternalDartFormatState.FAILED_TO_INSTALL -> "failed to install"
                 ExternalDartFormatState.FAILED_TO_START -> "failed to start"
@@ -482,16 +482,16 @@ class FormatAction
                 ExternalDartFormatState.UPDATING -> "is still updating"
             }
 
-            message = if (ExternalDartFormat.instance.state == ExternalDartFormatState.INSTALLING
-                || ExternalDartFormat.instance.state == ExternalDartFormatState.STARTING
-                || ExternalDartFormat.instance.state == ExternalDartFormatState.UPDATING
+            message = if (ExternalDartFormat.getInstance().state == ExternalDartFormatState.INSTALLING
+                || ExternalDartFormat.getInstance().state == ExternalDartFormatState.STARTING
+                || ExternalDartFormat.getInstance().state == ExternalDartFormatState.UPDATING
             )
                 "Cannot format yet because external dart_format $message."
             else
                 "Cannot format because external dart_format $message."
 
-            val hasFatalError = (ExternalDartFormat.instance.state == ExternalDartFormatState.FAILED_TO_INSTALL
-                || ExternalDartFormat.instance.state == ExternalDartFormatState.FAILED_TO_START)
+            val hasFatalError = (ExternalDartFormat.getInstance().state == ExternalDartFormatState.FAILED_TO_INSTALL
+                || ExternalDartFormat.getInstance().state == ExternalDartFormatState.FAILED_TO_START)
 
             val info = NotificationInfo(
                 content = null,
