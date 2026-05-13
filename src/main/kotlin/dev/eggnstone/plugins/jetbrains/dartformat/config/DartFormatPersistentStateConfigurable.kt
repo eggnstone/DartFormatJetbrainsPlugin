@@ -155,7 +155,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
                 RevealFileAction.openDirectory(logDir)
         })
 
-        sectionPanel.add(createPathRow("Current log file:", logFile.absolutePath) {
+        sectionPanel.add(createPathRow("Current log file:", logFile.name) {
             try
             {
                 if (logFile.exists())
