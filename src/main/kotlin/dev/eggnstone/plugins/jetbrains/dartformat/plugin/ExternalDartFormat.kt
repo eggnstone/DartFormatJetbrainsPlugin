@@ -16,6 +16,7 @@ import dev.eggnstone.plugins.jetbrains.dartformat.data.Version
 import kotlinx.serialization.json.JsonElement
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.ExternalDartFormatState
 import dev.eggnstone.plugins.jetbrains.dartformat.enums.FailType
+import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessInfoOrLocalError
 import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessTools
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.*
 import io.ktor.util.*
@@ -154,7 +155,7 @@ class ExternalDartFormat
             var externalDartFormatInfo = ExternalDartFormatTools.getExternalDartFormatInfo()
 
             var shouldUpdate = false
-            var shouldInstall = externalDartFormatInfo.localError != null
+            var shouldInstall = externalDartFormatInfo is ProcessInfoOrLocalError.LocalError
             if (shouldInstall)
             {
                 if (Constants.LOG_VERBOSE) Logger.logVerbose("Will try to install because no installation found.")
@@ -193,9 +194,11 @@ class ExternalDartFormat
                 externalDartFormatInfo = ExternalDartFormatTools.getExternalDartFormatInfo()
             }
 
-            if (externalDartFormatInfo.localError != null)
+            val initialInfo = externalDartFormatInfo
+            if (initialInfo is ProcessInfoOrLocalError.LocalError)
             {
-                val title = "Failed to find external dart_format: " + externalDartFormatInfo.localError!!.message
+                val errorMessage = initialInfo.error.message
+                val title = "Failed to find external dart_format: $errorMessage"
                 val content = "Did you install the dart_format package?\n" +
                     "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
                 val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
@@ -208,7 +211,7 @@ class ExternalDartFormat
                 )
 
                 var showReportErrorLink = true
-                if (externalDartFormatInfo.localError!!.message.contains("Cannot find the dart_format package: File does not exist at expected location:"))
+                if (errorMessage.contains("Cannot find the dart_format package: File does not exist at expected location:"))
                     showReportErrorLink = false
 
                 val links = if (showReportErrorLink) listOf(checkInstallationInstructionsLink, reportErrorLink) else listOf(checkInstallationInstructionsLink)
@@ -234,7 +237,8 @@ class ExternalDartFormat
 
             retry@ while (true)
             {
-                val processBuilder = ProcessTools.createProcessBuilder(externalDartFormatInfo.processBuilderInfo!!)
+                val normalInfo = externalDartFormatInfo as ProcessInfoOrLocalError.Normal
+                val processBuilder = ProcessTools.createProcessBuilder(normalInfo.processBuilderInfo)
                 Logger.logDebug("Starting external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
                 if (Constants.DEBUG_CONNECTION) NotificationTools.notifyInfo(
                     NotificationInfo(
@@ -407,7 +411,7 @@ class ExternalDartFormat
                         if (tryInstall(shouldUpdate = false))
                         {
                             externalDartFormatInfo = ExternalDartFormatTools.getExternalDartFormatInfo()
-                            if (externalDartFormatInfo.localError == null)
+                            if (externalDartFormatInfo is ProcessInfoOrLocalError.Normal)
                                 continue@retry
                         }
                     }
@@ -716,14 +720,17 @@ class ExternalDartFormat
         val actionIngUpper = if (shouldUpdate) "Updating" else "Installing"
         val actionLower = if (shouldUpdate) "update" else "install"
 
-        val installExternalDartFormatInfo = ExternalDartFormatTools.getInstallExternalDartFormatInfo()
-        if (installExternalDartFormatInfo.localError != null)
+        val installProcessBuilderInfo = when (val installInfo = ExternalDartFormatTools.getInstallExternalDartFormatInfo())
         {
-            state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
-            throw DartFormatException.localError("Unexpected error: ${installExternalDartFormatInfo.localError.message}")
+            is ProcessInfoOrLocalError.LocalError ->
+            {
+                state = if (shouldUpdate) ExternalDartFormatState.FAILED_TO_UPDATE else ExternalDartFormatState.FAILED_TO_INSTALL
+                throw DartFormatException.localError("Unexpected error: ${installInfo.error.message}")
+            }
+            is ProcessInfoOrLocalError.Normal -> installInfo.processBuilderInfo
         }
 
-        val processBuilder = ProcessTools.createProcessBuilder(installExternalDartFormatInfo.processBuilderInfo!!)
+        val processBuilder = ProcessTools.createProcessBuilder(installProcessBuilderInfo)
 
         Logger.logDebug("$actionIngUpper external dart_format: ${processBuilder.command().joinToString(separator = " ")}")
         NotificationTools.notifyInfo(

@@ -2,14 +2,14 @@ package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessBuilderInfo
-import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessInfoOrException
+import dev.eggnstone.plugins.jetbrains.dartformat.process.ProcessInfoOrLocalError
 import java.io.File
 
 class ExternalDartFormatTools
 {
     companion object
     {
-        fun getExternalDartFormatInfo(): ProcessInfoOrException
+        fun getExternalDartFormatInfo(): ProcessInfoOrLocalError
         {
             val externalDartFormatExecutable: String?
 
@@ -19,7 +19,7 @@ class ExternalDartFormatTools
                 if (OsTools.instance.envPubCache == null)
                 {
                     if (OsTools.instance.envLocalAppData == null)
-                        return ProcessInfoOrException.exception(
+                        return ProcessInfoOrLocalError.LocalError(
                             DartFormatException.localError(
                                 "Cannot find the dart_format package:" +
                                     " Neither PUB_CACHE nor LOCALAPPDATA environment variable are set."
@@ -36,14 +36,14 @@ class ExternalDartFormatTools
             else
             {
                 if (OsTools.instance.envShell.isEmpty())
-                    return ProcessInfoOrException.exception(
+                    return ProcessInfoOrLocalError.LocalError(
                         DartFormatException.localError(
                             "Cannot execute dart: SHELL environment variable is not set."
                         )
                     )
 
                 if (OsTools.instance.envHome.isNullOrEmpty())
-                    return ProcessInfoOrException.exception(
+                    return ProcessInfoOrLocalError.LocalError(
                         DartFormatException.localError(
                             "Cannot execute dart_format: HOME environment variable is not set."
                         )
@@ -56,17 +56,17 @@ class ExternalDartFormatTools
             if (File(externalDartFormatExecutable).exists())
             {
                 val command = "\"$externalDartFormatExecutable\" --web --errors-as-json --log-to-temp-file"
-                return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
+                return ProcessInfoOrLocalError.Normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
             }
 
-            return ProcessInfoOrException.exception(
+            return ProcessInfoOrLocalError.LocalError(
                 DartFormatException.localError(
                     "Cannot find the dart_format package: File does not exist at expected location: $externalDartFormatExecutable"
                 )
             )
         }
 
-        fun getInstallExternalDartFormatInfo(): ProcessInfoOrException
+        fun getInstallExternalDartFormatInfo(): ProcessInfoOrLocalError
         {
             val dartExecutable: String
             if (OsTools.instance.isWindows)
@@ -76,7 +76,7 @@ class ExternalDartFormatTools
             else
             {
                 if (OsTools.instance.envShell.isEmpty())
-                    return ProcessInfoOrException.exception(
+                    return ProcessInfoOrLocalError.LocalError(
                         DartFormatException.localError(
                             "Cannot execute dart: SHELL environment variable is not set."
                         )
@@ -87,7 +87,7 @@ class ExternalDartFormatTools
 
             //val command = "$dartExecutable"+"x pub global activate dart_format"
             val command = "$dartExecutable pub global activate dart_format"
-            return ProcessInfoOrException.normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
+            return ProcessInfoOrLocalError.Normal(ProcessBuilderInfo(OsTools.instance.envShell, OsTools.instance.envShellParam, command))
         }
     }
 }
