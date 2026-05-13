@@ -30,19 +30,36 @@ class ExternalDartFormat
         val instance = ExternalDartFormat()
     }
 
+    @Volatile
     var currentVersionText = "(unknown version)"
         private set
 
+    @Volatile
     var notifyWhenReady = false
 
+    // Mutated from the background coroutine (run()), read from the EDT (actions checking state
+    // before calling formatViaChannel) and from the appClosing listener. @Volatile gives the
+    // cross-thread visibility we need without a full Mutex.
+    @Volatile
     var state: ExternalDartFormatState = ExternalDartFormatState.NOT_STARTED
         private set
 
+    @Volatile
     private var alreadyNotifiedAboutExternalDartFormatProcessDeath = false
+
+    @Volatile
     private var channel: Channel<FormatJob>? = Channel()
+
+    @Volatile
     private var dartFormatClient: DartFormatClient? = null
+
+    @Volatile
     private var rpc: DartFormatRpc? = null
+
+    @Volatile
     private var lastVirtualFile: VirtualFile? = null
+
+    @Volatile
     private var mainJob: Job? = null
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -93,7 +110,10 @@ class ExternalDartFormat
                         )
                     )
 
-                    if (dartFormatClient == null || channel == null)
+                    // Snapshot to a local so a parallel null-out (e.g. run() finishing) can't
+                    // turn this into an NPE between the check and the send.
+                    val quitChannel = channel
+                    if (dartFormatClient == null || quitChannel == null)
                     {
                         Logger.logDebug("$methodName: Not sending quit because dartFormatClient or channel is null.")
                         state = ExternalDartFormatState.STOPPED
@@ -105,7 +125,7 @@ class ExternalDartFormat
                         runBlocking {
                             withTimeout(Constants.WAIT_FOR_SEND_JOB_QUIT_COMMAND_IN_SECONDS.seconds) {
                                 Logger.logDebug("$methodName: Sending quit")
-                                channel!!.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null, project = null))
+                                quitChannel.send(FormatJob(command = "Quit", inputText = null, config = null, virtualFile = null, project = null))
                                 if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent quit")
                                 return@withTimeout "OK"
                             }
@@ -621,12 +641,16 @@ class ExternalDartFormat
         if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName()")
         val formatJob = FormatJob(command = "Format", inputText = inputText, config = config, virtualFile = virtualFile, project = project)
 
+        // Snapshot channel to a local so the BG coroutine can null it out (during shutdown)
+        // without turning this into an NPE between the read and the send.
+        val sendChannel = channel ?: return FormatResult.error("Cannot format: external dart_format channel is not available.")
+
         try
         {
             runBlocking {
                 withTimeout(Constants.WAIT_FOR_SEND_JOB_FORMAT_COMMAND_IN_SECONDS.seconds) {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sending")
-                    channel!!.send(formatJob)
+                    sendChannel.send(formatJob)
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: sent.")
                     return@withTimeout "OK"
                 }
