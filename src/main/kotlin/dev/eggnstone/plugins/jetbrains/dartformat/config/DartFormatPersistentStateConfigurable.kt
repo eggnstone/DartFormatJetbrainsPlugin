@@ -1,13 +1,20 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.config
 
+import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
+import com.intellij.ui.HyperlinkLabel
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
+import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
+import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import java.awt.BorderLayout
+import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.io.File
 import java.text.NumberFormat
 import javax.swing.*
 import javax.swing.text.NumberFormatter
@@ -136,10 +143,68 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
         sectionPanel = createAndAddSectionPanel("Empty Lines", formBuilder)
         sectionPanel.add(createMaxLinesPanel())
 
+        val logFile = File(Logger.logFilePath)
+        val logDir = logFile.parentFile
+
+        sectionPanel = createAndAddSectionPanel("Diagnostics", formBuilder)
+
+        sectionPanel.add(createPathRow("Log path:", logDir.absolutePath) {
+            if (logFile.exists())
+                RevealFileAction.openFile(logFile)
+            else
+                RevealFileAction.openDirectory(logDir)
+        })
+
+        sectionPanel.add(createPathRow("Current log file:", logFile.absolutePath) {
+            try
+            {
+                if (logFile.exists())
+                    Desktop.getDesktop().open(logFile)
+                else
+                    RevealFileAction.openDirectory(logDir)
+            }
+            catch (e: Throwable)
+            {
+                Logger.logWarning("Could not open log file: $e")
+                RevealFileAction.openDirectory(logDir)
+            }
+        })
+
+        if (Constants.DEBUG)
+            sectionPanel.add(createPanelAndAdd(createTestErrorLink()))
+
         val finalPanel = JPanel(BorderLayout())
         finalPanel.add(formBuilder.panel, BorderLayout.NORTH)
 
         return finalPanel
+    }
+
+    private fun createPathRow(label: String, path: String, onClick: () -> Unit): JPanel
+    {
+        val panel = createPanelFlowLayoutLeading()
+        panel.add(JLabel(label))
+        val link = HyperlinkLabel(path)
+        link.addHyperlinkListener { onClick() }
+        panel.add(link)
+        return panel
+    }
+
+    private fun createTestErrorLink(): HyperlinkLabel
+    {
+        val link = HyperlinkLabel("Trigger test error notification")
+        link.addHyperlinkListener {
+            val fakeException = DartFormatException.localError(
+                "DartFormat test error|This is a dummy error triggered from the DartFormat settings page." +
+                    "|It exercises the real notification + report-error path so you can verify the prefilled report body."
+            )
+            NotificationTools.reportThrowable(
+                origin = "DartFormatPersistentStateConfigurable/TestErrorLink",
+                project = null,
+                throwable = fakeException,
+                virtualFile = null
+            )
+        }
+        return link
     }
 
     /*@Suppress("SameParameterValue")

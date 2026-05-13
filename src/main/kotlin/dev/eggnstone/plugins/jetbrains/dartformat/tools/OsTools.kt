@@ -52,10 +52,10 @@ class OsTools
 
             envLocalAppData = null
             envPubCache = null
-            // Login shell (-lc) so ~/.zprofile, ~/.bash_profile, ~/.profile are sourced.
-            // Without this, PATH set in those files is not inherited, and the dart_format
-            // shim fails at "dart: not found" when launched from the IDE.
-            envShellParam = "-lc"
+            // Interactive login shell (-ilc): -l sources .zprofile/.bash_profile, -i sources .zshrc/.bashrc.
+            // Both are needed because IDE-launched JVMs inherit launchd's stripped PATH, and modern macOS
+            // (zsh) setups keep dart/flutter PATH additions in .zshrc, which a login-only shell doesn't load.
+            envShellParam = "-ilc"
         }
     }
 }

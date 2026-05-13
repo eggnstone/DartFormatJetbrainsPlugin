@@ -9,6 +9,9 @@ class Logger
 {
     companion object
     {
+        // Computed at class load. Direct System.getProperty (not OsTools) to avoid a circular
+        // companion-init: OsTools.Companion.<init> creates OsTools.instance, whose init {} calls Logger.logDebug.
+        val logFilePath: String = computeLogFilePath()
         private var logFile: File? = null
 
         @Suppress("MemberVisibilityCanBePrivate")
@@ -73,15 +76,6 @@ class Logger
 
         private fun createLogFile(): Boolean
         {
-            val now = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
-            val timestamp = formatter.format(now)
-
-            val pid = ProcessHandle.current().pid()
-
-            val logFileName = "DartFormatPlugin_${timestamp}_$pid.log"
-            val logFilePath = OsTools.getTempDirName() + "/" + logFileName
-
             try
             {
                 logFile = File(logFilePath)
@@ -95,6 +89,16 @@ class Logger
                 println("$e")
                 return false
             }
+        }
+
+        private fun computeLogFilePath(): String
+        {
+            val now = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
+            val timestamp = formatter.format(now)
+            val pid = ProcessHandle.current().pid()
+            val tempDir = System.getProperty("java.io.tmpdir")
+            return File(tempDir, "DartFormatPlugin_${timestamp}_$pid.log").path
         }
     }
 }

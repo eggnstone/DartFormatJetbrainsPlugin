@@ -28,7 +28,11 @@
         <![CDATA[
         <b>Version 2.0.36</b><br/>
         <br/>
-        TODO
+        Linux/macOS: PATH set in <code>~/.zshrc</code> / <code>~/.bashrc</code> is now picked up when the plugin starts <code>dart_format</code>. Previously only login-profile files (<code>~/.zprofile</code> / <code>~/.bash_profile</code> / <code>~/.profile</code>) were sourced, which missed where most modern setups put the <code>dart</code> / <code>flutter</code> PATH addition.<br/>
+        <br/>
+        Log files are written to the system temp directory as <code>DartFormatPlugin_&lt;timestamp&gt;_&lt;pid&gt;.log</code>.<br/>
+        The full path is shown in every error notification and included in the prefilled report body.<br/>
+        Added a <b>Diagnostics</b> section to the DartFormat settings page with clickable links to the log folder and the current log file.<br/>
         <br/>
         <b>Version 2.0.35</b><br/>
         <br/>

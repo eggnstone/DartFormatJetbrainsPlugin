@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.ide.actions.RevealFileAction
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
@@ -11,6 +12,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
+import java.io.File
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
 import dev.eggnstone.plugins.jetbrains.dartformat.config.DartFormatPersistentStateConfigurable
@@ -102,7 +104,8 @@ class NotificationTools
             title: String
         ): LinkInfo
         {
-            var body = "Please supply any additional information here, e.g. the source code that caused the error:\n\n"
+            var body = "Please supply any additional information here, e.g. the source code that caused the error.\n" +
+                "Please also attach the log file (location shown below).\n\n"
 
             if (content != null)
                 body += "```\n$content\n```\n"
@@ -113,12 +116,16 @@ class NotificationTools
                 body += "```\n$shortStackTrace\n```\n"
             }
 
+            val logFile = File(Logger.logFilePath)
+
             body += "```"
             if (origin != null)
                 body += "Origin: $origin\n"
             body += "OS: ${OsTools.instance.osName}\n"
             body += "Plugin version: ${VersionTools.getVersion()}\n"
             body += "External dart_format version: ${ExternalDartFormat.instance.currentVersionText}\n"
+            body += "Log path: ${logFile.parent}\n"
+            body += "Log file: ${logFile.name}\n"
             body += "```"
 
             val linkName = "Report error"
@@ -210,7 +217,8 @@ class NotificationTools
                 content += StringTools.toTextWithHtmlBreaks(notificationInfo.content)
             }
 
-            if (locationForNotification != null || notificationInfo.origin != null)
+            val showLogPath = type == NotificationType.ERROR
+            if (locationForNotification != null || notificationInfo.origin != null || showLogPath)
             {
                 content += "<br/>"
 
@@ -219,6 +227,9 @@ class NotificationTools
 
                 if (Constants.DEBUG && notificationInfo.origin != null)
                     content += "<br/>Origin: " + notificationInfo.origin
+
+                if (showLogPath)
+                    content += "<br/>Log file: ${File(Logger.logFilePath).name}"
             }
 
             val notification: Notification = notificationGroup.createNotification(
@@ -249,6 +260,15 @@ class NotificationTools
 
             if (actionForNotification != null)
                 notification.addAction(actionForNotification)
+
+            if (type == NotificationType.ERROR)
+                notification.addAction(NotificationAction.createSimple("Reveal log file") {
+                    val logFile = File(Logger.logFilePath)
+                    if (logFile.exists())
+                        RevealFileAction.openFile(logFile)
+                    else if (logFile.parentFile != null)
+                        RevealFileAction.openDirectory(logFile.parentFile)
+                })
 
             val finalProject = notificationInfo.project ?: ProjectManager.getInstance().defaultProject
             notification.notify(finalProject)
