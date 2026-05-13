@@ -245,10 +245,11 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
             Logger.logDebug("$methodName: baseUrl:        $baseUrl")
             Logger.logDebug("$methodName: currentVersion: $currentVersion")
             Logger.logDebug("$methodName: latestVersion:  $latestVersion")
-            dartFormatClient = DartFormatClient(baseUrl)
-            rpc = DartFormatRpc(dartFormatClient!!)
+            val client = DartFormatClient(baseUrl)
+            dartFormatClient = client
+            rpc = DartFormatRpc(client)
 
-            val httpResponse = dartFormatClient!!.get("/status")
+            val httpResponse = client.get("/status")
             if (httpResponse.statusCode() != 200)
             {
                 state = ExternalDartFormatState.FAILED_TO_START
@@ -289,7 +290,7 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
 
             dartFormatClient = null
             rpc = null
-            channel!!.close()
+            channel?.close()
             channel = null
 
             if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: END")
@@ -320,10 +321,14 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
     private suspend fun runFormatJobLoop(process: Process)
     {
         val methodName = "$CLASS_NAME.runFormatJobLoop"
+        // Hoist to locals: channel and rpc are populated by run() before this loop is called and
+        // nulled out only after it returns, so we can take a stable reference for the whole loop.
+        val activeChannel = requireNotNull(channel) { "$methodName called with null channel" }
+        val activeRpc = requireNotNull(rpc) { "$methodName called with null rpc" }
 
         while (true)
         {
-            val formatJob = channel!!.receive()
+            val formatJob = activeChannel.receive()
             if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Got new job: ${formatJob.command}")
             lastVirtualFile = formatJob.virtualFile
 
@@ -357,7 +362,7 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
                 {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling format()")
                     val filePath = NotificationTools.getShortFilePath(formatJob.virtualFile!!, formatJob.project)
-                    formatJob.formatResult = rpc!!.format(inputText = formatJob.inputText!!, config = formatJob.config!!, filePath = filePath)
+                    formatJob.formatResult = activeRpc.format(inputText = formatJob.inputText!!, config = formatJob.config!!, filePath = filePath)
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called format()")
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling formatJob.complete()")
                     formatJob.complete()
@@ -366,7 +371,7 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
                 "quit" ->
                 {
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling quit()")
-                    formatJob.formatResult = rpc!!.quit()
+                    formatJob.formatResult = activeRpc.quit()
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Called quit()")
                     if (Constants.LOG_VERBOSE) Logger.logVerbose("$methodName: Calling formatJob.complete()")
                     formatJob.complete()

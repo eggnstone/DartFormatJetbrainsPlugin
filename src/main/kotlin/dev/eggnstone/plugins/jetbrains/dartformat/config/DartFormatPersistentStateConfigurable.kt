@@ -23,19 +23,19 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
 {
     private val config: DartFormatConfig get() = DartFormatConfigGetter.get()
 
-    private var addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
-    private var addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")
-    private var addNewLineAfterSemicolonCheckbox = JCheckBox("Add new line after semicolon")
-    private var addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
-    private var addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
-    private var addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
-    private var fixSpacesCheckbox = JCheckBox("Fix spaces")
+    private val addNewLineAfterClosingBraceCheckbox = JCheckBox("Add new line after closing brace")
+    private val addNewLineAfterOpeningBraceCheckbox = JCheckBox("Add new line after opening brace")
+    private val addNewLineAfterSemicolonCheckbox = JCheckBox("Add new line after semicolon")
+    private val addNewLineAtEndOfTextCheckbox = JCheckBox("Add new line at the end of the file")
+    private val addNewLineBeforeClosingBraceCheckbox = JCheckBox("Add new line before closing brace")
+    private val addNewLineBeforeOpeningBraceCheckbox = JCheckBox("Add new line before opening brace")
+    private val fixSpacesCheckbox = JCheckBox("Fix spaces")
 
-    private var fontFamily = fixSpacesCheckbox.font.family
-    private var fontSize = fixSpacesCheckbox.font.size
-    private var codeBackground = if (fixSpacesCheckbox.background.red == 0) "#666" else if (fixSpacesCheckbox.background.red < 128) "#000" else "#fff"
+    private val fontFamily = fixSpacesCheckbox.font.family
+    private val fontSize = fixSpacesCheckbox.font.size
+    private val codeBackground = if (fixSpacesCheckbox.background.red == 0) "#666" else if (fixSpacesCheckbox.background.red < 128) "#000" else "#fff"
 
-    private var fixSpacesTextPane = JTextPane()
+    private val fixSpacesTextPane = JTextPane()
         .also {
             it.contentType = "text/html"
             it.text = "<html><body>" +
@@ -56,7 +56,7 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
                 "</body></html>"
         }
 
-    private var indentationIsEnabledCheckbox = JCheckBox("Indent")
+    private val indentationIsEnabledCheckbox = JCheckBox("Indent")
     private val indentationSpacesPerLevelFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
         .also {
             it.minimum = 1
@@ -64,11 +64,11 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             it.allowsInvalid = false
         }
 
-    private var indentationSpacesPerLevelField: JFormattedTextField =
+    private val indentationSpacesPerLevelField: JFormattedTextField =
         JFormattedTextField(indentationSpacesPerLevelFormatter)
             .also { it.text = config.indentationSpacesPerLevel.toString() }
 
-    private var maxEmptyLinesIsEnabledCheckbox = JCheckBox("Max empty lines:")
+    private val maxEmptyLinesIsEnabledCheckbox = JCheckBox("Max empty lines:")
     private val maxEmptyLinesFormatter = NumberFormatter(NumberFormat.getIntegerInstance())
         .also {
             it.minimum = 1
@@ -76,11 +76,11 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
             it.allowsInvalid = false
         }
 
-    private var maxEmptyLinesField: JFormattedTextField =
+    private val maxEmptyLinesField: JFormattedTextField =
         JFormattedTextField(maxEmptyLinesFormatter)
             .also { it.text = config.maxEmptyLines.toString() }
 
-    private var removeTrailingCommasCheckbox = JCheckBox("Remove trailing commas")
+    private val removeTrailingCommasCheckbox = JCheckBox("Remove trailing commas")
     //private var removeLineBreaksAfterArrowsCheckbox = JCheckBox("Remove line breaks after arrows")
 
     override fun apply()

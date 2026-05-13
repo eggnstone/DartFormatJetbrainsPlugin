@@ -1,6 +1,15 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
+import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
@@ -111,7 +120,7 @@ class FormatAction
         project: Project,
         useBuiltInFormatter: Boolean,
         selectedVirtualFiles: Array<VirtualFile>?,
-        presentation: com.intellij.openapi.actionSystem.Presentation,
+        presentation: Presentation,
         inputEvent: java.awt.event.InputEvent?,
         uiKind: ActionUiKind,
         indicator: ProgressIndicator,
@@ -515,88 +524,96 @@ class FormatAction
 
         val formatResult = format(inputText, virtualFile, project)
 
-        if (formatResult.resultType == ResultType.Error)
+        return when (formatResult.resultType)
         {
-            if (formatResult.throwable == null)
+            ResultType.Error ->
             {
-                val reportErrorLink = NotificationTools.createReportErrorLink(
-                    content = null,
-                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
-                    origin = "$methodName/2",
-                    stackTrace = null,
-                    title = formatResult.text
-                )
-                NotificationTools.notifyError(
-                    NotificationInfo(
-                        content = null,
-                        links = listOf(reportErrorLink),
-                        origin = "$methodName/3",
-                        project = project,
-                        title = formatResult.text,
-                        virtualFile = virtualFile
-                    )
-                )
-            }
-            else
-                NotificationTools.reportThrowable(
-                    origin = "$methodName/4",
-                    project = project,
-                    throwable = formatResult.throwable,
-                    virtualFile = virtualFile
-                )
-
-            return FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
-        }
-
-        if (formatResult.resultType == ResultType.Warning)
-        {
-            if (notifyWarnings)
                 if (formatResult.throwable == null)
-                    NotificationTools.notifyWarning(
+                {
+                    val reportErrorLink = NotificationTools.createReportErrorLink(
+                        content = null,
+                        gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
+                        origin = "$methodName/2",
+                        stackTrace = null,
+                        title = formatResult.text
+                    )
+                    NotificationTools.notifyError(
                         NotificationInfo(
                             content = null,
-                            links = null,
-                            origin = "$methodName/5",
+                            links = listOf(reportErrorLink),
+                            origin = "$methodName/3",
                             project = project,
                             title = formatResult.text,
                             virtualFile = virtualFile
                         )
                     )
+                }
                 else
                     NotificationTools.reportThrowable(
-                        origin = "$methodName/6",
+                        origin = "$methodName/4",
                         project = project,
                         throwable = formatResult.throwable,
                         virtualFile = virtualFile
                     )
 
-            return FormatOrReportResult(null, hasWarning = true, hasFatalError = false)
+                FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
+            }
+
+            ResultType.Warning ->
+            {
+                if (notifyWarnings)
+                {
+                    if (formatResult.throwable == null)
+                        NotificationTools.notifyWarning(
+                            NotificationInfo(
+                                content = null,
+                                links = null,
+                                origin = "$methodName/5",
+                                project = project,
+                                title = formatResult.text,
+                                virtualFile = virtualFile
+                            )
+                        )
+                    else
+                        NotificationTools.reportThrowable(
+                            origin = "$methodName/6",
+                            project = project,
+                            throwable = formatResult.throwable,
+                            virtualFile = virtualFile
+                        )
+                }
+
+                FormatOrReportResult(null, hasWarning = true, hasFatalError = false)
+            }
+
+            ResultType.Ok ->
+            {
+                if (formatResult.text.isEmpty())
+                {
+                    val title = "Result from external dart_format is empty."
+                    val reportErrorLink = NotificationTools.createReportErrorLink(
+                        content = null,
+                        gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
+                        origin = "$methodName/7",
+                        stackTrace = null,
+                        title = title
+                    )
+                    NotificationTools.notifyError(
+                        NotificationInfo(
+                            content = null,
+                            links = listOf(reportErrorLink),
+                            origin = "$methodName/8",
+                            project = project,
+                            title = title,
+                            virtualFile = virtualFile
+                        )
+                    )
+
+                    FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
+                }
+                else
+                    FormatOrReportResult(formatResult.text, hasWarning = false, hasFatalError = false)
+            }
         }
-
-        if (formatResult.text.isEmpty())
-        {
-            val title = "Result from external dart_format is empty."
-            val reportErrorLink = NotificationTools.createReportErrorLink(
-                content = null,
-                gitHubRepo = Constants.REPO_NAME_DART_FORMAT,
-                origin = "$methodName/7",
-                stackTrace = null,
-                title = title
-            )
-            NotificationTools.notifyError(
-                NotificationInfo(
-                    content = null,
-                    links = listOf(reportErrorLink),
-                    origin = "$methodName/8",
-                    project = project,
-                    title = title,
-                    virtualFile = virtualFile
-                )
-            )
-
-            return FormatOrReportResult(null, hasWarning = false, hasFatalError = false)
-        }
-
-        return FormatOrReportResult(formatResult.text, hasWarning = false, hasFatalError = false)
     }
 }
