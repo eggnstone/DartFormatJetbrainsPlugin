@@ -32,26 +32,12 @@ class FormatViaKeyboardLAction : AnAction(), ActionPromoter
     override fun promote(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.promote()")
-
-        val fixedActions: MutableList<AnAction> = mutableListOf()
-        for (action in actions)
-            if (action.javaClass.simpleName == "FormatViaKeyboardLAction")
-                fixedActions.add(action)
-
-        //return super.promote(actions, context)
-        return fixedActions
+        return actions.filterIsInstance<FormatViaKeyboardLAction>().toMutableList()
     }
 
     override fun suppress(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>
     {
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.suppress()")
-
-        val fixedActions: MutableList<AnAction> = mutableListOf()
-        for (action in actions)
-            if (action.javaClass.simpleName != "FormatViaKeyboardLAction")
-                fixedActions.add(action)
-
-        //return super.suppress(actions, context)
-        return fixedActions
+        return actions.filter { it !is FormatViaKeyboardLAction }.toMutableList()
     }
 }
