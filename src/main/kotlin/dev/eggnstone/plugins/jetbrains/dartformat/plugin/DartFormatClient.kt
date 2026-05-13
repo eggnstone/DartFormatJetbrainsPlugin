@@ -56,16 +56,12 @@ class DartFormatClient(private val baseUrl: String)
         httpRequest.entity = entity
 
         val startTime = Date()
-        val result: Any = withContext(Dispatchers.IO) { closeableHttpClient.execute(httpRequest, null) }
+        val response = withContext(Dispatchers.IO) { closeableHttpClient.execute(httpRequest, null) }
         val endTime = Date()
         val diffTime = endTime.time - startTime.time
         val diffTimeText = if (diffTime < 1000) "$diffTime ms" else "${diffTime / 1000.0} s"
         if (Constants.LOG_VERBOSE) Logger.logVerbose("closeableHttpClient.execute took $diffTimeText")
 
-        @Suppress("KotlinConstantConditions")
-        if (result !is CloseableHttpResponse)
-            throw DartFormatException.localError("DartFormatClient.post: expected CloseableHttpResponse but got: ${result::class.java.typeName} $result")
-
-        return result
+        return response
     }
 }

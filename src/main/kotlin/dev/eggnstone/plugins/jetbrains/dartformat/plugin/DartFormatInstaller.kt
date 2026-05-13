@@ -55,38 +55,8 @@ class DartFormatInstaller
             )
 
             if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process starting ...")
-            val result: Any = withContext(Dispatchers.IO) { processBuilder.start() }
+            val process: Process = withContext(Dispatchers.IO) { processBuilder.start() }
             if (Constants.LOG_VERBOSE) Logger.logVerbose("$actionIngUpper external dart_format: Process started.")
-
-            @Suppress("KotlinConstantConditions")
-            if (result !is Process)
-            {
-                val title = "Failed to $actionLower external dart_format: " + if (result is Throwable) result.message else result.toString()
-                val content = "You can try to $actionLower it manually.\n" +
-                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
-                val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
-                val reportErrorLink = NotificationTools.createReportErrorLink(
-                    content = null,
-                    gitHubRepo = Constants.REPO_NAME_DART_FORMAT_JET_BRAINS_PLUGIN,
-                    origin = null,
-                    stackTrace = null,
-                    title = title
-                )
-                NotificationTools.notifyError(
-                    NotificationInfo(
-                        content = content,
-                        links = listOf(checkInstallationInstructionsLink, reportErrorLink),
-                        origin = null,
-                        project = null,
-                        title = title,
-                        virtualFile = null
-                    )
-                )
-                return false
-            }
-
-            @Suppress("USELESS_CAST")
-            val process = result as Process
 
             var exitCode: Int
             val processWasAlive = process.isAlive

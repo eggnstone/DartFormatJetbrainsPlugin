@@ -59,11 +59,7 @@ class DartFormatRpc(private val client: DartFormatClient)
                     FormatResult.throwableError(methodName, dartFormatException)
             }
 
-            val result: Any = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
-            @Suppress("KotlinConstantConditions")
-            if (result !is String)
-                throw DartFormatException.localError("Expected String but got: ${result::class.java.typeName} $result")
-
+            val result = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
             return FormatResult.ok(result)
         }
         catch (e: Exception)
