@@ -7,17 +7,7 @@ class Constants
         // Main switch for debug. Should be "false" for production.
         const val DEBUG = false
 
-        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-        const val LOG_VERBOSE = DEBUG && false
-
-        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-        const val DEBUG_COLLECT_VIRTUAL_FILES_ITERATOR = DEBUG && false
-
-        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-        const val DEBUG_CONFIG = DEBUG && false
-
-        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-        const val DEBUG_CONNECTION = DEBUG && false
+        // Fakes
 
         // Simulates "Can't load Kernel binary: Invalid kernel binary format version." after each
         // dart_format start, so the auto-recovery branch and its single-shot loop guard can both
@@ -30,6 +20,27 @@ class Constants
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FAKE_NEW_VERSION = DEBUG && false
 
+        // Inserts a cancelable 5-second wait before formatting the first file, so the modal
+        // progress dialog stays visible long enough to click "Cancel" for testing.
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FAKE_FORMAT_DELAY = DEBUG && false
+
+        // Logging
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val LOG_VERBOSE = DEBUG && false
+
+        // Debugging
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_COLLECT_VIRTUAL_FILES_ITERATOR = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_CONFIG = DEBUG && false
+
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_CONNECTION = DEBUG && false
+
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FORMAT_ACTION = DEBUG && false
 
@@ -38,6 +49,8 @@ class Constants
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_SETTINGS_DIALOG = DEBUG && false
+
+        // Other
 
         const val HTTP_CLIENT_CONNECT_TIMEOUT_IN_SECONDS = 5
         const val HTTP_CLIENT_CONNECTION_REQUEST_TIMEOUT_IN_SECONDS = 5

@@ -7,6 +7,10 @@ import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -67,8 +71,6 @@ class FormatAction
         val methodName = "$CLASS_NAME.actionPerformed"
 
         val project = e.getData(CommonDataKeys.PROJECT) ?: return
-        var lastVirtualDartFile: VirtualFile? = null
-
         val config = DartFormatConfigGetter.get()
 
         if (config.hasNothingEnabled())
@@ -88,94 +90,166 @@ class FormatAction
             return
         }
 
+        // Pre-extract everything we need from AnActionEvent before leaving the EDT.
+        // AnActionEvent's DataContext is not safe to query from a background thread once the
+        // action handler has returned.
+        val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        val presentation = e.presentation
+        val inputEvent = e.inputEvent
+        val uiKind = e.uiKind
+
+        ProgressManager.getInstance().run(object : Task.Modal(project, "DartFormat", true)
+        {
+            override fun run(indicator: ProgressIndicator)
+            {
+                runFormatting(project, useBuiltInFormatter, selectedVirtualFiles, presentation, inputEvent, uiKind, indicator, e)
+            }
+        })
+    }
+
+    private fun runFormatting(
+        project: Project,
+        useBuiltInFormatter: Boolean,
+        selectedVirtualFiles: Array<VirtualFile>?,
+        presentation: com.intellij.openapi.actionSystem.Presentation,
+        inputEvent: java.awt.event.InputEvent?,
+        uiKind: ActionUiKind,
+        indicator: ProgressIndicator,
+        originalEvent: AnActionEvent
+    )
+    {
+        val methodName = "$CLASS_NAME.runFormatting"
+        var lastVirtualDartFile: VirtualFile? = null
+
         try
         {
             val startTime = Date()
 
             val finalVirtualDartFiles = mutableSetOf<VirtualFile>()
             val finalVirtualNonDartFiles = mutableSetOf<VirtualFile>()
-            val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualDartFiles, finalVirtualNonDartFiles)
-            val selectedVirtualFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-            if (selectedVirtualFiles == null)
-            {
-                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
-            }
-            else
-            {
-                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
-                for (selectedVirtualFile in selectedVirtualFiles)
+            ApplicationManager.getApplication().runReadAction {
+                val collectVirtualFilesIterator = CollectVirtualFilesIterator(finalVirtualDartFiles, finalVirtualNonDartFiles)
+                if (selectedVirtualFiles == null)
                 {
-                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
-                    val filter = if (useBuiltInFormatter) null else this::filterDartFiles
-                    VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, filter, collectVirtualFilesIterator)
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("No files selected.")
+                }
+                else
+                {
+                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("${selectedVirtualFiles.size} selected files:")
+                    for (selectedVirtualFile in selectedVirtualFiles)
+                    {
+                        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  Selected file: $selectedVirtualFile")
+                        val filter = if (useBuiltInFormatter) null else this::filterDartFiles
+                        VfsUtilCore.iterateChildrenRecursively(selectedVirtualFile, filter, collectVirtualFilesIterator)
+                    }
                 }
             }
 
+            indicator.isIndeterminate = false
+
+            // FileEditorManager.getSelectedEditor must run on the EDT, so snapshot all editor refs
+            // up-front and pass them into the BG loop. Stale by the time we format? Acceptable
+            // tradeoff vs. one invokeAndWait per file.
+            val editorByFile = mutableMapOf<VirtualFile, FileEditor?>()
+            ApplicationManager.getApplication().invokeAndWait {
+                val fileEditorManager = FileEditorManager.getInstance(project)
+                for (virtualFile in finalVirtualDartFiles)
+                    editorByFile[virtualFile] = fileEditorManager.getSelectedEditor(virtualFile)
+            }
+
+            if (Constants.DEBUG_FAKE_FORMAT_DELAY && finalVirtualDartFiles.isNotEmpty())
+                fakeDelayBeforeFirstFormat(indicator)
+
+            // BG phase: for each file, read + format on this thread; collect deferred write closures.
+            // The actual write happens later inside a single EDT command (for undo grouping).
             var changedCount = 0
             var warningCount = 0
             var errorCount = 0
-            CommandProcessor.getInstance().runUndoTransparentAction {
-                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualDartFiles.size} final dart files:")
-                for (finalVirtualDartFile in finalVirtualDartFiles)
-                {
-                    if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("    Final dart file: $finalVirtualDartFile")
-                    lastVirtualDartFile = finalVirtualDartFile
-                    val startTime2 = Date()
-                    val result = formatDartFile(finalVirtualDartFile, project, warningCount == 0)
-                    val endTime2 = Date()
-                    val diffTime2 = endTime2.time - startTime2.time
-                    val seconds2 = diffTime2 / 1000.0
-                    if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
-                        NotificationTools.notifyWarning(
-                            NotificationInfo(
-                                content = null,
-                                links = null,
-                                origin = "$methodName/2",
-                                project = project,
-                                title = "Took ${seconds2}s to format $finalVirtualDartFile.",
-                                virtualFile = null
-                            )
+            val pendingWrites = mutableListOf<() -> Unit>()
+
+            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualDartFiles.size} final dart files:")
+            for ((index, finalVirtualDartFile) in finalVirtualDartFiles.withIndex())
+            {
+                indicator.checkCanceled()
+                indicator.fraction = index.toDouble() / finalVirtualDartFiles.size.coerceAtLeast(1)
+                indicator.text = "Formatting ${finalVirtualDartFile.name}"
+                if (finalVirtualDartFiles.size > 1)
+                    indicator.text2 = "${index + 1} of ${finalVirtualDartFiles.size}"
+
+                if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("    Final dart file: $finalVirtualDartFile")
+                lastVirtualDartFile = finalVirtualDartFile
+                val startTime2 = Date()
+                val (result, pendingWrite) = formatDartFile(finalVirtualDartFile, editorByFile[finalVirtualDartFile], project, warningCount == 0)
+                val endTime2 = Date()
+                val diffTime2 = endTime2.time - startTime2.time
+                val seconds2 = diffTime2 / 1000.0
+                if (Constants.SHOW_SLOW_TIMINGS && seconds2 >= 5.0)
+                    NotificationTools.notifyWarning(
+                        NotificationInfo(
+                            content = null,
+                            links = null,
+                            origin = "$methodName/2",
+                            project = project,
+                            title = "Took ${seconds2}s to format $finalVirtualDartFile.",
+                            virtualFile = null
                         )
+                    )
 
-                    if (result == FormatResultType.Error)
-                    {
-                        errorCount++
-                        break
-                    }
+                if (pendingWrite != null)
+                    pendingWrites.add(pendingWrite)
 
-                    if (result == FormatResultType.Warning)
-                        warningCount++
-
-                    if (result == FormatResultType.SomethingChanged)
-                        changedCount++
+                if (result == FormatResultType.Error)
+                {
+                    errorCount++
+                    break
                 }
 
-                if (useBuiltInFormatter)
-                {
-                    if (finalVirtualNonDartFiles.isNotEmpty())
-                    {
-                        if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
-                        val dataContext2 = DataContext { dataId -> getDataWithVirtualFiles(e, dataId, finalVirtualNonDartFiles.toTypedArray()) }
-                        val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
+                if (result == FormatResultType.Warning)
+                    warningCount++
 
-                        //Logger.logVerbose("Before invokeAction")
-                        try
+                if (result == FormatResultType.SomethingChanged)
+                    changedCount++
+            }
+
+            // EDT phase: one undo-transparent command groups every write (Dart files + the built-in
+            // reformatter for any non-Dart files) into a single Undo step, matching the original
+            // behavior before the BG split.
+            val hasDartWrites = pendingWrites.isNotEmpty()
+            val hasNonDart = useBuiltInFormatter && finalVirtualNonDartFiles.isNotEmpty()
+            if (hasDartWrites || hasNonDart)
+            {
+                indicator.text = if (hasNonDart) "Applying changes and reformatting non-Dart files" else "Applying changes"
+                indicator.text2 = ""
+
+                ApplicationManager.getApplication().invokeAndWait {
+                    CommandProcessor.getInstance().runUndoTransparentAction {
+                        if (hasDartWrites)
+                            ApplicationManager.getApplication().runWriteAction {
+                                for (write in pendingWrites)
+                                    write()
+                            }
+
+                        if (hasNonDart)
                         {
-                            //ActionUtil.invokeAction(reformatAction, dataContext2, e.place, e.inputEvent, null)
-                            val e2:AnActionEvent = AnActionEvent.createEvent(dataContext2, e.presentation, ActionPlaces.UNKNOWN, e.uiKind, e.inputEvent)
-                            ActionUtil.invokeAction(reformatAction, e2, null)
-                            //Logger.logVerbose("After invokeAction 1")
+                            if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("  ${finalVirtualNonDartFiles.size} final non-dart files.")
+                            val dataContext2 = DataContext { dataId -> getDataWithVirtualFiles(originalEvent, dataId, finalVirtualNonDartFiles.toTypedArray()) }
+                            val reformatAction = ActionManager.getInstance().getAction(IdeActions.ACTION_EDITOR_REFORMAT)
+
+                            try
+                            {
+                                val e2: AnActionEvent = AnActionEvent.createEvent(dataContext2, presentation, ActionPlaces.UNKNOWN, uiKind, inputEvent)
+                                ActionUtil.invokeAction(reformatAction, e2, null)
+                            }
+                            catch (ex: Exception)
+                            {
+                                Logger.logError("Exception in ${CLASS_NAME}.runFormatting/invokeAction: $ex")
+                            }
+                            catch (t: Throwable)
+                            {
+                                Logger.logError("Throwable in ${CLASS_NAME}.runFormatting/invokeAction: $t")
+                            }
                         }
-                        catch (ex: Exception)
-                        {
-                            Logger.logError("Exception in ${CLASS_NAME}.actionPerformed(): $ex")
-                        }
-                        catch (t: Throwable)
-                        {
-                            Logger.logError("Throwable in ${CLASS_NAME}.actionPerformed(): $t")
-                        }
-                        //Logger.logVerbose("After invokeAction 2")
                     }
                 }
             }
@@ -226,6 +300,11 @@ class FormatAction
                 )
             }
         }
+        catch (e: ProcessCanceledException)
+        {
+            // User clicked "Cancel" in the modal progress dialog. Let IntelliJ unwind cleanly.
+            throw e
+        }
         catch (e: Exception)
         {
             NotificationTools.reportThrowable(
@@ -248,6 +327,24 @@ class FormatAction
         }
     }
 
+    private fun fakeDelayBeforeFirstFormat(indicator: ProgressIndicator)
+    {
+        Logger.logWarning("$CLASS_NAME.fakeDelayBeforeFirstFormat: DEBUG_FAKE_FORMAT_DELAY active; sleeping ~5s. Cancel the modal to test cancellation.")
+        val totalMs = 5000L
+        val stepMs = 100L
+        val startTime = System.currentTimeMillis()
+        indicator.text = "Fake delay before formatting (5s) ..."
+        indicator.text2 = "Click Cancel to test cancellation"
+        while (true)
+        {
+            val elapsed = System.currentTimeMillis() - startTime
+            if (elapsed >= totalMs) break
+            indicator.checkCanceled()
+            indicator.fraction = elapsed.toDouble() / totalMs
+            Thread.sleep(stepMs)
+        }
+    }
+
     private fun filterDartFiles(virtualFile: VirtualFile): Boolean = virtualFile.isDirectory || PluginTools.isDartFile(virtualFile)
 
     private fun format(inputText: String, virtualFile: VirtualFile, project: Project): FormatResult
@@ -260,11 +357,13 @@ class FormatAction
         return ExternalDartFormat.instance.formatViaChannel(inputText, jsonConfig, virtualFile, project)
     }
 
-    private fun formatDartFile(virtualFile: VirtualFile, project: Project, notifyWarnings: Boolean): FormatResultType
+    // Returns the result type plus an optional deferred write closure. The closure must be invoked
+    // by the caller inside an EDT runWriteAction so all writes from one batch can be grouped under
+    // a single undo command.
+    private fun formatDartFile(virtualFile: VirtualFile, fileEditor: FileEditor?, project: Project, notifyWarnings: Boolean): Pair<FormatResultType, (() -> Unit)?>
     {
         try
         {
-            val fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(virtualFile)
             return if (fileEditor == null)
                 formatDartFileByBinaryContent(project, virtualFile, notifyWarnings)
             else
@@ -285,9 +384,10 @@ class FormatAction
         }
     }
 
-    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile, notifyWarnings: Boolean): FormatResultType
+    private fun formatDartFileByBinaryContent(project: Project, virtualFile: VirtualFile, notifyWarnings: Boolean): Pair<FormatResultType, (() -> Unit)?>
     {
-        if (!virtualFile.isWritable)
+        val isWritable = ApplicationManager.getApplication().runReadAction<Boolean> { virtualFile.isWritable }
+        if (!isWritable)
         {
             if (Constants.DEBUG_FORMAT_ACTION)
             {
@@ -295,33 +395,31 @@ class FormatAction
                 Logger.logDebug("  !virtualFile.isWritable")
             }
 
-            return FormatResultType.NothingChanged
+            return Pair(FormatResultType.NothingChanged, null)
         }
 
-        val inputBytes = virtualFile.inputStream.readAllBytes()
-        val inputText = String(inputBytes)
+        val inputText = ApplicationManager.getApplication().runReadAction<String> {
+            String(virtualFile.inputStream.readAllBytes())
+        }
         val formatOrReportResult = formatOrReport(project, inputText, virtualFile, notifyWarnings)
         val formatResultText = formatOrReportResult.text
         @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression", "DuplicatedCode")
         if (formatResultText == null)
-            return if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error
+            return Pair(if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error, null)
 
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
-            return FormatResultType.NothingChanged
+            return Pair(FormatResultType.NothingChanged, null)
         }
 
         val outputBytes = formatResultText.toByteArray()
-        ApplicationManager.getApplication().runWriteAction {
-            virtualFile.setBinaryContent(outputBytes)
-        }
-
+        val pendingWrite: () -> Unit = { virtualFile.setBinaryContent(outputBytes) }
         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
-        return FormatResultType.SomethingChanged
+        return Pair(FormatResultType.SomethingChanged, pendingWrite)
     }
 
-    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor, notifyWarnings: Boolean): FormatResultType
+    private fun formatDartFileByFileEditor(project: Project, fileEditor: FileEditor, notifyWarnings: Boolean): Pair<FormatResultType, (() -> Unit)?>
     {
         if (fileEditor !is TextEditor)
         {
@@ -330,23 +428,22 @@ class FormatAction
                 Logger.logDebug("formatDartFileByFileEditor: $fileEditor")
                 Logger.logDebug("  fileEditor !is TextEditor")
             }
-            return FormatResultType.NothingChanged
+            return Pair(FormatResultType.NothingChanged, null)
         }
 
         val editor = fileEditor.editor
-
         val document = editor.document
-        val inputText = document.text
+        val inputText = ApplicationManager.getApplication().runReadAction<String> { document.text }
         val formatOrReportResult = formatOrReport(project, inputText, fileEditor.file, notifyWarnings)
         val formatResultText = formatOrReportResult.text
         @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
         if (formatResultText == null)
-            return if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error
+            return Pair(if (formatOrReportResult.hasWarning) FormatResultType.Warning else FormatResultType.Error, null)
 
         if (formatResultText == inputText)
         {
             if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Nothing changed.")
-            return FormatResultType.NothingChanged
+            return Pair(FormatResultType.NothingChanged, null)
         }
 
         val fixedOutputText: String = if (formatResultText.contains("\r\n"))
@@ -359,12 +456,9 @@ class FormatAction
         else
             formatResultText
 
-        ApplicationManager.getApplication().runWriteAction {
-            document.setText(fixedOutputText)
-        }
-
+        val pendingWrite: () -> Unit = { document.setText(fixedOutputText) }
         if (Constants.DEBUG_FORMAT_ACTION) Logger.logDebug("Something changed.")
-        return FormatResultType.SomethingChanged
+        return Pair(FormatResultType.SomethingChanged, pendingWrite)
     }
 
     private fun formatOrReport(project: Project, inputText: String, virtualFile: VirtualFile, notifyWarnings: Boolean): FormatOrReportResult

@@ -1,6 +1,7 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.plugin
 
 import com.intellij.openapi.actionSystem.ActionPromoter
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
@@ -25,6 +26,8 @@ class FormatViaKeyboardLAction : AnAction(), ActionPromoter
 
         FormatAction().actionPerformed(e, useBuiltInFormatter = true)
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun promote(actions: MutableList<out AnAction>, context: DataContext): MutableList<AnAction>
     {

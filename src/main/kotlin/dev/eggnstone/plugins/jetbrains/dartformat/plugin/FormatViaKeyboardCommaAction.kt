@@ -21,4 +21,6 @@ class FormatViaKeyboardCommaAction : AnAction()
         if (Constants.LOG_VERBOSE) Logger.logVerbose("${CLASS_NAME}.actionPerformed()")
         FormatAction().actionPerformed(e, useBuiltInFormatter = false)
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
