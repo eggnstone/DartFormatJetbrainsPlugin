@@ -26,3 +26,4 @@
 - Icon in shortcut
 - Add progress dialog (cancelable modal, file-by-file progress with indicator)
 - Auto-recover from "StdErr: kernel binary something" / "Invalid SDK hash" by re-running `dart pub global activate dart_format` once
+- Mirror dart_format 2.2.0's log-file lifecycle: rotate at 10 MiB into a sibling `.log.old`, and on startup remove `DartFormatPlugin_*.log` / `.log.old` files in `java.io.tmpdir` older than 30 days. Best-effort: skip files locked by other plugin instances; never touch the current PID's file.

@@ -26,6 +26,12 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.1.2</b><br/>
+        <br/>
+        Plugin log files in the system temp directory now self-manage:<br/>
+        - rotate at 10&nbsp;MiB into a sibling <code>.log.old</code> file, capping each IDE session at roughly 20&nbsp;MiB of plugin log<br/>
+        - <code>DartFormatPlugin_*.log</code> / <code>.log.old</code> files older than 30 days are removed on startup, so the temp directory no longer accumulates leftover logs over months of use<br/>
+        <br/>
         <b>Version 2.1.1</b><br/>
         <br/>
         Compatibility plumbing for upcoming <code>dart_format</code> security hardening. No user-visible behaviour change today, but ensures the plugin keeps working once the next <code>dart_format</code> release ships.<br/>
