@@ -44,6 +44,7 @@ class DartFormatClient(private val baseUrl: String)
             .uri(URI.create("$baseUrl$path"))
             .header("User-Agent", "DartFormatPlugin")
             .header("Content-Type", "text/plain; charset=utf-8")
+            .header("X-DartFormat-Client", "1")
             .GET()
             .build()
 
@@ -53,6 +54,7 @@ class DartFormatClient(private val baseUrl: String)
     suspend fun post(path: String, entity: HttpEntity): CloseableHttpResponse
     {
         val httpRequest = HttpPost("$baseUrl$path")
+        httpRequest.setHeader("X-DartFormat-Client", "1")
         httpRequest.entity = entity
 
         val startTime = Date()
