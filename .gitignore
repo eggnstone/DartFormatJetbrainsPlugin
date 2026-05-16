@@ -42,11 +42,11 @@ bin/
 .DS_Store
 
 ### Manually added ###
-/.intellijPlatform/
-/.kotlin/
-/intellij-platform-plugin-template-main/
+/.intellijPlatform
+/.kotlin
+/intellij-platform-plugin-template-main
+/notes
 
 .claude/settings.local.json
 .idea/misc.xml
 .idea/workspace.xml
-TODO-NUDGE.md
