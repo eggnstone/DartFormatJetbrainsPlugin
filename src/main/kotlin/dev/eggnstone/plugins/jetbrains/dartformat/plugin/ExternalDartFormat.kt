@@ -449,6 +449,7 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
 
             var stdErrLines: String? = null
             var stdOutLines: String? = null
+            var sdkDownloadAnnounced = false
 
             if (Constants.DEBUG_FAKE_KERNEL_MISMATCH)
             {
@@ -464,6 +465,20 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
             }
             else
             {
+                if (Constants.DEBUG_FAKE_FLUTTER_SDK_DOWNLOAD)
+                {
+                    Logger.logWarning("$methodName: DEBUG_FAKE_FLUTTER_SDK_DOWNLOAD active; injecting fake bootstrap stderr.")
+                    for (fakeLine in listOf("Checking Dart SDK version...", "Downloading Dart SDK from Flutter engine 1234567890abcdef..."))
+                    {
+                        stdErrLines = if (stdErrLines == null) fakeLine else "$stdErrLines\n$fakeLine"
+                        if (!sdkDownloadAnnounced && ExternalDartFormatNotifications.isFlutterSdkBootstrapStderr(fakeLine))
+                        {
+                            sdkDownloadAnnounced = true
+                            ExternalDartFormatNotifications.notifyFlutterSdkBootstrapInProgress()
+                        }
+                    }
+                }
+
                 while (true)
                 {
                     readLineResponse = TimedReader.readLine(
@@ -484,6 +499,15 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
                             stdErrLines = stdErrLine
                         else
                             stdErrLines += "\n" + stdErrLine
+
+                        // Tell the user why startup is hanging while Flutter pulls down a fresh
+                        // Dart SDK. Once per startAndConnect attempt; the success path will fire
+                        // its own "ready" notification when JSON eventually lands.
+                        if (!sdkDownloadAnnounced && ExternalDartFormatNotifications.isFlutterSdkBootstrapStderr(stdErrLine))
+                        {
+                            sdkDownloadAnnounced = true
+                            ExternalDartFormatNotifications.notifyFlutterSdkBootstrapInProgress()
+                        }
                     }
 
                     val stdOutLine = readLineResponse.stdOut

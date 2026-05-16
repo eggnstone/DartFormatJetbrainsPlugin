@@ -25,6 +25,13 @@ class Constants
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FAKE_FORMAT_DELAY = DEBUG && false
 
+        // Injects Flutter's "Checking Dart SDK version..." / "Downloading Dart SDK from Flutter
+        // engine ..." stderr lines into the handshake read loop before the real dart_format spawn
+        // emits its JSON. Lets the SDK-bootstrap detection + one-shot info notification be
+        // exercised without actually clearing engine-dart-sdk.stamp and re-downloading the SDK.
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FAKE_FLUTTER_SDK_DOWNLOAD = DEBUG && false
+
         // Logging
 
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")

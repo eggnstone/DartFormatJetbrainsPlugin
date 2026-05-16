@@ -28,9 +28,9 @@
         <![CDATA[
         <b>Version 2.1.2</b><br/>
         <br/>
-        Plugin log files in the system temp directory now self-manage:<br/>
-        - rotate at 10&nbsp;MiB into a sibling <code>.log.old</code> file, capping each IDE session at roughly 20&nbsp;MiB of plugin log<br/>
-        - <code>DartFormatPlugin_*.log</code> / <code>.log.old</code> files older than 30 days are removed on startup, so the temp directory no longer accumulates leftover logs over months of use<br/>
+        Plugin log files rotate at 10&nbsp;MiB into a sibling <code>.log.old</code>; logs older than 30 days are pruned on startup.<br/>
+        <br/>
+        When Flutter downloads a fresh Dart SDK before dart_format can start, the plugin now explains the wait instead of showing "did you install dart_format?".<br/>
         <br/>
         <b>Version 2.1.1</b><br/>
         <br/>

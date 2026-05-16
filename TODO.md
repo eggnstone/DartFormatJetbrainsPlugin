@@ -1,8 +1,6 @@
 # TODO
 - Make it an option: stop when error encountered
 - Show error when data received on stdin
-- Fix "Expected connection details in JSON but received plain text.
-  - StdErr: Checking Dart SDK version... StdErr: Downloading Dart SDK from Flutter engine"
 - Check for process death while processing
 - Notification inside the editor like original including hint to open settings
 - Add setting for how many warnings to show (currently 1)
@@ -27,3 +25,4 @@
 - Add progress dialog (cancelable modal, file-by-file progress with indicator)
 - Auto-recover from "StdErr: kernel binary something" / "Invalid SDK hash" by re-running `dart pub global activate dart_format` once
 - Mirror dart_format 2.2.0's log-file lifecycle: rotate at 10 MiB into a sibling `.log.old`, and on startup remove `DartFormatPlugin_*.log` / `.log.old` files in `java.io.tmpdir` older than 30 days. Best-effort: skip files locked by other plugin instances; never touch the current PID's file.
+- Recognize Flutter's bootstrap stderr ("Checking Dart SDK version", "Downloading Dart SDK from Flutter engine") during the dart_format handshake. Show a "Flutter is updating its Dart SDK" info notification once per startup attempt, and swap the misleading "did you install dart_format?" hint in the failure notifications for "wait for Flutter to finish, then retry" when that stderr is present.

@@ -14,6 +14,28 @@ class ExternalDartFormatNotifications
 {
     companion object
     {
+        // Matches the (non-localized) English stderr emitted by Flutter's bin/internal bootstrap
+        // scripts when it has to fetch a fresh Dart SDK before running anything. Substrings — not
+        // exact lines — because the .sh variant interpolates "$OS $ARCH" into the message.
+        // .bat / .sh / .ps1 all hardcode English via plain ECHO / echo / Write-Host.
+        fun isFlutterSdkBootstrapStderr(s: String): Boolean =
+            s.contains("Checking Dart SDK version") ||
+                (s.contains("Downloading") && s.contains("Dart SDK"))
+
+        fun notifyFlutterSdkBootstrapInProgress()
+        {
+            NotificationTools.notifyInfo(
+                NotificationInfo(
+                    content = "This usually takes under a minute. dart_format will start automatically once Flutter finishes.",
+                    links = null,
+                    origin = null,
+                    project = null,
+                    title = "Flutter is updating its bundled Dart SDK before launching dart_format ...",
+                    virtualFile = null
+                )
+            )
+        }
+
         fun notifyExpectedJsonButReceivedPlainText(
             jsonEncodedResponse: String,
             stdOutLines: String?,
@@ -37,8 +59,11 @@ class ExternalDartFormatNotifications
             if (content.isNotEmpty())
                 content += "\n"
 
-            content += "Did you install the dart_format package?\n" +
-                "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
+            content += if (isFlutterSdkBootstrapStderr(content))
+                "Flutter is downloading a Dart SDK before dart_format can start. Wait for that to finish, then retry."
+            else
+                "Did you install the dart_format package?\n" +
+                    "Basically just execute this:<pre>dart pub global activate dart_format</pre>"
 
             val checkInstallationInstructionsLink = NotificationTools.createCheckInstallationInstructionsLink()
             val reportErrorLink = NotificationTools.createReportErrorLink(
