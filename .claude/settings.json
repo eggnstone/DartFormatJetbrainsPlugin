@@ -2,7 +2,7 @@
     "permissions": {
         "allow": [
             "Bash(gradlew compileKotlin *)",
-            "Bash(gradlew.bat compileKotlin *)"
+            "Bash(./gradlew.bat compileKotlin *)"
         ]
     }
 }

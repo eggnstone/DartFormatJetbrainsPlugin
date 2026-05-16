@@ -26,17 +26,19 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.1.0</b><br/>
+        <br/>
+        Compatibility plumbing for upcoming <code>dart_format</code> security hardening. No user-visible behaviour change today, but ensures the plugin keeps working once the next <code>dart_format</code> release ships.<br/>
+        <br/>
         <b>Version 2.0.38</b><br/>
         <br/>
-        Formatting now runs in a cancelable modal progress dialog instead of freezing the IDE. On a multi-file format the dialog shows the file count and a Cancel button.<br/>
+        Formatting now runs in a cancelable modal so the IDE doesn't freeze on large files. Multi-file runs show a file count and a Cancel button.<br/>
         <br/>
-        Auto-recovery after a Dart SDK upgrade: when <code>dart_format</code> fails to start with <code>"Can't load Kernel binary: Invalid kernel binary format version."</code> or <code>"Invalid SDK hash"</code>, the plugin now re-runs <code>dart pub global activate dart_format</code> once and retries automatically. Previously this required a manual re-activation.<br/>
+        Auto-recovery after a Dart SDK upgrade: when <code>dart_format</code> fails to start with <code>"Invalid SDK hash"</code> or <code>"Can't load Kernel binary"</code>, the plugin re-runs <code>dart pub global activate dart_format</code> and retries automatically.<br/>
         <br/>
-        Auto-update: when a newer <code>dart_format</code> is available on pub.dev, the plugin now installs it immediately instead of waiting for the next IDE start.<br/>
+        Auto-update: a newer <code>dart_format</code> on pub.dev now installs immediately instead of waiting for the next IDE start.<br/>
         <br/>
-        Both auto-recovery and auto-update are single-shot per IDE session so a misconfigured environment cannot loop.<br/>
-        <br/>
-        The background dart_format coroutine is now tied to the plugin's service scope, so disabling or updating the plugin no longer leaks the process past unload.<br/>
+        Disabling or updating the plugin no longer leaves a stray <code>dart_format</code> process behind.<br/>
         <br/>
         <b>Version 2.0.36</b><br/>
         <br/>

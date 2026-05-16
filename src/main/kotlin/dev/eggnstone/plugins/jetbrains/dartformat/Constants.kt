@@ -55,6 +55,11 @@ class Constants
         const val HTTP_CLIENT_CONNECT_TIMEOUT_IN_SECONDS = 5
         const val HTTP_CLIENT_CONNECTION_REQUEST_TIMEOUT_IN_SECONDS = 5
 
+        // dart_format's web service rejects POSTs whose Content-Length exceeds 4 MiB.
+        // Pre-check the input on this side so we fail fast with a helpful message
+        // instead of streaming a doomed upload.
+        const val MAX_FORMAT_INPUT_BYTES = 4 * 1024 * 1024
+
         const val MAX_STACK_TRACE_LENGTH = 5000
 
         const val REPO_NAME_DART_FORMAT = "DartFormat"

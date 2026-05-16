@@ -26,6 +26,16 @@ class DartFormatRpc(private val client: DartFormatClient)
     {
         val methodName = "$CLASS_NAME.format"
 
+        val inputBytes = inputText.toByteArray(Charsets.UTF_8).size
+        if (inputBytes > Constants.MAX_FORMAT_INPUT_BYTES)
+        {
+            val inputMib = inputBytes / 1024.0 / 1024.0
+            val limitMib = Constants.MAX_FORMAT_INPUT_BYTES / 1024 / 1024
+            return FormatResult.error(
+                "File too large for dart_format: %.2f MiB exceeds the %d MiB limit.".format(inputMib, limitMib)
+            )
+        }
+
         try
         {
             val multipartEntityBuilder = MultipartEntityBuilder.create()
@@ -57,6 +67,20 @@ class DartFormatRpc(private val client: DartFormatClient)
                     FormatResult.throwableWarning(methodName, dartFormatException)
                 else
                     FormatResult.throwableError(methodName, dartFormatException)
+            }
+
+            val statusCode = httpResponse.statusLine.statusCode
+            if (statusCode != 200)
+            {
+                Logger.logDebug("$methodName: POST /format returned HTTP $statusCode")
+                val message = when (statusCode)
+                {
+                    403 -> "dart_format rejected the request: Host check failed (must be a loopback address)."
+                    411 -> "dart_format rejected the request: missing Content-Length header."
+                    413 -> "dart_format rejected the request: body exceeds the ${Constants.MAX_FORMAT_INPUT_BYTES / 1024 / 1024} MiB limit."
+                    else -> "dart_format returned HTTP $statusCode."
+                }
+                return FormatResult.error(message)
             }
 
             val result = withContext(Dispatchers.IO) { httpResponse.entity.content.readAllBytes() }.decodeToString()
