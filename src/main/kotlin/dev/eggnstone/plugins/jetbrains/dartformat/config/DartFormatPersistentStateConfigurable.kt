@@ -8,6 +8,7 @@ import com.intellij.ui.JBColor
 import com.intellij.util.ui.FormBuilder
 import dev.eggnstone.plugins.jetbrains.dartformat.Constants
 import dev.eggnstone.plugins.jetbrains.dartformat.DartFormatException
+import dev.eggnstone.plugins.jetbrains.dartformat.plugin.ExternalDartFormat
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.Logger
 import dev.eggnstone.plugins.jetbrains.dartformat.tools.NotificationTools
 import java.awt.BorderLayout
@@ -169,6 +170,42 @@ class DartFormatPersistentStateConfigurable : Configurable, Disposable
                 RevealFileAction.openDirectory(logDir)
             }
         })
+
+        // dart_format 2.2.0+ advertises its own temp log path/name in the startup JSON. Show them
+        // here so a user filing a bug can hand over both logs without having to dig in %TEMP%.
+        // Older dart_format binaries don't emit these fields; the rows simply stay hidden then.
+        val dartFormatLogDirPath = ExternalDartFormat.getInstance().dartFormatLogFilePath
+        val dartFormatLogFileName = ExternalDartFormat.getInstance().dartFormatLogFileName
+        if (dartFormatLogDirPath != null)
+        {
+            val dartFormatLogDir = File(dartFormatLogDirPath)
+            val dartFormatLogFile = if (dartFormatLogFileName != null) File(dartFormatLogDir, dartFormatLogFileName) else null
+
+            sectionPanel.add(createPathRow("dart_format log path:", dartFormatLogDir.absolutePath) {
+                if (dartFormatLogFile != null && dartFormatLogFile.exists())
+                    RevealFileAction.openFile(dartFormatLogFile)
+                else
+                    RevealFileAction.openDirectory(dartFormatLogDir)
+            })
+
+            if (dartFormatLogFile != null)
+            {
+                sectionPanel.add(createPathRow("dart_format log file:", dartFormatLogFile.name) {
+                    try
+                    {
+                        if (dartFormatLogFile.exists())
+                            Desktop.getDesktop().open(dartFormatLogFile)
+                        else
+                            RevealFileAction.openDirectory(dartFormatLogDir)
+                    }
+                    catch (e: Throwable)
+                    {
+                        Logger.logWarning("Could not open dart_format log file: $e")
+                        RevealFileAction.openDirectory(dartFormatLogDir)
+                    }
+                })
+            }
+        }
 
         if (Constants.DEBUG)
             sectionPanel.add(createPanelAndAdd(createTestErrorLink()))

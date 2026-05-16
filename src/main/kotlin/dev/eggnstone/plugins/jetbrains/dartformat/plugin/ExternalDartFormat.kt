@@ -42,6 +42,21 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
     var currentVersionText = "(unknown version)"
         private set
 
+    // Captured from the dart_format 2.2.0+ startup JSON. Null when dart_format hasn't started yet
+    // or is an older binary that only emits `Message`. Read from the EDT (settings diagnostics,
+    // report-error link), set from the background coroutine in startAndConnect.
+    @Volatile
+    var dartFormatLogFilePath: String? = null
+        private set
+
+    @Volatile
+    var dartFormatLogFileName: String? = null
+        private set
+
+    @Volatile
+    var dartFormatProcessId: Int? = null
+        private set
+
     @Volatile
     var notifyWhenReady = false
 
@@ -237,7 +252,20 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
                 )
             )
 
-            val baseUrl = JsonTools.getString(jsonResponse, "Message", "")
+            // Prefer the structured Protocol/Address/Port introduced in dart_format 2.2.0; fall back
+            // to the legacy `Message` field for older binaries that still ship a pre-built URL.
+            val protocol = JsonTools.getStringOrNull(jsonResponse, "Protocol")
+            val address = JsonTools.getStringOrNull(jsonResponse, "Address")
+            val port = JsonTools.getIntOrNull(jsonResponse, "Port")
+            val baseUrl = if (protocol != null && address != null && port != null)
+                "$protocol://$address:$port"
+            else
+                JsonTools.getString(jsonResponse, "Message", "")
+
+            dartFormatLogFilePath = JsonTools.getStringOrNull(jsonResponse, "LogFilePath")
+            dartFormatLogFileName = JsonTools.getStringOrNull(jsonResponse, "LogFileName")
+            dartFormatProcessId = JsonTools.getIntOrNull(jsonResponse, "ProcessId")
+
             currentVersionText = JsonTools.getString(jsonResponse, "CurrentVersion", "")
             val currentVersion = Version.parseOrNull(currentVersionText)
             val latestVersionText = JsonTools.getString(jsonResponse, "LatestVersion", "")
@@ -245,6 +273,7 @@ class ExternalDartFormat(private val coroutineScope: CoroutineScope)
             Logger.logDebug("$methodName: baseUrl:        $baseUrl")
             Logger.logDebug("$methodName: currentVersion: $currentVersion")
             Logger.logDebug("$methodName: latestVersion:  $latestVersion")
+            Logger.logDebug("$methodName: dartFormatLog:  ${dartFormatLogFilePath}/${dartFormatLogFileName} (pid=${dartFormatProcessId})")
             val client = DartFormatClient(baseUrl)
             dartFormatClient = client
             rpc = DartFormatRpc(client)

@@ -54,10 +54,20 @@ class JsonTools
             return jsonElement.jsonObject[key]?.jsonPrimitive?.content ?: default
         }
 
+        fun getStringOrNull(jsonElement: JsonElement, key: String): String?
+        {
+            return jsonElement.jsonObject[key]?.jsonPrimitive?.content
+        }
+
         @Suppress("MemberVisibilityCanBePrivate")
         fun getInt(jsonElement: JsonElement, key: String, default: Int): Int
         {
             return jsonElement.jsonObject[key]?.jsonPrimitive?.content?.toInt() ?: default
+        }
+
+        fun getIntOrNull(jsonElement: JsonElement, key: String): Int?
+        {
+            return jsonElement.jsonObject[key]?.jsonPrimitive?.content?.toIntOrNull()
         }
     }
 }

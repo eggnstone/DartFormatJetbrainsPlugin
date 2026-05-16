@@ -118,14 +118,21 @@ class NotificationTools
 
             val logFile = File(Logger.logFilePath)
 
+            val externalDartFormat = ExternalDartFormat.getInstance()
+
             body += "```"
             if (origin != null)
                 body += "Origin: $origin\n"
             body += "OS: ${OsTools.instance.osName}\n"
             body += "Plugin version: ${VersionTools.getVersion()}\n"
-            body += "External dart_format version: ${ExternalDartFormat.getInstance().currentVersionText}\n"
+            body += "External dart_format version: ${externalDartFormat.currentVersionText}\n"
             body += "Log path: ${logFile.parent}\n"
             body += "Log file: ${logFile.name}\n"
+            // dart_format 2.2.0+ advertises its own log location + pid in the startup JSON. Include
+            // them when known so a reported bug has both logs and the pid for diagnostics.
+            externalDartFormat.dartFormatLogFilePath?.let { body += "dart_format log path: $it\n" }
+            externalDartFormat.dartFormatLogFileName?.let { body += "dart_format log file: $it\n" }
+            externalDartFormat.dartFormatProcessId?.let { body += "dart_format pid: $it\n" }
             body += "```"
 
             val linkName = "Report error"

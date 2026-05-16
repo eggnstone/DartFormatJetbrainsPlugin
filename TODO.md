@@ -1,4 +1,5 @@
 # TODO
+- Drop the `Message` fallback in `ExternalDartFormat.startAndConnect` once dart_format 2.2.0+ adoption is broad (~6 months from 2026-05-16): require `Protocol` + `Address` + `Port` and stop parsing the legacy `Message` URL.
 - Make it an option: stop when error encountered
 - Show error when data received on stdin
 - Check for process death while processing
@@ -26,3 +27,4 @@
 - Auto-recover from "StdErr: kernel binary something" / "Invalid SDK hash" by re-running `dart pub global activate dart_format` once
 - Mirror dart_format 2.2.0's log-file lifecycle: rotate at 10 MiB into a sibling `.log.old`, and on startup remove `DartFormatPlugin_*.log` / `.log.old` files in `java.io.tmpdir` older than 30 days. Best-effort: skip files locked by other plugin instances; never touch the current PID's file.
 - Recognize Flutter's bootstrap stderr ("Checking Dart SDK version", "Downloading Dart SDK from Flutter engine") during the dart_format handshake. Show a "Flutter is updating its Dart SDK" info notification once per startup attempt, and swap the misleading "did you install dart_format?" hint in the failure notifications for "wait for Flutter to finish, then retry" when that stderr is present.
+- Consume the dart_format 2.2.0+ startup-JSON fields: build the base URL from `Protocol://Address:Port` (fall back to `Message` for older binaries), capture `LogFilePath` / `LogFileName` / `ProcessId` into `ExternalDartFormat`, surface the dart_format log path + filename in the settings Diagnostics section, and include them plus the pid in the "report error" GitHub-issue body.
