@@ -26,7 +26,7 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.1.0</b><br/>
+        <b>Version 2.1.1</b><br/>
         <br/>
         Compatibility plumbing for upcoming <code>dart_format</code> security hardening. No user-visible behaviour change today, but ensures the plugin keeps working once the next <code>dart_format</code> release ships.<br/>
         <br/>

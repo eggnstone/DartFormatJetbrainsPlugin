@@ -1,7 +1,6 @@
 package dev.eggnstone.plugins.jetbrains.dartformat.tools
 
-import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.openapi.extensions.PluginId
+import com.intellij.ide.plugins.PluginManager
 
 class VersionTools
 {
@@ -9,9 +8,7 @@ class VersionTools
     {
         fun getVersion(): String
         {
-            val id = PluginId.getId("com.eggnstone.jetbrainsplugins.DartFormat")
-            val pluginDescriptor = PluginManagerCore.getPlugin(id)
-
+            val pluginDescriptor = PluginManager.getPluginByClass(VersionTools::class.java)
             return pluginDescriptor?.version ?: "(unknown version)"
         }
     }
