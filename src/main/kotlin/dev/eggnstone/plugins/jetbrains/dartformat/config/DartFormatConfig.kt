@@ -18,7 +18,12 @@ data class DartFormatConfig(
     var latestVersionText: String? = null,
     var majorVersion: Int? = null,
     var minorVersion: Int? = null,
-    var patchVersion: Int? = null
+    var patchVersion: Int? = null,
+    // One-shot flag: true after the welcome notification has fired at least once. Wiping the
+    // IDE config or fresh-installing the plugin resets it back to false so the user sees the
+    // hint again. Kept on the formatter config alongside `currentVersionText` to avoid adding
+    // a second PersistentStateComponent for a single boolean.
+    var welcomeShown: Boolean = false
 )
 {
     private var _loaded: Boolean? = null
