@@ -28,44 +28,38 @@
         <![CDATA[
         <b>Version 2.1.2</b><br/>
         <br/>
-        Plugin log files rotate at 10&nbsp;MiB into a sibling <code>.log.old</code>; logs older than 30 days are pruned on startup.<br/>
+        First-run welcome notification showing your format shortcuts and a link to the settings.<br/>
         <br/>
-        When Flutter downloads a fresh Dart SDK before dart_format can start, the plugin now explains the wait instead of showing "did you install dart_format?".<br/>
+        Friendlier message when Flutter is downloading a fresh Dart SDK before dart_format can start.<br/>
         <br/>
-        With dart_format 2.2.0+, the settings Diagnostics section also lists the dart_format log file, and bug reports include the dart_format log location and pid.<br/>
+        Diagnostics page now also lists the dart_format log; bug reports include it plus the dart_format process id.<br/>
         <br/>
-        First-run welcome notification with the current keymap shortcuts for formatting and a shortcut to the DartFormat settings.<br/>
-        <br/>
-        <b>Version 2.1.1</b><br/>
-        <br/>
-        Compatibility plumbing for upcoming <code>dart_format</code> security hardening. No user-visible behaviour change today, but ensures the plugin keeps working once the next <code>dart_format</code> release ships.<br/>
+        Plugin log files are now self-managing (rotate when large, prune when old).<br/>
         <br/>
         <b>Version 2.0.38</b><br/>
         <br/>
-        Formatting now runs in a cancelable modal so the IDE doesn't freeze on large files. Multi-file runs show a file count and a Cancel button.<br/>
+        Formatting runs in a cancelable progress dialog with a file count, so the IDE no longer freezes on large files or big multi-file runs.<br/>
         <br/>
-        Auto-recovery after a Dart SDK upgrade: when <code>dart_format</code> fails to start with <code>"Invalid SDK hash"</code> or <code>"Can't load Kernel binary"</code>, the plugin re-runs <code>dart pub global activate dart_format</code> and retries automatically.<br/>
+        Auto-recovery after a Dart SDK upgrade: the plugin re-activates <code>dart_format</code> and retries automatically instead of breaking.<br/>
         <br/>
-        Auto-update: a newer <code>dart_format</code> on pub.dev now installs immediately instead of waiting for the next IDE start.<br/>
+        Newer <code>dart_format</code> versions on pub.dev now install immediately instead of waiting for the next IDE start.<br/>
         <br/>
         Disabling or updating the plugin no longer leaves a stray <code>dart_format</code> process behind.<br/>
         <br/>
         <b>Version 2.0.36</b><br/>
         <br/>
-        Linux/macOS: PATH set in <code>~/.zshrc</code> / <code>~/.bashrc</code> is now picked up when the plugin starts <code>dart_format</code>. Previously only login-profile files (<code>~/.zprofile</code> / <code>~/.bash_profile</code> / <code>~/.profile</code>) were sourced, which missed where most modern setups put the <code>dart</code> / <code>flutter</code> PATH addition.<br/>
+        Linux/macOS: <code>dart</code> / <code>flutter</code> on PATH via <code>~/.zshrc</code> or <code>~/.bashrc</code> is now picked up when starting <code>dart_format</code>.<br/>
         <br/>
-        Log files are written to the system temp directory as <code>DartFormatPlugin_&lt;timestamp&gt;_&lt;pid&gt;.log</code>.<br/>
-        The full path is shown in every error notification and included in the prefilled report body.<br/>
-        Added a <b>Diagnostics</b> section to the DartFormat settings page with clickable links to the log folder and the current log file.<br/>
+        Error notifications now show the path to the plugin log file, and the settings page has a new <b>Diagnostics</b> section with quick links to it.<br/>
         <br/>
         <b>Version 2.0.35</b><br/>
         <br/>
-        Trying to fix "Unexpected process exit while waiting for connection details from external dart_format."<br/>
+        Improved handling of unexpected <code>dart_format</code> process exit during startup.<br/>
         <br/>
         <b>Version 2.0.32</b><br/>
         <br/>
         Added new shortcut <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code>.<br/>
-        "Fix spaces" now not experimental anymore.<br/>
+        "Fix spaces" is no longer experimental.<br/>
         <br/>
         <b>Version 2.0.23</b><br/>
         Better error reporting when Dart executable not found.<br/>
@@ -77,16 +71,16 @@
         Fixed startup problems on Windows.<br/>
         <br/>
         <b>Version 2.0.19</b><br/>
-        Adding "fix spaces" (experimental).<br/>
+        Added "Fix spaces" (experimental).<br/>
         <br/>
         <b>Version 2.0.18</b><br/>
         Fixed startup problems on Linux/macOS.<br/>
         <br/>
         <b>Version 2.0.17</b><br/>
-        Automatically installing+updating the <code>dart_format</code> package now.<br/>
+        Now installs and updates the <code>dart_format</code> package automatically.<br/>
         <br/>
         <b>Version 2.0.16</b><br/>
-        Fixed handling of UTF. Better notifications.<br/>
+        Fixed UTF-8 handling. Better notifications.<br/>
         <br/>
         <b>Version 2.0.15</b><br/>
         Fixed startup problems on Linux/macOS and better notifications.<br/>
