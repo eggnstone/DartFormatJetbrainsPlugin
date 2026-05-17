@@ -26,7 +26,7 @@
     </actions>
     <change-notes>
         <![CDATA[
-        <b>Version 2.1.2</b><br/>
+        <b>Version 2.1.3</b><br/>
         <br/>
         First-run welcome notification with format shortcuts.<br/>
         Friendlier message while Flutter downloads a fresh Dart SDK.<br/>
@@ -109,27 +109,36 @@
     <depends>com.intellij.modules.platform</depends>
     <description>
         <![CDATA[
-        <b>A formatter for Dart.</b><br/>
+        <b>A configurable formatter for Dart and Flutter.</b><br/>
         <br/>
-        Like dartfmt.<br/>
-        But better ;)<br/>
-        Because it's configurable.<br/>
+        A drop-in alternative to <code>dart format</code> / <code>dartfmt</code> with the same one-shortcut workflow &mdash; but you choose the rules. Works in IntelliJ IDEA, Android Studio, and other JetBrains IDEs on Windows, macOS, and Linux.<br/>
         <br/>
-        To format the current file / the currently selected folders and files, press the following:<br/>
-        <code>Ctrl/Command</code>+<code>Alt</code>+<code>,</code> to format only Dart files<br/>
-        <code>Ctrl/Command</code>+<code>Alt</code>+<code>L</code> to format all file types*<br/>
-        * uses the built-in formatter for non-Dart files<br/>
+        <b>Keeps your line breaks.</b> No forced wrapping at a line-length limit, no inserted or removed line breaks &mdash; unless you explicitly enable an option that adds them. Your layout stays yours.<br/>
         <br/>
-        <b>This plugin:</b><br/>
-        Source code: <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin">DartFormatJetBrainsPlugin on GitHub</a><br/>
-        Problems and feature requests: <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin/issues">GitHub Issues for DartFormatJetBrainsPlugin</a><br/>
+        <b>What you can configure:</b>
+        <ul>
+            <li>Newlines before / after <code>{</code> and <code>}</code> (Allman braces)</li>
+            <li>Newline after <code>;</code> (one statement per line)</li>
+            <li>Trailing newline at end of file</li>
+            <li>Fix spaces (normalize around operators / keywords)</li>
+            <li>Indent width (spaces per level)</li>
+            <li>Max consecutive empty lines</li>
+            <li>Strip trailing commas</li>
+        </ul>
+        Every option is off by default, so the formatter only changes what you ask it to.<br/>
         <br/>
-        <b>External dart_format package:</b><br/>
-        Source code: <a href="https://github.com/eggnstone/dart_format/">dart_format on GitHub</a><br/>
-        Problems and feature requests: <a href="https://github.com/eggnstone/dart_format/issues">GitHub Issues for dart_format</a><br/>
+        <b>Shortcuts:</b><br/>
+        <code>Ctrl/Cmd</code>+<code>Alt</code>+<code>,</code> &mdash; format the active file or the selected Dart files/folders<br/>
+        <code>Ctrl/Cmd</code>+<code>Alt</code>+<code>L</code> &mdash; format the selection (Dart via DartFormat, other file types via the built-in formatter)<br/>
         <br/>
-        <b>Also available for Visual Studio Code:</b><br/>
-        <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.DartFormat">DartFormat at the Visual Studio Marketplace</a><br/>
+        <b>How it works:</b><br/>
+        Formatting runs locally &mdash; the plugin talks to a <code>dart_format</code> server on <code>localhost</code>, installed automatically from <a href="https://pub.dev/packages/dart_format">pub.dev</a>.<br/>
+        <br/>
+        <b>Also for VS Code:</b> <a href="https://marketplace.visualstudio.com/items?itemName=eggnstone.DartFormat">DartFormat on the Visual Studio Marketplace</a><br/>
+        <br/>
+        <b>Source &amp; issues:</b><br/>
+        Plugin: <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin">GitHub</a> &mdash; <a href="https://github.com/eggnstone/DartFormatJetBrainsPlugin/issues">Issues</a><br/>
+        Formatter: <a href="https://github.com/eggnstone/dart_format/">GitHub</a> &mdash; <a href="https://github.com/eggnstone/dart_format/issues">Issues</a><br/>
         ]]>
     </description>
     <extensions defaultExtensionNs="com.intellij">
