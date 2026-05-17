@@ -48,7 +48,7 @@ class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
     private fun showWelcomeIfFirstTime(project: Project)
     {
         val config = DartFormatConfigGetter.get()
-        if (config.welcomeShown)
+        if (config.welcomeShown && !Constants.DEBUG_FAKE_SHOW_WELCOME)
             return
 
         // Resolve shortcuts from the live keymap rather than hardcoding plugin.xml's defaults, so
@@ -72,11 +72,12 @@ class ProjectActivity : com.intellij.openapi.startup.ProjectActivity
                 links = listOf(LinkInfo("Open Settings", "action://openSettings")),
                 origin = null,
                 project = project,
-                title = "DartFormat is ready.",
+                title = "Welcome to DartFormat!",
                 virtualFile = null
             )
         )
 
-        config.welcomeShown = true
+        if (!Constants.DEBUG_FAKE_SHOW_WELCOME)
+            config.welcomeShown = true
     }
 }

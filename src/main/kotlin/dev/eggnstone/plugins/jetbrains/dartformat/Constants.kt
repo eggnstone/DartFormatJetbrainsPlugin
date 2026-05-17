@@ -4,7 +4,7 @@ class Constants
 {
     companion object
     {
-        // Main switch for debug. Should be "false" for production.
+        // Main switch for debug. Must be "false" for production.
         const val DEBUG = false
 
         // Fakes
@@ -31,6 +31,12 @@ class Constants
         // exercised without actually clearing engine-dart-sdk.stamp and re-downloading the SDK.
         @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
         const val DEBUG_FAKE_FLUTTER_SDK_DOWNLOAD = DEBUG && false
+
+        // Forces the first-run welcome notification on every project open, ignoring (and not
+        // updating) the persisted welcomeShown flag, so the keymap-aware message and Open Settings
+        // link can be iterated on without resetting state between runs.
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        const val DEBUG_FAKE_SHOW_WELCOME = DEBUG && false
 
         // Logging
 

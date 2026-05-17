@@ -28,29 +28,26 @@
         <![CDATA[
         <b>Version 2.1.2</b><br/>
         <br/>
-        First-run welcome notification showing your format shortcuts and a link to the settings.<br/>
+        First-run welcome notification with format shortcuts.<br/>
+        Friendlier message while Flutter downloads a fresh Dart SDK.<br/>
+        Diagnostics page lists the <code>dart_format</code> log; bug reports include it and the process id.<br/>
+        Plugin log files older than 30 days are pruned on startup.<br/>
         <br/>
-        Friendlier message when Flutter is downloading a fresh Dart SDK before dart_format can start.<br/>
+        <b>Version 2.1.1</b><br/>
         <br/>
-        Diagnostics page now also lists the dart_format log; bug reports include it plus the dart_format process id.<br/>
-        <br/>
-        Plugin log files are now self-managing (rotate when large, prune when old).<br/>
+        Compatibility plumbing for upcoming <code>dart_format</code> security hardening.<br/>
         <br/>
         <b>Version 2.0.38</b><br/>
         <br/>
-        Formatting runs in a cancelable progress dialog with a file count, so the IDE no longer freezes on large files or big multi-file runs.<br/>
-        <br/>
-        Auto-recovery after a Dart SDK upgrade: the plugin re-activates <code>dart_format</code> and retries automatically instead of breaking.<br/>
-        <br/>
-        Newer <code>dart_format</code> versions on pub.dev now install immediately instead of waiting for the next IDE start.<br/>
-        <br/>
+        Formatting runs in a cancelable progress dialog with a file count.<br/>
+        Auto-recovery after a Dart SDK upgrade.<br/>
+        Newer <code>dart_format</code> versions on pub.dev install immediately.<br/>
         Disabling or updating the plugin no longer leaves a stray <code>dart_format</code> process behind.<br/>
         <br/>
         <b>Version 2.0.36</b><br/>
         <br/>
-        Linux/macOS: <code>dart</code> / <code>flutter</code> on PATH via <code>~/.zshrc</code> or <code>~/.bashrc</code> is now picked up when starting <code>dart_format</code>.<br/>
-        <br/>
-        Error notifications now show the path to the plugin log file, and the settings page has a new <b>Diagnostics</b> section with quick links to it.<br/>
+        Linux/macOS: picks up <code>dart</code> / <code>flutter</code> on PATH via <code>~/.zshrc</code> or <code>~/.bashrc</code>.<br/>
+        Error notifications show the plugin log path; settings has a new <b>Diagnostics</b> section.<br/>
         <br/>
         <b>Version 2.0.35</b><br/>
         <br/>
