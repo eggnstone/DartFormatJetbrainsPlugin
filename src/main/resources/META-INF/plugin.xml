@@ -26,6 +26,10 @@
     </actions>
     <change-notes>
         <![CDATA[
+        <b>Version 2.1.4</b><br/>
+        <br/>
+        Version lookup no longer uses a deprecated IntelliJ API.<br/>
+        <br/>
         <b>Version 2.1.3</b><br/>
         <br/>
         First-run welcome notification with format shortcuts.<br/>

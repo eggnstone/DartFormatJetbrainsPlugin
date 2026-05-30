@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.eggnstone.plugins.jetbrains"
-version = "2.1.3"
+version = "2.1.4"
 
 repositories {
     mavenCentral()
@@ -42,6 +42,11 @@ tasks {
     patchPluginXml {
         sinceBuild.set("243")
         untilBuild.set("")
+    }
+
+    buildSearchableOptions {
+        // Produced only an empty index while dumping thousands of unrelated leak-detector errors.
+        enabled = false
     }
 
     signPlugin {

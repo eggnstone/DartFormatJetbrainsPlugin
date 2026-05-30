@@ -1,8 +1,11 @@
 {
     "permissions": {
         "allow": [
-            "Bash(gradlew compileKotlin *)",
-            "Bash(./gradlew.bat compileKotlin *)"
+            "Bash(./gradlew.bat buildPlugin)",
+            "Bash(./gradlew.bat clean *)",
+            "Bash(./gradlew.bat compileKotlin *)",
+            "Bash(./gradlew.bat runPluginVerifier *)",
+            "Bash(./gradlew.bat verifyPlugin *)"
         ]
     }
 }
