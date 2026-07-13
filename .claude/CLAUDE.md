@@ -37,10 +37,12 @@ Key components:
 
 ### Build and run
 
-- `./gradlew runIde` — launches a sandboxed IDE instance with the plugin installed. Primary dev loop.
-- `./gradlew buildPlugin` — produces the marketplace-ready zip in `build/distributions/`.
+- `./gradlew runIde` — launches a sandboxed IDE instance with the plugin installed. Primary dev loop. It does **not** produce a publishable artifact — it only lays out a sandbox.
+- `./gradlew clean buildPlugin` — produces the marketplace-ready zip in `build/distributions/`.
 - `./gradlew publishPlugin` — uploads to JetBrains Marketplace (requires a marketplace token; never commit it).
 - `./gradlew verifyPlugin` — runs the JetBrains Plugin Verifier against the declared IDE version range; surfaces API compatibility issues before users hit them.
+
+**The upload artifact is `build/distributions/<name>-<ver>.zip` — NEVER a bare jar from `build/libs/`.** The zip bundles the *instrumented* plugin jar plus the pinned `kotlin-stdlib`, `annotations` and `searchableOptions`; a bare `build/libs/*.jar` has none of them, and the plain `*.jar` there is the *non*-instrumented one. "Instrumented" does not mean a debug build — it means post-compile `@NotNull`/`@Nullable` runtime-check weaving, i.e. it *is* the production jar. Uploading the bare jar has been done before by mistake.
 
 ### Testing
 

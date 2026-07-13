@@ -50,3 +50,7 @@ bin/
 .claude/settings.local.json
 .idea/misc.xml
 .idea/workspace.xml
+
+# Async workflow - PUBLIC REPO: ignore the whole folder.
+# Committing thoughts.md would publish raw thought-dumps. See .claude/ProjectSync.md.
+.async/
